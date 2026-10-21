@@ -1,0 +1,5 @@
+# kotlin.md, declarations: two files of a package each declare their own private Helper, and each file means its own
+leaf a/First.kt#First -> a/First.kt#Helper
+leaf a/First.kt#First -> a/First.kt#Inner
+leaf a/Second.kt#Second -> a/Second.kt#Helper
+leaf a/Second.kt#Second -> a/Second.kt#Inner

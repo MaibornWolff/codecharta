@@ -113,7 +113,8 @@ declarations:
   with the same package — is one leaf per file, with the same key and, where it has one, the same `namespace`. Each
   copy's dependencies leave the file they are written in, while a dependency *on* the name points at the file that
   shares the longest folder path with the file using it, and among equally near files at the first as the scan
-  lists them (path order); for SQL at the latest migration, and for C# at the first file.
+  lists them (path order); for SQL at the latest migration, and for C# at the first file. A Kotlin `private`
+  top-level copy counts only for the file it is written in.
 - `kind` is the declaration kind: `class`, `valueclass`, `interface`, `annotation`, `enum`, `function`,
   `variable`, `reexport`, `script` or `unknown`.
 

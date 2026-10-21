@@ -5,15 +5,6 @@ The probes of this folder whose output deviates from their `expected.txt` today,
 expected line the parser does not draw yet and `extra <line>` a wrong line it draws; `ProbeRegressionTest` fails once a
 gap closes, and the closed lines are deleted here.
 
-## spec-private-top-level
-
-A private top-level declaration is found from other files of its package.
-
-```text
-extra file a/Second.kt -> a/First.kt
-extra leaf a/Second.kt#Second -> a/First.kt#Helper
-```
-
 ## spec-qualified-constructor-call
 
 A constructor called through its class (`Outer.Node()`) also reports the class as a use, so the qualifier draws an edge of its own.

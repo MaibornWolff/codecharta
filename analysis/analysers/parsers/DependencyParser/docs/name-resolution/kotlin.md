@@ -50,7 +50,8 @@ the rule yet; `sample-projects/regression/kotlin/known-gaps.md` says how it devi
 | Rule | Probe | Today |
 | --- | --- | --- |
 | Declarations: a top-level function | `spec-top-level-function` | ok |
-| Declarations: a `private` top-level declaration | `spec-private-top-level` | gap |
+| Declarations: a `private` top-level declaration | `spec-private-top-level` | ok |
+| Declarations: two files with their own `private` copy | `spec-private-copies` | ok |
 | 1. type parameter | `spec-type-parameter` | ok |
 | 2. local class | `spec-local-class` | ok |
 | 3. nested class of the own class | `spec-own-nested-class` | ok |
@@ -82,6 +83,7 @@ the rule yet; `sample-projects/regression/kotlin/known-gaps.md` says how it devi
   (`Node.build()`) is the extension of that name the simple-name rules find, whatever its receiver.
 - Overloads of one function name in several files of a package: each file declares a copy, and the copy rule picks
   one.
+- A `private` class nested in a class counts as public: the parser does not limit it to the class around it.
 
 ## Decisions
 

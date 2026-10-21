@@ -1725,6 +1725,21 @@ class KotlinAnalyzerTest {
     }
 
     @Test
+    fun `should not resolve a private top-level declaration from another file of its package`() {
+        // Arrange
+        val first = kotlinFile("a/First.kt", "package a\n\nprivate class Helper\n\nclass First { val helper: Helper? = null }")
+        val second = kotlinFile("a/Second.kt", "package a\n\nclass Second { val helper: Helper? = null }")
+
+        // Act
+        val firstTargets = internalTargetsOf("First", first, second)
+        val secondTargets = internalTargetsOf("Second", first, second)
+
+        // Assert
+        assertThat(firstTargets).containsExactly("a.Helper")
+        assertThat(secondTargets).isEmpty()
+    }
+
+    @Test
     fun `should resolve a fully qualified type without an import`() {
         // Arrange
         val service = kotlinFile(

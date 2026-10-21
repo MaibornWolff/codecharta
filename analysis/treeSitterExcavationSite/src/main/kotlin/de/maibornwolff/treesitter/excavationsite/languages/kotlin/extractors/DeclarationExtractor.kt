@@ -51,7 +51,13 @@ internal object DeclarationExtractor {
                 val type = declarationType(declarationNode)
                 val parentPath = findParentPath(declarationNode, namesByStartByte)
                 val usedTypes = UsedTypeExtractor.extract(declarationNode, importedNames) + hostOfInnerClass(declarationNode, parentPath)
-                Declaration(name = name, type = type, usedTypes = usedTypes, parentPath = parentPath)
+                Declaration(
+                    name = name,
+                    type = type,
+                    usedTypes = usedTypes,
+                    parentPath = parentPath,
+                    isFileScoped = KotlinScopes.isFileScoped(declarationNode)
+                )
             }.toList()
     }
 

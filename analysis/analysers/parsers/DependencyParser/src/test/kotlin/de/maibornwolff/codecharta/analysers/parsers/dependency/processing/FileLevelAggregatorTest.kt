@@ -14,7 +14,8 @@ class FileLevelAggregatorTest {
         name: String,
         file: String,
         dependsOn: List<String> = emptyList(),
-        language: SupportedLanguage = SupportedLanguage.KOTLIN
+        language: SupportedLanguage = SupportedLanguage.KOTLIN,
+        isFileScoped: Boolean = false
     ) = Node(
         pathWithName = Path.fromStringWithDots(name),
         physicalPath = file,
@@ -26,7 +27,8 @@ class FileLevelAggregatorTest {
             NodeDependencies(
                 internalDependencies = dependsOn.map { Dependency(Path.fromStringWithDots(it)) }.toSet(),
                 externalDependencies = emptySet()
-            )
+            ),
+        isFileScoped = isFileScoped
     )
 
     @Test
@@ -86,6 +88,25 @@ class FileLevelAggregatorTest {
             listOf(
                 declaration("app.First", "app/Source.kt", listOf("app.Second")),
                 declaration("app.Second", "app/Source.kt")
+            )
+
+        // Act
+        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+
+        // Assert
+        assertThat(edges).isEmpty()
+    }
+
+    @Test
+    fun `should point a dependency on a file-scoped copy only at the copy in the using file`() {
+        // Arrange: two files of one folder each declare their own private app.Helper.
+        val nodes =
+            listOf(
+                declaration("app.First", "app/First.kt", listOf("app.Helper")),
+                declaration("app.Helper", "app/First.kt", isFileScoped = true),
+                declaration("app.Second", "app/Second.kt", listOf("app.Helper")),
+                declaration("app.Helper", "app/Second.kt", isFileScoped = true),
+                declaration("app.Third", "app/Third.kt", listOf("app.Helper"))
             )
 
         // Act

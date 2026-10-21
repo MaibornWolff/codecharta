@@ -29,7 +29,8 @@ internal object TopLevelDeclarationExtractor {
         .groupBy { (name, _, _) -> name }
         .map { (name, overloads) ->
             val usedTypes = overloads.flatMap { (_, _, node) -> UsedTypeExtractor.extract(node, importedNames) }.toSet()
-            Declaration(name = name, type = overloads.first().second, usedTypes = usedTypes)
+            val isFileScoped = overloads.all { (_, _, node) -> KotlinScopes.isFileScoped(node) }
+            Declaration(name = name, type = overloads.first().second, usedTypes = usedTypes, isFileScoped = isFileScoped)
         }
 
     fun holdsCode(rootNode: SyntaxNode): Boolean = rootNode.namedChildren().any { it.type !in NODES_WITHOUT_CODE }
