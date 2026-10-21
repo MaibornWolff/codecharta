@@ -58,7 +58,7 @@ Rounds 1 and 2, re-verified against the fresh output:
 - Upward edges: `ArmorClass -> CreatureUtil` and `Creature -> CreatureFacade`, as before. `PersistedCreatures -> CreatureFacade` is not flagged because `adapter` is level 2 and `application` level 1.
 - Levels: `adapter` 2, `application` 1, `domain` 0, `domain/service` 1, `domain/model` 0; `Zentaurenhöhle.java` 1.
 - Leaf kinds: `class`, `interface`, `enum`, `annotation`, in lower case. Records (`CreatureId`, `DiceRoll`, `XPValue`, `dto.Creature`, `Ambush`) are `class`. `Scout` is `interface`, `Mood` is `enum`.
-- Nested and local types become top-level leaves of the package: `Ambush`, `Scout`, `Mood`, `Builder`, and the local class `Ranking` as `de.sots.cellarsandcentaurs.domain.service.Ranking`. Because `Ranking` is its own leaf, `EncounterResolver -> Creature` counts x2 and `outgoing_dependencies` is 3 for 2 file edges.
+- Nested types become top-level leaves of the package: `Ambush`, `Scout`, `Mood`, `Builder`. The local class `Ranking` is no leaf (`docs/name-resolution/java.md`: a local class is no target), so its uses count for `EncounterResolver`.
 - `module-info.java` is not in the dependency tree (32 nodes for 33 main files).
 - By design (regression probe `regression/java/r1-mono`): two projects in one repository that declare the same class (`com.ex.App`) share one node of the namespace view, so their levels mix there and an edge inside one project can be flagged upward; the folder view keeps them apart.
 - Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/java.md`): listed per probe in `regression/java/known-gaps.md`.

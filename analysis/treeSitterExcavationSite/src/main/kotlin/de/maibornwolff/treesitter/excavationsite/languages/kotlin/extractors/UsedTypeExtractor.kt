@@ -34,7 +34,7 @@ internal object UsedTypeExtractor {
     }
 
     private fun extractCallType(call: SyntaxNode): UsedType? {
-        val name = calleeTypeName(call) ?: return null
+        val name = calleeTypeName(call)?.takeUnless { KotlinScopes.LOCAL_TYPES.isLocal(call, it) } ?: return null
         val callSuffix = call.children().firstOrNull { it.type == CALL_SUFFIX }
         val genericTypes = callSuffix?.let { extractGenericTypesFromCallSuffix(it) } ?: emptyList()
         return UsedType(name = name, genericTypes = genericTypes)
@@ -70,7 +70,7 @@ internal object UsedTypeExtractor {
     private fun extractType(userTypeNode: SyntaxNode): UsedType? {
         if (userTypeNode.isNull) return null
         val segments = userTypeNode.children().filter { it.type == TYPE_IDENTIFIER }.map { it.text.trim() }.toList()
-        val name = writtenTypeName(segments) ?: return null
+        val name = writtenTypeName(segments)?.takeUnless { KotlinScopes.LOCAL_TYPES.isLocal(userTypeNode, segments.first()) } ?: return null
         val typeArgs = userTypeNode.children().firstOrNull { it.type == TYPE_ARGUMENTS }
         val genericTypes = typeArgs?.let { extractTypeArguments(it) } ?: emptyList()
         return UsedType(name = name, genericTypes = genericTypes)

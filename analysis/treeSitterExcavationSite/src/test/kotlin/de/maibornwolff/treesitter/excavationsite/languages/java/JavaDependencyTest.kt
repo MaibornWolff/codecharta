@@ -748,4 +748,75 @@ class JavaDependencyTest {
             assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactlyInAnyOrder("Base", "String")
         }
     }
+
+    @Nested
+    inner class LocalTypeNames {
+        @Test
+        fun `should report no used type for a name that a type parameter of the class or method declares`() {
+            // Arrange
+            val code = """
+            package a;
+
+            public class Box<Config> {
+                private Config value;
+
+                <T> void put(T item, java.util.List<Config> all) {}
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.JAVA)
+
+            // Assert
+            val usedNames = result.declarations.single().usedTypes.flatMap {
+                listOf(it.name) +
+                    it.genericTypes.map { generic -> generic.name }
+            }
+            assertThat(usedNames).doesNotContain("Config", "T")
+        }
+
+        @Test
+        fun `should neither declare a local class nor report its name as a used type in its block`() {
+            // Arrange
+            val code = """
+            package a;
+
+            public class Service {
+                void run() {
+                    class Helper {}
+                    Helper helper = new Helper();
+                }
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.JAVA)
+
+            // Assert
+            assertThat(result.declarations.map { it.name }).containsExactly("Service")
+            assertThat(result.declarations.single().usedTypes.map { it.name }).doesNotContain("Helper")
+        }
+
+        @Test
+        fun `should report the name of a local class as a used type outside its block`() {
+            // Arrange
+            val code = """
+            package a;
+
+            public class Service {
+                Service() {
+                    class Helper {}
+                }
+
+                Helper other;
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.JAVA)
+
+            // Assert
+            assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactly("Helper")
+        }
+    }
 }

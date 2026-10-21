@@ -48,8 +48,8 @@ the rule yet; `sample-projects/regression/kotlin/known-gaps.md` says how it devi
 | --- | --- | --- |
 | Declarations: a top-level function | `spec-top-level-function` | ok |
 | Declarations: a `private` top-level declaration | `spec-private-top-level` | gap |
-| 1. type parameter | `spec-type-parameter` | gap |
-| 2. local class | `spec-local-class` | gap |
+| 1. type parameter | `spec-type-parameter` | ok |
+| 2. local class | `spec-local-class` | ok |
 | 3. nested class of the own class | `spec-own-nested-class` | gap |
 | 4. explicit import over the own package | `spec-explicit-import-beats-package` | ok |
 | 4. import alias | `spec-import-alias` | gap |

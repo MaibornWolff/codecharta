@@ -40,6 +40,7 @@ internal object DeclarationExtractor {
     private fun typeDeclarations(rootNode: SyntaxNode, importedNames: Set<String>): List<Declaration> {
         val allDeclarations = TreeTraversal
             .findAllDescendantsOfType(rootNode, *DECLARATION_TYPES.toTypedArray())
+            .filterNot { KotlinScopes.LOCAL_TYPES.isLocalClass(it) }
         val namesByStartByte = allDeclarations.associate { node ->
             node.startByte to extractName(node)
         }
