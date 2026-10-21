@@ -18,7 +18,7 @@ data class Node(
         languageDictionary: Map<String, Path>,
         internalNodePaths: Set<String>
     ): Node {
-        val resolver = TypeImportResolver(pathWithName, dependencies, projectDictionary, languageDictionary)
+        val resolver = TypeImportResolver(ImportingDeclaration(pathWithName, dependencies, language), projectDictionary, languageDictionary)
         val resolvedUsedTypes = usedTypes.map { it.toResolvedType(resolver) }.toSet()
 
         val resolvedUsedTypesUnique = resolvedUsedTypes
