@@ -56,7 +56,7 @@ the rule yet; `sample-projects/regression/kotlin/known-gaps.md` says how it devi
 | 3. nested class of the own class | `spec-own-nested-class` | ok |
 | 3. nested class of a supertype | `spec-inherited-nested-class` | ok |
 | 4. explicit import over the own package | `spec-explicit-import-beats-package` | ok |
-| 4. import alias | `spec-import-alias` | gap |
+| 4. import alias | `spec-import-alias` | ok |
 | 5. own package over a star import | `spec-package-beats-star` | ok |
 | 6. star import | `spec-star-import` | ok |
 | 6. two star imports: ambiguous | `spec-ambiguous-star` | ok |

@@ -1702,6 +1702,29 @@ class KotlinAnalyzerTest {
     }
 
     @Test
+    fun `should resolve the plain name of an aliased import to the own package`() {
+        // Arrange
+        val app = kotlinFile(
+            "a/App.kt",
+            """
+            package a
+
+            import b.Config as RemoteConfig
+
+            class App { val remote: RemoteConfig? = null; val local: Config? = null }
+            """
+        )
+        val localConfig = kotlinFile("a/Config.kt", "package a\n\nclass Config")
+        val remoteConfig = kotlinFile("b/Config.kt", "package b\n\nclass Config")
+
+        // Act
+        val targets = internalTargetsOf("App", app, localConfig, remoteConfig)
+
+        // Assert
+        assertThat(targets).containsExactlyInAnyOrder("a.Config", "b.Config")
+    }
+
+    @Test
     fun `should resolve a fully qualified type without an import`() {
         // Arrange
         val service = kotlinFile(
