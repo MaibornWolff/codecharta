@@ -1,0 +1,3 @@
+# kotlin.md, rule 4: an explicit import names that declaration only, not its nested classes
+file a/App.kt -> b/Outer.kt
+leaf a/App.kt#App -> b/Outer.kt#Outer

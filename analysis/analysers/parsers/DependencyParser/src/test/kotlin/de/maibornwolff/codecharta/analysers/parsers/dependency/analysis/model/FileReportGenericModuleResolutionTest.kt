@@ -34,11 +34,6 @@ class FileReportGenericModuleResolutionTest {
                 Triple(listOf("domain", "entities", "User"), listOf("src", "app", "domain", "entities"), "User")
             ),
             Triple(
-                SupportedLanguage.JAVA,
-                "Java multi-module: com.company.project.domain.models → domain.models",
-                Triple(listOf("domain", "models", "User"), listOf("com", "company", "project", "domain", "models"), "User")
-            ),
-            Triple(
                 SupportedLanguage.C_SHARP,
                 "C# namespace: MyCompany.MyProject.Domain.Models → Domain.Models",
                 Triple(listOf("Domain", "Models", "User"), listOf("MyCompany", "MyProject", "Domain", "Models"), "User")

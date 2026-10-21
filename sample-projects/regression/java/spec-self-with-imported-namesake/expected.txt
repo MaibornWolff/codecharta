@@ -1,0 +1,3 @@
+# README.md, rule 4: the own name means the type itself, even when an imported type has a member type of that name
+file com/y/Node.java -> com/x/Outer.java
+leaf com/y/Node.java#Node -> com/x/Outer.java#Outer

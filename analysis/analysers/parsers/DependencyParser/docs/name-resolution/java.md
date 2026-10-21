@@ -45,11 +45,11 @@ the rule yet; `sample-projects/regression/java/known-gaps.md` says how it deviat
 | Declarations: a member type is a leaf of its own | `spec-member-type-own-leaf` | gap |
 | 1. type parameter | `spec-type-parameter` | ok |
 | 2. local class | `spec-local-class` | ok |
-| 3. member type of the own type | `spec-own-member-type` | gap |
-| 3. member type of an enclosing type | `spec-enclosing-member-type` | gap |
+| 3. member type of the own type | `spec-own-member-type` | ok |
+| 3. member type of an enclosing type | `spec-enclosing-member-type` | ok |
 | 3. inherited member type | `spec-inherited-member-type` | ok |
 | 4. single-type import over the own package | `spec-single-import-beats-package` | ok |
-| 4. single static import of a member type | `spec-static-import-member-type` | gap |
+| 4. single static import of a member type | `spec-static-import-member-type` | ok |
 | 5. own package over an on-demand import | `spec-package-beats-on-demand` | ok |
 | 6. on-demand import | `spec-on-demand-import` | ok |
 | 6. two on-demand imports: ambiguous | `spec-ambiguous-on-demand` | gap |
@@ -62,12 +62,16 @@ the rule yet; `sample-projects/regression/java/known-gaps.md` says how it deviat
 | Shared rule 1, name scope | `spec-name-scope` | ok |
 | Shared rule 2, copies | `r1-mono` | ok |
 | Shared rule 4, self | `spec-self` | ok |
+| Shared rule 4, self over an imported member type | `spec-self-with-imported-namesake` | ok |
+| 4. a single-type import names no member types | `spec-type-import-hides-members` | ok |
 
 ## Not supported
 
 - A variable that obscures a type or package of the same name (§6.4.2).
 - Module boundaries (`module-info.java`): every exported or not exported package counts as visible.
 - Kotlin top-level functions seen from Java through their file facade (`UtilsKt.helper()`).
+- Member types inherited over more than one level, or by an enclosing type: rule 3 looks at the own type's direct
+  supertypes only.
 
 ## Decisions
 

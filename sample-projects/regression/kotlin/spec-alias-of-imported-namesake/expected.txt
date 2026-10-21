@@ -1,0 +1,3 @@
+# kotlin.md, rules 4 and 5: an explicit import shadows the own declaration of that name, so an alias can stand for the imported namesake
+file a/Types.kt -> b/Declaration.kt
+leaf a/Types.kt#Declaration -> b/Declaration.kt#Declaration

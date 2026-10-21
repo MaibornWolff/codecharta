@@ -36,10 +36,9 @@ internal object ValueReferenceExtractor {
     )
 
     fun extract(declaration: SyntaxNode, importedNames: Set<String>): List<UsedType> {
-        val buckets = TreeTraversal.findAllDescendantsGroupedByType(
-            declaration,
-            setOf(SIMPLE_IDENTIFIER, CALLABLE_REFERENCE)
-        )
+        val buckets = TreeTraversal
+            .findAllDescendantsGroupedByType(declaration, setOf(SIMPLE_IDENTIFIER, CALLABLE_REFERENCE))
+            .mapValues { (_, nodes) -> nodes.filter { KotlinScopes.belongsTo(it, declaration) } }
         val memberFunctions = memberFunctionNames(declaration)
         val identifiers = buckets[SIMPLE_IDENTIFIER].orEmpty()
         val references = identifiers.mapNotNull { referencedName(it, importedNames, memberFunctions) } +

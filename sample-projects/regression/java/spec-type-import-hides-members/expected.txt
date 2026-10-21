@@ -1,0 +1,3 @@
+# java.md, rule 4: a single-type import names that type only, not its member types
+file a/App.java -> b/Outer.java
+leaf a/App.java#App -> b/Outer.java#Outer
