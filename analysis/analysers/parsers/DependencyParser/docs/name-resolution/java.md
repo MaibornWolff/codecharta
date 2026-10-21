@@ -30,6 +30,8 @@ Looked up in this order; the first match wins (§6.4.1, §7.5):
   including inherited ones (`Map.Entry`, `Outer.Nested`).
 - Otherwise `Q` is a package and `Q.N` is exactly the type `N` of that package (`com.ex.Config`).
 - The qualifying type is no dependency of its own: `Order.Line` depends on `Line` only.
+- A name below the deepest declaration it reaches that no declaration is (`Speed.class`) is a use of that
+  declaration.
 
 ## Java and Kotlin
 
@@ -42,7 +44,7 @@ the rule yet; `sample-projects/regression/java/known-gaps.md` says how it deviat
 
 | Rule | Probe | Today |
 | --- | --- | --- |
-| Declarations: a member type is a leaf of its own | `spec-member-type-own-leaf` | gap |
+| Declarations: a member type is a leaf of its own | `spec-member-type-own-leaf` | ok |
 | 1. type parameter | `spec-type-parameter` | ok |
 | 2. local class | `spec-local-class` | ok |
 | 3. member type of the own type | `spec-own-member-type` | ok |
@@ -55,9 +57,9 @@ the rule yet; `sample-projects/regression/java/known-gaps.md` says how it deviat
 | 6. two on-demand imports: ambiguous | `spec-ambiguous-on-demand` | gap |
 | 7. `java.lang` | `spec-java-lang` | ok |
 | 5 and 7. own package over `java.lang` | `spec-package-shadows-java-lang` | ok |
-| Qualified through a type | `spec-qualified-by-imported-type` | gap |
+| Qualified through a type | `spec-qualified-by-imported-type` | ok |
 | Qualified through a package | `spec-fully-qualified` | ok |
-| Qualified through a library type | `spec-library-member-type` | gap |
+| Qualified through a library type | `spec-library-member-type` | ok |
 | Java and Kotlin | `spec-uses-kotlin` | ok |
 | Shared rule 1, name scope | `spec-name-scope` | ok |
 | Shared rule 2, copies | `r1-mono` | ok |

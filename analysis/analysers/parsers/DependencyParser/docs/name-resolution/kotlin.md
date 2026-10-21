@@ -34,6 +34,8 @@ Looked up in this order; the first match wins:
 - Otherwise `Q` is a package and `Q.N` is exactly the declaration `N` of that package (`com.ex.Config`).
 - The qualifying class is no dependency of its own: `Outer.Nested` depends on `Nested` only.
 - A type alias resolves to the alias declaration; the alias depends on the type it stands for.
+- A member below the deepest declaration a qualified name reaches that no declaration is (`Node.build`) is an
+  extension of that name found by the simple-name rules, or else a use of the declaration (`Outer.CONSTANT`).
 
 ## Kotlin and Java
 
@@ -58,7 +60,9 @@ the rule yet; `sample-projects/regression/kotlin/known-gaps.md` says how it devi
 | 6. two star imports: ambiguous | `spec-ambiguous-star` | gap |
 | 7. default import | `spec-default-import` | ok |
 | 5 and 7. own package over a default import | `spec-package-shadows-default` | ok |
-| Qualified through a class | `spec-qualified-by-imported-class` | gap |
+| Qualified through a class | `spec-qualified-by-imported-class` | ok |
+| Qualified constructor call through a class | `spec-qualified-constructor-call` | gap |
+| Qualified: an extension called through its receiver | `spec-extension-through-receiver` | gap |
 | Qualified through a package | `spec-fully-qualified` | ok |
 | Type alias | `spec-type-alias` | ok |
 | Kotlin and Java | `spec-uses-java` | ok |
@@ -72,7 +76,8 @@ the rule yet; `sample-projects/regression/kotlin/known-gaps.md` says how it devi
 
 - Members of a companion object or object named by their simple name through the class (`Outer.CONSTANT` is a use of
   `Outer`, not of the constant).
-- Extension functions resolved by their receiver type; an imported extension is an explicit import like any other.
+- Extension functions resolved by their receiver type: a member below a declaration that no declaration is
+  (`Node.build()`) is the extension of that name the simple-name rules find, whatever its receiver.
 - Overloads of one function name in several files of a package: each file declares a copy, and the copy rule picks
   one.
 

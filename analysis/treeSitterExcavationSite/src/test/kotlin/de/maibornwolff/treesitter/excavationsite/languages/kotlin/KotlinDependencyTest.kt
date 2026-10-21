@@ -465,9 +465,8 @@ class KotlinDependencyTest {
         }
 
         @Test
-        fun `should extract first segment from dotted user types`() {
-            // Arrange — DC legacy extracts only the first type_identifier from dotted user_type nodes;
-            // the resolver handles matching simple names to full qualified paths
+        fun `should extract dotted user types in full`() {
+            // Arrange
             val code = """
             package com.example
 
@@ -482,19 +481,19 @@ class KotlinDependencyTest {
             // Act
             val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
 
-            // Assert — only first segments from type positions, full dotted names from call/nav expressions
+            // Assert
             val usedTypes = result.declarations.first().usedTypes
             assertThat(usedTypes).containsExactlyInAnyOrder(
-                UsedType("DateTimeFormatBuilder"),
-                UsedType("DateTimeUnit"),
-                UsedType("UnicodeFormat"),
-                UsedType("AbstractWith"),
-                UsedType("AbstractWith.Builder")
+                UsedType("DateTimeFormatBuilder.WithDate"),
+                UsedType("DateTimeUnit.DateBased"),
+                UsedType("UnicodeFormat.Directive"),
+                UsedType("AbstractWith.Builder"),
+                UsedType("AbstractWith")
             )
         }
 
         @Test
-        fun `should extract first segment from dotted user types with generics`() {
+        fun `should extract dotted user types in full with their generics`() {
             // Arrange
             val code = """
             package com.example
@@ -508,11 +507,11 @@ class KotlinDependencyTest {
             // Act
             val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
 
-            // Assert — only first type_identifier segment, generics still extracted
+            // Assert
             val usedTypes = result.declarations.first().usedTypes
             assertThat(usedTypes).containsExactlyInAnyOrder(
-                UsedType("Outer", listOf(UsedType("String"))),
-                UsedType("Outer", listOf(UsedType("String"), UsedType("Nested", listOf(UsedType("Int")))))
+                UsedType("Outer.Inner", listOf(UsedType("String"))),
+                UsedType("Outer.Inner", listOf(UsedType("String"), UsedType("Nested.Type", listOf(UsedType("Int")))))
             )
         }
 

@@ -50,7 +50,9 @@ class NodeTest {
         val stringPath = Path(listOf("java", "lang", "String"))
         val intPath = Path(listOf("int"))
 
+        val modelPath = Path(listOf("de", "maibornwolff", "dependacharta", "analysis", "Model"))
         val projectDictionary = mapOf(
+            "Model" to listOf(modelPath),
             "Book" to listOf(bookPath)
         )
 
@@ -64,7 +66,7 @@ class NodeTest {
             physicalPath = "./path",
             nodeType = NodeType.CLASS,
             language = SupportedLanguage.JAVA,
-            dependencies = setOf(Dependency(bookPath)),
+            dependencies = setOf(Dependency(modelPath)),
             usedTypes = setOf(
                 Type.simple("String"),
                 Type.simple("int"),
@@ -116,7 +118,11 @@ class NodeTest {
         val bookPath = Path("analysis.Model.Book".split("."))
         val anotherBookPath = Path("analysis.OtherModel.Book".split("."))
         val analysisPath = Path("analysis".split("."))
-        val projectDictionary = mapOf("Book" to listOf(bookPath, anotherBookPath))
+        val projectDictionary = mapOf(
+            "Model" to listOf(Path("analysis.Model".split("."))),
+            "OtherModel" to listOf(Path("analysis.OtherModel".split("."))),
+            "Book" to listOf(bookPath, anotherBookPath)
+        )
         val node = Node(
             pathWithName = Path(listOf("de")),
             physicalPath = "./path",

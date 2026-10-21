@@ -43,7 +43,7 @@ internal class TypeImportResolver(
         ?: findViaDotImport(candidates)
         ?: findViaWildcardImport(fullName, candidates)
         ?: candidates.find { it.withDots() == fullName }
-        ?: findViaPackageImport(candidates).takeUnless { importsNameTypesOnly() && !fullName.contains(".") }
+        ?: findViaPackageImport(candidates).takeUnless { importsNameTypesOnly() }
         ?: findViaAlias(candidates)
 
     private fun findInSamePackage(candidates: List<Path>): Path? {
@@ -77,7 +77,7 @@ internal class TypeImportResolver(
     }
 
     // A Java or Kotlin import names one declaration or, with a star, a package; it never makes the members of an imported
-    // class visible by their simple names. A qualified name still goes this way until it resolves through its qualifier
+    // class visible by their simple names
     private fun importsNameTypesOnly(): Boolean = declaration.language.nameScope == SupportedLanguage.JAVA
 
     private fun findViaPackageImport(candidates: List<Path>): Path? = dependencies

@@ -1,0 +1,5 @@
+# kotlin.md, qualified name: a member that is no nested class, called through its receiver, is an extension found by the simple-name rules
+file a/App.kt -> a/NodeBuilder.kt
+file a/NodeBuilder.kt -> a/Node.kt
+leaf a/App.kt#App -> a/NodeBuilder.kt#build
+leaf a/NodeBuilder.kt#build -> a/Node.kt#Node

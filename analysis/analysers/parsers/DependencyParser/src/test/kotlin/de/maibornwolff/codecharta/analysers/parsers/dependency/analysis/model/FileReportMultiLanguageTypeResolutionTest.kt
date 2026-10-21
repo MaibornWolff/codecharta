@@ -61,33 +61,6 @@ class FileReportMultiLanguageTypeResolutionTest {
     }
 
     @Test
-    fun `should handle Java qualified types with a package prefix`() {
-        // Arrange - Java with qualified reference
-        val projectDictionary = mapOf(
-            "User" to listOf(Path(listOf("com", "example", "models", "User")))
-        )
-        val languageDictionary = emptyMap<String, Path>()
-        val node = Node.build(
-            pathWithName = Path(listOf("com", "example", "services", "UserService")),
-            physicalPath = "src/com/example/services/UserService.java",
-            nodeType = NodeType.CLASS,
-            language = SupportedLanguage.JAVA,
-            dependencies = setOf(
-                Dependency(Path(listOf("com", "example", "models")), isWildcard = true)
-            ),
-            usedTypes = setOf(Type.simple("models.User")) // Qualified reference
-        )
-
-        // Act
-        val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
-
-        // Assert - Generic approach should resolve this correctly
-        val expectedPath = Path(listOf("com", "example", "models", "User"))
-        assertThat(resolvedNode.usedTypes.first().resolvedPath).isEqualTo(expectedPath)
-        assertThat(resolvedNode.dependencies).contains(Dependency(expectedPath))
-    }
-
-    @Test
     fun `should handle Java inner class references`() {
         // Arrange - Java inner classes use $ but might appear as dots in source
         val projectDictionary = mapOf(
@@ -304,7 +277,6 @@ class FileReportMultiLanguageTypeResolutionTest {
         val languagesWithTypes = listOf(
             SupportedLanguage.GO to "models.User",
             SupportedLanguage.C_SHARP to "Models.User",
-            SupportedLanguage.JAVA to "models.User",
             SupportedLanguage.PHP to "Models.User",
             SupportedLanguage.PYTHON to "models.User",
             SupportedLanguage.TYPESCRIPT to "Models.User"
