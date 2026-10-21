@@ -78,10 +78,9 @@ internal object UsedTypeExtractor {
         return UsedType(name = name, genericTypes = genericTypes)
     }
 
-    // `Outer.Inner` is used through `Outer`; `com.example.Target` names the package it comes from
+    // `Outer.Inner` names the nested class, `com.example.Target` the package it comes from
     private fun writtenTypeName(segments: List<String>): String? {
         val first = segments.firstOrNull() ?: return null
-        if (KotlinNames.isUppercase(first)) return first
         return KotlinNames.typeNameOf(segments) ?: first
     }
 

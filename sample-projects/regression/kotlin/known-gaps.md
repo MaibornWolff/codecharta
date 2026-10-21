@@ -32,12 +32,19 @@ extra file a/Second.kt -> a/First.kt
 extra leaf a/Second.kt#Second -> a/First.kt#Helper
 ```
 
-## spec-qualified-by-imported-class
+## spec-qualified-constructor-call
 
-Outer.Node is taken for Outer: only the first segment of a qualified name is used.
+A constructor called through its class (`Outer.Node()`) also reports the class as a use, so the qualifier draws an edge of its own.
 
 ```text
-missing leaf a/App.kt#App -> b/Outer.kt#Node
 extra leaf a/App.kt#App -> b/Outer.kt#Outer
 ```
 
+## spec-extension-through-receiver
+
+The receiver of a call through a class (`Node.build()`) is also reported as a use, so the qualifier draws an edge of its own, as in `spec-qualified-constructor-call`.
+
+```text
+extra file a/App.kt -> a/Node.kt
+extra leaf a/App.kt#App -> a/Node.kt#Node
+```

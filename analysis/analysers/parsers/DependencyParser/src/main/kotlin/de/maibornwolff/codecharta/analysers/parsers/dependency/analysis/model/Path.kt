@@ -32,6 +32,8 @@ class Path {
 
     fun hasOnlyName(): Boolean = parts.size == 1
 
+    fun isUnknown(): Boolean = parts.firstOrNull() == UNKNOWN
+
     fun isEmpty(): Boolean = parts.isEmpty() || (parts.size == 1 && parts[0].trim().isEmpty())
 
     companion object {

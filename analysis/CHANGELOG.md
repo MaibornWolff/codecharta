@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Same name in several places**: `dependencyparser` links a class that several files declare under one name to the
   copy nearest to the file that uses it, instead of to whichever copy it read first, in every language but C#.
 
+- **Names written with their class or package**: `dependencyparser` links a Java or Kotlin name written with its class
+  or package in front, such as `Outer.Nested`, `Speed.class` or `com.ex.Config`, to that declaration.
+
 - **Nested classes in Java and Kotlin**: `dependencyparser` keeps a nested class below the class around it, finds it
   through an import such as `import …CreatureFacade.Builder`, and no longer counts what it uses for the outer class.
 

@@ -19,14 +19,10 @@ data class Node(
         internalNodePaths: Set<String>
     ): Node {
         val resolver = TypeImportResolver(ImportingDeclaration(pathWithName, dependencies, language), projectDictionary, languageDictionary)
-        val memberTypes = if (language.nameScope ==
-            SupportedLanguage.JAVA
-        ) {
-            memberTypeScopes(resolver, internalNodePaths, projectDictionary)
-        } else {
-            MemberTypeScopes.NONE
-        }
-        val resolvedUsedTypes = usedTypes.map { it.toResolvedType(resolver, memberTypes) }.toSet()
+        val followsJavaRules = language.nameScope == SupportedLanguage.JAVA
+        val memberTypes = if (followsJavaRules) memberTypeScopes(resolver, internalNodePaths, projectDictionary) else MemberTypeScopes.NONE
+        val qualifiedNames = if (followsJavaRules) QualifiedNames(resolver, memberTypes, internalNodePaths) else null
+        val resolvedUsedTypes = usedTypes.map { it.toResolvedType(resolver, memberTypes, qualifiedNames) }.toSet()
 
         val resolvedUsedTypesUnique = resolvedUsedTypes
             .flatMap { type -> type.containedTypes() }
@@ -71,13 +67,14 @@ data class Node(
         return MemberTypeScopes.of(pathWithName, supertypes, internalNodePaths, projectDictionary)
     }
 
-    private fun Type.toResolvedType(resolver: TypeImportResolver, memberTypes: MemberTypeScopes): Type = copy(
-        name = name.split(".").last(),
-        genericTypes = genericTypes.map { it.toResolvedType(resolver, memberTypes) },
-        resolvedPath = when {
-            name.contains(QUALIFIER_SEPARATOR) -> resolver.resolve(name)
-            memberTypes.isOwnName(name) -> resolver.resolveOwnName(name)
-            else -> memberTypes.memberNamed(name) ?: resolver.resolve(name)
-        }
-    )
+    private fun Type.toResolvedType(resolver: TypeImportResolver, memberTypes: MemberTypeScopes, qualifiedNames: QualifiedNames?): Type =
+        copy(
+            name = name.split(".").last(),
+            genericTypes = genericTypes.map { it.toResolvedType(resolver, memberTypes, qualifiedNames) },
+            resolvedPath = when {
+                name.contains(QUALIFIER_SEPARATOR) -> qualifiedNames?.resolve(name) ?: resolver.resolve(name)
+                memberTypes.isOwnName(name) -> resolver.resolveOwnName(name)
+                else -> memberTypes.memberNamed(name) ?: resolver.resolve(name)
+            }
+        )
 }
