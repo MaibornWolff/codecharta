@@ -1,6 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.kotlin.extractors
 
-import de.maibornwolff.treesitter.excavationsite.shared.domain.LocalTypeScopes
+import de.maibornwolff.treesitter.excavationsite.languages.java.extractors.LocalTypeScopes
 
 internal object KotlinScopes {
     // Statements directly in a script file are its top level, not a block
