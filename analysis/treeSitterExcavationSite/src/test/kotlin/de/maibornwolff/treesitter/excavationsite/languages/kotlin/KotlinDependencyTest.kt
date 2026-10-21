@@ -4,6 +4,7 @@ import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
+import de.maibornwolff.treesitter.excavationsite.api.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -286,9 +287,9 @@ class KotlinDependencyTest {
             // Assert
             val usedTypes = result.declarations.first().usedTypes
             assertThat(usedTypes).containsExactlyInAnyOrder(
-                UsedType("Base"),
-                UsedType("Printable"),
-                UsedType("Serializable")
+                UsedType("Base", usage = TypeUsage.INHERITANCE),
+                UsedType("Printable", usage = TypeUsage.IMPLEMENTATION),
+                UsedType("Serializable", usage = TypeUsage.IMPLEMENTATION)
             )
         }
 
@@ -484,7 +485,7 @@ class KotlinDependencyTest {
             // Assert
             val usedTypes = result.declarations.first().usedTypes
             assertThat(usedTypes).containsExactlyInAnyOrder(
-                UsedType("DateTimeFormatBuilder.WithDate"),
+                UsedType("DateTimeFormatBuilder.WithDate", usage = TypeUsage.INHERITANCE),
                 UsedType("DateTimeUnit.DateBased"),
                 UsedType("UnicodeFormat.Directive"),
                 UsedType("AbstractWith.Builder"),
@@ -681,8 +682,8 @@ class KotlinDependencyTest {
             assertThat(declaration.name).isEqualTo("AppConfig")
             assertThat(declaration.type).isEqualTo(DeclarationType.CLASS)
             assertThat(declaration.usedTypes).containsExactlyInAnyOrder(
-                UsedType("Config"),
-                UsedType("Serializable"),
+                UsedType("Config", usage = TypeUsage.INHERITANCE),
+                UsedType("Serializable", usage = TypeUsage.IMPLEMENTATION),
                 UsedType("String"),
                 UsedType("Result")
             )
@@ -714,7 +715,7 @@ class KotlinDependencyTest {
             assertThat(byName["Error"]?.parentPath).containsExactly("Result")
             assertThat(byName["Success"]?.usedTypes).containsExactlyInAnyOrder(
                 UsedType("String"),
-                UsedType("Result")
+                UsedType("Result", usage = TypeUsage.INHERITANCE)
             )
         }
 
@@ -1104,9 +1105,9 @@ class KotlinDependencyTest {
             //          annotations, function params/returns, constructor calls, call expressions)
             assertThat(byName["Creature"]?.usedTypes).containsExactlyInAnyOrder(
                 UsedType("Fightable"),
-                UsedType("BaseEntity"),
-                UsedType("Serializable"),
-                UsedType("Comparable", listOf(UsedType("Creature"))),
+                UsedType("BaseEntity", usage = TypeUsage.INHERITANCE),
+                UsedType("Serializable", usage = TypeUsage.IMPLEMENTATION),
+                UsedType("Comparable", listOf(UsedType("Creature")), usage = TypeUsage.IMPLEMENTATION),
                 UsedType("CreatureId"),
                 UsedType("CreatureType"),
                 UsedType("Map", listOf(UsedType("SpeedType"), UsedType("Speed"))),
@@ -1120,15 +1121,15 @@ class KotlinDependencyTest {
 
             // Assert - Movable scoped separately
             assertThat(byName["Movable"]?.usedTypes).containsExactlyInAnyOrder(
-                UsedType("Locomotion"),
+                UsedType("Locomotion", usage = TypeUsage.INHERITANCE),
                 UsedType("Speed"),
                 UsedType("SpeedType")
             )
 
             // Assert - CreatureRegistry (object with inheritance + properties)
             assertThat(byName["CreatureRegistry"]?.usedTypes).containsExactlyInAnyOrder(
-                UsedType("Registry"),
-                UsedType("Serializable"),
+                UsedType("Registry", usage = TypeUsage.INHERITANCE),
+                UsedType("Serializable", usage = TypeUsage.IMPLEMENTATION),
                 UsedType("List", listOf(UsedType("Creature"))),
                 UsedType("emptyList")
             )
@@ -1245,6 +1246,45 @@ class KotlinDependencyTest {
             ).containsExactlyInAnyOrderEntriesOf(
                 mapOf("Order" to listOf("Customer"), "Line" to listOf("Product"))
             )
+        }
+    }
+
+    @Nested
+    inner class UsageKinds {
+        @Test
+        fun `should report a superclass as inheritance and an implemented interface as implementation`() {
+            // Arrange
+            val code = """
+            package a
+
+            class Creature : Base(), Fightable, Named
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            assertThat(result.declarations.single().usedTypes).containsExactlyInAnyOrder(
+                UsedType("Base", usage = TypeUsage.INHERITANCE),
+                UsedType("Fightable", usage = TypeUsage.IMPLEMENTATION),
+                UsedType("Named", usage = TypeUsage.IMPLEMENTATION)
+            )
+        }
+
+        @Test
+        fun `should report an interface an interface extends as inheritance`() {
+            // Arrange
+            val code = """
+            package a
+
+            interface Creatures : Repository
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            assertThat(result.declarations.single().usedTypes).containsExactly(UsedType("Repository", usage = TypeUsage.INHERITANCE))
         }
     }
 }

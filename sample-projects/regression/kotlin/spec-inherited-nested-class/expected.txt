@@ -1,0 +1,4 @@
+# kotlin.md, rule 3: a nested class of a supertype shadows a declaration of the own package
+file a/Sub.kt -> a/Base.kt
+leaf a/Sub.kt#Sub -> a/Base.kt#Base usage=inheritance
+leaf a/Sub.kt#Sub -> a/Base.kt#Node

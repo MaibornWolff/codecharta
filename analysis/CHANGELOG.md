@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Local changes and past commits in one step**: `ccsh analyse` takes `--local-changes` to map only the files you
   changed since your last push, and `--commit` to map the codebase as it was at a commit, tag, branch or date.
 
-- **Java inheritance on leaf edges**: a leaf edge from a Java class to the class it extends or the interface it
+- **Inheritance on leaf edges**: a leaf edge from a Java or Kotlin class to the class it extends or the interface it
   implements says so, as `inheritance` or `implementation`.
 
 ### Fixed 🐞

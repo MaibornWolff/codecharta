@@ -19,7 +19,8 @@ Looked up in this order; the first match wins:
 
 1. A type parameter `N` of the enclosing function or class: no edge.
 2. A local declaration `N` in an enclosing block: no edge (see above).
-3. A nested classifier `N` of the class the name is written in, then of each enclosing class outwards.
+3. A nested classifier `N` of the class the name is written in, then of its supertypes, then of each enclosing class
+   outwards.
 4. An explicit import `import p.N` names `p.N`; an import with an alias `import p.M as N` names `p.M`, and that file
    no longer names `p.M` as `M`.
 5. A declaration `N` of the own package, in any file of the package; a `private` one only from its own file.
@@ -53,6 +54,7 @@ the rule yet; `sample-projects/regression/kotlin/known-gaps.md` says how it devi
 | 1. type parameter | `spec-type-parameter` | ok |
 | 2. local class | `spec-local-class` | ok |
 | 3. nested class of the own class | `spec-own-nested-class` | ok |
+| 3. nested class of a supertype | `spec-inherited-nested-class` | ok |
 | 4. explicit import over the own package | `spec-explicit-import-beats-package` | ok |
 | 4. import alias | `spec-import-alias` | gap |
 | 5. own package over a star import | `spec-package-beats-star` | ok |
@@ -85,8 +87,7 @@ the rule yet; `sample-projects/regression/kotlin/known-gaps.md` says how it devi
 
 1. A nested class or object is a leaf of its own below its outer class (`package.Outer.Nested`), and only its own
    uses are its dependencies (decided 2026-10-21, as for Java).
+2. A class names a nested classifier of its supertype by its simple name (rule 3): the compiler accepts it, as in
+   `RealLinesOfCodeCalc` naming `OpenFunction` of `MetricPerFunctionCalc` (settled 2026-10-21). The extractor reports a
+   supertype as `inheritance` or `implementation`, as Java's does.
 
-## Open questions
-
-1. Can a class name a nested classifier of its supertype by its simple name (rule 3)? To be checked against the
-   compiler before it is a rule.

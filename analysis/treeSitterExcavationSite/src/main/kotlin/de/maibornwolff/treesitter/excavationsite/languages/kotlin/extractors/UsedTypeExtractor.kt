@@ -2,7 +2,9 @@ package de.maibornwolff.treesitter.excavationsite.languages.kotlin.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ancestors
 
 internal object UsedTypeExtractor {
     // Call expressions
@@ -19,6 +21,12 @@ internal object UsedTypeExtractor {
 
     private val ALL_NODE_TYPES = setOf(USER_TYPE, CALL_EXPRESSION, NAVIGATION_EXPRESSION)
 
+    // Supertypes
+    private const val DELEGATION_SPECIFIER = "delegation_specifier"
+    private const val CONSTRUCTOR_INVOCATION = "constructor_invocation"
+    private const val INTERFACE_KEYWORD = "interface"
+    private val SUPERTYPE_OWNERS = setOf("class_declaration", "object_declaration", "object_literal")
+
     fun extract(declaration: SyntaxNode, importedNames: Set<String> = emptySet()): Set<UsedType> {
         val buckets = TreeTraversal
             .findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
@@ -27,12 +35,24 @@ internal object UsedTypeExtractor {
         val writtenTypes = buckets[USER_TYPE]
             .orEmpty()
             .filterNot { isTypeArgumentOfNamedType(it) }
-            .mapNotNull { extractType(it) }
+            .mapNotNull { userType -> extractType(userType)?.copy(usage = supertypeUsage(userType, declaration)) }
         val constructorCallTypes = buckets[CALL_EXPRESSION].orEmpty().mapNotNull { extractCallType(it) }
         val navigationTypes = buckets[NAVIGATION_EXPRESSION].orEmpty().mapNotNull { extractNavigationType(it) }
         val valueReferences = ValueReferenceExtractor.extract(declaration, importedNames)
 
         return (writtenTypes + constructorCallTypes + navigationTypes + valueReferences).toSet()
+    }
+
+    // A class extends the class it calls a constructor of and implements the interfaces it names; an interface extends
+    // every type it names
+    private fun supertypeUsage(userType: SyntaxNode, declaration: SyntaxNode): TypeUsage {
+        val parent = userType.parent
+        val specifier = if (parent.type == CONSTRUCTOR_INVOCATION) parent.parent else parent
+        if (specifier.type != DELEGATION_SPECIFIER || specifier.ancestors().firstOrNull { it.type in SUPERTYPE_OWNERS } != declaration) {
+            return TypeUsage.USAGE
+        }
+        val isInterface = declaration.children().any { it.type == INTERFACE_KEYWORD }
+        return if (parent.type == CONSTRUCTOR_INVOCATION || isInterface) TypeUsage.INHERITANCE else TypeUsage.IMPLEMENTATION
     }
 
     private fun extractCallType(call: SyntaxNode): UsedType? {
