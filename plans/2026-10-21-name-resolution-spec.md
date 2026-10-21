@@ -42,7 +42,7 @@ script and the review findings are reused, its code is not copied wholesale.
 
 - [x] Complete Task 1: Probe harness and comparison script
 - [x] Complete Task 2: Nearest declaring file for shared logical paths
-- [ ] Complete Task 3: Kotlin and Java spec
+- [x] Complete Task 3: Kotlin and Java spec
 - [ ] Complete Task 4: Kotlin and Java probes
 - [ ] Complete Task 5: Kotlin and Java implementation
 - [ ] Complete Task 6: Next languages
@@ -56,3 +56,6 @@ script and the review findings are reused, its code is not copied wholesale.
   class uses (Java and C# differ today); a Go module's root package at the analysed root; a Python package folder
   shadows a module file of the same name; `Clock::time_point` depends on the alias `Clock`; flags in `expected.txt`
   follow from the rules, never from today's output
+- Also from the checkpoint reviews: a Python import that names another copy of the own logical path by its folder
+  path loses the edge between the copies; a dependency ring of 2000+ classes in one package overflows the stack in
+  the levelizer's cycle search, as in the release

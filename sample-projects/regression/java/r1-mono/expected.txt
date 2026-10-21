@@ -1,4 +1,5 @@
+# The namespace view has one node per logical path, so both projects' com.ex.App and com.ex.Config share nodes there
 file a/com/ex/App.java -> a/com/ex/Config.java
 file b/com/ex/Config.java -> b/com/ex/App.java
-leaf a/com/ex/App.java#App -> a/com/ex/Config.java#Config
+leaf a/com/ex/App.java#App -> a/com/ex/Config.java#Config upward
 leaf b/com/ex/Config.java#Config -> b/com/ex/App.java#App

@@ -1,3 +1,0 @@
-# The namespace view has one node per logical path, so the two projects' com.ex.App and com.ex.Config form a cycle there and one edge is levelled upward
-missing leaf a/com/ex/App.java#App -> a/com/ex/Config.java#Config
-extra leaf a/com/ex/App.java#App -> a/com/ex/Config.java#Config upward
