@@ -52,3 +52,7 @@ script and the review findings are reused, its code is not copied wholesale.
 - One topic per commit, small enough to review in one sitting; each step's reviewer checks it against the spec
 - Acceptance per step: ktlintCheck test, all probes, distTar + integrationTest, format:check, gate on both parts,
   diff against the last release explained
+- Questions the checkpoint reviews raised, to settle in the specs: does an outer class depend on what its nested
+  class uses (Java and C# differ today); a Go module's root package at the analysed root; a Python package folder
+  shadows a module file of the same name; `Clock::time_point` depends on the alias `Clock`; flags in `expected.txt`
+  follow from the rules, never from today's output
