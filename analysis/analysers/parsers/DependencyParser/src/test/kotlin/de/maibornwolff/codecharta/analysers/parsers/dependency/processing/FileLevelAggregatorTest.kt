@@ -190,6 +190,23 @@ class FileLevelAggregatorTest {
     }
 
     @Test
+    fun `should point a dependency only at a copy declared in a language of the using file's name scope`() {
+        // Arrange: a C++ header nearer to the Java file declares the same logical path as a Java class.
+        val nodes =
+            listOf(
+                declaration("a.Widget", "lib/a/Widget.java", language = SupportedLanguage.JAVA),
+                declaration("a.Widget", "app/a/widget.hpp", language = SupportedLanguage.CPP),
+                declaration("a.App", "app/a/App.java", listOf("a.Widget"), SupportedLanguage.JAVA)
+            )
+
+        // Act
+        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+
+        // Assert
+        assertThat(edges.single().to.segments).containsExactly("lib", "a", "Widget.java")
+    }
+
+    @Test
     fun `should point a dependency on a SQL object created in several files at the last file, the latest migration`() {
         // Arrange
         val nodes =
@@ -216,7 +233,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val filePath = DeclaringFiles.of(nodes).fileFor("orders", usingFile = FilePath(listOf("db", "report.sql")))
+        val filePath = DeclaringFiles.of(nodes).fileFor("orders", FilePath(listOf("db", "report.sql")), SupportedLanguage.SQL)
 
         // Assert
         assertThat(filePath?.segments).containsExactly("db", "V10__orders.sql")

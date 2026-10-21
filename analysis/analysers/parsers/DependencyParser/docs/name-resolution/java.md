@@ -59,7 +59,7 @@ the rule yet; `sample-projects/regression/java/known-gaps.md` says how it deviat
 | Qualified through a package | `spec-fully-qualified` | ok |
 | Qualified through a library type | `spec-library-member-type` | gap |
 | Java and Kotlin | `spec-uses-kotlin` | ok |
-| Shared rule 1, name scope | `spec-name-scope` | gap |
+| Shared rule 1, name scope | `spec-name-scope` | ok |
 | Shared rule 2, copies | `r1-mono` | ok |
 | Shared rule 4, self | `spec-self` | ok |
 

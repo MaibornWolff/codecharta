@@ -37,6 +37,14 @@ enum class SupportedLanguage(val displayName: String, private val fileExtensions
     val laterDefinitionReplacesEarlier: Boolean
         get() = this == SQL
 
+    /** The languages that can name each other's declarations share one scope; a name only means declarations of its own. */
+    val nameScope: SupportedLanguage
+        get() = when (this) {
+            KOTLIN -> JAVA
+            JAVASCRIPT, VUE, ANGULAR -> TYPESCRIPT
+            else -> this
+        }
+
     /** Extensions without the leading dot, the form file scanning and import stripping both use. */
     val suffixes: List<String>
         get() = fileExtensions.flatMap { listOf(it.primaryExtension) + it.otherValidExtensions }.map { it.removePrefix(".") }

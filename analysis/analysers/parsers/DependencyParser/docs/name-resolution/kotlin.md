@@ -62,7 +62,7 @@ the rule yet; `sample-projects/regression/kotlin/known-gaps.md` says how it devi
 | Qualified through a package | `spec-fully-qualified` | ok |
 | Type alias | `spec-type-alias` | ok |
 | Kotlin and Java | `spec-uses-java` | ok |
-| Shared rule 1, name scope | `spec-name-scope` | gap |
+| Shared rule 1, name scope | `spec-name-scope` | ok |
 | Shared rule 4, self | `spec-self` | ok |
 
 ## Not supported

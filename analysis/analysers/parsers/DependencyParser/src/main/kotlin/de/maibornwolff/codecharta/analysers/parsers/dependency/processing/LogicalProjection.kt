@@ -85,7 +85,7 @@ internal class LogicalProjection(
         val sourcePath = node.pathWithName.withDots()
         val targetPath = dependency.withDots()
         val sourceFile = FilePath.of(node)
-        val targetFile = declaringFiles.fileFor(targetPath, sourceFile)
+        val targetFile = declaringFiles.fileFor(targetPath, sourceFile, node.language)
         if (targetFile == null || targetPath == sourcePath) return null
         val isCyclic = targetPath in cyclicEdgesByDeclaration[sourcePath].orEmpty()
         return DeclarationEdge(

@@ -50,15 +50,6 @@ missing leaf com/ex/Invoice.java#Invoice -> com/ex/Order.java#Line
 extra leaf com/ex/Order.java#Order -> com/ex/Product.java#Product
 ```
 
-## spec-name-scope
-
-A Java name can mean a C++ declaration of the same logical path.
-
-```text
-extra file a/App.java -> a/widget.hpp
-extra leaf a/App.java#App -> a/widget.hpp#Widget
-```
-
 ## spec-own-member-type
 
 A member type of the own type does not shadow a type of the own package.

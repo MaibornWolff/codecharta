@@ -149,7 +149,9 @@ edges on common project layouts; every item below is a bug in DependaCharta that
    types they use. Imports are resolved through the language's own rules, plus tsconfig/jsconfig path
    aliases, bundler aliases (webpack, vite, vue.config) and Module Federation remotes.
 2. **Resolve.** Used types are matched against the declarations the whole project offers, with a
-   per-language standard-library filter so `java.util.List` does not become a project dependency.
+   per-language standard-library filter so `java.util.List` does not become a project dependency. A name is
+   matched only against languages that can refer to each other by name (`SupportedLanguage.nameScope`): Java
+   with Kotlin, TypeScript with JavaScript, Vue and Angular, C with C++, every other language alone.
 3. **Detect cycles.** Tarjan's algorithm finds the strongly connected components, then a bounded DFS
    enumerates the cycles inside each. This runs at *declaration* level, where a cycle means two classes
    genuinely reference each other.

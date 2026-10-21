@@ -145,6 +145,11 @@ documentation, with `-e`.
 Imports are resolved through each language's own rules, plus tsconfig/jsconfig path aliases, bundler
 aliases (webpack, vite, vue.config) and Module Federation remotes.
 
+A name in the code refers only to declarations of a language that can name them: Java and Kotlin share their names,
+as do TypeScript, JavaScript, Vue and Angular templates, and C and C++; every other language keeps its own. A
+repository with several languages thus draws no edge from a Python name to a SQL table or from a C++ class to a
+Python class of the same name.
+
 SQL has no imports: a table, view, synonym, package or routine is found by its name, whatever file creates it and
 in whatever dialect. A name with a schema (`dbo.orders`) finds the object of that schema, or else one created
 without a schema; a name without one finds the object of the same schema first, then one created without a schema,

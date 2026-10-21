@@ -17,9 +17,17 @@ class DependencyResolverService {
     companion object {
         fun resolveNodes(fileReports: Collection<FileReport>): Collection<Node> {
             val nodes = AngularTemplateReferences.qualify(applyRustReexportAliases(fileReports.flatMap { it.nodes }))
-            val dictionary = getDictionary(nodes)
-            val knownNodePaths = getKnownNodePaths(nodes)
-            return nodes.map { it.resolveTypes(dictionary, standardLibraryFor(it.language).get(), knownNodePaths) }
+            val nodesByScope = nodes.groupBy { it.language.nameScope }
+            val dictionaryByScope = nodesByScope.mapValues { (_, scopedNodes) -> getDictionary(scopedNodes) }
+            val knownNodePathsByScope = nodesByScope.mapValues { (_, scopedNodes) -> getKnownNodePaths(scopedNodes) }
+            return nodes.map { node ->
+                val scope = node.language.nameScope
+                node.resolveTypes(
+                    dictionaryByScope.getValue(scope),
+                    standardLibraryFor(node.language).get(),
+                    knownNodePathsByScope.getValue(scope)
+                )
+            }
         }
 
         /**
