@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
+
 private const val MIN_PACKAGE_PARTS_FOR_SUFFIX_MATCH = 2
 
 internal class TypeImportResolver(
@@ -11,16 +13,21 @@ internal class TypeImportResolver(
     private val dependencies = declaration.dependencies
     private val wildcardImports = dependencies.filter { it.isWildcard }.map { it.path }
 
+    /** The own name means the declaration itself, unless a single-type import names another declaration by it. */
+    fun resolveOwnName(plainTypeName: String): Path = findDirectImport(plainTypeName, candidatesNamed(plainTypeName)) ?: ownPath
+
     fun resolve(fullName: String): Path {
         val plainTypeName = fullName.split(".").last()
-        // Exclude self-references to prevent REEXPORT nodes from depending on themselves
-        val candidates = projectDictionary[plainTypeName]?.filter { it != ownPath }
+        val candidates = candidatesNamed(plainTypeName)
         return findFullyQualified(fullName, candidates)
             ?: findDirectImport(plainTypeName, candidates)
             ?: candidates?.let { findAmongCandidates(fullName, it) }
             ?: languageDictionary[plainTypeName]
             ?: Path.unknown(plainTypeName)
     }
+
+    // Excludes self-references to prevent REEXPORT nodes from depending on themselves
+    private fun candidatesNamed(plainTypeName: String): List<Path>? = projectDictionary[plainTypeName]?.filter { it != ownPath }
 
     // A name written with its full path means that type, whatever an import of the same simple name says
     private fun findFullyQualified(fullName: String, candidates: List<Path>?): Path? =
@@ -36,7 +43,7 @@ internal class TypeImportResolver(
         ?: findViaDotImport(candidates)
         ?: findViaWildcardImport(fullName, candidates)
         ?: candidates.find { it.withDots() == fullName }
-        ?: findViaPackageImport(candidates)
+        ?: findViaPackageImport(candidates).takeUnless { importsNameTypesOnly() && !fullName.contains(".") }
         ?: findViaAlias(candidates)
 
     private fun findInSamePackage(candidates: List<Path>): Path? {
@@ -68,6 +75,10 @@ internal class TypeImportResolver(
     private fun findContainingWildcard(candidates: List<Path>): Path? = wildcardImports.firstNotNullOfOrNull { wildcard ->
         candidates.firstOrNull { it.withDots().contains(wildcard.withDots()) }
     }
+
+    // A Java or Kotlin import names one declaration or, with a star, a package; it never makes the members of an imported
+    // class visible by their simple names. A qualified name still goes this way until it resolves through its qualifier
+    private fun importsNameTypesOnly(): Boolean = declaration.language.nameScope == SupportedLanguage.JAVA
 
     private fun findViaPackageImport(candidates: List<Path>): Path? = dependencies
         .filter { !it.isWildcard && !it.isDotImport }

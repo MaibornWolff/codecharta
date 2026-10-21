@@ -68,7 +68,7 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
   C#, PHP and C++ — and there only for a declaration that sits in one. Everywhere else the logical
   path is the re-encoded file path, so the leaf carries no `namespace` and no namespace is listed: the
   file tree already is that hierarchy. A nested declaration is a leaf of its own in the package of the
-  declaration around it; the schema's `parent` is not written yet.
+  declaration around it, with only its own uses as dependencies; the schema's `parent` is not written yet.
 - **`namespaces`** lists the packages with their level and their `parent`, the package containing them.
   The hierarchy comes from `parent`, never from the dots of a key.
 - **`language`** is the language the declaration is written in, lower case: `java`, `kotlin`, `csharp`,

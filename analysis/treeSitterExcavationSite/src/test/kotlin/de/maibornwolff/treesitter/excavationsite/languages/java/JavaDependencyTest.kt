@@ -533,7 +533,7 @@ class JavaDependencyTest {
         }
 
         @Test
-        fun `should extract nested declarations and include inner class types in outer class`() {
+        fun `should extract nested declarations, each with only the types it uses itself`() {
             // Arrange
             val code = """
             package com.example;
@@ -567,13 +567,7 @@ class JavaDependencyTest {
             assertThat(byName["Inner"]?.type).isEqualTo(DeclarationType.CLASS)
             assertThat(byName["InnerMarker"]?.type).isEqualTo(DeclarationType.ANNOTATION)
 
-            // Outer includes its own types AND all nested declarations' types
-            assertThat(byName["Outer"]?.usedTypes).containsExactlyInAnyOrder(
-                UsedType("OuterService"),
-                UsedType("Response"),
-                UsedType("Event"),
-                UsedType("InnerRepo")
-            )
+            assertThat(byName["Outer"]?.usedTypes).containsExactlyInAnyOrder(UsedType("OuterService"))
             assertThat(byName["Callback"]?.usedTypes).containsExactlyInAnyOrder(
                 UsedType("Response"),
                 UsedType("Event")
@@ -582,7 +576,7 @@ class JavaDependencyTest {
         }
 
         @Test
-        fun `should include all descendant types at each nesting level`() {
+        fun `should give each nesting level only the types it uses itself`() {
             // Arrange
             val code = """
             package com.example;
@@ -610,22 +604,9 @@ class JavaDependencyTest {
             // Assert
             assertThat(result.declarations).hasSize(4)
             val byName = result.declarations.associateBy { it.name }
-            // Each level includes its own types plus all types from deeper levels
-            assertThat(byName["Root"]?.usedTypes).containsExactlyInAnyOrder(
-                UsedType("RootType"),
-                UsedType("Level1Type"),
-                UsedType("Level2Type"),
-                UsedType("Level3Type")
-            )
-            assertThat(byName["Level1"]?.usedTypes).containsExactlyInAnyOrder(
-                UsedType("Level1Type"),
-                UsedType("Level2Type"),
-                UsedType("Level3Type")
-            )
-            assertThat(byName["Level2"]?.usedTypes).containsExactlyInAnyOrder(
-                UsedType("Level2Type"),
-                UsedType("Level3Type")
-            )
+            assertThat(byName["Root"]?.usedTypes).containsExactlyInAnyOrder(UsedType("RootType"))
+            assertThat(byName["Level1"]?.usedTypes).containsExactlyInAnyOrder(UsedType("Level1Type"))
+            assertThat(byName["Level2"]?.usedTypes).containsExactlyInAnyOrder(UsedType("Level2Type"))
             assertThat(byName["Level3"]?.usedTypes).containsExactlyInAnyOrder(UsedType("Level3Type"))
         }
     }
@@ -867,6 +848,61 @@ class JavaDependencyTest {
 
             // Assert
             assertThat(result.declarations.single().usedTypes).containsExactly(UsedType("Repository", usage = TypeUsage.INHERITANCE))
+        }
+    }
+
+    @Nested
+    inner class MemberTypes {
+        @Test
+        fun `should give a member type the names of the types around it as its parent path`() {
+            // Arrange
+            val code = """
+            package a;
+
+            public class Order {
+                public static class Line {
+                    interface Part {}
+                }
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.JAVA)
+
+            // Assert
+            assertThat(result.declarations.associate { it.name to it.parentPath }).containsExactlyInAnyOrderEntriesOf(
+                mapOf("Order" to emptyList(), "Line" to listOf("Order"), "Part" to listOf("Order", "Line"))
+            )
+        }
+
+        @Test
+        fun `should report the uses of a member type for the member type only`() {
+            // Arrange
+            val code = """
+            package a;
+
+            public class Order {
+                private Customer customer;
+
+                public static class Line {
+                    private Product product;
+                }
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.JAVA)
+
+            // Assert
+            assertThat(
+                result.declarations.associate {
+                    it.name to it.usedTypes.map { type ->
+                        type.name
+                    }
+                }
+            ).containsExactlyInAnyOrderEntriesOf(
+                mapOf("Order" to listOf("Customer"), "Line" to listOf("Product"))
+            )
         }
     }
 }

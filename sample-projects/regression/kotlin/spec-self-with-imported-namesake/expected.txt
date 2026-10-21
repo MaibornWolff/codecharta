@@ -1,0 +1,3 @@
+# README.md, rule 4: the own name means the declaration itself, even when an imported class has a nested class of that name
+file com/y/Node.kt -> com/x/Outer.kt
+leaf com/y/Node.kt#Node -> com/x/Outer.kt#Outer

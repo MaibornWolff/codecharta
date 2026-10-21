@@ -23,16 +23,6 @@ missing file a/App.kt -> a/Config.kt
 missing leaf a/App.kt#App -> a/Config.kt#Config
 ```
 
-## spec-own-nested-class
-
-A nested class of the own class does not shadow a declaration of the own package.
-
-```text
-missing leaf a/Outer.kt#Outer -> a/Outer.kt#Node
-extra file a/Outer.kt -> a/Node.kt
-extra leaf a/Outer.kt#Outer -> a/Node.kt#Node
-```
-
 ## spec-private-top-level
 
 A private top-level declaration is found from other files of its package.

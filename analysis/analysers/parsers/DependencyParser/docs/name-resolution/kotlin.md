@@ -50,7 +50,7 @@ the rule yet; `sample-projects/regression/kotlin/known-gaps.md` says how it devi
 | Declarations: a `private` top-level declaration | `spec-private-top-level` | gap |
 | 1. type parameter | `spec-type-parameter` | ok |
 | 2. local class | `spec-local-class` | ok |
-| 3. nested class of the own class | `spec-own-nested-class` | gap |
+| 3. nested class of the own class | `spec-own-nested-class` | ok |
 | 4. explicit import over the own package | `spec-explicit-import-beats-package` | ok |
 | 4. import alias | `spec-import-alias` | gap |
 | 5. own package over a star import | `spec-package-beats-star` | ok |
@@ -64,6 +64,9 @@ the rule yet; `sample-projects/regression/kotlin/known-gaps.md` says how it devi
 | Kotlin and Java | `spec-uses-java` | ok |
 | Shared rule 1, name scope | `spec-name-scope` | ok |
 | Shared rule 4, self | `spec-self` | ok |
+| Shared rule 4, self over an imported nested class | `spec-self-with-imported-namesake` | ok |
+| 4. an explicit import names no nested classes | `spec-type-import-hides-members` | ok |
+| 4 and 5. an explicit import over the own declaration | `spec-alias-of-imported-namesake` | ok |
 
 ## Not supported
 

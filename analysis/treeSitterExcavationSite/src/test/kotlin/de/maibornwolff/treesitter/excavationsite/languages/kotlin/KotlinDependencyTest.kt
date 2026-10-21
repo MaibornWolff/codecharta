@@ -635,11 +635,7 @@ class KotlinDependencyTest {
             assertThat(byName["Inner"]?.parentPath).containsExactly("Outer")
             assertThat(byName["Status"]?.parentPath).containsExactly("Outer")
 
-            // Outer includes its own types AND all nested types (leakage is expected)
-            assertThat(byName["Outer"]?.usedTypes).containsExactlyInAnyOrder(
-                UsedType("OuterType"),
-                UsedType("InnerType")
-            )
+            assertThat(byName["Outer"]?.usedTypes).containsExactlyInAnyOrder(UsedType("OuterType"))
             assertThat(byName["Inner"]?.usedTypes).containsExactlyInAnyOrder(UsedType("InnerType"))
         }
 
@@ -755,7 +751,7 @@ class KotlinDependencyTest {
         }
 
         @Test
-        fun `should include all descendant types at each nesting level`() {
+        fun `should give each nesting level only the types it uses itself`() {
             // Arrange
             val code = """
             package com.example
@@ -782,15 +778,8 @@ class KotlinDependencyTest {
             assertThat(byName["Root"]?.parentPath).isEmpty()
             assertThat(byName["Level1"]?.parentPath).containsExactly("Root")
             assertThat(byName["Level2"]?.parentPath).containsExactly("Root", "Level1")
-            assertThat(byName["Root"]?.usedTypes).containsExactlyInAnyOrder(
-                UsedType("RootType"),
-                UsedType("Level1Type"),
-                UsedType("Level2Type")
-            )
-            assertThat(byName["Level1"]?.usedTypes).containsExactlyInAnyOrder(
-                UsedType("Level1Type"),
-                UsedType("Level2Type")
-            )
+            assertThat(byName["Root"]?.usedTypes).containsExactlyInAnyOrder(UsedType("RootType"))
+            assertThat(byName["Level1"]?.usedTypes).containsExactlyInAnyOrder(UsedType("Level1Type"))
             assertThat(byName["Level2"]?.usedTypes).containsExactlyInAnyOrder(UsedType("Level2Type"))
         }
     }
@@ -1224,6 +1213,39 @@ class KotlinDependencyTest {
 
             // Assert
             assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactly("Helper")
+        }
+    }
+
+    @Nested
+    inner class NestedClasses {
+        @Test
+        fun `should report the uses of a nested class for the nested class only`() {
+            // Arrange
+            val code = """
+            package a
+
+            class Order {
+                val customer: Customer? = null
+
+                class Line {
+                    val product: Product? = null
+                }
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            assertThat(
+                result.declarations.associate {
+                    it.name to it.usedTypes.map { type ->
+                        type.name
+                    }
+                }
+            ).containsExactlyInAnyOrderEntriesOf(
+                mapOf("Order" to listOf("Customer"), "Line" to listOf("Product"))
+            )
         }
     }
 }

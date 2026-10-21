@@ -20,7 +20,9 @@ internal object UsedTypeExtractor {
     private val ALL_NODE_TYPES = setOf(USER_TYPE, CALL_EXPRESSION, NAVIGATION_EXPRESSION)
 
     fun extract(declaration: SyntaxNode, importedNames: Set<String> = emptySet()): Set<UsedType> {
-        val buckets = TreeTraversal.findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
+        val buckets = TreeTraversal
+            .findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
+            .mapValues { (_, nodes) -> nodes.filter { KotlinScopes.belongsTo(it, declaration) } }
 
         val writtenTypes = buckets[USER_TYPE]
             .orEmpty()

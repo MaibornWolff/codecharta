@@ -42,7 +42,9 @@ internal object UsedTypeExtractor {
     )
 
     fun extract(declaration: SyntaxNode): Set<UsedType> {
-        val buckets = TreeTraversal.findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
+        val buckets = TreeTraversal
+            .findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
+            .mapValues { (_, nodes) -> nodes.filter { JavaScopes.memberTypeOf(it) == declaration } }
 
         val fieldTypes = buckets[FIELD_DECLARATION].orEmpty().mapNotNull {
             extractType(it.getChildByFieldName(TYPE_FIELD))
