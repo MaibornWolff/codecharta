@@ -17,7 +17,8 @@ where a written name is looked up; the first place that holds a declaration of t
    TypeScript with JavaScript, Vue and Angular templates, C with C++; every other language alone.
 2. **Copies.** A logical path that several files declare (two projects with the same package) means the copy in the
    file that shares the longest folder path with the using file, the first of equally near ones; SQL takes the latest
-   migration.
+   migration. C# takes the first file until its rules are written: a partial class is one class over several files,
+   which no single nearest file stands for.
 3. **No match.** A name that no rule resolves to a project declaration draws no edge.
 4. **Self.** A declaration that names itself draws no edge.
 5. **Namespace view.** The namespace view has one node per logical path, so copies of one path in different projects
