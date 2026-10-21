@@ -59,7 +59,7 @@ the rule yet; `sample-projects/regression/kotlin/known-gaps.md` says how it devi
 | 4. import alias | `spec-import-alias` | gap |
 | 5. own package over a star import | `spec-package-beats-star` | ok |
 | 6. star import | `spec-star-import` | ok |
-| 6. two star imports: ambiguous | `spec-ambiguous-star` | gap |
+| 6. two star imports: ambiguous | `spec-ambiguous-star` | ok |
 | 7. default import | `spec-default-import` | ok |
 | 5 and 7. own package over a default import | `spec-package-shadows-default` | ok |
 | Qualified through a class | `spec-qualified-by-imported-class` | ok |
