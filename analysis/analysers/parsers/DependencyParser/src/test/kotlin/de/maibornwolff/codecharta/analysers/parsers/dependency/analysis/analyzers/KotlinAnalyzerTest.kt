@@ -352,9 +352,7 @@ class KotlinAnalyzerTest {
 
         // Assert
         val usedTypes = report.nodes.first().usedTypes
-        assertThat(usedTypes).contains(
-            Type.simple("SomeClass")
-        )
+        assertThat(usedTypes).containsExactly(Type.simple("SomeClass.someStaticMethod"))
     }
 
     @Test
@@ -1598,7 +1596,7 @@ class KotlinAnalyzerTest {
         val usedTypes = report.nodes.first().usedTypes
         val typeNames = usedTypes.map { it.name }
         assertThat(typeNames).contains("ExtractionStrategy.AllChildrenByType")
-        assertThat(typeNames).contains("ExtractionStrategy")
+        assertThat(typeNames).doesNotContain("ExtractionStrategy")
     }
 
     @Test
@@ -1650,9 +1648,8 @@ class KotlinAnalyzerTest {
         // Assert
         val usedTypes = report.nodes.first().usedTypes
         val typeNames = usedTypes.map { it.name }
-        // MyEnum.Entry.CONSTANT should extract MyEnum.Entry as the type
         assertThat(typeNames).contains("MyEnum.Entry")
-        assertThat(typeNames).contains("MyEnum")
+        assertThat(typeNames).doesNotContain("MyEnum")
     }
 
     @Test

@@ -65,8 +65,8 @@ the rule yet; `sample-projects/regression/kotlin/known-gaps.md` says how it devi
 | 7. default import | `spec-default-import` | ok |
 | 5 and 7. own package over a default import | `spec-package-shadows-default` | ok |
 | Qualified through a class | `spec-qualified-by-imported-class` | ok |
-| Qualified constructor call through a class | `spec-qualified-constructor-call` | gap |
-| Qualified: an extension called through its receiver | `spec-extension-through-receiver` | gap |
+| Qualified constructor call through a class | `spec-qualified-constructor-call` | ok |
+| Qualified: an extension called through its receiver | `spec-extension-through-receiver` | ok |
 | Qualified through a package | `spec-fully-qualified` | ok |
 | Type alias | `spec-type-alias` | ok |
 | Kotlin and Java | `spec-uses-java` | ok |

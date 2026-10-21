@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Names written with their class or package**: `dependencyparser` links a Java or Kotlin name written with its class
   or package in front, such as `Outer.Nested`, `Speed.class`, `com.ex.Config` or a Kotlin import alias in front of
-  a nested class, to that declaration.
+  a nested class, to that declaration, and not also to the class in front.
 
 - **Nested classes in Java and Kotlin**: `dependencyparser` keeps a nested class below the class around it, finds it
   through an import such as `import …CreatureFacade.Builder`, and no longer counts what it uses for the outer class.

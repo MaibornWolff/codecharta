@@ -60,7 +60,8 @@ internal object ValueReferenceExtractor {
         val parent = identifier.parent
         return when {
             parent.type == CALL_EXPRESSION -> name.takeUnless { KotlinNames.isUppercase(it) || it in memberFunctions }
-            parent.type == NAVIGATION_SUFFIX || parent.type == NAVIGATION_EXPRESSION -> name.takeIf { it in importedNames }
+            parent.type == NAVIGATION_SUFFIX -> name.takeIf { it in importedNames }
+            parent.type == NAVIGATION_EXPRESSION -> name.takeIf { it in importedNames && !KotlinNames.isUppercase(it) }
             parent.type in NON_REFERENCE_PARENTS || isArgumentName(identifier) || isInfixFunctionName(identifier) -> null
             KotlinNames.isUppercase(name) || name in importedNames -> name
             else -> null
