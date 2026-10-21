@@ -1,20 +1,9 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing
 
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.splitNameToParts
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 
 /** One file's outgoing dependencies, folded up from the declarations the file contains. */
 data class AggregatedFileEdge(val from: FilePath, val to: FilePath, val weight: Int, val isCyclic: Boolean)
-
-/**
- * A source file, in both the form the graph addresses it by ([escapedPath], whose segments have their
- * dots escaped so a graph id splits cleanly) and the form the file tree uses ([segments]).
- */
-data class FilePath(val segments: List<String>) {
-    val escapedPath: Path = Path(segments)
-    val graphId: String = escapedPath.withDots()
-}
 
 /**
  * Folds the declaration-level graph onto the files the declarations live in.
@@ -40,7 +29,7 @@ object FileLevelAggregator {
 
         resolvedNodes.forEach { node ->
             val declarationId = node.pathWithName.withDots()
-            val sourceFile = filePathOf(node)
+            val sourceFile = FilePath.of(node)
             val cyclicTargets = cyclicEdgesByDeclaration[declarationId].orEmpty()
 
             node.resolvedNodeDependencies.internalDependencies.forEach { dependency ->
@@ -66,7 +55,7 @@ object FileLevelAggregator {
         val filePathByDeclaration = LinkedHashMap<String, FilePath>()
         resolvedNodes.forEach { node ->
             val logicalPath = node.pathWithName.withDots()
-            val filePath = filePathOf(node)
+            val filePath = FilePath.of(node)
             val current = filePathByDeclaration[logicalPath]
             val replacesCurrent =
                 node.language.laterDefinitionReplacesEarlier &&
@@ -76,8 +65,4 @@ object FileLevelAggregator {
         }
         return filePathByDeclaration
     }
-
-    private const val CURRENT_DIRECTORY = "."
-
-    fun filePathOf(node: Node): FilePath = FilePath(splitNameToParts(node.physicalPath).filter { it != CURRENT_DIRECTORY })
 }

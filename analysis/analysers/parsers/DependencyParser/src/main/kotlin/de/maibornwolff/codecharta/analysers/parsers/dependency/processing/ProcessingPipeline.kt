@@ -39,7 +39,7 @@ object ProcessingPipeline {
             return LogicalProjection(resolvedNodes, cyclicEdgesByDeclaration, namespaceTree = null).addTo(physical)
         }
 
-        val filePaths = resolvedNodes.map { FileLevelAggregator.filePathOf(it) }.distinct()
+        val filePaths = resolvedNodes.map { FilePath.of(it) }.distinct()
         val physical = levelizeFileTree(aggregatedEdges, filePaths)
         return LogicalProjection(resolvedNodes, cyclicEdgesByDeclaration, levelizeNamespaceTree(resolvedNodes)).addTo(physical)
     }

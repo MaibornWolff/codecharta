@@ -29,7 +29,7 @@ internal class LogicalProjection(
     // A name is the key unless two declarations of one file share it. Those fall back to their logical
     // path, which no name can equal: a name has its dots escaped.
     private fun uniqueKeysPerFile(): Map<Pair<FilePath, String>, String> = resolvedNodes
-        .groupBy { FileLevelAggregator.filePathOf(it) }
+        .groupBy { FilePath.of(it) }
         .flatMap { (filePath, nodesOfFile) ->
             nodesOfFile
                 .groupBy({ it.name() }, { it.pathWithName.withDots() })
@@ -46,7 +46,7 @@ internal class LogicalProjection(
         .map { node ->
             val logicalPath = node.pathWithName.withDots()
             Declaration(
-                address = addressOf(FileLevelAggregator.filePathOf(node), logicalPath),
+                address = addressOf(FilePath.of(node), logicalPath),
                 name = node.name(),
                 kind = node.nodeType.name.lowercase(),
                 language = node.language.lensName,
@@ -57,7 +57,7 @@ internal class LogicalProjection(
 
     private fun namespaceOf(node: Node): String? {
         if (namespaceTree == null || !node.language.declaresPackages) return null
-        val filePath = FileLevelAggregator.filePathOf(node)
+        val filePath = FilePath.of(node)
         val packageParts =
             node.pathWithName.withoutName().dropTrailingWhile { enclosingDeclaration -> isDeclaredIn(filePath, enclosingDeclaration) }
         if (packageParts == filePath.escapedPath.parts) return null
@@ -88,7 +88,7 @@ internal class LogicalProjection(
         if (targetFile == null || targetPath == sourcePath) return null
         val isCyclic = targetPath in cyclicEdgesByDeclaration[sourcePath].orEmpty()
         return DeclarationEdge(
-            from = addressOf(FileLevelAggregator.filePathOf(node), sourcePath),
+            from = addressOf(FilePath.of(node), sourcePath),
             to = addressOf(targetFile, targetPath),
             weight = 1,
             usage = listOf(dependency.type.rawValue),
