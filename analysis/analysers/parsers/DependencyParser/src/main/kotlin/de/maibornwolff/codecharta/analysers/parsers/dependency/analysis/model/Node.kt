@@ -18,8 +18,14 @@ data class Node(
         languageDictionary: Map<String, Path>,
         internalNodePaths: Set<String>
     ): Node {
-        val resolver = TypeImportResolver(ImportingDeclaration(pathWithName, dependencies, language), projectDictionary, languageDictionary)
         val followsJavaRules = language.nameScope == SupportedLanguage.JAVA
+        val ownPackage = if (followsJavaRules) packageOf(internalNodePaths) else pathWithName.withoutName()
+        val resolver =
+            TypeImportResolver(
+                ImportingDeclaration(pathWithName, dependencies, language, ownPackage),
+                projectDictionary,
+                languageDictionary
+            )
         val memberTypes = if (followsJavaRules) memberTypeScopes(resolver, internalNodePaths, projectDictionary) else MemberTypeScopes.NONE
         val qualifiedNames = if (followsJavaRules) QualifiedNames(resolver, memberTypes, internalNodePaths) else null
         val resolvedUsedTypes = usedTypes.map { it.toResolvedType(resolver, memberTypes, qualifiedNames) }.toSet()
@@ -56,6 +62,13 @@ data class Node(
     companion object {
         private const val QUALIFIER_SEPARATOR = "."
         private val SUPERTYPE_USAGES = setOf(TypeOfUsage.INHERITANCE, TypeOfUsage.IMPLEMENTATION)
+    }
+
+    // The path without the declarations around it
+    private fun packageOf(internalNodePaths: Set<String>): List<String> {
+        var parts = pathWithName.withoutName()
+        while (parts.isNotEmpty() && Path(parts).withDots() in internalNodePaths) parts = parts.dropLast(1)
+        return parts
     }
 
     private fun memberTypeScopes(

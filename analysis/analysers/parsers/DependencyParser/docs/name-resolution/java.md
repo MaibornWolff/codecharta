@@ -54,7 +54,7 @@ the rule yet; `sample-projects/regression/java/known-gaps.md` says how it deviat
 | 4. single static import of a member type | `spec-static-import-member-type` | ok |
 | 5. own package over an on-demand import | `spec-package-beats-on-demand` | ok |
 | 6. on-demand import | `spec-on-demand-import` | ok |
-| 6. two on-demand imports: ambiguous | `spec-ambiguous-on-demand` | gap |
+| 6. two on-demand imports: ambiguous | `spec-ambiguous-on-demand` | ok |
 | 7. `java.lang` | `spec-java-lang` | ok |
 | 5 and 7. own package over `java.lang` | `spec-package-shadows-java-lang` | ok |
 | Qualified through a type | `spec-qualified-by-imported-type` | ok |

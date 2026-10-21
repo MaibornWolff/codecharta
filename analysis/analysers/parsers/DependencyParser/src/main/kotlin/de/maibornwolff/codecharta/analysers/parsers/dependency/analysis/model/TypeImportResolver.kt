@@ -39,17 +39,25 @@ internal class TypeImportResolver(
         .firstOrNull { candidates?.contains(it.path) ?: true }
         ?.path
 
-    private fun findAmongCandidates(fullName: String, candidates: List<Path>): Path? = findInSamePackage(candidates)
+    private fun findAmongCandidates(fullName: String, candidates: List<Path>): Path? =
+        if (importsNameTypesOnly()) findInPackageOrOnDemandImport(candidates) else findByImportHeuristics(fullName, candidates)
+
+    // Rules 5 and 6 of java.md and kotlin.md: the own package, then exactly the packages a star import names, of which
+    // two declaring the name make it ambiguous
+    private fun findInPackageOrOnDemandImport(candidates: List<Path>): Path? {
+        findInSamePackage(candidates)?.let { return it }
+        val starPackages = wildcardImports.map { it.parts }.filter { it != declaration.ownPackage }
+        return candidates.filter { it.withoutName() in starPackages }.distinctBy { it.withDots() }.singleOrNull()
+    }
+
+    private fun findByImportHeuristics(fullName: String, candidates: List<Path>): Path? = findInSamePackage(candidates)
         ?: findViaDotImport(candidates)
         ?: findViaWildcardImport(fullName, candidates)
         ?: candidates.find { it.withDots() == fullName }
-        ?: findViaPackageImport(candidates).takeUnless { importsNameTypesOnly() }
+        ?: findViaPackageImport(candidates)
         ?: findViaAlias(candidates)
 
-    private fun findInSamePackage(candidates: List<Path>): Path? {
-        val currentPackage = ownPath.withoutName()
-        return candidates.find { it.withoutName() == currentPackage }
-    }
+    private fun findInSamePackage(candidates: List<Path>): Path? = candidates.find { it.withoutName() == declaration.ownPackage }
 
     private fun findViaDotImport(candidates: List<Path>): Path? = dependencies
         .filter { it.isDotImport }
