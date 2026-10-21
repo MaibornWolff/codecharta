@@ -170,7 +170,23 @@ class FileLevelAggregatorTest {
 
         // Assert
         assertThat(edges.single().to.segments).containsExactly("app", "FooA.kt")
-        assertThat(FileLevelAggregator.filePathByDeclaration(nodes).getValue("app.Foo").segments).containsExactly("app", "FooA.kt")
+    }
+
+    @Test
+    fun `should point a dependency on a logical path declared in several folders at the file nearest to the using file`() {
+        // Arrange: two projects declare app.Config, the using file lies in the second one.
+        val nodes =
+            listOf(
+                declaration("app.Config", "a/app/Config.kt"),
+                declaration("app.Config", "b/app/Config.kt"),
+                declaration("app.App", "b/app/App.kt", listOf("app.Config"))
+            )
+
+        // Act
+        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+
+        // Assert
+        assertThat(edges.single().to.segments).containsExactly("b", "app", "Config.kt")
     }
 
     @Test
@@ -188,7 +204,6 @@ class FileLevelAggregatorTest {
 
         // Assert
         assertThat(edges.single().to.segments).containsExactly("db", "V2__orders.sql")
-        assertThat(FileLevelAggregator.filePathByDeclaration(nodes).getValue("orders").segments).containsExactly("db", "V2__orders.sql")
     }
 
     @Test
@@ -201,9 +216,9 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val filePath = FileLevelAggregator.filePathByDeclaration(nodes).getValue("orders")
+        val filePath = DeclaringFiles.of(nodes).fileFor("orders", usingFile = FilePath(listOf("db", "report.sql")))
 
         // Assert
-        assertThat(filePath.segments).containsExactly("db", "V10__orders.sql")
+        assertThat(filePath?.segments).containsExactly("db", "V10__orders.sql")
     }
 }

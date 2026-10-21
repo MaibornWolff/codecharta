@@ -82,10 +82,11 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
   appears in and says so in `UsedType.usage`. The extractors of Java, Kotlin and C# make the same distinction
   internally — separate `extractInheritanceTypes`, `extractParameterTypes`, `extractReturnTypes`,
   `extractObjectCreationTypes` passes — but do not fill `usage` yet. DependaCharta has the same gap.
-- A declaration split across files — a C# partial class, a Go function name reused within a package — is
-  one leaf per file, with the same key and, where it has one, the same `namespace`. Each part's dependencies leave the file they are
-  written in, in both layers, while a dependency *on* the split declaration points at the first of its
-  files as the scan lists them (path order).
+- A name declared in several files — a C# partial class, a Go function name reused within a package, two
+  projects with the same package — is one leaf per file, with the same key and, where it has one, the same
+  `namespace`. Each copy's dependencies leave the file they are written in, in both layers, while a dependency
+  *on* the name points at the file that shares the longest folder path with the file using it, and among
+  equally near files at the first as the scan lists them (path order); for SQL at the latest migration.
 - `kind` is the declaration kind: `class`, `valueclass`, `interface`, `annotation`, `enum`, `function`,
   `variable`, `reexport`, `script` or `unknown`.
 - `leafEdges` is a list of its own rather than a widened `Edge`, because `edges` is what the edge-metric

@@ -14,15 +14,15 @@ data class AggregatedFileEdge(val from: FilePath, val to: FilePath, val weight: 
  * already applies when a namespace collapses. Edges between two declarations in the same file
  * disappear, since a file cannot depend on itself.
  *
- * A declaration split across files (a C# partial class, a Go function name reused in a package) is one
- * leaf per file. Each part's dependencies count for the file they are written in, while a dependency *on*
- * the split declaration points at the file [filePathByDeclaration] reports, the same part the leaf
- * edge targets. Cycles are found per logical path, so when two parts in different files reference the
- * same cyclic target, both file edges count as cyclic.
+ * A logical path declared in several files (a C# partial class, a Go function name reused in a package, two
+ * projects with the same package) is one leaf per file. Each copy's dependencies count for the file they are
+ * written in, while a dependency *on* the path points at the file [DeclaringFiles] picks for the using file, the
+ * same copy the leaf edge targets. Cycles are found per logical path, so when two copies in different files
+ * reference the same cyclic target, both file edges count as cyclic.
  */
 object FileLevelAggregator {
     fun aggregate(resolvedNodes: Collection<Node>, cyclicEdgesByDeclaration: Map<String, Set<String>>): List<AggregatedFileEdge> {
-        val filePathByDeclaration = filePathByDeclaration(resolvedNodes)
+        val declaringFiles = DeclaringFiles.of(resolvedNodes)
 
         val weightByEndpoints = LinkedHashMap<Pair<FilePath, FilePath>, Int>()
         val cyclicEndpoints = HashSet<Pair<FilePath, FilePath>>()
@@ -36,7 +36,7 @@ object FileLevelAggregator {
                 val targetId = dependency.withDots()
                 // A dependency whose declaration no analyzer produced (e.g. a node dropped as a Rust
                 // re-export carrier) has no file to point at, so there is no edge to draw.
-                val targetFile = filePathByDeclaration[targetId] ?: return@forEach
+                val targetFile = declaringFiles.fileFor(targetId, sourceFile) ?: return@forEach
                 if (targetFile == sourceFile) return@forEach
 
                 val endpoints = sourceFile to targetFile
@@ -48,21 +48,5 @@ object FileLevelAggregator {
         return weightByEndpoints.map { (endpoints, weight) ->
             AggregatedFileEdge(endpoints.first, endpoints.second, weight, endpoints in cyclicEndpoints)
         }
-    }
-
-    /** The file a logical path is joined to: its first declaration's, for SQL the latest migration's in [NaturalPathOrder]. */
-    fun filePathByDeclaration(resolvedNodes: Collection<Node>): Map<String, FilePath> {
-        val filePathByDeclaration = LinkedHashMap<String, FilePath>()
-        resolvedNodes.forEach { node ->
-            val logicalPath = node.pathWithName.withDots()
-            val filePath = FilePath.of(node)
-            val current = filePathByDeclaration[logicalPath]
-            val replacesCurrent =
-                node.language.laterDefinitionReplacesEarlier &&
-                    current != null &&
-                    NaturalPathOrder.compare(filePath.segments, current.segments) > 0
-            if (current == null || replacesCurrent) filePathByDeclaration[logicalPath] = filePath
-        }
-        return filePathByDeclaration
     }
 }

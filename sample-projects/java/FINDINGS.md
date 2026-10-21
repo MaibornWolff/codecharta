@@ -60,7 +60,7 @@ Rounds 1 and 2, re-verified against the fresh output:
 - Leaf kinds: `class`, `interface`, `enum`, `annotation`, in lower case. Records (`CreatureId`, `DiceRoll`, `XPValue`, `dto.Creature`, `Ambush`) are `class`. `Scout` is `interface`, `Mood` is `enum`.
 - Nested and local types become top-level leaves of the package: `Ambush`, `Scout`, `Mood`, `Builder`, and the local class `Ranking` as `de.sots.cellarsandcentaurs.domain.service.Ranking`. Because `Ranking` is its own leaf, `EncounterResolver -> Creature` counts x2 and `outgoing_dependencies` is 3 for 2 file edges.
 - `module-info.java` is not in the dependency tree (32 nodes for 33 main files).
-- Missing (regression probe `regression/java/r1-mono`): two projects in one repository that declare the same class (`com.ex.App`) share it, so a dependency can go to the other project's copy. **Known gap.**
+- Wrong (regression probe `regression/java/r1-mono`): two projects in one repository that declare the same class (`com.ex.App`) are one node of the namespace view, so their levels mix and an edge inside one project can be flagged upward. **Known gap.**
 - Native versus resolved: Java gives packages and explicit imports, so single-type imports and same-package names resolve. CodeCharta has to resolve static imports, qualified names, nested-class imports and every usage form inside expressions itself; that is where the misses are.
 
 ## Unified parser
