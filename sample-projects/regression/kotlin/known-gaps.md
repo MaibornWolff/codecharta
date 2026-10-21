@@ -32,15 +32,6 @@ extra file a/Service.kt -> a/Helper.kt
 extra leaf a/Service.kt#Service -> a/Helper.kt#Helper
 ```
 
-## spec-name-scope
-
-A Kotlin name can mean a C++ declaration of the same logical path.
-
-```text
-extra file a/App.kt -> a/widget.hpp
-extra leaf a/App.kt#App -> a/widget.hpp#Widget
-```
-
 ## spec-own-nested-class
 
 A nested class of the own class does not shadow a declaration of the own package.
