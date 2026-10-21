@@ -34,8 +34,9 @@ internal class RegressionProbe(private val directory: File) {
     fun actualLines(): List<String> = analyse()
 
     fun writeExpectedLines() {
+        val comments = directory.resolve(EXPECTED_FILE).readLines().filter { it.startsWith(COMMENT_PREFIX) }
         val expected = (actualLines() - knownGaps.extra + knownGaps.missing).sorted()
-        directory.resolve(EXPECTED_FILE).writeText(expected.joinToString(separator = "\n", postfix = "\n"))
+        directory.resolve(EXPECTED_FILE).writeText((comments + expected).joinToString(separator = "\n", postfix = "\n"))
     }
 
     private fun linesOf(fileName: String): List<String> {

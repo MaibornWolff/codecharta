@@ -27,8 +27,8 @@ class ProbeRegressionTest {
     fun `should draw exactly the edges a regression probe expects`(probeName: String) {
         // Arrange
         val probe = RegressionProbe(probesRoot().resolve(probeName))
-        if (System.getenv(UPDATE_VARIABLE) == "true") probe.writeExpectedLines()
         assertThat(probe.layoutProblems()).describedAs("not a probe folder").isEmpty()
+        if (System.getenv(UPDATE_VARIABLE) == "true") probe.writeExpectedLines()
 
         probe.knownGaps.checkAgainst(probe.expectedLines())
 
