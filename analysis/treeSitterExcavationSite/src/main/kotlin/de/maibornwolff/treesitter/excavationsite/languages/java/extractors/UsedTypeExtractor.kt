@@ -2,6 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.java.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
 internal object UsedTypeExtractor {
@@ -77,19 +78,22 @@ internal object UsedTypeExtractor {
             // uppercase variables like LOGGER as types, but matches DC's existing behavior.
             .filter { it.isUppercase() }
 
+    // A class extends one class and implements interfaces; an interface extends interfaces
     private fun extractInheritanceTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> {
-        val implementsAndExtends = (buckets[SUPER_INTERFACES].orEmpty() + buckets[EXTENDS_INTERFACES].orEmpty())
-            .flatMap { typeListNode ->
-                val namedChild = typeListNode.getNamedChild(0)
-                if (namedChild.isNull) return@flatMap emptyList()
-                namedChild.namedChildren().mapNotNull { child -> extractType(child) }.toList()
-            }
+        val implemented = typesListedIn(buckets[SUPER_INTERFACES].orEmpty(), TypeUsage.IMPLEMENTATION)
+        val extendedInterfaces = typesListedIn(buckets[EXTENDS_INTERFACES].orEmpty(), TypeUsage.INHERITANCE)
         val superClasses = buckets[SUPERCLASS].orEmpty().mapNotNull { superclassNode ->
             val namedChild = superclassNode.getNamedChild(0)
             if (namedChild.isNull) return@mapNotNull null
-            extractType(namedChild)
+            extractType(namedChild)?.copy(usage = TypeUsage.INHERITANCE)
         }
-        return implementsAndExtends + superClasses
+        return implemented + extendedInterfaces + superClasses
+    }
+
+    private fun typesListedIn(typeListNodes: List<SyntaxNode>, usage: TypeUsage): List<UsedType> = typeListNodes.flatMap { typeListNode ->
+        val namedChild = typeListNode.getNamedChild(0)
+        if (namedChild.isNull) return@flatMap emptyList()
+        namedChild.namedChildren().mapNotNull { child -> extractType(child)?.copy(usage = usage) }.toList()
     }
 
     private fun extractThrownTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =

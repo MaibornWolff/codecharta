@@ -3,6 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.java
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
+import de.maibornwolff.treesitter.excavationsite.api.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -294,7 +295,7 @@ class JavaDependencyTest {
 
             // Assert
             val usedTypes = result.declarations.first().usedTypes
-            assertThat(usedTypes).containsExactlyInAnyOrder(UsedType("SuperClass"))
+            assertThat(usedTypes).containsExactlyInAnyOrder(UsedType("SuperClass", usage = TypeUsage.INHERITANCE))
         }
 
         @Test
@@ -311,7 +312,12 @@ class JavaDependencyTest {
 
             // Assert
             val usedTypes = result.declarations.first().usedTypes
-            assertThat(usedTypes).containsExactlyInAnyOrder(UsedType("Interface1"), UsedType("Interface2"))
+            assertThat(
+                usedTypes
+            ).containsExactlyInAnyOrder(
+                UsedType("Interface1", usage = TypeUsage.IMPLEMENTATION),
+                UsedType("Interface2", usage = TypeUsage.IMPLEMENTATION)
+            )
         }
 
         @Test
@@ -328,7 +334,12 @@ class JavaDependencyTest {
 
             // Assert
             val usedTypes = result.declarations.first().usedTypes
-            assertThat(usedTypes).containsExactlyInAnyOrder(UsedType("Interface1"), UsedType("Interface2"))
+            assertThat(
+                usedTypes
+            ).containsExactlyInAnyOrder(
+                UsedType("Interface1", usage = TypeUsage.INHERITANCE),
+                UsedType("Interface2", usage = TypeUsage.INHERITANCE)
+            )
         }
 
         @Test
@@ -681,9 +692,9 @@ class JavaDependencyTest {
             //          constructor params, method params/returns, throws, constructor calls, method invocations)
             assertThat(byName["Creature"]?.usedTypes).containsExactlyInAnyOrder(
                 UsedType("Fightable"),
-                UsedType("BaseEntity"),
-                UsedType("Serializable"),
-                UsedType("Comparable"),
+                UsedType("BaseEntity", usage = TypeUsage.INHERITANCE),
+                UsedType("Serializable", usage = TypeUsage.IMPLEMENTATION),
+                UsedType("Comparable", usage = TypeUsage.IMPLEMENTATION),
                 UsedType("CreatureId"),
                 UsedType("Map", listOf(UsedType("SpeedType"), UsedType("Speed"))),
                 UsedType("CreatureType"),
@@ -696,7 +707,7 @@ class JavaDependencyTest {
 
             // Assert - Movable scoped separately (not leaking Creature's types)
             assertThat(byName["Movable"]?.usedTypes).containsExactlyInAnyOrder(
-                UsedType("Locomotion"),
+                UsedType("Locomotion", usage = TypeUsage.INHERITANCE),
                 UsedType("Speed"),
                 UsedType("SpeedType")
             )
@@ -817,6 +828,45 @@ class JavaDependencyTest {
 
             // Assert
             assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactly("Helper")
+        }
+    }
+
+    @Nested
+    inner class UsageKinds {
+        @Test
+        fun `should report an extended type as inheritance and an implemented one as implementation`() {
+            // Arrange
+            val code = """
+            package a;
+
+            public class Creature extends Base implements Fightable, Named {}
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.JAVA)
+
+            // Assert
+            assertThat(result.declarations.single().usedTypes).containsExactlyInAnyOrder(
+                UsedType("Base", usage = TypeUsage.INHERITANCE),
+                UsedType("Fightable", usage = TypeUsage.IMPLEMENTATION),
+                UsedType("Named", usage = TypeUsage.IMPLEMENTATION)
+            )
+        }
+
+        @Test
+        fun `should report an interface an interface extends as inheritance`() {
+            // Arrange
+            val code = """
+            package a;
+
+            public interface Creatures extends Repository {}
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.JAVA)
+
+            // Assert
+            assertThat(result.declarations.single().usedTypes).containsExactly(UsedType("Repository", usage = TypeUsage.INHERITANCE))
         }
     }
 }

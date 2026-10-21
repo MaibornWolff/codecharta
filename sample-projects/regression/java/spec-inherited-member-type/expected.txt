@@ -1,4 +1,4 @@
 # java.md, rule 3: an inherited member type shadows a type of the own package
 file a/Sub.java -> a/Base.java
-leaf a/Sub.java#Sub -> a/Base.java#Base
+leaf a/Sub.java#Sub -> a/Base.java#Base usage=inheritance
 leaf a/Sub.java#Sub -> a/Base.java#Node
