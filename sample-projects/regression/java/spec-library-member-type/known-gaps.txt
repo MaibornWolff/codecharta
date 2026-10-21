@@ -1,0 +1,3 @@
+# A member type of a library type (Map.Entry) is taken for a project type of its simple name
+extra file a/App.java -> a/Entry.java
+extra leaf a/App.java#App -> a/Entry.java#Entry

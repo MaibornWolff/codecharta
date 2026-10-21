@@ -1,0 +1,1 @@
+# java.md, rule 2: a local class shadows a type of the own package and is no target

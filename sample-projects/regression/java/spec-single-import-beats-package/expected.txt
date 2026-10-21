@@ -1,0 +1,3 @@
+# java.md, rules 4 and 5: a single-type import shadows a type of the own package
+file a/App.java -> b/Config.java
+leaf a/App.java#App -> b/Config.java#Config

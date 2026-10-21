@@ -1,0 +1,2 @@
+# kotlin.md, rule 3: a nested class of the own class shadows a declaration of the own package
+leaf a/Outer.kt#Outer -> a/Outer.kt#Node

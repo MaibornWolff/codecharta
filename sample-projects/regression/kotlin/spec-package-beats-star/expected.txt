@@ -1,0 +1,3 @@
+# kotlin.md, rules 5 and 6: a declaration of the own package shadows a star import
+file a/App.kt -> a/Config.kt
+leaf a/App.kt#App -> a/Config.kt#Config

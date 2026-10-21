@@ -61,6 +61,16 @@ Rounds 1 and 2, re-verified against the fresh output:
 - Nested and local types become top-level leaves of the package: `Ambush`, `Scout`, `Mood`, `Builder`, and the local class `Ranking` as `de.sots.cellarsandcentaurs.domain.service.Ranking`. Because `Ranking` is its own leaf, `EncounterResolver -> Creature` counts x2 and `outgoing_dependencies` is 3 for 2 file edges.
 - `module-info.java` is not in the dependency tree (32 nodes for 33 main files).
 - By design (regression probe `regression/java/r1-mono`): two projects in one repository that declare the same class (`com.ex.App`) share one node of the namespace view, so their levels mix there and an edge inside one project can be flagged upward; the folder view keeps them apart.
+- Wrong or missing (regression probe `regression/java/spec-ambiguous-on-demand`): Two on-demand imports that both declare the name are not ambiguous to the parser: the first one wins; see `docs/name-resolution/java.md`. **Known gap.**
+- Wrong or missing (regression probe `regression/java/spec-enclosing-member-type`): The outer type takes over the uses of its member types; see `docs/name-resolution/java.md`. **Known gap.**
+- Wrong or missing (regression probe `regression/java/spec-library-member-type`): A member type of a library type (Map.Entry) is taken for a project type of its simple name; see `docs/name-resolution/java.md`. **Known gap.**
+- Wrong or missing (regression probe `regression/java/spec-local-class`): A local class does not shadow a type of the own package; see `docs/name-resolution/java.md`. **Known gap.**
+- Wrong or missing (regression probe `regression/java/spec-member-type-own-leaf`): Order.Line is taken for the top-level Line, and the outer type takes over the uses of its member type; see `docs/name-resolution/java.md`. **Known gap.**
+- Wrong or missing (regression probe `regression/java/spec-name-scope`): A Java name can mean a C++ declaration of the same logical path; see `docs/name-resolution/java.md`. **Known gap.**
+- Wrong or missing (regression probe `regression/java/spec-own-member-type`): A member type of the own type does not shadow a type of the own package; see `docs/name-resolution/java.md`. **Known gap.**
+- Wrong or missing (regression probe `regression/java/spec-qualified-by-imported-type`): Outer.Node through an imported type is taken for the Node of the own package; see `docs/name-resolution/java.md`. **Known gap.**
+- Wrong or missing (regression probe `regression/java/spec-static-import-member-type`): A static import of a member type is not followed: the Node of the own package wins; see `docs/name-resolution/java.md`. **Known gap.**
+- Wrong or missing (regression probe `regression/java/spec-type-parameter`): A type parameter does not shadow a type of the own package; see `docs/name-resolution/java.md`. **Known gap.**
 - Native versus resolved: Java gives packages and explicit imports, so single-type imports and same-package names resolve. CodeCharta has to resolve static imports, qualified names, nested-class imports and every usage form inside expressions itself; that is where the misses are.
 
 ## Unified parser

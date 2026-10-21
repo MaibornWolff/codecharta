@@ -1,0 +1,4 @@
+namespace a {
+class Widget {
+};
+}

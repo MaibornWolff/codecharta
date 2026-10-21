@@ -1,0 +1,1 @@
+# kotlin.md, rule 7: a default import draws no edge

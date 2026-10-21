@@ -1,0 +1,2 @@
+# kotlin.md, declarations: a private top-level declaration is visible only in its own file
+leaf a/First.kt#First -> a/First.kt#Helper

@@ -1,0 +1,1 @@
+# kotlin.md, rule 2: a local class shadows a declaration of the own package and is no target

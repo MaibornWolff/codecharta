@@ -1,0 +1,3 @@
+# java.md, rules 5 and 6: a type of the own package shadows an on-demand import
+file a/App.java -> a/Config.java
+leaf a/App.java#App -> a/Config.java#Config

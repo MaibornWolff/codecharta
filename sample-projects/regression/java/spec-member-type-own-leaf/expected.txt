@@ -1,0 +1,9 @@
+# java.md, declarations: a member type is a leaf of its own; qualified name Q.N through a type
+file com/ex/Invoice.java -> com/ex/Line.java
+file com/ex/Invoice.java -> com/ex/Order.java
+file com/ex/Order.java -> com/ex/Customer.java
+file com/ex/Order.java -> com/ex/Product.java
+leaf com/ex/Invoice.java#Invoice -> com/ex/Line.java#Line
+leaf com/ex/Invoice.java#Invoice -> com/ex/Order.java#Line
+leaf com/ex/Order.java#Line -> com/ex/Product.java#Product
+leaf com/ex/Order.java#Order -> com/ex/Customer.java#Customer

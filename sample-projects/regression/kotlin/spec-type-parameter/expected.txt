@@ -1,0 +1,1 @@
+# kotlin.md, rule 1: a type parameter shadows a declaration of the own package

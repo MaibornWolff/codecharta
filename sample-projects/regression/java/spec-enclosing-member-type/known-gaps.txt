@@ -1,0 +1,2 @@
+# The outer type takes over the uses of its member types
+extra leaf a/Outer.java#Outer -> a/Outer.java#Second

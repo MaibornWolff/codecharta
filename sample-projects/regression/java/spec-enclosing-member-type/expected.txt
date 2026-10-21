@@ -1,0 +1,2 @@
+# java.md, rule 3: a member type of an enclosing type shadows a type of the own package
+leaf a/Outer.java#First -> a/Outer.java#Second

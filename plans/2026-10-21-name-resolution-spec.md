@@ -43,7 +43,7 @@ script and the review findings are reused, its code is not copied wholesale.
 - [x] Complete Task 1: Probe harness and comparison script
 - [x] Complete Task 2: Nearest declaring file for shared logical paths
 - [x] Complete Task 3: Kotlin and Java spec
-- [ ] Complete Task 4: Kotlin and Java probes
+- [x] Complete Task 4: Kotlin and Java probes
 - [ ] Complete Task 5: Kotlin and Java implementation
 - [ ] Complete Task 6: Next languages
 

@@ -1,0 +1,3 @@
+# A local class does not shadow a declaration of the own package
+extra file a/Service.kt -> a/Helper.kt
+extra leaf a/Service.kt#Service -> a/Helper.kt#Helper

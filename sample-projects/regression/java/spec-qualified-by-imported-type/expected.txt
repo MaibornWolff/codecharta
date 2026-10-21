@@ -1,0 +1,3 @@
+# java.md, qualified name: Q.N through an imported type; the qualifier is no dependency of its own
+file a/App.java -> b/Outer.java
+leaf a/App.java#App -> b/Outer.java#Node
