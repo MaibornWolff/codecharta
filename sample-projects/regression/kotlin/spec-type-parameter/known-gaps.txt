@@ -1,3 +1,0 @@
-# A type parameter does not shadow a declaration of the own package
-extra file a/Box.kt -> a/Config.kt
-extra leaf a/Box.kt#Box -> a/Config.kt#Config

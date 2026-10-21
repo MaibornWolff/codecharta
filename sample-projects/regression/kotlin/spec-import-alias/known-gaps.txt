@@ -1,3 +1,0 @@
-# With an import alias, the plain name still means the imported declaration instead of the own package's
-missing file a/App.kt -> a/Config.kt
-missing leaf a/App.kt#App -> a/Config.kt#Config

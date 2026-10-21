@@ -1,3 +1,0 @@
-# A type parameter does not shadow a type of the own package
-extra file a/Box.java -> a/Config.java
-extra leaf a/Box.java#Box -> a/Config.java#Config

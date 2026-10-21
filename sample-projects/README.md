@@ -15,8 +15,8 @@ sample-projects/
   tools/dump_lenses.py      prints the dependency and domain lens of a cc.json as plain text
   tools/compare_dependency_builds.py  diffs the edges of two ccsh builds, or of one build against regression/
   regression/<language>/<probe>/  small projects that pin down one rule of how the dependency parser resolves a
-                            name: src/, expected.txt (the correct edges) and, where the parser still deviates,
-                            known-gaps.txt; ProbeRegressionTest runs them
+                            name: src/ and expected.txt (the correct edges); ProbeRegressionTest runs them
+  regression/<language>/known-gaps.md  how the probes of that language deviate from their expectation today
   <language>/
     FINDINGS.md             report for that language (template below)
     output/                   parser runs from "How to run" (generated, gitignored)
@@ -26,9 +26,10 @@ sample-projects/
 `regression/` is no showcase project: it repeats names on purpose, so a run over all of `sample-projects/` excludes
 it (`-e regression`). Every folder `regression/<language>/<probe>/` must hold `src/` and `expected.txt`, or the test
 fails. `expected.txt` holds the correct edges, one line each, such as `leaf a/B.cs#B -> c/D.cs#D usage=inheritance
-cyclic upward`; `#` starts a comment. In `known-gaps.txt`, `missing <line>` names an expected line the parser does
-not draw yet and `extra <line>` a wrong line it draws; every other expected line stays checked, and the test fails
-once a gap closes. Each gap has an entry in the language's `FINDINGS.md`. The test analyses `src/` like
+cyclic upward`; `#` starts a comment. A language's `known-gaps.md` has one `## <probe>` section per deviating probe:
+why, then a fenced block where `missing <line>` names an expected line the parser does not draw yet and
+`extra <line>` a wrong line it draws. Every other expected line stays checked, and the test fails once a gap closes
+or a section names no probe. The test analyses `src/` like
 `ccsh dependencyparser --include-tests --bypass-gitignore`, so build folders are excluded unless `src/` has a
 `.gitignore`; `UPDATE_REGRESSION_PROBES=true ./gradlew :analysers:parsers:DependencyParser:test` rewrites the
 expectations after a deliberate change.

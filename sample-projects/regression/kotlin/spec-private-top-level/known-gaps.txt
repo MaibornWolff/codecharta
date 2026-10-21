@@ -1,3 +1,0 @@
-# A private top-level declaration is found from other files of its package
-extra file a/Second.kt -> a/First.kt
-extra leaf a/Second.kt#Second -> a/First.kt#Helper

@@ -166,14 +166,7 @@ fun pass(): List<Any> = listOf(Single)                      // reported: no edge
   expressions with an upper-case first child are collected (`Single.run(1)` resolves, `Single` alone does not). In
   `analysis/` this hid `GitLogParser.getDialog() = Dialog`. Not documented in the parser README, the docs page or
   `KNOWN_ISSUES.md`.
-- Wrong or missing (regression probe `regression/kotlin/spec-ambiguous-star`): Two star imports that both declare the name are not ambiguous to the parser: the first one wins; see `docs/name-resolution/kotlin.md`. **Known gap.**
-- Wrong or missing (regression probe `regression/kotlin/spec-import-alias`): With an import alias, the plain name still means the imported declaration instead of the own package's; see `docs/name-resolution/kotlin.md`. **Known gap.**
-- Wrong or missing (regression probe `regression/kotlin/spec-local-class`): A local class does not shadow a declaration of the own package; see `docs/name-resolution/kotlin.md`. **Known gap.**
-- Wrong or missing (regression probe `regression/kotlin/spec-name-scope`): A Kotlin name can mean a C++ declaration of the same logical path; see `docs/name-resolution/kotlin.md`. **Known gap.**
-- Wrong or missing (regression probe `regression/kotlin/spec-own-nested-class`): A nested class of the own class does not shadow a declaration of the own package; see `docs/name-resolution/kotlin.md`. **Known gap.**
-- Wrong or missing (regression probe `regression/kotlin/spec-private-top-level`): A private top-level declaration is found from other files of its package; see `docs/name-resolution/kotlin.md`. **Known gap.**
-- Wrong or missing (regression probe `regression/kotlin/spec-qualified-by-imported-class`): Outer.Node is taken for Outer: only the first segment of a qualified name is used; see `docs/name-resolution/kotlin.md`. **Known gap.**
-- Wrong or missing (regression probe `regression/kotlin/spec-type-parameter`): A type parameter does not shadow a declaration of the own package; see `docs/name-resolution/kotlin.md`. **Known gap.**
+- Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/kotlin.md`): listed per probe in `regression/kotlin/known-gaps.md`.
 
 ### False positives, cycles, upward edges
 - False positives: none in the project and none in the probes.

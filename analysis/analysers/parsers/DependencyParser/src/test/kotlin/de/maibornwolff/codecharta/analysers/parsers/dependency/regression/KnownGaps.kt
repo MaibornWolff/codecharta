@@ -2,7 +2,8 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.regression
 
 /**
  * How a probe's output deviates from its expectation today: `missing <line>` names an expected line the parser does
- * not draw yet, `extra <line>` a wrong line it draws. Every other expected line stays checked.
+ * not draw yet, `extra <line>` a wrong line it draws. Every other expected line stays checked. A language folder's
+ * `known-gaps.md` holds them, one `## <probe>` section each, the lines in a fenced block.
  */
 internal class KnownGaps(val missing: Set<String>, val extra: Set<String>) {
     fun checkAgainst(expected: Collection<String>) {
@@ -20,6 +21,26 @@ internal class KnownGaps(val missing: Set<String>, val extra: Set<String>) {
         private const val MISSING_PREFIX = "missing "
         private const val EXTRA_PREFIX = "extra "
         private const val EXPECTED_FILE = "expected.txt"
+        private const val SECTION_PREFIX = "## "
+        private const val FENCE = "```"
+
+        val NONE = KnownGaps(emptySet(), emptySet())
+
+        fun sectionsOf(markdown: List<String>): Map<String, KnownGaps> {
+            val linesByProbe = LinkedHashMap<String, MutableList<String>>()
+            var probe: String? = null
+            var isInBlock = false
+            markdown.forEach { line ->
+                when {
+                    line.startsWith(SECTION_PREFIX) ->
+                        probe =
+                            line.removePrefix(SECTION_PREFIX).trim().also { linesByProbe[it] = mutableListOf() }
+                    line.startsWith(FENCE) -> isInBlock = !isInBlock
+                    isInBlock && line.isNotBlank() -> probe?.let { linesByProbe.getValue(it).add(line.trim()) }
+                }
+            }
+            return linesByProbe.mapValues { (_, lines) -> parse(lines) }
+        }
 
         fun parse(lines: List<String>): KnownGaps {
             val unknown = lines.filterNot { it.startsWith(MISSING_PREFIX) || it.startsWith(EXTRA_PREFIX) }

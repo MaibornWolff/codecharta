@@ -4,9 +4,9 @@
 Usage: compare_dependency_builds.py <new-ccsh> [<old-ccsh>] [--samples]
 
 Runs `dependencyparser --include-tests --bypass-gitignore` on every probe in sample-projects/regression and, with
---samples, on every sample project folder, and prints the edges that differ, in the probes' `expected.txt` format. Without
-<old-ccsh> a probe is compared against what its `expected.txt` and `known-gaps.txt` say the parser draws today; the
-sample projects have no expectations, so --samples needs <old-ccsh>. The last release is `npx codecharta-analysis` or a
+--samples, on every sample project folder, and prints the edges that differ, in the probes' `expected.txt` format.
+Without <old-ccsh> a probe is compared against what its `expected.txt` and its language's `known-gaps.md` say the
+parser draws today; the sample projects have no expectations, so --samples needs <old-ccsh>. The last release is `npx codecharta-analysis` or a
 ccsh unpacked from its tarball.
 
 Exit codes: 0 no edge differs, 1 edges differ, 2 wrong arguments or a probe folder without `expected.txt`, 3 a ccsh run
@@ -80,8 +80,23 @@ def lines_of(path):
     return {line for line in open(path).read().splitlines() if line.strip() and not line.startswith("#")}
 
 
+def gaps_of(directory):
+    path = os.path.join(os.path.dirname(directory), "known-gaps.md")
+    if not os.path.exists(path):
+        return set()
+    probe, in_block, gaps = None, False, set()
+    for line in open(path).read().splitlines():
+        if line.startswith("## "):
+            probe = line[3:].strip()
+        elif line.startswith("```"):
+            in_block = not in_block
+        elif in_block and line.strip() and probe == os.path.basename(directory):
+            gaps.add(line.strip())
+    return gaps
+
+
 def drawn_today(directory):
-    gaps = lines_of(os.path.join(directory, "known-gaps.txt"))
+    gaps = gaps_of(directory)
     missing = {line.removeprefix("missing ") for line in gaps if line.startswith("missing ")}
     extra = {line.removeprefix("extra ") for line in gaps if line.startswith("extra ")}
     return lines_of(os.path.join(directory, "expected.txt")) - missing | extra

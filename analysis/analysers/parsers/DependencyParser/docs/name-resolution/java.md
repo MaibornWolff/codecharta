@@ -38,7 +38,7 @@ Both compile to one class path, so a Java name can mean a Kotlin class and the o
 ## Probes
 
 Each rule is tested by a probe under `sample-projects/regression/java/`. "Gap" means the parser does not follow
-the rule yet; the probe's `known-gaps.txt` says how it deviates.
+the rule yet; `sample-projects/regression/java/known-gaps.md` says how it deviates.
 
 | Rule | Probe | Today |
 | --- | --- | --- |
