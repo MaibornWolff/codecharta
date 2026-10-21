@@ -3,11 +3,12 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model
 private const val MIN_PACKAGE_PARTS_FOR_SUFFIX_MATCH = 2
 
 internal class TypeImportResolver(
-    private val ownPath: Path,
-    private val dependencies: Set<Dependency>,
+    private val declaration: ImportingDeclaration,
     private val projectDictionary: Map<String, List<Path>>,
     private val languageDictionary: Map<String, Path>
 ) {
+    private val ownPath = declaration.path
+    private val dependencies = declaration.dependencies
     private val wildcardImports = dependencies.filter { it.isWildcard }.map { it.path }
 
     fun resolve(fullName: String): Path {
