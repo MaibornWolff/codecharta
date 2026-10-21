@@ -2,7 +2,10 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 
-/** @property angular what the Angular decorator of the class declares, null for a node without one */
+/**
+ * @property angular what the Angular decorator of the class declares, null for a node without one
+ * @property isFileScoped whether only its own file can name it, as a Kotlin `private` top-level declaration
+ */
 data class Node(
     val pathWithName: Path,
     val physicalPath: String,
@@ -11,20 +14,23 @@ data class Node(
     val dependencies: Set<Dependency>,
     val usedTypes: Set<Type>,
     val resolvedNodeDependencies: NodeDependencies = NodeDependencies(setOf(), setOf()),
-    val angular: AngularMetadata? = null
+    val angular: AngularMetadata? = null,
+    val isFileScoped: Boolean = false
 ) {
     fun resolveTypes(
         projectDictionary: Map<String, List<Path>>,
         languageDictionary: Map<String, Path>,
-        internalNodePaths: Set<String>
+        internalNodePaths: Set<String>,
+        fileScopedPaths: FileScopedPaths = FileScopedPaths.NONE
     ): Node {
         val followsJavaRules = language.nameScope == SupportedLanguage.JAVA
         val ownPackage = if (followsJavaRules) packageOf(internalNodePaths) else pathWithName.withoutName()
         val resolver =
             TypeImportResolver(
-                ImportingDeclaration(pathWithName, dependencies, language, ownPackage),
+                ImportingDeclaration(pathWithName, physicalPath, dependencies, language, ownPackage),
                 projectDictionary,
-                languageDictionary
+                languageDictionary,
+                fileScopedPaths
             )
         val memberTypes = if (followsJavaRules) memberTypeScopes(resolver, internalNodePaths, projectDictionary) else MemberTypeScopes.NONE
         val qualifiedNames = if (followsJavaRules) QualifiedNames(resolver, memberTypes, internalNodePaths) else null

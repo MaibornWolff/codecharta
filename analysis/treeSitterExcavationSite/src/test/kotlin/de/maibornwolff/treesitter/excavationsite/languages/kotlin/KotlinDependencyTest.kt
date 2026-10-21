@@ -782,6 +782,33 @@ class KotlinDependencyTest {
             assertThat(byName["Level1"]?.usedTypes).containsExactlyInAnyOrder(UsedType("Level1Type"))
             assertThat(byName["Level2"]?.usedTypes).containsExactlyInAnyOrder(UsedType("Level2Type"))
         }
+
+        @Test
+        fun `should scope private top-level declarations and their contents to the file`() {
+            // Arrange
+            val code = """
+            package com.example
+
+            private class Helper {
+                class Inner
+            }
+            private fun helperFunction() = 1
+            private val HELPER_CONSTANT = 2
+            private typealias HelperAlias = Helper
+            internal class Module
+
+            class Public {
+                private class Hidden
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            val fileScopedNames = result.declarations.filter { it.isFileScoped }.map { it.name }
+            assertThat(fileScopedNames).containsExactlyInAnyOrder("Helper", "Inner", "helperFunction", "HELPER_CONSTANT", "HelperAlias")
+        }
     }
 
     @Nested

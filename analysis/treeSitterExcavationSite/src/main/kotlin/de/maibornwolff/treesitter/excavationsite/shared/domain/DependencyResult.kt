@@ -52,7 +52,8 @@ data class Declaration(
     val type: DeclarationType,
     val usedTypes: Set<UsedType>,
     val parentPath: List<String> = emptyList(),
-    val angular: AngularDeclaration? = null
+    val angular: AngularDeclaration? = null,
+    val isFileScoped: Boolean = false
 )
 
 /** How a declaration uses a type, for the languages whose extractor tells the ways apart; [USAGE] is any other way. */

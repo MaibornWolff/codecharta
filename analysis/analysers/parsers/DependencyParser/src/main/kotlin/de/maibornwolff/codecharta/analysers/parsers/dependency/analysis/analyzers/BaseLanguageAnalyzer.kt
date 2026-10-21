@@ -62,6 +62,7 @@ abstract class BaseLanguageAnalyzer(protected val fileInfo: FileInfo) : Language
         language = language,
         nodeType = declaration.type.toNodeType(),
         dependencies = dependencies,
-        usedTypes = selectUsedTypes(declaration, imports).map { it.toType() }.toSet()
+        usedTypes = selectUsedTypes(declaration, imports).map { it.toType() }.toSet(),
+        isFileScoped = declaration.isFileScoped
     )
 }

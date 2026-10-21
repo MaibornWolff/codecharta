@@ -7,7 +7,8 @@ private const val MIN_PACKAGE_PARTS_FOR_SUFFIX_MATCH = 2
 internal class TypeImportResolver(
     private val declaration: ImportingDeclaration,
     private val projectDictionary: Map<String, List<Path>>,
-    private val languageDictionary: Map<String, Path>
+    private val languageDictionary: Map<String, Path>,
+    private val fileScopedPaths: FileScopedPaths
 ) {
     private val ownPath = declaration.path
     private val dependencies = declaration.dependencies
@@ -27,7 +28,9 @@ internal class TypeImportResolver(
     }
 
     // Excludes self-references to prevent REEXPORT nodes from depending on themselves
-    private fun candidatesNamed(plainTypeName: String): List<Path>? = projectDictionary[plainTypeName]?.filter { it != ownPath }
+    private fun candidatesNamed(plainTypeName: String): List<Path>? = projectDictionary[plainTypeName]?.filter {
+        it != ownPath && fileScopedPaths.isVisible(it, declaration.physicalPath)
+    }
 
     // A name written with its full path means that type, whatever an import of the same simple name says
     private fun findFullyQualified(fullName: String, candidates: List<Path>?): Path? =

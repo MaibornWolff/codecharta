@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileScopedPaths
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
@@ -20,12 +21,14 @@ class DependencyResolverService {
             val nodesByScope = nodes.groupBy { it.language.nameScope }
             val dictionaryByScope = nodesByScope.mapValues { (_, scopedNodes) -> getDictionary(scopedNodes) }
             val knownNodePathsByScope = nodesByScope.mapValues { (_, scopedNodes) -> getKnownNodePaths(scopedNodes) }
+            val fileScopedPaths = getFileScopedPaths(nodes)
             return nodes.map { node ->
                 val scope = node.language.nameScope
                 node.resolveTypes(
                     dictionaryByScope.getValue(scope),
                     standardLibraryFor(node.language).get(),
-                    knownNodePathsByScope.getValue(scope)
+                    knownNodePathsByScope.getValue(scope),
+                    fileScopedPaths
                 )
             }
         }
@@ -60,6 +63,15 @@ class DependencyResolverService {
         fun getDictionary(nodes: List<Node>) = nodes.map { it.pathWithName }.groupBy { it.parts.last() }
 
         fun getKnownNodePaths(nodes: List<Node>) = nodes.map { it.pathWithName.withDots() }.toSet()
+
+        private fun getFileScopedPaths(nodes: List<Node>): FileScopedPaths {
+            val visibleEverywhere = nodes.filterNot { it.isFileScoped }.mapTo(HashSet()) { it.pathWithName.withDots() }
+            val filesByPath = nodes
+                .filter { it.isFileScoped && it.pathWithName.withDots() !in visibleEverywhere }
+                .groupBy({ it.pathWithName.withDots() }, { it.physicalPath })
+                .mapValues { (_, files) -> files.toSet() }
+            return FileScopedPaths(filesByPath)
+        }
 
         private fun standardLibraryFor(language: SupportedLanguage): StandardLibrary = when (language) {
             SupportedLanguage.JAVA -> JavaStandardLibrary()
