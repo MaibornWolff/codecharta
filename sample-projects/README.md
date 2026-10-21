@@ -13,11 +13,30 @@ This folder is excluded from Biome and Sonar.
 sample-projects/
   README.md                 this spec
   tools/dump_lenses.py      prints the dependency and domain lens of a cc.json as plain text
+  tools/compare_dependency_builds.py  diffs the edges of two ccsh builds, or of one build against regression/
+  regression/<language>/<probe>/  small projects that pin down one rule of how the dependency parser resolves a
+                            name: src/, expected.txt (the correct edges) and, where the parser still deviates,
+                            known-gaps.txt; ProbeRegressionTest runs them
   <language>/
     FINDINGS.md             report for that language (template below)
     output/                   parser runs from "How to run" (generated, gitignored)
     <project files in the language's conventional layout>
 ```
+
+`regression/` is no showcase project: it repeats names on purpose, so a run over all of `sample-projects/` excludes
+it (`-e regression`). Every folder `regression/<language>/<probe>/` must hold `src/` and `expected.txt`, or the test
+fails. `expected.txt` holds the correct edges, one line each, such as `leaf a/B.cs#B -> c/D.cs#D usage=inheritance
+cyclic upward`; `#` starts a comment. In `known-gaps.txt`, `missing <line>` names an expected line the parser does
+not draw yet and `extra <line>` a wrong line it draws; every other expected line stays checked, and the test fails
+once a gap closes. Each gap has an entry in the language's `FINDINGS.md`. The test analyses `src/` like
+`ccsh dependencyparser --include-tests --bypass-gitignore`, so build folders are excluded unless `src/` has a
+`.gitignore`; `UPDATE_REGRESSION_PROBES=true ./gradlew :analysers:parsers:DependencyParser:test` rewrites the
+expectations after a deliberate change.
+
+`compare_dependency_builds.py <new-ccsh> [<old-ccsh>] [--samples]` compares a build against the expectations, or,
+also on the showcase projects, against a second build such as the last release. It exits with 0 when no edge
+differs, 1 when edges differ, 2 on wrong arguments or a probe folder without `expected.txt`, and 3 when a ccsh run
+fails, writes no map or cannot analyse a file.
 
 Language folders: `abl`, `angular`, `bash`, `c`, `cpp`, `csharp`, `delphi`, `go`, `java`, `javascript`, `kotlin`,
 `objectivec`, `php`, `python`, `ruby`, `rust`, `sql`, `swift`, `typescript`, `vue`.

@@ -1,0 +1,4 @@
+file a/com/ex/App.java -> a/com/ex/Config.java
+file b/com/ex/Config.java -> b/com/ex/App.java
+leaf a/com/ex/App.java#App -> a/com/ex/Config.java#Config
+leaf b/com/ex/Config.java#Config -> b/com/ex/App.java#App

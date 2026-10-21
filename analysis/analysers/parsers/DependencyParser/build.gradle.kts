@@ -18,4 +18,9 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    inputs
+        .dir(rootProject.file("../sample-projects/regression"))
+        .withPropertyName("regressionProbes")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.property("updateRegressionProbes", providers.environmentVariable("UPDATE_REGRESSION_PROBES").orElse(""))
 }

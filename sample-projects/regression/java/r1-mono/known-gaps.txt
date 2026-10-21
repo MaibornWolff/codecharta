@@ -1,0 +1,7 @@
+# Two projects declare com.ex.App and com.ex.Config: a dependency goes to the copy the scan reads first, not to the one in the own project
+missing file b/com/ex/Config.java -> b/com/ex/App.java
+missing leaf a/com/ex/App.java#App -> a/com/ex/Config.java#Config
+missing leaf b/com/ex/Config.java#Config -> b/com/ex/App.java#App
+extra file b/com/ex/Config.java -> a/com/ex/App.java
+extra leaf a/com/ex/App.java#App -> a/com/ex/Config.java#Config upward
+extra leaf b/com/ex/Config.java#Config -> a/com/ex/App.java#App
