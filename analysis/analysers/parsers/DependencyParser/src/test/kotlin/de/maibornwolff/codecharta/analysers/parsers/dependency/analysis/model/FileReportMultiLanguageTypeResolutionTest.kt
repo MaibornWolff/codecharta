@@ -80,7 +80,7 @@ class FileReportMultiLanguageTypeResolutionTest {
         )
 
         // Act
-        val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
+        val resolvedNode = node.resolveJavaTypes(projectDictionary, languageDictionary, setOf())
 
         // Assert
         val resolvedPath = resolvedNode.usedTypes.first().resolvedPath

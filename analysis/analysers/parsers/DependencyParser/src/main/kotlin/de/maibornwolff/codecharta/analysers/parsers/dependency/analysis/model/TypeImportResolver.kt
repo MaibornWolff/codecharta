@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model
 
-import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
-
 private const val MIN_PACKAGE_PARTS_FOR_SUFFIX_MATCH = 2
 
 internal class TypeImportResolver(
@@ -22,10 +20,16 @@ internal class TypeImportResolver(
         val candidates = candidatesNamed(plainTypeName)
         return findFullyQualified(fullName, candidates)
             ?: findDirectImport(plainTypeName, candidates)
-            ?: candidates?.let { findAmongCandidates(fullName, it) }
+            ?: candidates?.let { findByImportHeuristics(fullName, it) }
             ?: languageDictionary[plainTypeName]
             ?: Path.unknown(plainTypeName)
     }
+
+    /** The project declaration a name written with its full path means, whatever an import of its simple name says. */
+    fun fullyQualifiedOf(fullName: String): Path? = findFullyQualified(fullName, candidatesNamed(fullName.split(".").last()))
+
+    /** The declaration an import that names it explicitly means by its simple name, in the project or outside it. */
+    fun directImportOf(plainTypeName: String): Path? = findDirectImport(plainTypeName, candidatesNamed(plainTypeName))
 
     /** The project declarations of a simple name the declaration can see, without itself, so a re-export node does not depend on itself. */
     fun candidatesNamed(plainTypeName: String): List<Path>? = projectDictionary[plainTypeName]?.filter {
@@ -41,17 +45,6 @@ internal class TypeImportResolver(
         .filter { it.isWildcard.not() && it.isDotImport.not() && it.path.parts.lastOrNull() == plainTypeName }
         .firstOrNull { candidates?.contains(it.path) ?: true }
         ?.path
-
-    private fun findAmongCandidates(fullName: String, candidates: List<Path>): Path? =
-        if (importsNameTypesOnly()) findInPackageOrOnDemandImport(candidates) else findByImportHeuristics(fullName, candidates)
-
-    // Rules 5 and 6 of java.md and kotlin.md: the own package, then exactly the packages a star import names, of which
-    // two declaring the name make it ambiguous
-    private fun findInPackageOrOnDemandImport(candidates: List<Path>): Path? {
-        findInSamePackage(candidates)?.let { return it }
-        val starPackages = wildcardImports.map { it.parts }.filter { it != declaration.ownPackage }
-        return candidates.filter { it.withoutName() in starPackages }.distinctBy { it.withDots() }.singleOrNull()
-    }
 
     private fun findByImportHeuristics(fullName: String, candidates: List<Path>): Path? = findInSamePackage(candidates)
         ?: findViaDotImport(candidates)
@@ -86,10 +79,6 @@ internal class TypeImportResolver(
     private fun findContainingWildcard(candidates: List<Path>): Path? = wildcardImports.firstNotNullOfOrNull { wildcard ->
         candidates.firstOrNull { it.withDots().contains(wildcard.withDots()) }
     }
-
-    // A Java or Kotlin import names one declaration or, with a star, a package; it never makes the members of an imported
-    // class visible by their simple names
-    private fun importsNameTypesOnly(): Boolean = declaration.language.nameScope == SupportedLanguage.JAVA
 
     private fun findViaPackageImport(candidates: List<Path>): Path? = dependencies
         .filter { !it.isWildcard && !it.isDotImport }

@@ -28,7 +28,7 @@ class FileReportTest {
         )
 
         // Act
-        val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
+        val resolvedNode = node.resolveJavaTypes(projectDictionary, languageDictionary, setOf())
 
         // Assert
         assertThat(resolvedNode.dependencies).containsExactlyInAnyOrder(
@@ -63,7 +63,7 @@ class FileReportTest {
         )
 
         // Act
-        val resolvedNode = node.resolveTypes(
+        val resolvedNode = node.resolveJavaTypes(
             projectDictionary,
             languageDictionary,
             setOf(internalPathTypeA.withDots(), internalPathTypeB.withDots())
@@ -95,7 +95,7 @@ class FileReportTest {
         )
 
         // Act
-        val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
+        val resolvedNode = node.resolveJavaTypes(projectDictionary, languageDictionary, setOf())
 
         // Assert
         assertThat(resolvedNode.dependencies).containsExactly(Dependency(Path.unknown(unknownType)))

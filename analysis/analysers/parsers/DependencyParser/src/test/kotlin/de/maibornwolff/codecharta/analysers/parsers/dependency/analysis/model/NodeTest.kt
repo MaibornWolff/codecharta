@@ -35,7 +35,7 @@ class NodeTest {
         )
 
         // Act
-        val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
+        val resolvedNode = node.resolveJavaTypes(projectDictionary, languageDictionary, setOf())
 
         // Assert
         val usedTypes = resolvedNode.usedTypes
@@ -75,7 +75,7 @@ class NodeTest {
         )
 
         // Act
-        val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
+        val resolvedNode = node.resolveJavaTypes(projectDictionary, languageDictionary, setOf())
 
         // Assert
         val usedTypes = resolvedNode.usedTypes
@@ -103,7 +103,7 @@ class NodeTest {
 
         // Act
         val languageDictionary = emptyMap<String, Path>()
-        val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
+        val resolvedNode = node.resolveJavaTypes(projectDictionary, languageDictionary, setOf())
 
         // Assert
         val usedTypes = resolvedNode.usedTypes
@@ -136,7 +136,7 @@ class NodeTest {
 
         // Act
         val languageDictionary = emptyMap<String, Path>()
-        val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
+        val resolvedNode = node.resolveJavaTypes(projectDictionary, languageDictionary, setOf())
 
         // Assert
         val usedTypes = resolvedNode.usedTypes
@@ -173,7 +173,7 @@ class NodeTest {
         )
 
         // Act
-        val resolvedNode = node.resolveTypes(
+        val resolvedNode = node.resolveJavaTypes(
             projectDictionary,
             languageDictionary,
             setOf(parentPath.withDots(), nestedPath.withDots())
@@ -207,7 +207,7 @@ class NodeTest {
         )
 
         // Act
-        val resolvedNode = node.resolveTypes(
+        val resolvedNode = node.resolveJavaTypes(
             projectDictionary,
             languageDictionary,
             setOf(parentPath.withDots(), nestedPath.withDots())
@@ -251,7 +251,7 @@ class NodeTest {
         )
 
         // Act
-        val resolvedNode = node.resolveTypes(
+        val resolvedNode = node.resolveJavaTypes(
             projectDictionary,
             languageDictionary,
             setOf(extractionStrategyPath.withDots(), allChildrenByTypePath.withDots())
@@ -288,7 +288,7 @@ class NodeTest {
         )
 
         // Act
-        val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf(hitPointsPath.withDots()))
+        val resolvedNode = node.resolveJavaTypes(projectDictionary, languageDictionary, setOf(hitPointsPath.withDots()))
 
         // Assert
         val internalDeps = resolvedNode.resolvedNodeDependencies.internalDependencies
@@ -307,7 +307,7 @@ class NodeTest {
         )
 
         // Act
-        val resolved = node.resolveTypes(projectDictionary, emptyMap(), setOf())
+        val resolved = node.resolveJavaTypes(projectDictionary, emptyMap(), setOf())
 
         // Assert
         Assertions.assertThat(resolved.usedTypes.single().resolvedPath).isEqualTo(importedFoo)
@@ -326,7 +326,7 @@ class NodeTest {
         )
 
         // Act
-        val resolved = node.resolveTypes(projectDictionary, emptyMap(), setOf())
+        val resolved = node.resolveJavaTypes(projectDictionary, emptyMap(), setOf())
 
         // Assert
         Assertions.assertThat(resolved.usedTypes.single().resolvedPath).isEqualTo(dtoCreature)

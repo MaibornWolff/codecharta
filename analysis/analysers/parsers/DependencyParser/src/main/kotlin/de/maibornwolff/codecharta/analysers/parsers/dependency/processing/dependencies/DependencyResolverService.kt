@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpNameRules
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.java.JavaNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.DefaultNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileScopedPaths
@@ -87,6 +88,7 @@ class DependencyResolverService {
 
         private fun nameRulesFor(language: SupportedLanguage): NameRules = when (language) {
             SupportedLanguage.C_SHARP -> CSharpNameRules
+            SupportedLanguage.JAVA, SupportedLanguage.KOTLIN -> JavaNameRules
             else -> DefaultNameRules
         }
 

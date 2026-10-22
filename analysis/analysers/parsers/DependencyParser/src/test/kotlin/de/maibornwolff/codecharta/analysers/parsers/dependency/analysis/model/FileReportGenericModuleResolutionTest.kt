@@ -134,7 +134,7 @@ class FileReportGenericModuleResolutionTest {
         )
 
         // Act
-        val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
+        val resolvedNode = node.resolveJavaTypes(projectDictionary, languageDictionary, setOf())
 
         // Assert - The class should NOT be resolved because "Foo.Problem" does not match "A.B.Problem"
         // The suffix matching logic should require the full package path to match, not just the suffix
