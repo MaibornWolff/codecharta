@@ -13,9 +13,9 @@ private const val PATH_SEPARATOR = "."
 internal class LogicalProjection(
     private val resolvedNodes: Collection<Node>,
     private val cyclicEdgesByDeclaration: Map<String, Set<String>>,
-    private val namespaceTree: LevelizedNamespaceTree?
+    private val namespaceTree: LevelizedNamespaceTree?,
+    private val declaringFiles: DeclaringFiles
 ) {
-    private val declaringFiles = DeclaringFiles.of(resolvedNodes)
     private val keyByFileAndLogicalPath = uniqueKeysPerFile()
 
     fun addTo(physical: DependencyGraph): DependencyGraph {

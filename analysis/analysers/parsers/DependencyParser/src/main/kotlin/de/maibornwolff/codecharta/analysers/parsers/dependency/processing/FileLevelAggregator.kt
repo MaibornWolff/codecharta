@@ -22,9 +22,11 @@ data class AggregatedFileEdge(val from: FilePath, val to: FilePath, val weight: 
  * reference the same cyclic target, both file edges count as cyclic.
  */
 object FileLevelAggregator {
-    fun aggregate(resolvedNodes: Collection<Node>, cyclicEdgesByDeclaration: Map<String, Set<String>>): List<AggregatedFileEdge> {
-        val declaringFiles = DeclaringFiles.of(resolvedNodes)
-
+    internal fun aggregate(
+        resolvedNodes: Collection<Node>,
+        cyclicEdgesByDeclaration: Map<String, Set<String>>,
+        declaringFiles: DeclaringFiles = DeclaringFiles.of(resolvedNodes)
+    ): List<AggregatedFileEdge> {
         val weightByEndpoints = LinkedHashMap<Pair<FilePath, FilePath>, Int>()
         val cyclicEndpoints = HashSet<Pair<FilePath, FilePath>>()
 

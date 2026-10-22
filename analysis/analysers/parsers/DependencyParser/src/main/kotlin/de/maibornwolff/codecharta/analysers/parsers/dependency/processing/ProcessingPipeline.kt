@@ -32,17 +32,23 @@ object ProcessingPipeline {
         }
 
         val cyclicEdgesByDeclaration = detectCycles(resolvedNodes, omitGraphAnalysis)
-        val aggregatedEdges = FileLevelAggregator.aggregate(resolvedNodes, cyclicEdgesByDeclaration)
+        val declaringFiles = DeclaringFiles.of(resolvedNodes)
+        val aggregatedEdges = FileLevelAggregator.aggregate(resolvedNodes, cyclicEdgesByDeclaration, declaringFiles)
 
         if (omitGraphAnalysis) {
             Logger.info { "Levelization disabled by --omit-graph-analysis" }
             val physical = DependencyGraph(edges = aggregatedEdges.map { it.withoutLevelization() })
-            return LogicalProjection(resolvedNodes, cyclicEdgesByDeclaration, namespaceTree = null).addTo(physical)
+            return LogicalProjection(resolvedNodes, cyclicEdgesByDeclaration, namespaceTree = null, declaringFiles).addTo(physical)
         }
 
         val filePaths = resolvedNodes.map { FilePath.of(it) }.distinct()
         val physical = levelizeFileTree(aggregatedEdges, filePaths)
-        return LogicalProjection(resolvedNodes, cyclicEdgesByDeclaration, levelizeNamespaceTree(resolvedNodes)).addTo(physical)
+        return LogicalProjection(
+            resolvedNodes,
+            cyclicEdgesByDeclaration,
+            levelizeNamespaceTree(resolvedNodes),
+            declaringFiles
+        ).addTo(physical)
     }
 
     private fun levelizeFileTree(aggregatedEdges: List<AggregatedFileEdge>, filePaths: List<FilePath>): DependencyGraph {
