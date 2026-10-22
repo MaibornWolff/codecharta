@@ -555,7 +555,7 @@ public class TestClass(){ }
     }
 
     @Test
-    fun `should test generic type parameter`() {
+    fun `should not take a type parameter for a used type`() {
         // Arrange
         val cSharpCode = """
             namespace De.Maibornwolff.DependaCharta.Analysis.Analyzers
@@ -572,6 +572,6 @@ public class TestClass(){ }
 
         // Assert
         val node = report.nodes.first()
-        assertThat(node.usedTypes).containsExactlyInAnyOrder(Type.simple("TFoo"), Type.simple("IFoobar"))
+        assertThat(node.usedTypes).containsExactlyInAnyOrder(Type.simple("IFoobar"))
     }
 }
