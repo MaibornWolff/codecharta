@@ -1,14 +1,18 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model
 
-/** The node with every used type resolved by the name rules of its language, and the dependencies that follow. */
 fun Node.resolveTypes(
     projectDictionary: Map<String, List<Path>>,
     languageDictionary: Map<String, Path>,
     internalNodePaths: Set<String>,
     fileScopedPaths: FileScopedPaths = FileScopedPaths.NONE,
     nameRules: NameRules = DefaultNameRules
-): Node {
-    val names = nameRules.namesOf(this, ProjectNames(projectDictionary, languageDictionary, internalNodePaths, fileScopedPaths))
+): Node = resolveTypes(ProjectNames(projectDictionary, languageDictionary, internalNodePaths, fileScopedPaths), nameRules)
+
+/** The node with every used type resolved by the name rules of its language, and the dependencies that follow. */
+fun Node.resolveTypes(project: ProjectNames, nameRules: NameRules = DefaultNameRules): Node {
+    val languageDictionary = project.languageDictionary
+    val internalNodePaths = project.internalNodePaths
+    val names = nameRules.namesOf(this, project)
     val resolvedUsedTypes = usedTypes.map { it.toResolvedType(names) }.toSet()
 
     val resolvedUsedTypesUnique = resolvedUsedTypes
