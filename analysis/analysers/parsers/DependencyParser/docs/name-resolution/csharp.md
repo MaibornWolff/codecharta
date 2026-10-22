@@ -14,9 +14,11 @@ directives, "Partial declarations" and "Attribute specification". The rules shar
   no `.csproj` among the analysed files, they all form one project.
 - One project cannot declare a type twice, so a logical path that several files of one project declare is one partial
   type over those files; the `partial` keyword is not read. A name that means a path declared in several files points
-  at every file of the nearest project that declares it: all parts of a partial type, or the one copy of that project
+  at every file of the nearest project that declares it: all parts of a partial type, or the one copy of that project.
+  The nearest project is the using file's own when it declares the path, else the project of the nearest copy
   (shared rule 2, applied to projects instead of files).
-- A `file` type (`file class Helper`) and every type nested in it can be named in its own file only.
+- A `file` type (`file class Helper`) and every type nested in it can be named in its own file only, and there it
+  hides every other type of its name.
 
 ## A simple name `N`
 
@@ -98,11 +100,11 @@ the rule yet; `sample-projects/regression/csharp/known-gaps.md` says how it devi
 | Attributes: both exist, a project base class makes `Name` the attribute class | `spec-attribute-base-decides` | ok |
 | Attributes: the attribute and the same name as a field type | `spec-attribute-and-field` | ok |
 | Decision 1, nested type is its own leaf | `spec-nested-type-own-leaf` | ok |
-| Decision 2, every part of a partial type | `spec-partial-every-part` | gap |
-| Decision 2, partial type of the nearest project | `spec-partial-nearest-project` | gap |
+| Decision 2, every part of a partial type | `spec-partial-every-part` | ok |
+| Decision 2, partial type of the nearest project | `spec-partial-nearest-project` | ok |
 | Shared rule 1, name scope | `spec-name-scope` | ok |
-| Shared rule 2, copies in two projects | `spec-copies-nearest` | gap |
-| Decision 2, copies without a `.csproj` are parts of one project | `spec-copies-without-project` | gap |
+| Shared rule 2, copies in two projects | `spec-copies-nearest` | ok |
+| Decision 2, copies without a `.csproj` are parts of one project | `spec-copies-without-project` | ok |
 | Shared rule 3, no match | `spec-no-using` | ok |
 | Shared rule 4, self | `spec-self` | ok |
 

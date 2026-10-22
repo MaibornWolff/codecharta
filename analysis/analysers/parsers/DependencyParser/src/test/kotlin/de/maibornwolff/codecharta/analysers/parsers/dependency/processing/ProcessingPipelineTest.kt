@@ -396,7 +396,7 @@ class ProcessingPipelineTest {
     }
 
     @Test
-    fun `should emit one declaration per file of a split declaration and point edges into it at the first`() {
+    fun `should emit one declaration per file of a split declaration and point edges into it at every part`() {
         // Arrange: a partial class in two files, and a class that depends on it.
         File(sampleDirectory, "FooA.cs").writeText("namespace N { public partial class Foo { private Bar bar; } }")
         File(sampleDirectory, "FooB.cs").writeText("namespace N { public partial class Foo { } }")
@@ -405,15 +405,16 @@ class ProcessingPipelineTest {
         // Act
         val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.C_SHARP), omitGraphAnalysis = false)
 
-        // Assert: both parts share namespace and key, and both projections point Bar at the first part.
+        // Assert: both parts share namespace and key, and both projections point Bar at every part.
         val fooA = DeclarationAddress(listOf("FooA.cs"), "Foo")
         val parts = graph.declarations.filter { it.name == "Foo" }
         assertThat(parts.map { it.address }).containsExactly(fooA, DeclarationAddress(listOf("FooB.cs"), "Foo"))
         assertThat(parts.map { it.namespace }).containsOnly("N")
         val bar = DeclarationAddress(listOf("Bar.cs"), "Bar")
-        assertThat(graph.declarationEdges.map { it.from to it.to }).containsExactlyInAnyOrder(bar to fooA, fooA to bar)
+        val fooB = DeclarationAddress(listOf("FooB.cs"), "Foo")
+        assertThat(graph.declarationEdges.map { it.from to it.to }).containsExactlyInAnyOrder(bar to fooA, bar to fooB, fooA to bar)
         val edgesIntoFoo = graph.edges.filter { it.fromPath == listOf("Bar.cs") }
-        assertThat(edgesIntoFoo).extracting("toPath").containsExactly(listOf("FooA.cs"))
+        assertThat(edgesIntoFoo).extracting("toPath").containsExactlyInAnyOrder(listOf("FooA.cs"), listOf("FooB.cs"))
         assertThat(graph.edges.map { it.fromPath to it.toPath }).contains(listOf("FooA.cs") to listOf("Bar.cs"))
     }
 

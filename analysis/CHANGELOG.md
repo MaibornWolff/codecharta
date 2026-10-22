@@ -18,7 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - **Same name in several places**: `dependencyparser` links a class that several files declare under one name to the
-  copy nearest to the file that uses it, instead of to whichever copy it read first, in every language but C#.
+  copy nearest to the file that uses it, instead of to whichever copy it read first, and a C# partial class to every
+  file of its project that holds a part of it.
 
 - **Imports in Java and Kotlin**: `dependencyparser` resolves a Java or Kotlin name only by the language's import
   rules, so it no longer links it to a class of the same name that no import makes visible, that two star imports

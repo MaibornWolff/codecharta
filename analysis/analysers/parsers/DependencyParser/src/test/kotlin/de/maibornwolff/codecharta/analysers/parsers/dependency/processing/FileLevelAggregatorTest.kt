@@ -212,8 +212,8 @@ class FileLevelAggregatorTest {
     }
 
     @Test
-    fun `should point a dependency on a C# declaration in several files at the first file, as long as C# has no rules of its own`() {
-        // Arrange: the second part of a partial class lies nearer to the using file.
+    fun `should point a dependency on a C# declaration in several files of one project at every file`() {
+        // Arrange: a partial class in two files of one project.
         val nodes =
             listOf(
                 declaration("Shop.Order", "Gen/Order.g.cs", language = SupportedLanguage.C_SHARP),
@@ -225,7 +225,7 @@ class FileLevelAggregatorTest {
         val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
 
         // Assert
-        assertThat(edges.single().to.segments).containsExactly("Gen", "Order.g.cs")
+        assertThat(edges.map { it.to.segments }).containsExactlyInAnyOrder(listOf("Gen", "Order.g.cs"), listOf("Model", "Order.cs"))
     }
 
     @Test

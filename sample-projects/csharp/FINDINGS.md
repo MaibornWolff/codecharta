@@ -239,7 +239,7 @@ Rounds 1 and 2, all rerun:
 | typed lambda parameter (`CreatureChecks.cs`) | edge | no | missing |
 | `Bestiary::…SpeedType` (`BestiaryImport.cs`) | edge | no | missing; `global::` isolated also nothing |
 | bare `HitPoints` without a using (`StableReport.cs`) | none (strict) | none | ok |
-| partial class `CreatureFacade` in two files | incoming edges on `CreatureFacade.cs` | on `CreatureFacade.Stable.cs` | wrong |
+| partial class `CreatureFacade` in two files | incoming edges on `CreatureFacade.cs` | on both parts | ok (fixed by the C# project rule) |
 
 - Further isolated results: `case T t:` nothing, `new T[2]` nothing; casts, `as`, `G<T>()`, `Dictionary<string, T[]>`,
   `event Action<T>`, base-class generic argument, record parameter and primary-constructor parameter all resolve.

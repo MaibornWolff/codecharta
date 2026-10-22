@@ -141,7 +141,7 @@ class DependencyParser(
                 return null
             }
             val fileReports = extraction.reports
-            val graph = ProcessingPipeline.run(fileReports, omitGraphAnalysis)
+            val graph = ProcessingPipeline.run(fileReports, omitGraphAnalysis, ExtractionPipeline.analysisRootOf(input))
             DependencyProjectGenerator().generate(graph, analysedFilePaths(fileReports), resolvePipedProject())
         }
     }
