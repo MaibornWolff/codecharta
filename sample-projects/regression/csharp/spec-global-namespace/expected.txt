@@ -1,0 +1,3 @@
+# csharp.md, rule 3.1: a type of the global namespace
+file a/App.cs -> Config.cs
+leaf a/App.cs#App -> Config.cs#Config

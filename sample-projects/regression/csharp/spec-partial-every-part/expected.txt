@@ -1,0 +1,9 @@
+# csharp.md, decision 2: a use of a partial type points at every part file, and each part keeps its own uses
+file a/Client.cs -> a/Facade.Logging.cs
+file a/Client.cs -> a/Facade.cs
+file a/Facade.Logging.cs -> a/Log.cs
+file a/Facade.cs -> a/Repository.cs
+leaf a/Client.cs#Client -> a/Facade.Logging.cs#Facade
+leaf a/Client.cs#Client -> a/Facade.cs#Facade
+leaf a/Facade.Logging.cs#Facade -> a/Log.cs#Log
+leaf a/Facade.cs#Facade -> a/Repository.cs#Repository

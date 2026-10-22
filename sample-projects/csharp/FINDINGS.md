@@ -258,6 +258,8 @@ Rounds 1 and 2, all rerun:
   names against the own and the imported namespaces, and fully qualified names. It does not resolve aliases,
   `using static`, usings from another file, alias-qualified names, extension methods, or types that appear in
   patterns, `typeof`, `default`, `catch`, tuples, array creation, property declarations and lambda parameters.
+- Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/csharp.md`): listed
+  per probe in `regression/csharp/known-gaps.md`.
 
 ## Domain language parser
 - `domainlanguageparser -nc …`: exit 0, 38 files. Variants in `output/`: `domain-MINIMAL`, `-AGGRESSIVE`,

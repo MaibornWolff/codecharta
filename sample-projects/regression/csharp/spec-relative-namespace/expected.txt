@@ -1,0 +1,3 @@
+# csharp.md, qualified names: a namespace is found relative to the enclosing namespace first
+file a/App.cs -> a/settings/Config.cs
+leaf a/App.cs#App -> a/settings/Config.cs#Config

@@ -1,0 +1,1 @@
+# csharp.md, shared rule 4: a type that names itself draws no edge

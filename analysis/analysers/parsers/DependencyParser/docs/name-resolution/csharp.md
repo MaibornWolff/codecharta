@@ -44,10 +44,60 @@ So a using directive at the top of a file loses to a type of an enclosing namesp
 - `global::A.B` means `A.B` looked up from the global namespace only.
 - The qualifying type is no dependency of its own: `Order.Line` depends on `Line` only.
 
+## Base types
+
+A type in the base list (`class Report : Document, IPrintable`) is a use of kind `inheritance`; when a class, record or
+struct names a project interface there, the kind is `implementation`. The syntax cannot tell a base class from an
+interface, so the kind follows from the declaration the name resolves to.
+
 ## Attributes
 
 An attribute written `[Name]` means the type `NameAttribute` or the type `Name`, whichever exists; both existing makes
 it ambiguous: no edge.
+
+## Probes
+
+Each rule is tested by a probe under `sample-projects/regression/csharp/`. "Gap" means the parser does not follow
+the rule yet; `sample-projects/regression/csharp/known-gaps.md` says how it deviates.
+
+| Rule | Probe | Today |
+| --- | --- | --- |
+| Declarations: the forms of a namespace declaration | `spec-file-scoped-namespace` | ok |
+| Declarations: a file type | `spec-file-type` | gap |
+| 1. type parameter | `spec-type-parameter` | gap |
+| 2. nested type of the own type | `spec-own-nested-type` | gap |
+| 2. nested type of an enclosing type | `spec-enclosing-nested-type` | gap |
+| 2. inherited nested type | `spec-inherited-nested-type` | gap |
+| 3.1 own namespace | `spec-own-namespace` | ok |
+| 3.1 enclosing namespace | `spec-parent-namespace` | gap |
+| 3.1 global namespace | `spec-global-namespace` | ok |
+| 3.2 using directive | `spec-using-namespace` | ok |
+| 3.2 using directive inside the namespace, for a nested type | `spec-namespace-using-in-nested-type` | gap |
+| 3.2 two using directives: ambiguous | `spec-ambiguous-usings` | gap |
+| 3.2 using alias of a type | `spec-alias-to-type` | gap |
+| 3.2 a using alias imports no other name | `spec-alias-imports-no-other-name` | gap |
+| 3.2 `using static` | `spec-using-static-nested-type` | ok |
+| 3.1 and 3.2: own namespace over a using | `spec-namespace-beats-using` | ok |
+| 3.1 and 3.2: enclosing namespace over a using at the top | `spec-outer-namespace-beats-top-using` | gap |
+| 3.1 and 3.2: using inside a namespace over an enclosing namespace | `spec-inner-using-beats-outer-namespace` | ok |
+| 4. library type | `spec-library-type` | ok |
+| 3.1 and 4: own namespace over a library type | `spec-namespace-shadows-library` | ok |
+| Qualified through a namespace | `spec-fully-qualified` | ok |
+| Qualified through a namespace relative to the enclosing one | `spec-relative-namespace` | gap |
+| Qualified through `global::` | `spec-global-qualifier` | gap |
+| Qualified through an alias of a namespace | `spec-alias-to-namespace` | ok |
+| Qualified through a type | `spec-qualified-through-type` | ok |
+| Base types | `spec-base-list-kinds` | gap |
+| Attributes: `NameAttribute` | `spec-attribute-suffix` | ok |
+| Attributes: `Name` | `spec-attribute-plain-name` | ok |
+| Attributes: both: ambiguous | `spec-attribute-ambiguous` | gap |
+| Decision 1, nested type is its own leaf | `spec-nested-type-own-leaf` | gap |
+| Decision 2, every part of a partial type | `spec-partial-every-part` | gap |
+| Decision 2, partial type of the nearest project | `spec-partial-nearest-project` | gap |
+| Shared rule 1, name scope | `spec-name-scope` | ok |
+| Shared rule 2, copies | `spec-copies-nearest` | gap |
+| Shared rule 3, no match | `spec-no-using` | ok |
+| Shared rule 4, self | `spec-self` | ok |
 
 ## Not supported
 
@@ -70,3 +120,4 @@ it ambiguous: no edge.
    file of the nearest project that declares it (decided 2026-10-22).
 3. `global using` is not supported (decided 2026-10-22).
 4. A type's generic arity is not part of its logical path (decided 2026-10-22).
+5. A base-list entry's kind follows from the declaration it resolves to, not from its name (decided 2026-10-22).

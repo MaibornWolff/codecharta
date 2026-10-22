@@ -1,0 +1,2 @@
+# csharp.md, rule 2: a nested type of the own type shadows a type of the own namespace
+leaf a/Order.cs#Order -> a/Order.cs#Line

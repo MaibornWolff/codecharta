@@ -1,0 +1,3 @@
+# csharp.md, declarations: a file type can be named in its own file only
+leaf a/First.cs#First -> a/First.cs#Helper
+leaf a/Second.cs#Second -> a/Second.cs#Helper

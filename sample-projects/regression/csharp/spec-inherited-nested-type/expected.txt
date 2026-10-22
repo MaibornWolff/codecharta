@@ -1,0 +1,4 @@
+# csharp.md, rule 2: a nested type inherited from the base class shadows a type of the own namespace
+file a/Report.cs -> a/Document.cs
+leaf a/Report.cs#Report -> a/Document.cs#Document usage=inheritance
+leaf a/Report.cs#Report -> a/Document.cs#Section

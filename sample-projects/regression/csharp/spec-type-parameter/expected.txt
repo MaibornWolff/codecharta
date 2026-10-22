@@ -1,0 +1,1 @@
+# csharp.md, rule 1: a type parameter shadows a type of the own namespace

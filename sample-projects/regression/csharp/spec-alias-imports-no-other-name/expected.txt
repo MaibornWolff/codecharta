@@ -1,0 +1,1 @@
+# csharp.md, rule 3.2: a using alias makes only the alias visible, not the target's own name

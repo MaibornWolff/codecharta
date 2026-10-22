@@ -1,0 +1,3 @@
+# csharp.md, rule 3.2: using static makes the nested types of a type visible by their simple name
+file a/App.cs -> b/Config.cs
+leaf a/App.cs#App -> b/Config.cs#Section

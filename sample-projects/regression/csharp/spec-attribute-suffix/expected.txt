@@ -1,0 +1,3 @@
+# csharp.md, attributes: [Name] means the type NameAttribute
+file a/App.cs -> a/AuditedAttribute.cs
+leaf a/App.cs#App -> a/AuditedAttribute.cs#AuditedAttribute

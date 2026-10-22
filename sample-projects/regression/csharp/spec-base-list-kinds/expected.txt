@@ -1,0 +1,9 @@
+# csharp.md, decision 5: a base-list entry is inheritance, or implementation when a class or struct names an interface
+file a/IPrintable.cs -> a/IShape.cs
+file a/Point.cs -> a/IShape.cs
+file a/Report.cs -> a/Document.cs
+file a/Report.cs -> a/IPrintable.cs
+leaf a/IPrintable.cs#IPrintable -> a/IShape.cs#IShape usage=inheritance
+leaf a/Point.cs#Point -> a/IShape.cs#IShape usage=implementation
+leaf a/Report.cs#Report -> a/Document.cs#Document usage=inheritance
+leaf a/Report.cs#Report -> a/IPrintable.cs#IPrintable usage=implementation
