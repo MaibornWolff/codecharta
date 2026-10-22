@@ -1,0 +1,3 @@
+# csharp.md, attributes: with both Name and NameAttribute in the project, [Name] means the one that is an attribute class
+file a/App.cs -> a/AuditedAttribute.cs
+leaf a/App.cs#App -> a/AuditedAttribute.cs#AuditedAttribute
