@@ -39,7 +39,9 @@ internal object UsedTypeExtractor {
     )
 
     fun extract(declaration: SyntaxNode): Set<UsedType> {
-        val buckets = TreeTraversal.findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
+        val buckets = TreeTraversal
+            .findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
+            .mapValues { (_, nodes) -> nodes.filter { CSharpScopes.belongsTo(it, declaration) } }
 
         val constructorTypes = extractConstructorParameterTypes(declaration, buckets)
         val methodTypes = extractMethodTypes(buckets)
