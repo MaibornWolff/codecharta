@@ -1,4 +1,7 @@
-package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model
+package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.java
+
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.MemberTypeScopes
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 
 /**
  * A qualified name `Q.N` of Java or Kotlin: through a type when the first segment resolves as one by the simple-name
@@ -7,7 +10,8 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model
  * a use of the declaration. A name outside the project reaches none and stays outside.
  */
 internal class QualifiedNames(
-    private val resolver: TypeImportResolver,
+    private val resolveSimpleName: (String) -> Path,
+    private val resolveOwnName: (String) -> Path,
     private val memberTypes: MemberTypeScopes,
     private val internalNodePaths: Set<String>
 ) {
@@ -20,15 +24,10 @@ internal class QualifiedNames(
         return extensionNamed(written.parts[deepest.parts.size]) ?: deepest
     }
 
-    private fun extensionNamed(member: String): Path? = resolver.resolve(member).takeIf { it.withDots() in internalNodePaths }
+    private fun extensionNamed(member: String): Path? = resolveSimpleName(member).takeIf { it.withDots() in internalNodePaths }
 
     private fun typeNamed(name: String): Path? {
-        val path = if (memberTypes.isOwnName(name)) {
-            resolver.resolveOwnName(name)
-        } else {
-            memberTypes.memberNamed(name)
-                ?: resolver.resolve(name)
-        }
+        val path = if (memberTypes.isOwnName(name)) resolveOwnName(name) else memberTypes.memberNamed(name) ?: resolveSimpleName(name)
         return path.takeUnless { it.isUnknown() }
     }
 
