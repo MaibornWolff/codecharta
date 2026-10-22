@@ -7,13 +7,10 @@ gap closes, and the closed lines are deleted here.
 
 ## spec-alias-import
 
-A qualified name is looked up by its simple name, not through its import name, and the name a type spec declares
-counts as a use of the other `User`.
+A qualified name is looked up by its simple name, not through its import name.
 
 ```text
-extra file v2/models/user.go -> models/user.go
 extra leaf app/app.go#use -> v2/models/user.go#User
-extra leaf v2/models/user.go#User -> models/user.go#User
 ```
 
 ## spec-build-tag-variants

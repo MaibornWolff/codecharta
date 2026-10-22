@@ -38,15 +38,22 @@ internal object UsedTypeExtractor {
     private const val OPERAND_FIELD = "operand"
 
     private val FUNCTION_TYPES = setOf(FUNCTION_DECLARATION, METHOD_DECLARATION)
+    private val TYPE_SPECS = setOf("type_spec", "type_alias")
     private val TYPE_REFERENCES = setOf(TYPE_IDENTIFIER, QUALIFIED_TYPE)
     private val RELEVANT_TYPES = FUNCTION_TYPES + TYPE_REFERENCES + PARAMETER_DECLARATION + CALL_EXPRESSION
 
     fun extract(declaration: SyntaxNode): Set<UsedType> {
         val relevantNodes = TreeTraversal.findAllDescendantsOfType(declaration, *RELEVANT_TYPES.toTypedArray())
-        val typeReferences = relevantNodes.filter { it.type in TYPE_REFERENCES }.map { typeReference(it) }
+        val typeReferences = relevantNodes.filter { it.type in TYPE_REFERENCES && !isDeclaredName(it) }.map { typeReference(it) }
         val isFunction = declaration.type in FUNCTION_TYPES
         val usedTypes = if (isFunction) namesUsedByFunction(declaration, relevantNodes) + typeReferences else typeReferences
         return usedTypes.toCollection(LinkedHashSet())
+    }
+
+    // The name a type spec declares is the declaration itself, no use of it
+    private fun isDeclaredName(typeReference: SyntaxNode): Boolean {
+        val typeSpec = typeReference.parent.orNull()?.takeIf { it.type in TYPE_SPECS } ?: return false
+        return typeSpec.getChildByFieldName(NAME_FIELD).orNull()?.startByte == typeReference.startByte
     }
 
     // A qualified type itself stays as written; its name inside it carries the package
