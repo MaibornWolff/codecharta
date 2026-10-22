@@ -52,6 +52,7 @@ the rule yet; `sample-projects/regression/kotlin/known-gaps.md` says how it devi
 | Declarations: a top-level function | `spec-top-level-function` | ok |
 | Declarations: a `private` top-level declaration | `spec-private-top-level` | ok |
 | Declarations: two files with their own `private` copy | `spec-private-copies` | ok |
+| Declarations: `private` constants of one name in several files, and the calls between them | `spec-private-constants` | ok |
 | 1. type parameter | `spec-type-parameter` | ok |
 | 2. local class | `spec-local-class` | ok |
 | 3. nested class of the own class | `spec-own-nested-class` | ok |

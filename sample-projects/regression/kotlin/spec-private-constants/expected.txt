@@ -1,0 +1,7 @@
+# kotlin.md, rule 5 and the private decision: a private top-level constant that several files of one package declare counts in its own file only, and the calls between the files stay
+file c/AllDeclarators.kt -> c/Declaration.kt
+file c/AllDeclarators.kt -> c/Parser.kt
+leaf c/AllDeclarators.kt#extractAll -> c/AllDeclarators.kt#IDENTIFIER
+leaf c/AllDeclarators.kt#extractAll -> c/Declaration.kt#extractOne
+leaf c/AllDeclarators.kt#extractAll -> c/Parser.kt#Parser
+leaf c/Declaration.kt#extractOne -> c/Declaration.kt#IDENTIFIER
