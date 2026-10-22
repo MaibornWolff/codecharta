@@ -24,6 +24,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   rules, so it no longer links it to a class of the same name that no import makes visible, that two star imports
   make ambiguous, or that a Kotlin import renames with `as`.
 
+- **Using aliases in C#**: `dependencyparser` links a name written through a C# using alias such as
+  `using Dto = Shop.Dto;` to the type or namespace it stands for, and no longer takes the alias for an import of
+  every type of that namespace.
+
 - **Names written with their class or package**: `dependencyparser` links a Java or Kotlin name written with its class
   or package in front, such as `Outer.Nested`, `Speed.class`, `com.ex.Config` or a Kotlin import alias in front of
   a nested class, to that declaration, and not also to the class in front.

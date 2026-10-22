@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.ImportAliases
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toDependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toNodeType
@@ -16,16 +17,15 @@ import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 class CSharpAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     override fun analyze(): FileReport {
         val result = TreeSitterDependencies.analyze(fileInfo.content, Language.CSHARP)
-        val globalImports = result.imports.filter { it.namespacePath.isEmpty() }.map { it.toDependency() }
         val typePaths = result.declarations.map { it.parentPath + it.name }.toSet()
 
         val nodes = result.declarations.map { declaration ->
             val namespacePath = namespaceOf(declaration.parentPath, typePaths)
-            val scopedImports = result.imports
-                .filter { it.namespacePath == namespacePath }
-                .map { it.toDependency() }
+            val visibleImports = result.imports.filter { it.namespacePath.isEmpty() || it.namespacePath == namespacePath }
+            // A using alias imports nothing; ImportAliases replaces it in the names it is written in
+            val usings = visibleImports.filter { it.bindingName == null }.map { it.toDependency() }
             val ownScopes = listOf(namespacePath, declaration.parentPath).map { Dependency(path = Path(it), isWildcard = true) }
-            val dependencies = (globalImports + scopedImports + ownScopes).toSet()
+            val dependencies = (usings + ownScopes).toSet()
 
             Node(
                 pathWithName = Path(declaration.parentPath + declaration.name),
@@ -33,7 +33,7 @@ class CSharpAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
                 language = SupportedLanguage.C_SHARP,
                 nodeType = declaration.type.toNodeType(),
                 dependencies = dependencies,
-                usedTypes = declaration.usedTypes.map { it.toType() }.toSet()
+                usedTypes = ImportAliases.resolve(declaration.usedTypes, visibleImports).map { it.toType() }.toSet()
             )
         }
         return FileReport(nodes)

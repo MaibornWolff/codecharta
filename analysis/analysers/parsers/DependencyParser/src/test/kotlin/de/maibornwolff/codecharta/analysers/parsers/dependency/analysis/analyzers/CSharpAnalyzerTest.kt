@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Fi
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
+import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies.DependencyResolverService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -573,5 +574,38 @@ public class TestClass(){ }
         // Assert
         val node = report.nodes.first()
         assertThat(node.usedTypes).containsExactlyInAnyOrder(Type.simple("IFoobar"))
+    }
+
+    @Test
+    fun `should resolve a using alias to the type or the namespace it stands for and import nothing else`() {
+        // Arrange
+        val aliases = "using Settings = B.Config;\nusing Remote = B.Settings;\n"
+        val byTypeAlias = csharpFile("a/ByTypeAlias.cs", aliases + "namespace A { public class ByTypeAlias { public Settings Current; } }")
+        val byTargetName = csharpFile("a/ByTargetName.cs", aliases + "namespace A { public class ByTargetName { public Config Current; } }")
+        val byNamespaceAlias = csharpFile(
+            "a/ByNamespaceAlias.cs",
+            aliases + "namespace A { public class ByNamespaceAlias { public Remote.Section Current; } }"
+        )
+        val config = csharpFile("b/Config.cs", "namespace B { public class Config { } }")
+        val section = csharpFile("b/settings/Section.cs", "namespace B.Settings { public class Section { } }")
+        val files = arrayOf(byTypeAlias, byTargetName, byNamespaceAlias, config, section)
+
+        // Act
+        val typeAliasTargets = internalTargetsOf("ByTypeAlias", *files)
+        val targetNameTargets = internalTargetsOf("ByTargetName", *files)
+        val namespaceAliasTargets = internalTargetsOf("ByNamespaceAlias", *files)
+
+        // Assert
+        assertThat(typeAliasTargets).containsExactly("B.Config")
+        assertThat(targetNameTargets).isEmpty()
+        assertThat(namespaceAliasTargets).containsExactly("B.Settings.Section")
+    }
+
+    private fun csharpFile(physicalPath: String, content: String) = FileInfo(SupportedLanguage.C_SHARP, physicalPath, content)
+
+    private fun internalTargetsOf(nodeName: String, vararg files: FileInfo): List<String> {
+        val reports = files.map { CSharpAnalyzer(it).analyze() }
+        val node = DependencyResolverService.resolveNodes(reports).first { it.name() == nodeName }
+        return node.resolvedNodeDependencies.internalDependencies.map { it.withDots() }
     }
 }
