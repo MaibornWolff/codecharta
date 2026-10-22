@@ -47,8 +47,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Type parameters and local classes**: `dependencyparser` no longer links a Java, Kotlin or C# type parameter or a
   Java or Kotlin local class to a class of the same name elsewhere in the package.
 
-- **Private Kotlin declarations**: `dependencyparser` links a Kotlin `private` top-level declaration only from its own
-  file, so two files with a private class of the same name each link to their own.
+- **Private Kotlin declarations and C# file types**: `dependencyparser` links a Kotlin `private` top-level declaration
+  or a C# `file` type only from its own file, so two files with such a class of the same name each link to their own.
 
 - **No links between unrelated languages**: in a repository with several languages, `dependencyparser` no longer
   links a name to a declaration of a language that cannot refer to it, such as a Python name to a SQL table.

@@ -65,7 +65,7 @@ the rule yet; `sample-projects/regression/csharp/known-gaps.md` says how it devi
 | Rule | Probe | Today |
 | --- | --- | --- |
 | Declarations: the forms of a namespace declaration | `spec-file-scoped-namespace` | ok |
-| Declarations: a file type | `spec-file-type` | gap |
+| Declarations: a file type | `spec-file-type` | ok |
 | 1. type parameter | `spec-type-parameter` | ok |
 | 2. nested type of the own type | `spec-own-nested-type` | ok |
 | 2. nested type of an enclosing type | `spec-enclosing-nested-type` | ok |

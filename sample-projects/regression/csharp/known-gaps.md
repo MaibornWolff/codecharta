@@ -16,18 +16,6 @@ extra file second/Checkout.cs -> first/Util.cs
 extra leaf second/Checkout.cs#Checkout -> first/Util.cs#Util
 ```
 
-## spec-file-type
-
-A file type counts like any other type: every file of the namespace means the first copy.
-
-```text
-missing leaf a/Second.cs#Second -> a/Second.cs#Helper
-extra file a/Second.cs -> a/First.cs
-extra file a/Third.cs -> a/First.cs
-extra leaf a/Second.cs#Second -> a/First.cs#Helper
-extra leaf a/Third.cs#Third -> a/First.cs#Helper
-```
-
 ## spec-partial-every-part
 
 A use of a partial type points at one part file only.
