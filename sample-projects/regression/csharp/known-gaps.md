@@ -23,6 +23,17 @@ extra file a/App.cs -> a/AuditedAttribute.cs
 extra leaf a/App.cs#App -> a/AuditedAttribute.cs#AuditedAttribute
 ```
 
+## spec-copies-nearest
+
+C# takes the first declaring file, not the nearest one.
+
+```text
+missing file second/Checkout.cs -> second/Util.cs
+missing leaf second/Checkout.cs#Checkout -> second/Util.cs#Util
+extra file second/Checkout.cs -> first/Util.cs
+extra leaf second/Checkout.cs#Checkout -> first/Util.cs#Util
+```
+
 ## spec-file-type
 
 A file type counts like any other type: every file of the namespace means the first copy.
