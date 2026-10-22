@@ -401,7 +401,8 @@ Extraction positions in `EncounterEdgeCases.cs`:
   (`CreatureLookup.cs`); typed lambda parameters (`CreatureChecks.cs`); `Alias::` and `global::` names
   (`BestiaryImport.cs`). **Decisions derived from Java: accept — every usage form that names a project type should give an edge; a file without a type declaration should stay in the tree.**
 - Wrong: partial class `CreatureFacade`: incoming edges go to `CreatureFacade.Stable.cs` only, so the cycle
-  `Creature <-> CreatureFacade` is not reported. **Decision: ignore — documented.**
+  `Creature <-> CreatureFacade` is not reported. **Decision: ignore — documented.** Fixed since by the C# project rule
+  (`csharp.md`, decision 2): incoming edges reach both parts.
 - Bad: every usage kind is `usage`; records and structs are `class`; `.csx` is skipped without a message. **Decisions derived from Java: accept — records reported as `class`.** **Decision derived from Kotlin: ignore — every usage kind is `usage`, documented.** **Decision derived from Objective-C: accept — `.csx` skipped without a message, skipped extensions are listed.** **Decision derived from Go: ignore — structs reported as `class`.**
 - Good: namespace usings, fully qualified names, generic arguments and constraints, array parameter types,
   nullable types, attributes on classes and methods, property-pattern constants, non-ASCII type names, no false
