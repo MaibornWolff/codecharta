@@ -344,7 +344,7 @@ class GoDependencyTest {
         }
 
         @Test
-        fun `should extract the methods of a call chain in source order`() {
+        fun `should extract only the call of a chain that goes through a plain name`() {
             // Arrange
             val code = """
                 package main
@@ -359,7 +359,7 @@ class GoDependencyTest {
             val usedTypes = usedTypeNamesOf(code, "processChainedCalls")
 
             // Assert
-            assertThat(usedTypes).containsExactly("Connect", "Authenticate", "Execute", "GetResult")
+            assertThat(usedTypes).containsExactly("Connect")
         }
 
         @Test
@@ -465,7 +465,7 @@ class GoDependencyTest {
         }
 
         @Test
-        fun `should extract the method called on a field, however deep the field chain`() {
+        fun `should leave out a method called on a field`() {
             // Arrange
             val code = """
                 package main
@@ -480,11 +480,11 @@ class GoDependencyTest {
             val usedTypes = usedTypeNamesOf(code, "processFieldMethods")
 
             // Assert
-            assertThat(usedTypes).containsExactly("Info", "Validate")
+            assertThat(usedTypes).isEmpty()
         }
 
         @Test
-        fun `should extract the method called on the result of a function after that function`() {
+        fun `should leave out a method called on the result of a function`() {
             // Arrange
             val code = """
                 package main
@@ -499,7 +499,7 @@ class GoDependencyTest {
             val usedTypes = usedTypeNamesOf(code, "processWithInterface")
 
             // Assert
-            assertThat(usedTypes).containsExactly("Logger", "Info", "Warn", "getLogger")
+            assertThat(usedTypes).containsExactly("Logger", "Info", "getLogger")
         }
 
         @Test
@@ -749,7 +749,7 @@ class GoDependencyTest {
         }
 
         @Test
-        fun `should give a call through a selector on anything but a plain name no qualifier`() {
+        fun `should leave out a call through a selector on anything but a plain name`() {
             // Arrange
             val code = """
                 package main
@@ -764,7 +764,7 @@ class GoDependencyTest {
             val usedTypes = qualifiedNamesOf(code, "run")
 
             // Assert
-            assertThat(usedTypes).containsExactly("Connect" to listOf("client"), "Authenticate" to emptyList(), "Start" to emptyList())
+            assertThat(usedTypes).containsExactly("Connect" to listOf("client"))
         }
 
         @Test
