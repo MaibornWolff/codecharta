@@ -43,21 +43,6 @@ extra leaf a/App.cs#App -> a/Audited.cs#Audited
 extra leaf a/App.cs#App -> a/AuditedAttribute.cs#AuditedAttribute
 ```
 
-## spec-base-list-kinds
-
-The C# extractor reports no usage kind for a base-list entry.
-
-```text
-missing leaf a/IPrintable.cs#IPrintable -> a/IShape.cs#IShape usage=inheritance
-missing leaf a/Point.cs#Point -> a/IShape.cs#IShape usage=implementation
-missing leaf a/Report.cs#Report -> a/Document.cs#Document usage=inheritance
-missing leaf a/Report.cs#Report -> a/IPrintable.cs#IPrintable usage=implementation
-extra leaf a/IPrintable.cs#IPrintable -> a/IShape.cs#IShape
-extra leaf a/Point.cs#Point -> a/IShape.cs#IShape
-extra leaf a/Report.cs#Report -> a/Document.cs#Document
-extra leaf a/Report.cs#Report -> a/IPrintable.cs#IPrintable
-```
-
 ## spec-copies-nearest
 
 C# takes the first declaring file, not the nearest one.
@@ -92,14 +77,11 @@ missing leaf a/App.cs#App -> settings/Config.cs#Config
 
 ## spec-inherited-nested-type
 
-A nested type inherited from the base class does not shadow a type of the own namespace, and the base type carries no
-usage kind.
+A nested type inherited from the base class does not shadow a type of the own namespace.
 
 ```text
-missing leaf a/Report.cs#Report -> a/Document.cs#Document usage=inheritance
 missing leaf a/Report.cs#Report -> a/Document.cs#Section
 extra file a/Report.cs -> a/Section.cs
-extra leaf a/Report.cs#Report -> a/Document.cs#Document
 extra leaf a/Report.cs#Report -> a/Section.cs#Section
 ```
 

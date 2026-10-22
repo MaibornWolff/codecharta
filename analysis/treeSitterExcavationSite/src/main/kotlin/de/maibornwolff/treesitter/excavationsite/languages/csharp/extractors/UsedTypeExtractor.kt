@@ -2,6 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.csharp.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
 internal object UsedTypeExtractor {
@@ -119,12 +120,14 @@ internal object UsedTypeExtractor {
                 }.toList()
         }
 
+    // The base list writes the base class and the interfaces alike; the parser tells them apart once it knows the
+    // declaration a name resolves to
     private fun extractInheritanceTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[BASE_LIST].orEmpty().flatMap { baseList ->
             baseList
                 .namedChildren()
                 .filter { CSharpTypeHelper.isTypeNode(it) }
-                .mapNotNull { CSharpTypeHelper.extractType(it) }
+                .mapNotNull { CSharpTypeHelper.extractType(it)?.copy(usage = TypeUsage.INHERITANCE) }
                 .toList()
         }
 

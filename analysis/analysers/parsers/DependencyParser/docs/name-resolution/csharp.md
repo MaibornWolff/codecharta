@@ -87,7 +87,7 @@ the rule yet; `sample-projects/regression/csharp/known-gaps.md` says how it devi
 | Qualified through `global::` | `spec-global-qualifier` | gap |
 | Qualified through an alias of a namespace | `spec-alias-to-namespace` | ok |
 | Qualified through a type | `spec-qualified-through-type` | ok |
-| Base types | `spec-base-list-kinds` | gap |
+| Base types | `spec-base-list-kinds` | ok |
 | Attributes: `NameAttribute` | `spec-attribute-suffix` | ok |
 | Attributes: `Name` | `spec-attribute-plain-name` | ok |
 | Attributes: both: ambiguous | `spec-attribute-ambiguous` | gap |
