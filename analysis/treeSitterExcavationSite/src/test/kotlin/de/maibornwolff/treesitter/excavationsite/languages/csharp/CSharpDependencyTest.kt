@@ -1154,7 +1154,7 @@ class CSharpDependencyTest {
         @Nested
         inner class AttributeTypes {
             @Test
-            fun `should extract attribute types with suffix duplication`() {
+            fun `should report an attribute as one use that may also mean its name with the Attribute suffix`() {
                 // Arrange
                 val code = """
                     namespace MyNamespace;
@@ -1167,8 +1167,7 @@ class CSharpDependencyTest {
 
                 // Assert
                 assertThat(result.declarations[0].usedTypes).containsExactlyInAnyOrder(
-                    UsedType("Obsolete"),
-                    UsedType("ObsoleteAttribute")
+                    UsedType("Obsolete", alternativeName = "ObsoleteAttribute")
                 )
             }
 
@@ -1187,8 +1186,10 @@ class CSharpDependencyTest {
 
                 // Assert
                 assertThat(result.declarations[0].usedTypes).containsExactlyInAnyOrder(
-                    UsedType("System.Diagnostics.CodeAnalysis.SuppressMessage"),
-                    UsedType("System.Diagnostics.CodeAnalysis.SuppressMessageAttribute")
+                    UsedType(
+                        "System.Diagnostics.CodeAnalysis.SuppressMessage",
+                        alternativeName = "System.Diagnostics.CodeAnalysis.SuppressMessageAttribute"
+                    )
                 )
             }
         }
@@ -1256,8 +1257,7 @@ class CSharpDependencyTest {
                 UsedType("List", listOf(UsedType("GenericArg"))),
                 UsedType("CreatedType"),
                 UsedType("MyStaticType"),
-                UsedType("MyAttribute"),
-                UsedType("MyAttributeAttribute"),
+                UsedType("MyAttribute", alternativeName = "MyAttributeAttribute"),
                 UsedType("CheckedType")
             )
         }

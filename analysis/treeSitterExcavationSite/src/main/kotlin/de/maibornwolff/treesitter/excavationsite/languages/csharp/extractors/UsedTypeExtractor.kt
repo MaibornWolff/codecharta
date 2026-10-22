@@ -29,6 +29,9 @@ internal object UsedTypeExtractor {
 
     private val FILTERED_VARIABLE_TYPES = setOf("var", "void")
 
+    // `[Obsolete]` may mean the class Obsolete or ObsoleteAttribute, whichever is an attribute class
+    private const val ATTRIBUTE_SUFFIX = "Attribute"
+
     private val ALL_NODE_TYPES = setOf(
         CONSTRUCTOR_DECLARATION, METHOD_DECLARATION,
         CAST_EXPRESSION, AS_EXPRESSION,
@@ -179,7 +182,7 @@ internal object UsedTypeExtractor {
             val nameNode = attr.namedChildren().firstOrNull { CSharpTypeHelper.isTypeNode(it) }
             nameNode?.let { CSharpTypeHelper.extractType(it) }
         }
-        return attributes + attributes.map { UsedType(name = it.name + "Attribute") }
+        return attributes.map { it.copy(alternativeName = it.name + ATTRIBUTE_SUFFIX) }
     }
 
     private fun extractPatternMatchingTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
