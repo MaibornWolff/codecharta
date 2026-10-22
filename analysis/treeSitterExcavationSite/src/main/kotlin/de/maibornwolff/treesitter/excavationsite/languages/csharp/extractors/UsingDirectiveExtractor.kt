@@ -11,6 +11,7 @@ internal object UsingDirectiveExtractor {
     private const val QUALIFIED_NAME = "qualified_name"
     private const val IDENTIFIER = "identifier"
     private const val NAMESPACE_SEPARATOR = "."
+    private const val ALIAS_ASSIGNMENT = "="
 
     fun extract(rootNode: SyntaxNode): List<ImportDeclaration> = TreeTraversal
         .findAllDescendantsOfType(rootNode, USING_DIRECTIVE)
@@ -30,11 +31,20 @@ internal object UsingDirectiveExtractor {
 
     private fun toImportDeclaration(node: SyntaxNode, namespacePath: List<String>): ImportDeclaration? {
         val nameText = extractImportPath(node) ?: return null
+        val alias = aliasOf(node)
         return ImportDeclaration(
             path = nameText.split(NAMESPACE_SEPARATOR),
-            isWildcard = true,
-            namespacePath = namespacePath
+            isWildcard = alias == null,
+            namespacePath = namespacePath,
+            bindingName = alias
         )
+    }
+
+    // `using Alias = A.B;` names one namespace or type by the alias and imports nothing
+    private fun aliasOf(node: SyntaxNode): String? {
+        val children = node.children().toList()
+        if (children.none { it.type == ALIAS_ASSIGNMENT }) return null
+        return children.firstOrNull { it.type == IDENTIFIER }?.text
     }
 
     private fun extractImportPath(node: SyntaxNode): String? = extractQualifiedOrAliasedPath(node)
