@@ -77,7 +77,7 @@ data class Declaration(
     val usedTypes: Set<UsedType>,           // types referenced inside this declaration
     val parentPath: List<String> = [],      // namespace/package path: ["com", "example"]
     val angular: AngularDeclaration? = null, // what an Angular decorator declares: templateNames, templateUrl, imports, ...
-    val isFileScoped: Boolean = false       // only its own file can name it: a Kotlin `private` top-level declaration
+    val isFileScoped: Boolean = false       // only its own file can name it: Kotlin `private` top level, a C# `file` type
 )
 
 data class UsedType(

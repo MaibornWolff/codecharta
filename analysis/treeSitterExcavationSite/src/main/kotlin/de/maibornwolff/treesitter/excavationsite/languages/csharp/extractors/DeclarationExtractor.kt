@@ -30,7 +30,8 @@ internal object DeclarationExtractor {
                 name = name,
                 type = mapDeclarationTypeToClosestEquivalent(declarationNode.type),
                 usedTypes = UsedTypeExtractor.extract(declarationNode),
-                parentPath = namespacePath + parentClassPath
+                parentPath = namespacePath + parentClassPath,
+                isFileScoped = CSharpScopes.isFileScoped(declarationNode)
             )
         }
     }
