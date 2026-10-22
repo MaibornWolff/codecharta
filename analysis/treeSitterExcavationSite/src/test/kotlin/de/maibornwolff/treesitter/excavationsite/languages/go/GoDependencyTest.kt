@@ -484,7 +484,7 @@ class GoDependencyTest {
         }
 
         @Test
-        fun `should leave out a method called on the result of a function`() {
+        fun `should leave out a method called on a parameter or on the result of a function`() {
             // Arrange
             val code = """
                 package main
@@ -499,7 +499,7 @@ class GoDependencyTest {
             val usedTypes = usedTypeNamesOf(code, "processWithInterface")
 
             // Assert
-            assertThat(usedTypes).containsExactly("Logger", "Info", "getLogger")
+            assertThat(usedTypes).containsExactly("Logger", "getLogger")
         }
 
         @Test
@@ -522,7 +522,7 @@ class GoDependencyTest {
         }
 
         @Test
-        fun `should extract generic functions and the types they are called with`() {
+        fun `should extract generic functions and the types they are called with, but no method of a local variable`() {
             // Arrange
             val code = """
                 package main
@@ -542,7 +542,6 @@ class GoDependencyTest {
             assertThat(usedTypes).containsExactly(
                 "Map",
                 "NewContainer",
-                "Add",
                 "Transform",
                 "Convert",
                 "string",
@@ -783,6 +782,174 @@ class GoDependencyTest {
 
             // Assert
             assertThat(usedTypes).containsExactly("Order" to emptyList(), "Invoice" to emptyList())
+        }
+    }
+
+    @Nested
+    inner class NamesOfTheEnclosingFunction {
+        @Test
+        fun `should leave out a type parameter of the function`() {
+            // Arrange
+            val code = """
+                package shop
+
+                func Map[T any](value T) T {
+                    var zero T
+                    return zero
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypeNamesOf(code, "Map")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("any")
+        }
+
+        @Test
+        fun `should leave out a type parameter of a generic type`() {
+            // Arrange
+            val code = """
+                package shop
+
+                type Stack[T any] struct {
+                    items []T
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypeNamesOf(code, "Stack")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("any")
+        }
+
+        @Test
+        fun `should leave out a call of a variable the function declares`() {
+            // Arrange
+            val code = """
+                package shop
+
+                func Run() {
+                    price := func() {}
+                    price()
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypeNamesOf(code, "Run")
+
+            // Assert
+            assertThat(usedTypes).isEmpty()
+        }
+
+        @Test
+        fun `should leave out a type the function declares`() {
+            // Arrange
+            val code = """
+                package shop
+
+                func Run() {
+                    type mount struct{}
+                    _ = mount{}
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypeNamesOf(code, "Run")
+
+            // Assert
+            assertThat(usedTypes).isEmpty()
+        }
+
+        @Test
+        fun `should leave out a call through a parameter that hides an import name, but keep the type it is written with`() {
+            // Arrange
+            val code = """
+                package app
+
+                func Parameter(util util.Tool) {
+                    util.Helper()
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "Parameter")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("Tool" to listOf("util"), "util.Tool" to emptyList())
+        }
+
+        @Test
+        fun `should hide an import name from the end of a short variable declaration on`() {
+            // Arrange
+            val code = """
+                package app
+
+                func Shadowed() {
+                    util := util.New()
+                    util.Helper()
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "Shadowed")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("New" to listOf("util"))
+        }
+
+        @Test
+        fun `should hide an import name only inside the statement whose header declares the variable`() {
+            // Arrange
+            val code = """
+                package app
+
+                func Scoped(ok bool) {
+                    if util := util.New(); ok {
+                        util.Helper()
+                    }
+                    for util := 0; util < 1; util++ {
+                        util.Helper()
+                    }
+                    util.Kind()
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "Scoped")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("bool" to emptyList(), "New" to listOf("util"), "Kind" to listOf("util"))
+        }
+
+        @Test
+        fun `should hide an import name by a type switch variable and a received value`() {
+            // Arrange
+            val code = """
+                package app
+
+                func Switch(value any, channel chan util.Tool) {
+                    switch util := value.(type) {
+                    case util.Tool:
+                        util.Helper()
+                    }
+                    select {
+                    case util := <-channel:
+                        util.Helper()
+                    }
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "Switch")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(
+                "any" to emptyList(),
+                "Tool" to listOf("util"),
+                "util.Tool" to emptyList()
+            )
         }
     }
 }
