@@ -18,12 +18,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - **Same name in several places**: `dependencyparser` links a class that several files declare under one name to the
-  copy nearest to the file that uses it, instead of to whichever copy it read first, and a C# partial class to every
-  file of its project that holds a part of it.
+  copy nearest to the file that uses it, instead of to whichever copy it read first, a C# partial class to every
+  file of its project that holds a part of it, and a Go function written once per platform to each of its files.
 
 - **Imports in Java and Kotlin**: `dependencyparser` resolves a Java or Kotlin name only by the language's import
   rules, so it no longer links it to a class of the same name that no import makes visible, that two star imports
   make ambiguous, or that a Kotlin import renames with `as`.
+
+- **Imports in Go**: `dependencyparser` finds a Go package through the `go.mod` files and `vendor/` folders of the
+  analysed folder and links a name written through an import only to that package, so it follows dot imports and
+  local modules, tells `model.Creature` from `dto.Creature`, keeps a `_test` package apart from the package it tests,
+  and no longer links a method called on a variable to a type of the same name.
 
 - **Using directives in C#**: `dependencyparser` looks a C# name up in each enclosing namespace before the using
   directives written around it, so a class of the namespace wins over a using at the top of the file, a name two
@@ -45,8 +50,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   counts what it uses for the outer class, links a name to the nested class of the own or the base class before any
   other class of that name, and finds a Java or Kotlin one through an import such as `import …CreatureFacade.Builder`.
 
-- **Type parameters and local classes**: `dependencyparser` no longer links a Java, Kotlin or C# type parameter or a
-  Java or Kotlin local class to a class of the same name elsewhere in the package.
+- **Type parameters and local classes**: `dependencyparser` no longer links a Java, Kotlin, C# or Go type parameter, a
+  Java or Kotlin local class, or a type or variable declared in a Go function to a declaration of the same name
+  elsewhere in the package.
 
 - **Private Kotlin declarations and C# file types**: `dependencyparser` links a Kotlin `private` top-level declaration
   or a C# `file` type only from its own file, so two files with such a class of the same name each link to their own.

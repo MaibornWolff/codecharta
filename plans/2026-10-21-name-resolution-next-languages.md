@@ -12,8 +12,9 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 ## Resume here (for a fresh agent)
 
-- **State:** Java, Kotlin and C# are done; Go is in progress on branch `fix/dependency-name-resolution-go`, cut from
-  `fix/dependency-name-resolution-csharp`. See the section "Go" below for where it stands.
+- **State:** Java, Kotlin, C# and Go are done. Branch `fix/dependency-name-resolution-go` (cut from
+  `fix/dependency-name-resolution-csharp`) holds the Go commits; Christian pushes it and reviews it on GitHub. Next:
+  ask Christian which language comes next (AskUserQuestion), or pick one when he leaves it to you.
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -25,15 +26,15 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
   `known-gaps.md` against HEAD before committing.
 - **Tools** (`.claude/name-resolution-tools/`, git-ignored): `ccsh-baseline` (the release build), `cp-probes` (the
   197 checkpoint probes) with `cp-compare.py`, `edgediff.py`, `lines.py`, and two scripts that take build tags; a
-  build tag is a copy of `analysis/build/install/codecharta-analysis` in `ccsh-<tag>`, and `ccsh-csharp` is the head
-  of the C# branch, the comparison build for the first commit of the next language:
+  build tag is a copy of `analysis/build/install/codecharta-analysis` in `ccsh-<tag>`, and `ccsh-go10` is the head
+  of the Go branch, the comparison build for the first commit of the next language:
   - `accept.sh <prev> <new>`: edge diffs on samples, `analysis/`, `visualization/app`; the probes against their
     expectations; the checkpoint probes against the release; the gate on both parts.
   - `xcheck.sh <prev> <new>`: the whole output of both builds on every sample, probe, checkpoint probe, `analysis/`
     and `visualization/app`; for a refactor it must say 0 differences, otherwise only the language's files may differ.
-- **One commit, the chain:** `cd analysis && ./gradlew ktlintCheck test && ./gradlew distTar installDist &&
-  ./gradlew integrationTest`, copy the build to `ccsh-<tag>`, `npm run format:check`, `accept.sh`, `xcheck.sh`, then
-  commit. A run with `--bypass-gitignore` also reads `build/` copies of test resources; edges between such copies are
+- **One commit, the chain** (`chain.sh <prev> <new>` in the tools folder runs all of it): `cd analysis &&
+  ./gradlew ktlintCheck test && ./gradlew distTar installDist && ./gradlew integrationTest`, copy the build to
+  `ccsh-<tag>`, `npm run format:check`, `accept.sh`, `xcheck.sh`, then commit. A run with `--bypass-gitignore` also reads `build/` copies of test resources; edges between such copies are
   no regression of real code.
 
 ## How one language is done
@@ -83,8 +84,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 ## Order and state
 
-- Done: Java, Kotlin (see the plan above), C#; in progress: Go. Next, by Christian's choice when asked: TypeScript
-  and JavaScript (with Vue and Angular templates), Python, C and C++, PHP, Rust, Delphi, SQL.
+- Done: Java, Kotlin (see the plan above), C#, Go. Next, by Christian's choice when asked: TypeScript and JavaScript
+  (with Vue and Angular templates), Python, C and C++, PHP, Rust, Delphi, SQL.
 - Material: the checkpoint branch `fix/nearest-file-for-shared-logical-path` holds an earlier, unreviewed attempt and
   its reviewer probes; use them for ideas and as the regression net, not as code to copy.
 
@@ -96,25 +97,19 @@ left. The first part is on `main`; the rest (`file` types, copies by project) is
 release by decision: `java/r1-jnest` (nested = own leaf), `csharp/r3-cs2proj`, `r3-csmix`, `r3-csnested` (copies
 without a `.csproj` are one project).
 
-## Go (in progress, 2026-10-22)
+## Go (done, 2026-10-22)
 
-Spec `docs/name-resolution/go.md` (decisions 1–5): import paths through `go.mod` and `vendor/`, folder path as logical
-path, build-tag variants mean every file, `x_test` is its own package, a selector on a value draws no edge. 29 probes
-under `sample-projects/regression/go/`, 15 with gaps in `go/known-gaps.md`. Waiting for Christian's review of the page,
-then the implementation, one commit per item:
-
-1. `refactor`: `GoNameRules` next to the Go analyzer, still the default rules (xcheck: 0 differences).
-2. TSE: report a call through a selector with its qualifier (`util.New`), as a qualified type already is.
-3. Import paths through `go.mod`, `vendor/` and the suffix fallback (`GoModules`).
-4. The name an import binds (alias, package clause), a selector through it, no edge for a selector on a value.
-5. Simple names: own package, dot imports (exported only, ambiguous), predeclared identifiers.
-6. TSE and rules: declarations of the enclosing function (type parameters, variables, local types) hide names.
-7. `GoCopyRules`: build-tag variants, every file.
-8. External test package as a package of its own.
-9. CHANGELOG, README and `gh-pages/.../dependency.md`, the plan.
+Spec `docs/name-resolution/go.md` (decisions 1–5), 29 probes under `sample-projects/regression/go/`, no gap left; all
+on branch `fix/dependency-name-resolution-go`, waiting for Christian's push and review. Import paths go through
+`GoModules` (`go.mod`, `vendor/`, suffix fallback), `GoImports` writes a selector through an import as the full path,
+`GoNameRules` resolves it and simple names (own package, dot imports, predeclared), `GoCopyRules` points at every
+build-tag variant, `LocalNames` in the extractor hides what a function declares. Checkpoint probe worse than the
+release by decision: `go/r3-g1` (`LocalType -> closure.go#util`, a function-local type is no target). The go.mod
+mapping and `GoNameRules` had to go into one commit, and the external test package before the copy rule: either alone
+drew wrong edges.
 
 ## Steps
 
 - [x] Ask Christian which language comes next: C# (2026-10-22)
-- [x] Next language: Go (left to Claude by Christian, 2026-10-22)
+- [x] Next language: Go (left to Claude by Christian, 2026-10-22), done 2026-10-22
 - [ ] For each language: spec, probes, implementation commits, acceptance
