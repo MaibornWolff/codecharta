@@ -146,8 +146,9 @@ describe("LabelCreationService", () => {
             expect(metricSpan.style.fontSize).toBe("20px")
         })
 
-        it("should keep base font sizes at default labelSize of 1", () => {
+        it("should keep base font sizes at a labelSize of 1", () => {
             // Arrange
+            store.dispatch(setLabelSize({ value: 1 }))
             store.dispatch(setShowMetricLabelNodeName({ value: true }))
             store.dispatch(setShowMetricLabelNameValue({ value: true }))
 

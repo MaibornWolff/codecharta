@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+- **Label defaults**: labels start a quarter larger and show their metric value along with the node name, also after resetting the label settings.
+
 ### Fixed 🐞
 
 - **Dependency tab without edges**: the dependency view is offered only for a map that has edges to draw between its boxes.

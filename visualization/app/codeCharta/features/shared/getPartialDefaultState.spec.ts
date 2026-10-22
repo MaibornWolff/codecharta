@@ -26,9 +26,9 @@ describe("getPartialDefaultState", () => {
         expect(actualSettings).toEqual({ preferences: { radialFolderValue: "max", radialFolderStyle: "tinted", radialFolderTint: 0.5 } })
     })
 
-    it("should reset 'labelSize' to its static default of 1", () => {
+    it("should reset 'labelSize' to its static default of 1.25", () => {
         const keySettings = ["mapState.labelSize"]
-        const expectedSettings = { mapState: { labelSize: 1 } }
+        const expectedSettings = { mapState: { labelSize: 1.25 } }
 
         const actualSettings = getPartialDefaultState(keySettings, DEFAULT_STATE)
 
