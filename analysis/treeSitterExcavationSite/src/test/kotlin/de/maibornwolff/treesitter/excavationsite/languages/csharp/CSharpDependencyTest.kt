@@ -355,7 +355,7 @@ class CSharpDependencyTest {
         }
 
         @Test
-        fun `should extract aliased using directives`() {
+        fun `should extract an aliased using directive with its alias and not as an import of the namespace`() {
             // Arrange
             val code = """
                 using Alias = System.Collections.Generic;
@@ -369,7 +369,8 @@ class CSharpDependencyTest {
             // Assert
             assertThat(result.imports).hasSize(1)
             assertThat(result.imports[0].path).containsExactly("System", "Collections", "Generic")
-            assertThat(result.imports[0].isWildcard).isTrue()
+            assertThat(result.imports[0].isWildcard).isFalse()
+            assertThat(result.imports[0].bindingName).isEqualTo("Alias")
         }
 
         @Test
