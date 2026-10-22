@@ -68,7 +68,7 @@ rule yet; `sample-projects/regression/go/known-gaps.md` says how it deviates.
 | Declarations: the package folder, several files | `spec-own-package` | ok |
 | Declarations: a method belongs to its receiver type | `spec-method-of-receiver` | ok |
 | Declarations and 1: a type declared in a function | `spec-local-type` | ok |
-| Declarations, decision 3: build-tag variants | `spec-build-tag-variants` | gap |
+| Declarations, decision 3: build-tag variants | `spec-build-tag-variants` | ok |
 | Declarations, decision 4: external test package | `spec-external-test-package` | ok |
 | Import paths 1: module path of `go.mod` | `spec-module-path` | ok |
 | Import paths 1: the longest module path | `spec-longest-module-path` | ok |

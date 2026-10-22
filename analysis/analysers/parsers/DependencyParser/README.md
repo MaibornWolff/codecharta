@@ -91,7 +91,7 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
   *on* the name points at the file that shares the longest folder path with the file using it, and among
   equally near files at the first as the scan lists them (path order); for SQL at the latest migration, and
   for C# at every file of the nearest project (the folder of a `.csproj`) that declares it, the parts of a
-  partial class. A Kotlin `private` top-level copy or a C# `file` type counts only for the file it is written in.
+  partial class; for Go at every file of the package that declares it, its build-tag variants. A Kotlin `private` top-level copy or a C# `file` type counts only for the file it is written in.
 - `kind` is the declaration kind: `class`, `valueclass`, `interface`, `annotation`, `enum`, `function`,
   `variable`, `reexport`, `script` or `unknown`.
 - `leafEdges` is a list of its own rather than a widened `Edge`, because `edges` is what the edge-metric

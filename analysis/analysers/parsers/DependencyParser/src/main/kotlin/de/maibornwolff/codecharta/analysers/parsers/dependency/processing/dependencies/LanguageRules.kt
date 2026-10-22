@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.depen
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpProjects
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.golang.GoCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.golang.GoNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.java.JavaNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlCopyRules
@@ -25,6 +26,7 @@ internal object LanguageRules {
     fun copiesOf(language: SupportedLanguage, analysisRoot: File?): CopyRules = when (language) {
         SupportedLanguage.C_SHARP -> CSharpCopyRules(CSharpProjects(analysisRoot))
         SupportedLanguage.SQL -> SqlCopyRules
+        SupportedLanguage.GO -> GoCopyRules
         else -> NearestCopy
     }
 }
