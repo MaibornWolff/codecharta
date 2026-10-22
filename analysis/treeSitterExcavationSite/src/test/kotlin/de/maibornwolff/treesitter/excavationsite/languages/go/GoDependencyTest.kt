@@ -260,7 +260,7 @@ class GoDependencyTest {
     @Nested
     inner class UsedTypesOfTypeDeclarations {
         @Test
-        fun `should extract field types, a qualified type both as written and by its name`() {
+        fun `should extract field types, a qualified type both as written and by its name, but not the declared name`() {
             // Arrange
             val code = """
                 package shop
@@ -275,7 +275,7 @@ class GoDependencyTest {
             val usedTypes = usedTypeNamesOf(code, "Order")
 
             // Assert
-            assertThat(usedTypes).containsExactly("Order", "Customer", "http.Client", "Client")
+            assertThat(usedTypes).containsExactly("Customer", "http.Client", "Client")
         }
     }
 
@@ -624,7 +624,7 @@ class GoDependencyTest {
             val usedTypes = usedTypeNamesOf(code, "Config")
 
             // Assert
-            assertThat(usedTypes).containsExactly("Config", "string", "error", "LoadConfigFile", "validate")
+            assertThat(usedTypes).containsExactly("string", "Config", "error", "LoadConfigFile", "validate")
         }
 
         @Test
@@ -701,7 +701,7 @@ class GoDependencyTest {
             val usedTypes = qualifiedNamesOf(code, "Order")
 
             // Assert
-            assertThat(usedTypes).containsExactly("Order" to emptyList(), "http.Client" to emptyList(), "Client" to listOf("http"))
+            assertThat(usedTypes).containsExactly("http.Client" to emptyList(), "Client" to listOf("http"))
         }
 
         @Test
