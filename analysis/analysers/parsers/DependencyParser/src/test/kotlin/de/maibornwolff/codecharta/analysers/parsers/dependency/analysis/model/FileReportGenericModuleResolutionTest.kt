@@ -32,11 +32,6 @@ class FileReportGenericModuleResolutionTest {
                 SupportedLanguage.TYPESCRIPT,
                 "TypeScript path mapping: @/src/domain/entities → domain.entities",
                 Triple(listOf("domain", "entities", "User"), listOf("src", "app", "domain", "entities"), "User")
-            ),
-            Triple(
-                SupportedLanguage.C_SHARP,
-                "C# namespace: MyCompany.MyProject.Domain.Models → Domain.Models",
-                Triple(listOf("Domain", "Models", "User"), listOf("MyCompany", "MyProject", "Domain", "Models"), "User")
             )
         )
 

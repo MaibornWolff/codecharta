@@ -24,7 +24,8 @@ data class Node(
         fileScopedPaths: FileScopedPaths = FileScopedPaths.NONE
     ): Node {
         val followsJavaRules = language.nameScope == SupportedLanguage.JAVA
-        val ownPackage = if (followsJavaRules) packageOf(internalNodePaths) else pathWithName.withoutName()
+        val hasNestedTypes = followsJavaRules || language == SupportedLanguage.C_SHARP
+        val ownPackage = if (hasNestedTypes) packageOf(internalNodePaths) else pathWithName.withoutName()
         val resolver =
             TypeImportResolver(
                 ImportingDeclaration(pathWithName, physicalPath, dependencies, language, ownPackage),

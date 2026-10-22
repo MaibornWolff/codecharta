@@ -5,15 +5,6 @@ The probes of this folder whose output deviates from their `expected.txt` today,
 expected line the parser does not draw yet and `extra <line>` a wrong line it draws; `ProbeRegressionTest` fails once a
 gap closes, and the closed lines are deleted here.
 
-## spec-ambiguous-usings
-
-Two using directives that both import the name are not ambiguous to the parser: the first one wins.
-
-```text
-extra file a/App.cs -> b/Config.cs
-extra leaf a/App.cs#App -> b/Config.cs#Config
-```
-
 ## spec-attribute-ambiguous
 
 With both `Name` and `NameAttribute` existing, the parser draws an edge to each.
@@ -55,26 +46,6 @@ A name qualified with `global::` draws no edge.
 ```text
 missing file a/App.cs -> settings/Config.cs
 missing leaf a/App.cs#App -> settings/Config.cs#Config
-```
-
-## spec-outer-namespace-beats-top-using
-
-A using directive at the top of the file wins over a type of an enclosing namespace.
-
-```text
-missing file a/b/App.cs -> a/Config.cs
-missing leaf a/b/App.cs#App -> a/Config.cs#Config
-extra file a/b/App.cs -> c/Config.cs
-extra leaf a/b/App.cs#App -> c/Config.cs#Config
-```
-
-## spec-parent-namespace
-
-A type of an enclosing namespace is not found from a namespace below it.
-
-```text
-missing file a/b/App.cs -> a/Config.cs
-missing leaf a/b/App.cs#App -> a/Config.cs#Config
 ```
 
 ## spec-partial-every-part

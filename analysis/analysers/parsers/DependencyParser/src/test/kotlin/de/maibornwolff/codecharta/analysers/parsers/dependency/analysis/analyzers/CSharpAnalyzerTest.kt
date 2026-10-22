@@ -279,9 +279,13 @@ class CSharpAnalyzerTest {
         assertEquals(4, dependencies.size)
         assertThat(dependencies).containsExactlyInAnyOrder(
             Dependency(Path.fromStringWithDots("De.Maibornwolff.DependaCharta.Analysis.Analyzers"), true),
-            Dependency(Path.fromStringWithDots("System"), true),
-            Dependency(Path.fromStringWithDots("System.Collections.Generic"), true),
-            Dependency(Path.fromStringWithDots("Microsoft.Extensions.Options"), true)
+            Dependency(Path.fromStringWithDots("System"), true, declaredIn = emptyList()),
+            Dependency(Path.fromStringWithDots("System.Collections.Generic"), true, declaredIn = emptyList()),
+            Dependency(
+                Path.fromStringWithDots("Microsoft.Extensions.Options"),
+                true,
+                declaredIn = listOf("De", "Maibornwolff", "DependaCharta", "Analysis", "Analyzers")
+            )
         )
     }
 
@@ -319,9 +323,21 @@ class CSharpAnalyzerTest {
         val node1 = report.nodes[0]
         assertThat(node1.dependencies).containsExactlyInAnyOrder(
             Dependency(Path.fromStringWithDots("De.Maibornwolff.DependaCharta.Analysis.Analyzers1"), true),
-            Dependency(Path.fromStringWithDots("System"), true),
-            Dependency(Path.fromStringWithDots("System.Collections.Generic"), true),
-            Dependency(Path.fromStringWithDots("Microsoft.Extensions.Options"), true)
+            Dependency(
+                Path.fromStringWithDots("System"),
+                true,
+                declaredIn = listOf("De", "Maibornwolff", "DependaCharta", "Analysis", "Analyzers1")
+            ),
+            Dependency(
+                Path.fromStringWithDots("System.Collections.Generic"),
+                true,
+                declaredIn = listOf("De", "Maibornwolff", "DependaCharta", "Analysis", "Analyzers1")
+            ),
+            Dependency(
+                Path.fromStringWithDots("Microsoft.Extensions.Options"),
+                true,
+                declaredIn = listOf("De", "Maibornwolff", "DependaCharta", "Analysis", "Analyzers1")
+            )
         )
         val node2 = report.nodes[1]
         assertThat(node2.dependencies).containsExactlyInAnyOrder(
@@ -363,9 +379,9 @@ class CSharpAnalyzerTest {
         val node1 = report.nodes[0]
         assertThat(node1.dependencies).containsExactlyInAnyOrder(
             Dependency(Path.fromStringWithDots("Simple"), true),
-            Dependency(Path.fromStringWithDots("System"), true),
-            Dependency(Path.fromStringWithDots("System.Collections.Generic"), true),
-            Dependency(Path.fromStringWithDots("Microsoft.Extensions.Options"), true)
+            Dependency(Path.fromStringWithDots("System"), true, declaredIn = listOf("Simple")),
+            Dependency(Path.fromStringWithDots("System.Collections.Generic"), true, declaredIn = listOf("Simple")),
+            Dependency(Path.fromStringWithDots("Microsoft.Extensions.Options"), true, declaredIn = listOf("Simple"))
         )
         val node2 = report.nodes[1]
         assertThat(node2.dependencies).containsExactlyInAnyOrder(
@@ -398,7 +414,7 @@ class CSharpAnalyzerTest {
         assertThat(inner.dependencies).containsExactlyInAnyOrder(
             Dependency(Path.fromStringWithDots("Shop"), true),
             Dependency(Path.fromStringWithDots("Shop.Outer"), true),
-            Dependency(Path.fromStringWithDots("System"), true)
+            Dependency(Path.fromStringWithDots("System"), true, declaredIn = listOf("Shop"))
         )
     }
 
@@ -599,6 +615,53 @@ public class TestClass(){ }
         assertThat(typeAliasTargets).containsExactly("B.Config")
         assertThat(targetNameTargets).isEmpty()
         assertThat(namespaceAliasTargets).containsExactly("B.Settings.Section")
+    }
+
+    @Test
+    fun `should look a simple name up in each enclosing namespace outwards, its types before its using directives`() {
+        // Arrange
+        val topUsing = csharpFile("a/b/Top.cs", "using C;\nnamespace A.B { public class Top { public Config Settings; } }")
+        val innerUsing = csharpFile("a/b/Inner.cs", "namespace A.B { using C; public class Inner { public Config Settings; } }")
+        val outerConfig = csharpFile("a/Config.cs", "namespace A { public class Config { } }")
+        val importedConfig = csharpFile("c/Config.cs", "namespace C { public class Config { } }")
+        val files = arrayOf(topUsing, innerUsing, outerConfig, importedConfig)
+
+        // Act
+        val topTargets = internalTargetsOf("Top", *files)
+        val innerTargets = internalTargetsOf("Inner", *files)
+
+        // Assert
+        assertThat(topTargets).containsExactly("A.Config")
+        assertThat(innerTargets).containsExactly("C.Config")
+    }
+
+    @Test
+    fun `should not resolve a simple name that two using directives of one namespace both import`() {
+        // Arrange
+        val app = csharpFile("a/App.cs", "using B;\nusing C;\nnamespace A { public class App { public Config Settings; } }")
+        val first = csharpFile("b/Config.cs", "namespace B { public class Config { } }")
+        val second = csharpFile("c/Config.cs", "namespace C { public class Config { } }")
+
+        // Act
+        val targets = internalTargetsOf("App", app, first, second)
+
+        // Assert
+        assertThat(targets).isEmpty()
+    }
+
+    @Test
+    fun `should not count a using alias of a namespace among the using directives that make a name ambiguous`() {
+        // Arrange
+        val facade =
+            csharpFile("a/Facade.cs", "using Domain;\nusing Dto = A.Dto;\nnamespace A { public class Facade { public Creature Current; } }")
+        val domainCreature = csharpFile("domain/Creature.cs", "namespace Domain { public class Creature { } }")
+        val dtoCreature = csharpFile("a/dto/Creature.cs", "namespace A.Dto { public class Creature { } }")
+
+        // Act
+        val targets = internalTargetsOf("Facade", facade, domainCreature, dtoCreature)
+
+        // Assert
+        assertThat(targets).containsExactly("Domain.Creature")
     }
 
     private fun csharpFile(physicalPath: String, content: String) = FileInfo(SupportedLanguage.C_SHARP, physicalPath, content)

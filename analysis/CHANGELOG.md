@@ -24,6 +24,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   rules, so it no longer links it to a class of the same name that no import makes visible, that two star imports
   make ambiguous, or that a Kotlin import renames with `as`.
 
+- **Using directives in C#**: `dependencyparser` looks a C# name up in each enclosing namespace before the using
+  directives written around it, so a class of the namespace wins over a using at the top of the file, and a name two
+  using directives both import links to neither.
+
 - **Using aliases in C#**: `dependencyparser` links a name written through a C# using alias such as
   `using Dto = Shop.Dto;` to the type or namespace it stands for, and no longer takes the alias for an import of
   every type of that namespace.

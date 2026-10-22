@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.contract
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
@@ -16,8 +17,9 @@ class SotsCSharpExpectedNodesBuilder : SotsExpectedNodesBuilder() {
         val expectedNodes = super.build()
         return expectedNodes.map { expectedNode ->
             expectedNode.copy(
+                nodes = expectedNode.nodes.map { it.withUsingsAtTheTop() },
                 ignorableDependencies = setOf(
-                    Dependency.asWildcard("Microsoft", "Extensions", "DependencyInjection")
+                    Dependency.asWildcard("Microsoft", "Extensions", "DependencyInjection").copy(declaredIn = emptyList())
                 ),
                 ignorableTypes = setOf(
                     Type.simple("List"),
@@ -42,6 +44,19 @@ class SotsCSharpExpectedNodesBuilder : SotsExpectedNodesBuilder() {
             )
         }
     }
+
+    // The example files write their using directives at the top, before the namespace, which is no using directive
+    private fun Node.withUsingsAtTheTop(): Node = copy(
+        dependencies = dependencies.mapTo(LinkedHashSet()) {
+            if (it.path.parts ==
+                pathWithName.withoutName()
+            ) {
+                it
+            } else {
+                it.copy(declaredIn = emptyList())
+            }
+        }
+    )
 
     override fun buildFightableResult(): ExpectedNode {
         val result = super.buildFightableResult()
