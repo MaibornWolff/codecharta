@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Fi
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.ProjectNames
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.resolveTypes
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.model.NodeInformation
@@ -27,15 +28,17 @@ class DependencyResolverService {
             val dictionaryByScope = nodesByScope.mapValues { (_, scopedNodes) -> getDictionary(scopedNodes) }
             val knownNodePathsByScope = nodesByScope.mapValues { (_, scopedNodes) -> getKnownNodePaths(scopedNodes) }
             val fileScopedPaths = getFileScopedPaths(nodes)
-            val resolvedNodes = nodes.map { node ->
-                val scope = node.language.nameScope
-                node.resolveTypes(
+            val projectNamesByLanguage = nodes.map { it.language }.distinct().associateWith { language ->
+                val scope = language.nameScope
+                ProjectNames(
                     dictionaryByScope.getValue(scope),
-                    standardLibraryFor(node.language).get(),
+                    standardLibraryFor(language).get(),
                     knownNodePathsByScope.getValue(scope),
-                    fileScopedPaths,
-                    nameRulesFor(node.language)
+                    fileScopedPaths
                 )
+            }
+            val resolvedNodes = nodes.map { node ->
+                node.resolveTypes(projectNamesByLanguage.getValue(node.language), nameRulesFor(node.language))
             }
             return resolvedNodes
                 .map {
