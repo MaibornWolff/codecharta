@@ -99,8 +99,19 @@ without a `.csproj` are one project).
 ## Go (in progress, 2026-10-22)
 
 Spec `docs/name-resolution/go.md` (decisions 1–5): import paths through `go.mod` and `vendor/`, folder path as logical
-path, build-tag variants mean every file, `x_test` is its own package, a selector on a value draws no edge. Next:
-probes under `sample-projects/regression/go/`, then the implementation commits.
+path, build-tag variants mean every file, `x_test` is its own package, a selector on a value draws no edge. 29 probes
+under `sample-projects/regression/go/`, 15 with gaps in `go/known-gaps.md`. Waiting for Christian's review of the page,
+then the implementation, one commit per item:
+
+1. `refactor`: `GoNameRules` next to the Go analyzer, still the default rules (xcheck: 0 differences).
+2. TSE: report a call through a selector with its qualifier (`util.New`), as a qualified type already is.
+3. Import paths through `go.mod`, `vendor/` and the suffix fallback (`GoModules`).
+4. The name an import binds (alias, package clause), a selector through it, no edge for a selector on a value.
+5. Simple names: own package, dot imports (exported only, ambiguous), predeclared identifiers.
+6. TSE and rules: declarations of the enclosing function (type parameters, variables, local types) hide names.
+7. `GoCopyRules`: build-tag variants, every file.
+8. External test package as a package of its own.
+9. CHANGELOG, README and `gh-pages/.../dependency.md`, the plan.
 
 ## Steps
 
