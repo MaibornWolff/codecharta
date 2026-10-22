@@ -14,7 +14,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
  * packages is how one Go file depends on another without naming a type.
  *
  * A name written behind a selector on a plain name (`http.Client`, `util.New()`) carries that name as its
- * [UsedType.namespacePrefix], which may be an import or a value; behind any other selector it carries none.
+ * [UsedType.namespacePrefix], which may be an import or a value. A method called on anything else (`a.b.C()`,
+ * `x().M()`) is a method of a value whose type is not inferred, so it is left out.
  */
 internal object UsedTypeExtractor {
     private const val FUNCTION_DECLARATION = "function_declaration"
@@ -96,14 +97,15 @@ internal object UsedTypeExtractor {
 
     private fun calledMethodNames(calls: List<SyntaxNode>): List<UsedType> = calls
         .mapNotNull { call -> call.fieldOfType(FUNCTION_FIELD, SELECTOR_EXPRESSION) }
+        .filter { selector -> selector.fieldOfType(OPERAND_FIELD, IDENTIFIER) != null }
         .mapNotNull { selector -> selector.fieldOfType(FIELD_FIELD, FIELD_IDENTIFIER) }
         .let { methodNames -> inSourceOrder(methodNames) }
         .filter { it.text.isNotEmpty() }
-        .map { methodName -> calledThroughSelector(methodName) }
+        .map { methodName -> calledThroughPlainName(methodName) }
 
-    private fun calledThroughSelector(methodName: SyntaxNode): UsedType {
-        val qualifier = methodName.parent.fieldOfType(OPERAND_FIELD, IDENTIFIER) ?: return UsedType(methodName.text)
-        return UsedType(methodName.text, namespacePrefix = listOf(qualifier.text))
+    private fun calledThroughPlainName(methodName: SyntaxNode): UsedType {
+        val qualifier = methodName.parent.getChildByFieldName(OPERAND_FIELD).text
+        return UsedType(methodName.text, namespacePrefix = listOf(qualifier))
     }
 
     private fun calledFunctionNames(calls: List<SyntaxNode>): List<UsedType> = calls
