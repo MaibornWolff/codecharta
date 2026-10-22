@@ -264,6 +264,42 @@ class DependencyResolverServiceTest {
     }
 
     @Test
+    fun `should mark a C# base type as implemented when a class names an interface and as inherited otherwise`() {
+        // Arrange
+        val namespace = Dependency(Path(listOf("Shop")), true)
+
+        fun csharpType(name: String, nodeType: NodeType, vararg baseTypes: String) = Node.build(
+            pathWithName = Path(listOf("Shop", name)),
+            physicalPath = "$name.cs",
+            nodeType = nodeType,
+            language = SupportedLanguage.C_SHARP,
+            dependencies = setOf(namespace),
+            usedTypes = baseTypes.map { Type(it, TypeOfUsage.INHERITANCE, emptyList()) }.toSet()
+        )
+        val report = FileReport(
+            nodes = listOf(
+                csharpType("Report", NodeType.CLASS, "Document", "IPrintable"),
+                csharpType("Document", NodeType.CLASS),
+                csharpType("IPrintable", NodeType.INTERFACE, "IShape"),
+                csharpType("IShape", NodeType.INTERFACE)
+            )
+        )
+
+        // Act
+        val resolvedNodes = DependencyResolverService.resolveNodes(listOf(report))
+
+        // Assert
+        val internalDependenciesByName = resolvedNodes.associate { it.name() to it.resolvedNodeDependencies.internalDependencies }
+        assertThat(internalDependenciesByName["Report"]).containsExactlyInAnyOrder(
+            Dependency(Path(listOf("Shop", "Document")), type = TypeOfUsage.INHERITANCE),
+            Dependency(Path(listOf("Shop", "IPrintable")), type = TypeOfUsage.IMPLEMENTATION)
+        )
+        assertThat(internalDependenciesByName["IPrintable"]).containsExactly(
+            Dependency(Path(listOf("Shop", "IShape")), type = TypeOfUsage.INHERITANCE)
+        )
+    }
+
+    @Test
     fun `should resolve C# node and filter out standard library types`() {
         // Arrange
         val csClass = Node.build(
