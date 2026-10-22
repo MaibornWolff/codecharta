@@ -81,7 +81,7 @@ class GoAnalyzerUsedTypeTest {
     }
 
     @Test
-    fun `should extract qualified type names`() {
+    fun `should name nothing through a library package`() {
         // Arrange
         val goCode = """
             package main
@@ -96,11 +96,11 @@ class GoAnalyzerUsedTypeTest {
 
         // Assert
         val usedTypes = report.nodes.first().usedTypes
-        assertThat(usedTypes).contains(Type.simple("Context"))
+        assertThat(usedTypes).isEmpty()
     }
 
     @Test
-    fun `should keep the line break a used type name starts with next to a missing token`() {
+    fun `should name nothing through a broken selector next to a missing token`() {
         // Arrange
         val goCode = "func T({\"\",//\n.go}"
         val fileInfo = FileInfo(SupportedLanguage.GO, "broken.go", goCode)
@@ -109,6 +109,6 @@ class GoAnalyzerUsedTypeTest {
         val report = GoAnalyzer(fileInfo).analyze()
 
         // Assert
-        assertThat(report.nodes.single().usedTypes.map { it.name }).containsExactly("go", "\n.go")
+        assertThat(report.nodes.single().usedTypes).isEmpty()
     }
 }

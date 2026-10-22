@@ -28,7 +28,8 @@ An import path means the first of these folders that exists:
 2. For a file of a module, `vendor/` plus the import path below that module's folder.
 3. For a file under no `go.mod`, the folder whose path below the analysis root the import path ends with, in whole
    segments and at least two of them: `example.com/shop/domain/model` means `domain/model`, and
-   `example.com/shop/util` alone means no folder `util`.
+   `example.com/shop/util` alone means no folder `util`. The longest ending wins, and of equally long ones the first
+   folder in path order.
 4. None: a library package, such as `fmt`, `github.com/google/uuid` or the cgo pseudo-package `C`. A name through it
    draws no edge.
 
@@ -66,31 +67,31 @@ rule yet; `sample-projects/regression/go/known-gaps.md` says how it deviates.
 | --- | --- | --- |
 | Declarations: the package folder, several files | `spec-own-package` | ok |
 | Declarations: a method belongs to its receiver type | `spec-method-of-receiver` | ok |
-| Declarations and 1: a type declared in a function | `spec-local-type` | gap |
+| Declarations and 1: a type declared in a function | `spec-local-type` | ok |
 | Declarations, decision 3: build-tag variants | `spec-build-tag-variants` | gap |
 | Declarations, decision 4: external test package | `spec-external-test-package` | gap |
-| Import paths 1: module path of `go.mod` | `spec-module-path` | gap |
-| Import paths 1: the longest module path | `spec-longest-module-path` | gap |
+| Import paths 1: module path of `go.mod` | `spec-module-path` | ok |
+| Import paths 1: the longest module path | `spec-longest-module-path` | ok |
 | Import paths 1: whole segments only | `spec-module-whole-segments` | ok |
-| Import paths 1: another module of the analysed folder | `spec-other-module` | gap |
-| Import paths 2: `vendor/` | `spec-vendor` | gap |
+| Import paths 1: another module of the analysed folder | `spec-other-module` | ok |
+| Import paths 2: `vendor/` | `spec-vendor` | ok |
 | Import paths 3: under no `go.mod`, suffix of two segments | `spec-no-go-mod` | ok |
-| Import paths 4: library package | `spec-library-import` | gap |
-| Import paths: an alias binds the name | `spec-alias-import` | gap |
-| Import paths: the package clause binds the name | `spec-package-clause-name` | gap |
+| Import paths 4: library package | `spec-library-import` | ok |
+| Import paths: an alias binds the name | `spec-alias-import` | ok |
+| Import paths: the package clause binds the name | `spec-package-clause-name` | ok |
 | Import paths: a blank import binds no name | `spec-blank-import` | ok |
-| 1. type parameter | `spec-type-parameter` | gap |
-| 1. variable of the enclosing function | `spec-local-declaration` | gap |
+| 1. type parameter | `spec-type-parameter` | ok |
+| 1. variable of the enclosing function | `spec-local-declaration` | ok |
 | 2. own package | `spec-own-package` | ok |
-| 3. dot import | `spec-dot-import` | gap |
+| 3. dot import | `spec-dot-import` | ok |
 | 3. two dot imports: ambiguous | `spec-ambiguous-dot-imports` | ok |
 | 3. a dot import brings in exported names only | `spec-dot-import-exported-only` | ok |
 | 2 and 3: own package over a dot import | `spec-package-beats-dot-import` | ok |
 | 4. predeclared identifier | `spec-predeclared` | ok |
 | 2 and 4: own package over a predeclared identifier | `spec-package-shadows-predeclared` | ok |
-| Selector through an import name | `spec-qualified-through-import` | gap |
+| Selector through an import name | `spec-qualified-through-import` | ok |
 | Selector: the import name picks the package | `spec-qualifier-picks-package` | ok |
-| Selector: a local declaration hides an import name | `spec-import-hidden-by-local` | gap |
+| Selector: a local declaration hides an import name | `spec-import-hidden-by-local` | ok |
 | Selector on a value, decision 5 | `spec-selector-on-value` | ok |
 | Shared rule 1, name scope | `spec-name-scope` | ok |
 | Shared rule 4, self | `spec-self` | ok |

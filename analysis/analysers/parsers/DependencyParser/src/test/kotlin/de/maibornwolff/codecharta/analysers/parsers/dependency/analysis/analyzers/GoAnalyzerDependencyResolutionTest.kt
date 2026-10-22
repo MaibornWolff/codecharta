@@ -5,8 +5,11 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Fi
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.resolveTypes
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
+import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies.DependencyResolverService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
+import java.io.File
 
 class GoAnalyzerDependencyResolutionTest {
     @Test
@@ -78,13 +81,16 @@ class GoAnalyzerDependencyResolutionTest {
     }
 
     @Test
-    fun `should detect cross package type usage`() {
-        // Arrange - Simulate usage of types from another package
+    fun `should write a type of an imported project package with its full path`(
+        @TempDir projectRoot: File
+    ) {
+        // Arrange
+        projectRoot.withFile("go.mod", "module example.com/app\n").withFile("config/config.go", "package config\n")
         val goCode = """
             package main
 
             import (
-                "config"
+                "example.com/app/config"
                 "fmt"
             )
 
@@ -95,34 +101,24 @@ class GoAnalyzerDependencyResolutionTest {
             }
 
             func processConfig(c *config.Config) {
-                // Process the config
             }
         """.trimIndent()
 
         // Act
-        val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./main.go", goCode)).analyze()
+        val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "main.go", goCode, projectRoot)).analyze()
 
         // Assert
-        println("Found ${report.nodes.size} nodes:")
-        report.nodes.forEach { node ->
-            println("Node: ${node.pathWithName.parts.last()}")
-            println("  Dependencies: ${node.dependencies.map { it.path.parts }}")
-            println("  UsedTypes: ${node.usedTypes.map { it.name }}")
-            println()
-        }
-
-        // Should detect usage of config.Config and config.New
         val processConfigNode = report.nodes.find { it.pathWithName.parts.last() == "processConfig" }
-        assertThat(processConfigNode?.usedTypes?.map { it.name }).contains("Config")
-
-        // Should have import dependency on config package
-        val configImport = report.nodes.flatMap { it.dependencies }.find { it.path.parts.contains("config") }
-        assertThat(configImport).isNotNull()
+        assertThat(processConfigNode?.usedTypes?.map { it.name }).containsExactly("config.Config")
+        val mainNode = report.nodes.find { it.pathWithName.parts.last() == "main" }
+        assertThat(mainNode?.usedTypes?.map { it.name }).containsExactly("config.New")
     }
 
     @Test
-    fun `should resolve cross package dependencies after dependency resolution`() {
-        // Arrange - Simulate config package
+    fun `should resolve cross package dependencies after dependency resolution`(
+        @TempDir projectRoot: File
+    ) {
+        // Arrange
         val configCode = """
             package config
 
@@ -134,15 +130,12 @@ class GoAnalyzerDependencyResolutionTest {
                 return &Config{}
             }
         """.trimIndent()
-
-        // Arrange - Simulate main package that uses config
         val mainCode = """
             package main
 
-            import "config"
+            import "example.com/app/config"
 
             func useConfig(c *config.Config) {
-                // Use config
             }
 
             func main() {
@@ -150,59 +143,17 @@ class GoAnalyzerDependencyResolutionTest {
                 useConfig(cfg)
             }
         """.trimIndent()
+        projectRoot.withFile("go.mod", "module example.com/app\n").withFile("config/config.go", configCode)
 
-        // Act - Analyze both packages
-        val configReport = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./config/config.go", configCode)).analyze()
-        val mainReport = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./main.go", mainCode)).analyze()
-
-        // Simulate dependency resolution process
-        val allNodes = configReport.nodes + mainReport.nodes
-        val projectDictionary = allNodes.map { it.pathWithName }.groupBy { it.parts.last() }
-        val knownNodePaths = allNodes.map { it.pathWithName.withDots() }.toSet()
-        val languageDictionary = mapOf<String, Path>()
-
-        println("Project Dictionary:")
-        projectDictionary.forEach { (key, paths) ->
-            println("  $key -> ${paths.map { it.withDots() }}")
-        }
-        println()
-
-        // Debug the useConfig node before resolution
-        val useConfigNodeBefore = allNodes.find { it.pathWithName.parts.last() == "useConfig" }
-        println("useConfig node before resolution:")
-        println("  Dependencies: ${useConfigNodeBefore?.dependencies?.map { "${it.path.withDots()} (wildcard: ${it.isWildcard})" }}")
-        println("  UsedTypes: ${useConfigNodeBefore?.usedTypes?.map { it.name }}")
-        println()
-
-        // Apply dependency resolution
-        val resolvedNodes = allNodes.map { node ->
-            println("Resolving node: ${node.pathWithName.withDots()}")
-            println(
-                "  Before resolution - UsedTypes: ${node.usedTypes.map { "${it.name} -> ${it.resolvedPath?.withDots() ?: "UNRESOLVED"}" }}"
-            )
-            val resolvedNode = node.resolveTypes(projectDictionary, emptyMap(), allNodes.map { it.pathWithName.withDots() }.toSet())
-            println(
-                "  After resolution - UsedTypes: ${resolvedNode.usedTypes.map {
-                    "${it.name} -> ${it.resolvedPath?.withDots() ?: "UNRESOLVED"}"
-                }}"
-            )
-            println("  Resolved dependencies: ${resolvedNode.resolvedNodeDependencies.internalDependencies.map { it.path.withDots() }}")
-            println()
-            resolvedNode
-        }
+        // Act
+        val configReport = GoAnalyzer(FileInfo(SupportedLanguage.GO, "config/config.go", configCode, projectRoot)).analyze()
+        val mainReport = GoAnalyzer(FileInfo(SupportedLanguage.GO, "main.go", mainCode, projectRoot)).analyze()
+        val resolvedNodes = DependencyResolverService.resolveNodes(listOf(configReport, mainReport))
 
         // Assert
-        val mainNode = resolvedNodes.find { it.pathWithName.parts.last() == "main" }
-        assertThat(mainNode).isNotNull()
-
-        println("Main node after resolution:")
-        println("  Dependencies: ${mainNode!!.dependencies.map { dep -> dep.path.parts }}")
-
-        // The main function should have a dependency on config.New
-        val hasConfigDependency = mainNode.resolvedNodeDependencies.internalDependencies.any {
-            it.path.parts.contains("config") && it.path.parts.contains("New")
-        }
-        assertThat(hasConfigDependency).isTrue()
+        val mainNode = resolvedNodes.single { it.pathWithName.parts.last() == "main" }
+        assertThat(mainNode.resolvedNodeDependencies.internalDependencies.map { it.path.withDots() })
+            .containsExactlyInAnyOrder("config.New", "main.useConfig")
     }
 
     @Test
@@ -256,8 +207,10 @@ class GoAnalyzerDependencyResolutionTest {
     }
 
     @Test
-    fun `should resolve Go module dependencies end to end`() {
-        // Arrange - Simulate the config package
+    fun `should resolve Go module dependencies end to end`(
+        @TempDir projectRoot: File
+    ) {
+        // Arrange
         val configCode = """
             package config
 
@@ -269,8 +222,6 @@ class GoAnalyzerDependencyResolutionTest {
                 return &Config{}
             }
         """.trimIndent()
-
-        // Arrange - Simulate the main package using the config
         val mainCode = """
             package main
 
@@ -281,58 +232,17 @@ class GoAnalyzerDependencyResolutionTest {
                 _ = cfg
             }
         """.trimIndent()
+        projectRoot.withFile("go.mod", "module nocmt\n").withFile("internal/config/config.go", configCode)
 
-        // Act - Analyze both files
-        val configReport = GoAnalyzer(FileInfo(SupportedLanguage.GO, "internal/config/config.go", configCode)).analyze()
-        val mainReport = GoAnalyzer(FileInfo(SupportedLanguage.GO, "cmd/nocmt/main.go", mainCode)).analyze()
-
-        // Debug output
-        println("Config package nodes:")
-        configReport.nodes.forEach { println("  ${it.pathWithName.parts}") }
-        println("Main package nodes:")
-        mainReport.nodes.forEach {
-            println("  ${it.pathWithName.parts}")
-            println("    Dependencies: ${it.dependencies.map { dep -> dep.path.parts }}")
-            println("    UsedTypes: ${it.usedTypes.map { it.name }}")
-        }
-
-        // Simulate dependency resolution
-        val allNodes = configReport.nodes + mainReport.nodes
-        val projectDictionary = allNodes.map { it.pathWithName }.groupBy { it.parts.last() }
-        println("Project Dictionary:")
-        projectDictionary.forEach { (key, paths) ->
-            println("  $key -> ${paths.map { it.withDots() }}")
-        }
-
-        // Apply dependency resolution
-        val resolvedNodes = allNodes.map { node ->
-            println("Resolving node: ${node.pathWithName.withDots()}")
-            println(
-                "  Before resolution - UsedTypes: ${node.usedTypes.map { "${it.name} -> ${it.resolvedPath?.withDots() ?: "UNRESOLVED"}" }}"
-            )
-            val resolvedNode = node.resolveTypes(projectDictionary, emptyMap(), allNodes.map { it.pathWithName.withDots() }.toSet())
-            println(
-                "  After resolution - UsedTypes: ${resolvedNode.usedTypes.map {
-                    "${it.name} -> ${it.resolvedPath?.withDots() ?: "UNRESOLVED"}"
-                }}"
-            )
-            println("  Resolved dependencies: ${resolvedNode.resolvedNodeDependencies.internalDependencies.map { it.path.withDots() }}")
-            println()
-            resolvedNode
-        }
+        // Act
+        val configReport = GoAnalyzer(FileInfo(SupportedLanguage.GO, "internal/config/config.go", configCode, projectRoot)).analyze()
+        val mainReport = GoAnalyzer(FileInfo(SupportedLanguage.GO, "cmd/nocmt/main.go", mainCode, projectRoot)).analyze()
+        val resolvedNodes = DependencyResolverService.resolveNodes(listOf(configReport, mainReport))
 
         // Assert
-        val mainNode = resolvedNodes.find { it.pathWithName.parts.last() == "main" }
-        assertThat(mainNode).isNotNull()
-
-        println("Main node after resolution:")
-        println("  Dependencies: ${mainNode!!.dependencies.map { dep -> dep.path.parts }}")
-
-        // The main function should have a dependency on config.New
-        val hasConfigDependency = mainNode.resolvedNodeDependencies.internalDependencies.any {
-            it.path.parts.contains("config") && it.path.parts.contains("New")
-        }
-        assertThat(hasConfigDependency).isTrue()
+        val mainNode = resolvedNodes.single { it.pathWithName.parts.last() == "main" }
+        assertThat(mainNode.resolvedNodeDependencies.internalDependencies.map { it.path.withDots() })
+            .containsExactly("internal.config.New")
     }
 
     @Test
@@ -431,5 +341,10 @@ class GoAnalyzerDependencyResolutionTest {
 
         val companyNodeDeps = companyNode.resolvedNodeDependencies.internalDependencies.map { it.path.withDots() }
         assertThat(companyNodeDeps).containsAll(listOf("models.Address", "models.User"))
+    }
+
+    private fun File.withFile(path: String, content: String): File {
+        resolve(path).also { it.parentFile.mkdirs() }.writeText(content)
+        return this
     }
 }
