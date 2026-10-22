@@ -101,6 +101,26 @@ class GoDependencyTest {
         }
 
         @Test
+        fun `should report the alias of an import and the blank identifier as its binding name`() {
+            // Arrange
+            val code = """
+                package main
+
+                import (
+                    "fmt"
+                    log "github.com/sirupsen/logrus"
+                    _ "embed"
+                )
+            """.trimIndent()
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.imports.map { it.bindingName }).containsExactly(null, "log", "_")
+        }
+
+        @Test
         fun `should mark a dot import as wildcard`() {
             // Arrange
             val code = """
