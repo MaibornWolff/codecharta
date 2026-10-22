@@ -1,0 +1,5 @@
+# go.md, rule 2: a declaration of the own package, in any file of the package
+file shop/cart.go -> shop/item.go
+leaf shop/cart.go#Checkout -> shop/item.go#Item
+leaf shop/cart.go#Checkout -> shop/item.go#price
+leaf shop/item.go#price -> shop/item.go#Item

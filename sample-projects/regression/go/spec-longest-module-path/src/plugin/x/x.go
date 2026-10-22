@@ -1,0 +1,3 @@
+package x
+
+func X() {}

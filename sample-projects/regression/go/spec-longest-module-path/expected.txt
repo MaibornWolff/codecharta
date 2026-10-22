@@ -1,0 +1,3 @@
+# go.md, import paths, rule 1: the longest matching module path wins
+file cmd/main.go -> ext/x/x.go
+leaf cmd/main.go#main -> ext/x/x.go#X

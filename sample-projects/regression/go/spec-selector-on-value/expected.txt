@@ -1,0 +1,3 @@
+# go.md, selector, decision 5: a method called on a value draws no edge, even where its name matches a type
+file app/app.go -> model/creature.go
+leaf app/app.go#Heal -> model/creature.go#Creature

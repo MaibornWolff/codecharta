@@ -1,0 +1,5 @@
+# go.md, import paths: an alias is the name an import binds
+file app/app.go -> models/user.go
+file app/app.go -> v2/models/user.go
+leaf app/app.go#App -> v2/models/user.go#User
+leaf app/app.go#use -> models/user.go#User

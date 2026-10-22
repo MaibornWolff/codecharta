@@ -1,0 +1,3 @@
+# go.md, import paths: a blank import binds no name
+file app/app.go -> app/conn.go
+leaf app/app.go#Blank -> app/conn.go#Conn

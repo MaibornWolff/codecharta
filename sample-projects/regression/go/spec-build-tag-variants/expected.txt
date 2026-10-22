@@ -1,0 +1,5 @@
+# go.md, declarations, decision 3: a name that build-tag variants declare means every one of them
+file core/core.go -> fs/open_linux.go
+file core/core.go -> fs/open_windows.go
+leaf core/core.go#Use -> fs/open_linux.go#Open
+leaf core/core.go#Use -> fs/open_windows.go#Open

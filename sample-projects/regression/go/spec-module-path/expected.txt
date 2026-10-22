@@ -1,0 +1,3 @@
+# go.md, import paths, rule 1: the module path of go.mod stands for its folder
+file app/app.go -> util/util.go
+leaf app/app.go#Run -> util/util.go#Helper

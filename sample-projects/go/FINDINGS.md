@@ -132,6 +132,8 @@ variable), 2 found that I had not expected. With tests 15 of 19.
 - Native vs resolved: the import path is the directory under the module, so the parser maps the import string onto the
   directory tree by suffix. `go.mod` (module name, `replace`) is not read. Package aliases are ignored (harmless), the
   dot import is not resolved, the package qualifier of a type is not used to choose between two packages.
+- Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/go.md`): listed
+  per probe in `regression/go/known-gaps.md`.
 
 ## Unified parser
 - `ccsh unifiedparser -nc <dir> -e "output,FINDINGS.md" -o output/unified.cc.json`: ran without error, 37 `.go` files

@@ -1,0 +1,1 @@
+# go.md, rule 3: a dot import brings in exported names only
