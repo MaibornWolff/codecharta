@@ -218,12 +218,14 @@ PHP and C++. Everywhere else the file tree already is the hierarchy, so the leaf
 template is <code dir="auto">angular</code>.</li>
 <li><code dir="auto">usage</code> names how the source uses the target: <code dir="auto">usage</code>, <code dir="auto">inheritance</code>, <code dir="auto">implementation</code>,
 <code dir="auto">instantiation</code>, <code dir="auto">argument</code>, <code dir="auto">return_value</code>, <code dir="auto">constant_access</code>. A pair carries one kind, the first the
-extractor found, as in DependaCharta. Only PHP reports more than <code dir="auto">usage</code> today; see
-<a href="#known-issues">known issues</a>.</li>
-<li>A declaration split across files — a C# partial class, a Go function name reused within a package — is
-one leaf per file, with the same key and, where it has one, the same <code dir="auto">namespace</code>. Each part’s dependencies leave the file they are
-written in, while a dependency <em>on</em> the split declaration points at the first of its files as the scan
-lists them (path order).</li>
+extractor found, as in DependaCharta. PHP reports every kind; Java, Kotlin and C# report <code dir="auto">inheritance</code>
+and <code dir="auto">implementation</code>; see <a href="#known-issues">known issues</a>.</li>
+<li>A name declared in several files — a C# partial class, a Go function name reused within a package, two projects
+with the same package — is one leaf per file, with the same key and, where it has one, the same <code dir="auto">namespace</code>. Each
+copy’s dependencies leave the file they are written in, while a dependency <em>on</em> the name points at the file that
+shares the longest folder path with the file using it, and among equally near files at the first as the scan
+lists them (path order); for SQL at the latest migration, and for C# at the first file. A Kotlin <code dir="auto">private</code>
+top-level copy counts only for the file it is written in.</li>
 <li><code dir="auto">kind</code> is the declaration kind: <code dir="auto">class</code>, <code dir="auto">valueclass</code>, <code dir="auto">interface</code>, <code dir="auto">annotation</code>, <code dir="auto">enum</code>, <code dir="auto">function</code>,
 <code dir="auto">variable</code>, <code dir="auto">reexport</code>, <code dir="auto">script</code> or <code dir="auto">unknown</code>.</li>
 </ul>
@@ -250,6 +252,10 @@ file of the component. Every <code dir="auto">.html</code> file is read as an An
 documentation, with <code dir="auto">-e</code>.</p>
 <p>Imports are resolved through each language’s own rules, plus tsconfig/jsconfig path aliases, bundler
 aliases (webpack, vite, vue.config) and Module Federation remotes.</p>
+<p>A name in the code refers only to declarations of a language that can name them: Java and Kotlin share their names,
+as do TypeScript, JavaScript, Vue and Angular templates, and C and C++; every other language keeps its own. A
+repository with several languages thus draws no edge from a Python name to a SQL table or from a C++ class to a
+Python class of the same name.</p>
 <p>SQL has no imports: a table, view, synonym, package or routine is found by its name, whatever file creates it and
 in whatever dialect. A name with a schema (<code dir="auto">dbo.orders</code>) finds the object of that schema, or else one created
 without a schema; a name without one finds the object of the same schema first, then one created without a schema,
@@ -277,8 +283,9 @@ The skipped file is reported like any other
 <a href="/docs/analysis/codecharta-shell#files-a-parser-cannot-analyse">file the parser cannot analyse</a>, with the timeout as
 its cause.</p>
 <div class="sl-heading-wrapper level-h2"><h2 id="known-issues">Known issues</h2><a class="sl-anchor-link" href="#known-issues"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Known issues”</span></a></div>
-<p><strong>Usage kinds are only reported for PHP.</strong> The <code dir="auto">usage</code> list on a leaf edge can name seven kinds, but every
-language except PHP — which runs its own queries — reports only <code dir="auto">usage</code>. The underlying extraction
+<p><strong>Usage kinds are only reported for PHP and partly for Java, Kotlin and C#.</strong> The <code dir="auto">usage</code> list on a leaf edge can name seven
+kinds, but every language except PHP — which runs its own queries — reports only <code dir="auto">usage</code>, apart from <code dir="auto">inheritance</code>
+and <code dir="auto">implementation</code> in Java, Kotlin and C#. The underlying extraction
 (<code dir="auto">TreeSitterExcavationSite</code>) does separate used types by the position they appear in, but flattens that
 away in the type it hands back, so the distinction is lost before this parser sees it. DependaCharta has
 the same gap.</p>
