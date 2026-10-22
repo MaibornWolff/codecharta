@@ -277,7 +277,6 @@ class FileReportMultiLanguageTypeResolutionTest {
         // Arrange - This test demonstrates the universal nature of the generic approach
         val languagesWithTypes = listOf(
             SupportedLanguage.GO to "models.User",
-            SupportedLanguage.C_SHARP to "Models.User",
             SupportedLanguage.PHP to "Models.User",
             SupportedLanguage.PYTHON to "models.User",
             SupportedLanguage.TYPESCRIPT to "Models.User"

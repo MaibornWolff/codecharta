@@ -25,8 +25,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   make ambiguous, or that a Kotlin import renames with `as`.
 
 - **Using directives in C#**: `dependencyparser` looks a C# name up in each enclosing namespace before the using
-  directives written around it, so a class of the namespace wins over a using at the top of the file, and a name two
-  using directives both import links to neither.
+  directives written around it, so a class of the namespace wins over a using at the top of the file, a name two
+  using directives both import links to neither, and `Settings.Config` inside `namespace Shop` means
+  `Shop.Settings.Config` before a top-level `Settings.Config`, unless written with `global::`.
 
 - **Using aliases in C#**: `dependencyparser` links a name written through a C# using alias such as
   `using Dto = Shop.Dto;` to the type or namespace it stands for, and no longer takes the alias for an import of
