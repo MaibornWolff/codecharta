@@ -17,16 +17,18 @@ class CSharpAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     override fun analyze(): FileReport {
         val result = TreeSitterDependencies.analyze(fileInfo.content, Language.CSHARP)
         val globalImports = result.imports.filter { it.namespacePath.isEmpty() }.map { it.toDependency() }
+        val typePaths = result.declarations.map { it.parentPath + it.name }.toSet()
 
         val nodes = result.declarations.map { declaration ->
-            val namespacePath = declaration.parentPath
+            val namespacePath = namespaceOf(declaration.parentPath, typePaths)
             val scopedImports = result.imports
-                .filter { it.namespacePath == declaration.parentPath }
+                .filter { it.namespacePath == namespacePath }
                 .map { it.toDependency() }
-            val dependencies = (globalImports + scopedImports + Dependency(path = Path(namespacePath), isWildcard = true)).toSet()
+            val ownScopes = listOf(namespacePath, declaration.parentPath).map { Dependency(path = Path(it), isWildcard = true) }
+            val dependencies = (globalImports + scopedImports + ownScopes).toSet()
 
             Node(
-                pathWithName = Path(namespacePath + declaration.name),
+                pathWithName = Path(declaration.parentPath + declaration.name),
                 physicalPath = fileInfo.physicalPath,
                 language = SupportedLanguage.C_SHARP,
                 nodeType = declaration.type.toNodeType(),
@@ -35,5 +37,12 @@ class CSharpAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
             )
         }
         return FileReport(nodes)
+    }
+
+    // The parent path of a nested type ends with the types around it, which are no namespace
+    private fun namespaceOf(parentPath: List<String>, typePaths: Set<List<String>>): List<String> {
+        var namespacePath = parentPath
+        while (namespacePath in typePaths) namespacePath = namespacePath.dropLast(1)
+        return namespacePath
     }
 }
