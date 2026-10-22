@@ -353,7 +353,7 @@ class AnalyseToolTest {
         writeSource("src/App.kt", APP_SOURCE)
         writeSource("src/Unchanged.kt", APP_SOURCE)
         commitAll()
-        pushToRemote()
+        trackHeadAsUpstream()
         writeSource("src/App.kt", APP_SOURCE + "\nfun later() = 1\n")
 
         // Act
@@ -370,7 +370,7 @@ class AnalyseToolTest {
         // Arrange
         writeSource("src/App.kt", APP_SOURCE)
         commitAll()
-        pushToRemote()
+        trackHeadAsUpstream()
         writeSource("src/App.kt", APP_SOURCE + "\nfun later() = 1\n")
 
         // Act
@@ -423,11 +423,10 @@ class AnalyseToolTest {
         git("-c", "user.name=Test", "-c", "user.email=test@example.com", "commit", "--quiet", "-m", "initial")
     }
 
-    private fun pushToRemote() {
-        val remote = File(workspace, "remote.git")
-        git("init", "--quiet", "--bare", remote.path)
-        git("remote", "add", "origin", remote.path)
-        git("push", "--quiet", "--set-upstream", "origin", "HEAD")
+    private fun trackHeadAsUpstream() {
+        git("remote", "add", "origin", File(workspace, "absent-remote.git").path)
+        git("update-ref", "refs/remotes/origin/main", "HEAD")
+        git("branch", "--quiet", "--set-upstream-to=origin/main")
     }
 
     private fun gitOutput(vararg arguments: String): String {
