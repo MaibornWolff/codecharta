@@ -152,7 +152,8 @@ edges on common project layouts; every item below is a bug in DependaCharta that
 
 1. **Extract.** Every source file is parsed with tree-sitter into the declarations it contains and the
    types they use. Imports are resolved through the language's own rules, plus tsconfig/jsconfig path
-   aliases, bundler aliases (webpack, vite, vue.config) and Module Federation remotes.
+   aliases, bundler aliases (webpack, vite, vue.config), Module Federation remotes and Go's `go.mod` files and
+   `vendor/` folders.
 2. **Resolve.** Used types are matched against the declarations the whole project offers, with a
    per-language standard-library filter so `java.util.List` does not become a project dependency. A name is
    matched only against languages that can refer to each other by name (`SupportedLanguage.nameScope`): Java

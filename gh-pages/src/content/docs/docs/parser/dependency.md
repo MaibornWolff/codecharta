@@ -153,6 +153,12 @@ as do TypeScript, JavaScript, Vue and Angular templates, and C and C++; every ot
 repository with several languages thus draws no edge from a Python name to a SQL table or from a C++ class to a
 Python class of the same name.
 
+Go finds an imported package through the `go.mod` files of the analysed folder: the path on a `module` line stands for
+the folder of its `go.mod`, a module's `vendor/` folder holds the packages it vendors, and a file under no `go.mod`
+finds the folder its import path ends with in at least two segments. A name written through an import, such as
+`model.Creature`, means the declaration of that package; a method called on a variable draws no edge, as the parser
+does not infer the variable's type.
+
 SQL has no imports: a table, view, synonym, package or routine is found by its name, whatever file creates it and
 in whatever dialect. A name with a schema (`dbo.orders`) finds the object of that schema, or else one created
 without a schema; a name without one finds the object of the same schema first, then one created without a schema,
