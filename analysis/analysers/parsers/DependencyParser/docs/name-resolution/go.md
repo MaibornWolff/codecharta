@@ -57,6 +57,44 @@ the order settles such code.
 - Otherwise `p` is a value (a variable, parameter, receiver, field or call result), and `p.N` is a field or method of
   its type, which the parser does not infer: no edge. The same holds for longer chains such as `a.b.C()`.
 
+## Probes
+
+Each rule is tested by a probe under `sample-projects/regression/go/`. "Gap" means the parser does not follow the
+rule yet; `sample-projects/regression/go/known-gaps.md` says how it deviates.
+
+| Rule | Probe | Today |
+| --- | --- | --- |
+| Declarations: the package folder, several files | `spec-own-package` | ok |
+| Declarations: a method belongs to its receiver type | `spec-method-of-receiver` | ok |
+| Declarations and 1: a type declared in a function | `spec-local-type` | gap |
+| Declarations, decision 3: build-tag variants | `spec-build-tag-variants` | gap |
+| Declarations, decision 4: external test package | `spec-external-test-package` | gap |
+| Import paths 1: module path of `go.mod` | `spec-module-path` | gap |
+| Import paths 1: the longest module path | `spec-longest-module-path` | gap |
+| Import paths 1: whole segments only | `spec-module-whole-segments` | ok |
+| Import paths 1: another module of the analysed folder | `spec-other-module` | gap |
+| Import paths 2: `vendor/` | `spec-vendor` | gap |
+| Import paths 3: under no `go.mod`, suffix of two segments | `spec-no-go-mod` | ok |
+| Import paths 4: library package | `spec-library-import` | gap |
+| Import paths: an alias binds the name | `spec-alias-import` | gap |
+| Import paths: the package clause binds the name | `spec-package-clause-name` | gap |
+| Import paths: a blank import binds no name | `spec-blank-import` | ok |
+| 1. type parameter | `spec-type-parameter` | gap |
+| 1. variable of the enclosing function | `spec-local-declaration` | gap |
+| 2. own package | `spec-own-package` | ok |
+| 3. dot import | `spec-dot-import` | gap |
+| 3. two dot imports: ambiguous | `spec-ambiguous-dot-imports` | ok |
+| 3. a dot import brings in exported names only | `spec-dot-import-exported-only` | ok |
+| 2 and 3: own package over a dot import | `spec-package-beats-dot-import` | ok |
+| 4. predeclared identifier | `spec-predeclared` | ok |
+| 2 and 4: own package over a predeclared identifier | `spec-package-shadows-predeclared` | ok |
+| Selector through an import name | `spec-qualified-through-import` | gap |
+| Selector: the import name picks the package | `spec-qualifier-picks-package` | ok |
+| Selector: a local declaration hides an import name | `spec-import-hidden-by-local` | gap |
+| Selector on a value, decision 5 | `spec-selector-on-value` | ok |
+| Shared rule 1, name scope | `spec-name-scope` | ok |
+| Shared rule 4, self | `spec-self` | ok |
+
 ## Not supported
 
 - `replace` directives and `go.work`: a module is found through its own `go.mod` in the analysed folder only, so a

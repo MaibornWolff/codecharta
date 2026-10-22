@@ -1,0 +1,3 @@
+# go.md, declarations and rule 1: a type declared in a function is no target, hides a type of the own package, and its uses are the function's
+file shop/run.go -> model/rider.go
+leaf shop/run.go#Run -> model/rider.go#Rider

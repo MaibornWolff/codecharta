@@ -1,0 +1,5 @@
+# go.md, selector: a variable or parameter of the enclosing function hides an import name
+file app/app.go -> util/tool.go
+leaf app/app.go#Parameter -> util/tool.go#Tool
+leaf app/app.go#Shadowed -> util/tool.go#New
+leaf util/tool.go#New -> util/tool.go#Tool

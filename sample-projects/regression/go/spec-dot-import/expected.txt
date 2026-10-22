@@ -1,0 +1,3 @@
+# go.md, rule 3: an exported declaration of a dot-imported package
+file app/app.go -> gen/map.go
+leaf app/app.go#Run -> gen/map.go#Map
