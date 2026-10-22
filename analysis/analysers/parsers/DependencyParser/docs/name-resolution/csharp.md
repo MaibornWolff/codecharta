@@ -83,8 +83,8 @@ the rule yet; `sample-projects/regression/csharp/known-gaps.md` says how it devi
 | 4. library type | `spec-library-type` | ok |
 | 3.1 and 4: own namespace over a library type | `spec-namespace-shadows-library` | ok |
 | Qualified through a namespace | `spec-fully-qualified` | ok |
-| Qualified through a namespace relative to the enclosing one | `spec-relative-namespace` | gap |
-| Qualified through `global::` | `spec-global-qualifier` | gap |
+| Qualified through a namespace relative to the enclosing one | `spec-relative-namespace` | ok |
+| Qualified through `global::` | `spec-global-qualifier` | ok |
 | Qualified through an alias of a namespace | `spec-alias-to-namespace` | ok |
 | Qualified through a type | `spec-qualified-through-type` | ok |
 | Base types | `spec-base-list-kinds` | ok |

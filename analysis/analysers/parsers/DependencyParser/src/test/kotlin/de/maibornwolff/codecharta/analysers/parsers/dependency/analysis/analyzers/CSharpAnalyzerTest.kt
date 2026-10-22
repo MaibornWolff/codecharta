@@ -678,6 +678,24 @@ public class TestClass(){ }
         assertThat(targets).containsExactlyInAnyOrder("A.Document", "A.Document.Section")
     }
 
+    @Test
+    fun `should look a qualified name up relative to each enclosing namespace and with global only from the top`() {
+        // Arrange
+        val relative = csharpFile("a/Relative.cs", "namespace A { public class Relative { public Settings.Config Current; } }")
+        val fromTop = csharpFile("a/FromTop.cs", "namespace A { public class FromTop { public global::Settings.Config Current; } }")
+        val nestedConfig = csharpFile("a/settings/Config.cs", "namespace A.Settings { public class Config { } }")
+        val topConfig = csharpFile("settings/Config.cs", "namespace Settings { public class Config { } }")
+        val files = arrayOf(relative, fromTop, nestedConfig, topConfig)
+
+        // Act
+        val relativeTargets = internalTargetsOf("Relative", *files)
+        val fromTopTargets = internalTargetsOf("FromTop", *files)
+
+        // Assert
+        assertThat(relativeTargets).containsExactly("A.Settings.Config")
+        assertThat(fromTopTargets).containsExactly("Settings.Config")
+    }
+
     private fun csharpFile(physicalPath: String, content: String) = FileInfo(SupportedLanguage.C_SHARP, physicalPath, content)
 
     private fun internalTargetsOf(nodeName: String, vararg files: FileInfo): List<String> {

@@ -39,15 +39,6 @@ extra leaf a/Second.cs#Second -> a/First.cs#Helper
 extra leaf a/Third.cs#Third -> a/First.cs#Helper
 ```
 
-## spec-global-qualifier
-
-A name qualified with `global::` draws no edge.
-
-```text
-missing file a/App.cs -> settings/Config.cs
-missing leaf a/App.cs#App -> settings/Config.cs#Config
-```
-
 ## spec-partial-every-part
 
 A use of a partial type points at one part file only.
@@ -70,13 +61,3 @@ extra file second/Checkout.cs -> first/Order.cs
 extra leaf second/Checkout.cs#Checkout -> first/Order.cs#Order
 ```
 
-## spec-relative-namespace
-
-A namespace in a qualified name is looked up from the global namespace first.
-
-```text
-missing file a/App.cs -> a/settings/Config.cs
-missing leaf a/App.cs#App -> a/settings/Config.cs#Config
-extra file a/App.cs -> settings/Config.cs
-extra leaf a/App.cs#App -> settings/Config.cs#Config
-```

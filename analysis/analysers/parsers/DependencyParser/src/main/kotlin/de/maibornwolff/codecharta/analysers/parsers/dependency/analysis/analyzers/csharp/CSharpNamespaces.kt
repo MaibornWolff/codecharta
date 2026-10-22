@@ -20,6 +20,17 @@ internal class CSharpNamespaces(private val innermost: List<String>, dependencie
         return null
     }
 
+    /**
+     * Qualified names of `csharp.md`: the written path below each enclosing namespace from the innermost outwards, or
+     * below a namespace a using directive of that level imports; written from the global namespace, below it only.
+     */
+    fun findQualified(writtenParts: List<String>, fromGlobalNamespace: Boolean, candidates: List<Path>): Path? {
+        val namespaces = if (fromGlobalNamespace) listOf(emptyList()) else outwards()
+        return namespaces.firstNotNullOfOrNull { namespace ->
+            (listOf(namespace) + importedIn(namespace)).firstNotNullOfOrNull { base -> candidates.find { it.parts == base + writtenParts } }
+        }
+    }
+
     private fun outwards(): List<List<String>> = (innermost.size downTo 0).map { innermost.take(it) }
 
     private fun importedIn(namespace: List<String>): List<List<String>> = usings.filter { it.scope == namespace }.map { it.path.parts }

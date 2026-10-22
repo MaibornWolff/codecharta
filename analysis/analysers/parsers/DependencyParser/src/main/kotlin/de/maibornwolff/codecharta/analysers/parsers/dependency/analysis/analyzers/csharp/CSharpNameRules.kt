@@ -12,6 +12,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Ty
 /** The name rules of `docs/name-resolution/csharp.md`. */
 internal object CSharpNameRules : NameRules {
     private const val QUALIFIER_SEPARATOR = "."
+    private const val GLOBAL_NAMESPACE_ALIAS = "global::"
 
     override fun namesOf(node: Node, project: ProjectNames): DeclarationNames {
         val namespace = project.packageOf(node.pathWithName)
@@ -26,11 +27,22 @@ internal object CSharpNameRules : NameRules {
         val nestedTypes = MemberTypeScopes.of(node, inNamespaces, project)
         return DeclarationNames { name ->
             when {
-                name.contains(QUALIFIER_SEPARATOR) -> resolver.resolve(name)
+                isQualified(name) -> resolveQualified(name, resolver, namespaces, project)
                 nestedTypes.isOwnName(name) -> resolver.resolveOwnName(name)
                 else -> nestedTypes.memberNamed(name) ?: inNamespaces(name)
             }
         }
+    }
+
+    private fun isQualified(name: String): Boolean = name.contains(QUALIFIER_SEPARATOR) || name.startsWith(GLOBAL_NAMESPACE_ALIAS)
+
+    private fun resolveQualified(name: String, resolver: TypeImportResolver, namespaces: CSharpNamespaces, project: ProjectNames): Path {
+        val writtenParts = name.removePrefix(GLOBAL_NAMESPACE_ALIAS).split(QUALIFIER_SEPARATOR)
+        val plainName = writtenParts.last()
+        val candidates = resolver.candidatesNamed(plainName).orEmpty()
+        return namespaces.findQualified(writtenParts, name.startsWith(GLOBAL_NAMESPACE_ALIAS), candidates)
+            ?: project.languageDictionary[plainName]
+            ?: Path.unknown(plainName)
     }
 
     private fun resolveInNamespaces(name: String, resolver: TypeImportResolver, namespaces: CSharpNamespaces, project: ProjectNames): Path =
