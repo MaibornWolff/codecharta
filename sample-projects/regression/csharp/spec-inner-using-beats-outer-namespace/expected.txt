@@ -1,0 +1,3 @@
+# csharp.md, rules 3.1 and 3.2: a using inside a namespace wins over a type of an enclosing namespace
+file a/b/App.cs -> c/Config.cs
+leaf a/b/App.cs#App -> c/Config.cs#Config

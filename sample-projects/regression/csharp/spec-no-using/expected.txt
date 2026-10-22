@@ -1,0 +1,1 @@
+# csharp.md, shared rule 3: a type of another namespace without a using directive draws no edge

@@ -1,0 +1,1 @@
+# csharp.md, attributes: [Name] with both Name and NameAttribute existing is ambiguous

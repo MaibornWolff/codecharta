@@ -1,0 +1,3 @@
+# csharp.md, shared rule 2: a type declared in two projects means the copy nearest to the using file
+file second/Checkout.cs -> second/Util.cs
+leaf second/Checkout.cs#Checkout -> second/Util.cs#Util

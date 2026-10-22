@@ -1,0 +1,5 @@
+# csharp.md, decision 2: a partial type in two projects means the parts of the nearest project
+file second/Checkout.cs -> second/Order.cs
+file second/Checkout.cs -> second/generated/Order.g.cs
+leaf second/Checkout.cs#Checkout -> second/Order.cs#Order
+leaf second/Checkout.cs#Checkout -> second/generated/Order.g.cs#Order

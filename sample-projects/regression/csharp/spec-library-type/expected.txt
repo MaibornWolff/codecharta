@@ -1,0 +1,1 @@
+# csharp.md, rule 4: a library type draws no edge

@@ -1,0 +1,3 @@
+# csharp.md, rule 3.2: a using alias means its target type
+file a/App.cs -> b/Config.cs
+leaf a/App.cs#App -> b/Config.cs#Config

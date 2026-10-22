@@ -1,0 +1,1 @@
+# csharp.md, rule 3.2: two using directives that both import the name make it ambiguous

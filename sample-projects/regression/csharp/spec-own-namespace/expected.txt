@@ -1,0 +1,3 @@
+# csharp.md, rule 3.1: a type of the own namespace, in another file
+file a/App.cs -> a/Config.cs
+leaf a/App.cs#App -> a/Config.cs#Config

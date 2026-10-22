@@ -1,0 +1,1 @@
+# csharp.md, shared rule 1: a C# name never means a declaration of another language

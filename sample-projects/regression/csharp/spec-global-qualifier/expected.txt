@@ -1,0 +1,3 @@
+# csharp.md, qualified names: global:: looks a name up from the global namespace only
+file a/App.cs -> settings/Config.cs
+leaf a/App.cs#App -> settings/Config.cs#Config
