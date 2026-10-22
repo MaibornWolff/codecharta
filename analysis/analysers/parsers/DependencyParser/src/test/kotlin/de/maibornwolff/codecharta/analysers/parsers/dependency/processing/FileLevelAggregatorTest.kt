@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FilePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeDependencies
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
@@ -289,9 +290,9 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val filePath = DeclaringFiles.of(nodes).fileFor("orders", FilePath(listOf("db", "report.sql")), SupportedLanguage.SQL)
+        val filePaths = DeclaringFiles.of(nodes).filesFor("orders", FilePath(listOf("db", "report.sql")), SupportedLanguage.SQL)
 
         // Assert
-        assertThat(filePath?.segments).containsExactly("db", "V10__orders.sql")
+        assertThat(filePaths).containsExactly(FilePath(listOf("db", "V10__orders.sql")))
     }
 }

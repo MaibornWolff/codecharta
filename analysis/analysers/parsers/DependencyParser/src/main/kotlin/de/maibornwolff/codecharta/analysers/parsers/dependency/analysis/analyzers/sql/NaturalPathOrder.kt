@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.dependency.processing
+package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql
 
 /**
  * Orders the segments of file paths one by one the way a person numbers files: the digits in a name compare as numbers, so

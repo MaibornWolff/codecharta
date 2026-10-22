@@ -1,8 +1,6 @@
-package de.maibornwolff.codecharta.analysers.parsers.dependency.processing
+package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.splitNameToParts
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 
 /**
  * A source file, in both the form the graph addresses it by ([escapedPath], whose segments have their

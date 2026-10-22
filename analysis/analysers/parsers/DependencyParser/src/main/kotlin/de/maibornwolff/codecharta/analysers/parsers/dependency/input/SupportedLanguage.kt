@@ -33,15 +33,6 @@ enum class SupportedLanguage(val displayName: String, private val fileExtensions
     val declaresPackages: Boolean
         get() = this in PACKAGE_LANGUAGES
 
-    // Migrations create an object again in a later file to change it, so the last file holds its current definition
-    val laterDefinitionReplacesEarlier: Boolean
-        get() = this == SQL
-
-    // A C# partial class is one class written into several files, which no single nearest file stands for; until the C#
-    // rules are written down, a dependency keeps going to the first file
-    val pointsAtNearestCopy: Boolean
-        get() = this != C_SHARP
-
     /** The languages that can name each other's declarations share one scope; a name only means declarations of its own. */
     val nameScope: SupportedLanguage
         get() = when (this) {
