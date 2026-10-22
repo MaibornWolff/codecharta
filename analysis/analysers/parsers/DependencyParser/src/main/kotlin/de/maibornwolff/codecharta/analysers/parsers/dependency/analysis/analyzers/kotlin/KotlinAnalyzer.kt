@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.kotlin
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.BaseLanguageAnalyzer
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.ImportAliases
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
@@ -21,24 +22,8 @@ class KotlinAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     override fun convertImport(import: ImportDeclaration): Set<Dependency> =
         if (import.bindingName != null) emptySet() else super.convertImport(import)
 
-    override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> {
-        val importedPathByAlias = imports
-            .mapNotNull { import -> import.bindingName?.let { alias -> alias to import.path.joinToString(PACKAGE_SEPARATOR) } }
-            .toMap()
-        return declaration.usedTypes.map { it.withAliasesResolved(importedPathByAlias) }.toSet()
-    }
-
-    // The full path, not only its last segment, as an alias often exists because another import shares that name
-    private fun UsedType.withAliasesResolved(importedPathByAlias: Map<String, String>): UsedType = copy(
-        name = nameWithAliasResolved(importedPathByAlias),
-        genericTypes = genericTypes.map { it.withAliasesResolved(importedPathByAlias) }
-    )
-
-    private fun UsedType.nameWithAliasResolved(importedPathByAlias: Map<String, String>): String {
-        val qualifier = name.substringBefore(PACKAGE_SEPARATOR)
-        val importedPath = importedPathByAlias[qualifier] ?: return name
-        return importedPath + name.removePrefix(qualifier)
-    }
+    override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> =
+        ImportAliases.resolve(declaration.usedTypes, imports)
 
     private fun nameOf(declaration: Declaration): String {
         if (declaration.type != DeclarationType.SCRIPT) return declaration.name
@@ -50,6 +35,5 @@ class KotlinAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         private const val SOURCE_ENDING = ".kt"
         private const val SCRIPT_ENDING = ".kts"
         private const val SCRIPT_SUFFIX = ".script"
-        private const val PACKAGE_SEPARATOR = "."
     }
 }
