@@ -7,6 +7,8 @@ internal object CSharpScopes {
     private const val TYPE_PARAMETER_LIST = "type_parameter_list"
     private const val TYPE_PARAMETER = "type_parameter"
     private const val IDENTIFIER = "identifier"
+    private const val MODIFIER = "modifier"
+    private const val FILE_MODIFIER = "file"
 
     val TYPE_DECLARATIONS = setOf(
         "class_declaration",
@@ -27,6 +29,11 @@ internal object CSharpScopes {
                 parameter.type == TYPE_PARAMETER && parameter.children().firstOrNull { it.type == IDENTIFIER }?.text == name
             }
     }
+
+    /** Whether a type is a `file` type or nested in one, which only its own file can name. */
+    fun isFileScoped(declaration: SyntaxNode): Boolean = (sequenceOf(declaration) + declaration.ancestors())
+        .filter { it.type in TYPE_DECLARATIONS }
+        .any { type -> type.children().any { it.type == MODIFIER && it.text.trim() == FILE_MODIFIER } }
 
     /** Whether a node belongs to the declaration and not to a type nested in it, which is a declaration of its own. */
     fun belongsTo(node: SyntaxNode, declaration: SyntaxNode): Boolean =

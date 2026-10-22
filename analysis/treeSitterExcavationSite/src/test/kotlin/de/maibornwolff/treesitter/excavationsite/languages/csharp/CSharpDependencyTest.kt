@@ -754,6 +754,25 @@ class CSharpDependencyTest {
     @Nested
     inner class UsedTypeExtraction {
         @Test
+        fun `should scope a file type and the types nested in it to its file`() {
+            // Arrange
+            val code = """
+                namespace MyNamespace;
+                file class Helper {
+                    public class Part { }
+                }
+                public class Visible { }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.CSHARP)
+
+            // Assert
+            val isFileScopedByName = result.declarations.associate { it.name to it.isFileScoped }
+            assertThat(isFileScopedByName).containsExactlyInAnyOrderEntriesOf(mapOf("Helper" to true, "Part" to true, "Visible" to false))
+        }
+
+        @Test
         fun `should give the uses of a nested type to the nested type only`() {
             // Arrange
             val code = """
