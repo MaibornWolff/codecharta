@@ -1,6 +1,6 @@
 ---
 name: dependency parser name resolution, the remaining languages
-state: todo
+state: progress
 version: 1
 ---
 
@@ -61,5 +61,5 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 ## Steps
 
-- [ ] Ask Christian which language comes next
+- [x] Ask Christian which language comes next: C# (2026-10-22)
 - [ ] For each language: spec, probes, implementation commits, acceptance
