@@ -44,5 +44,5 @@ fun Node.resolveTypes(project: ProjectNames, nameRules: NameRules = DefaultNameR
 private fun Type.toResolvedType(names: DeclarationNames): Type = copy(
     name = name.split(".").last(),
     genericTypes = genericTypes.map { it.toResolvedType(names) },
-    resolvedPath = names.resolve(name)
+    resolvedPath = alternativeName?.let { names.resolveEither(name, it) } ?: names.resolve(name)
 )

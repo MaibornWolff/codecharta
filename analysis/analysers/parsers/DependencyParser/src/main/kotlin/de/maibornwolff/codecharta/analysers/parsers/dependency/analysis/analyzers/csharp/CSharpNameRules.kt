@@ -25,12 +25,16 @@ internal object CSharpNameRules : NameRules {
         val namespaces = CSharpNamespaces(namespace, node.dependencies)
         val inNamespaces = { name: String -> resolveInNamespaces(name, resolver, namespaces, project) }
         val nestedTypes = MemberTypeScopes.of(node, inNamespaces, project)
-        return DeclarationNames { name ->
-            when {
-                isQualified(name) -> resolveQualified(name, resolver, namespaces, project)
-                nestedTypes.isOwnName(name) -> resolver.resolveOwnName(name)
-                else -> nestedTypes.memberNamed(name) ?: inNamespaces(name)
+        val attributes = CSharpAttributes(project)
+        return object : DeclarationNames {
+            override fun resolve(writtenName: String): Path = when {
+                isQualified(writtenName) -> resolveQualified(writtenName, resolver, namespaces, project)
+                nestedTypes.isOwnName(writtenName) -> resolver.resolveOwnName(writtenName)
+                else -> nestedTypes.memberNamed(writtenName) ?: inNamespaces(writtenName)
             }
+
+            override fun resolveEither(writtenName: String, alternativeName: String): Path =
+                attributes.choose(resolve(writtenName), resolve(alternativeName))
         }
     }
 

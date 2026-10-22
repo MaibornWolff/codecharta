@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Na
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.ProjectNames
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.TypeOfUsage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.resolveTypes
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.model.NodeInformation
@@ -22,11 +23,14 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.depend
 
 class DependencyResolverService {
     companion object {
+        private val BASE_TYPE_USAGES = setOf(TypeOfUsage.INHERITANCE, TypeOfUsage.IMPLEMENTATION)
+
         fun resolveNodes(fileReports: Collection<FileReport>): Collection<Node> {
             val nodes = AngularTemplateReferences.qualify(applyRustReexportAliases(fileReports.flatMap { it.nodes }))
             val nodesByScope = nodes.groupBy { it.language.nameScope }
             val dictionaryByScope = nodesByScope.mapValues { (_, scopedNodes) -> getDictionary(scopedNodes) }
             val knownNodePathsByScope = nodesByScope.mapValues { (_, scopedNodes) -> getKnownNodePaths(scopedNodes) }
+            val baseTypeNamesByScope = nodesByScope.mapValues { (_, scopedNodes) -> getBaseTypeNames(scopedNodes) }
             val fileScopedPaths = getFileScopedPaths(nodes)
             val projectNamesByLanguage = nodes.map { it.language }.distinct().associateWith { language ->
                 val scope = language.nameScope
@@ -34,7 +38,8 @@ class DependencyResolverService {
                     dictionaryByScope.getValue(scope),
                     standardLibraryFor(language).get(),
                     knownNodePathsByScope.getValue(scope),
-                    fileScopedPaths
+                    fileScopedPaths,
+                    baseTypeNamesByScope.getValue(scope)
                 )
             }
             val resolvedNodes = nodes.map { node ->
@@ -79,6 +84,12 @@ class DependencyResolverService {
         fun getDictionary(nodes: List<Node>) = nodes.map { it.pathWithName }.groupBy { it.parts.last() }
 
         fun getKnownNodePaths(nodes: List<Node>) = nodes.map { it.pathWithName.withDots() }.toSet()
+
+        private fun getBaseTypeNames(nodes: List<Node>): Map<String, List<String>> = nodes
+            .groupBy(
+                { it.pathWithName.withDots() }
+            ) { node -> node.usedTypes.filter { it.usageSource in BASE_TYPE_USAGES }.map { it.name } }
+            .mapValues { (_, baseTypesOfEachCopy) -> baseTypesOfEachCopy.flatten().distinct() }
 
         private fun getFileScopedPaths(nodes: List<Node>): FileScopedPaths {
             val visibleEverywhere = nodes.filterNot { it.isFileScoped }.mapTo(HashSet()) { it.pathWithName.withDots() }
