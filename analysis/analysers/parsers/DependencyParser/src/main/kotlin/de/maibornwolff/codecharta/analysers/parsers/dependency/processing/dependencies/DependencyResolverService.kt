@@ -22,7 +22,7 @@ class DependencyResolverService {
             val dictionaryByScope = nodesByScope.mapValues { (_, scopedNodes) -> getDictionary(scopedNodes) }
             val knownNodePathsByScope = nodesByScope.mapValues { (_, scopedNodes) -> getKnownNodePaths(scopedNodes) }
             val fileScopedPaths = getFileScopedPaths(nodes)
-            return nodes.map { node ->
+            val resolvedNodes = nodes.map { node ->
                 val scope = node.language.nameScope
                 node.resolveTypes(
                     dictionaryByScope.getValue(scope),
@@ -31,6 +31,7 @@ class DependencyResolverService {
                     fileScopedPaths
                 )
             }
+            return ImplementedInterfaces.mark(resolvedNodes)
         }
 
         /**
