@@ -15,6 +15,9 @@ class GoDependencyTest {
     private fun usedTypeNamesOf(code: String, declarationName: String): List<String> =
         analyze(code).declarations.first { it.name == declarationName }.usedTypes.map { it.name }
 
+    private fun qualifiedNamesOf(code: String, declarationName: String): List<Pair<String, List<String>>> =
+        analyze(code).declarations.first { it.name == declarationName }.usedTypes.map { it.name to it.namespacePrefix }
+
     @Nested
     inner class ApiSupportCheck {
         @Test
@@ -658,6 +661,108 @@ class GoDependencyTest {
 
             // Assert
             assertThat(result.declarations).isEmpty()
+        }
+    }
+
+    @Nested
+    inner class SelectorQualifiers {
+        @Test
+        fun `should give a type written through a package that package as qualifier`() {
+            // Arrange
+            val code = """
+                package shop
+
+                type Order struct {
+                    Client *http.Client
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "Order")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("Order" to emptyList(), "http.Client" to emptyList(), "Client" to listOf("http"))
+        }
+
+        @Test
+        fun `should give the qualified parameter, result and body types their package as qualifier`() {
+            // Arrange
+            val code = """
+                package shop
+
+                func Convert(writer io.Writer) http.Handler {
+                    var buffer bytes.Buffer
+                    return nil
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "Convert")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(
+                "Writer" to listOf("io"),
+                "Handler" to listOf("http"),
+                "Buffer" to listOf("bytes"),
+                "io.Writer" to emptyList(),
+                "http.Handler" to emptyList(),
+                "bytes.Buffer" to emptyList()
+            )
+        }
+
+        @Test
+        fun `should give a call through a selector on a plain name that name as qualifier`() {
+            // Arrange
+            val code = """
+                package main
+
+                func run() {
+                    util.New()
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "run")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("New" to listOf("util"))
+        }
+
+        @Test
+        fun `should give a call through a selector on anything but a plain name no qualifier`() {
+            // Arrange
+            val code = """
+                package main
+
+                func run() {
+                    client.Connect().Authenticate()
+                    config.server.Start()
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "run")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("Connect" to listOf("client"), "Authenticate" to emptyList(), "Start" to emptyList())
+        }
+
+        @Test
+        fun `should give a type written without a package no qualifier`() {
+            // Arrange
+            val code = """
+                package shop
+
+                func Load(order *Order) Invoice {
+                    return Invoice{}
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "Load")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("Order" to emptyList(), "Invoice" to emptyList())
         }
     }
 }
