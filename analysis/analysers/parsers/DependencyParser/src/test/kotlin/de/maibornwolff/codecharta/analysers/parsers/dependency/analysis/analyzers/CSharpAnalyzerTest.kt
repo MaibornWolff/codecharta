@@ -664,6 +664,20 @@ public class TestClass(){ }
         assertThat(targets).containsExactly("Domain.Creature")
     }
 
+    @Test
+    fun `should find the nested types of the base class the namespace rules resolve`() {
+        // Arrange
+        val report = csharpFile("a/b/Report.cs", "using X;\nnamespace A.B { public class Report : Document { public Section Part; } }")
+        val outerDocument = csharpFile("a/Document.cs", "namespace A { public class Document { public class Section { } } }")
+        val importedDocument = csharpFile("x/Document.cs", "namespace X { public class Document { public class Section { } } }")
+
+        // Act
+        val targets = internalTargetsOf("Report", report, outerDocument, importedDocument)
+
+        // Assert
+        assertThat(targets).containsExactlyInAnyOrder("A.Document", "A.Document.Section")
+    }
+
     private fun csharpFile(physicalPath: String, content: String) = FileInfo(SupportedLanguage.C_SHARP, physicalPath, content)
 
     private fun internalTargetsOf(nodeName: String, vararg files: FileInfo): List<String> {

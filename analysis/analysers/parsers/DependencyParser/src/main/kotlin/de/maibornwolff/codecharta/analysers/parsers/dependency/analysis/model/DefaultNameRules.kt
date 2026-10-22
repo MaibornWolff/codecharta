@@ -15,7 +15,7 @@ internal object DefaultNameRules : NameRules {
                 project.languageDictionary,
                 project.fileScopedPaths
             )
-        val memberTypes = if (followsJavaRules) MemberTypeScopes.of(node, resolver, project) else MemberTypeScopes.NONE
+        val memberTypes = if (followsJavaRules) MemberTypeScopes.of(node, resolver::resolve, project) else MemberTypeScopes.NONE
         val qualifiedNames = if (followsJavaRules) QualifiedNames(resolver, memberTypes, project.internalNodePaths) else null
         return DeclarationNames { name ->
             when {

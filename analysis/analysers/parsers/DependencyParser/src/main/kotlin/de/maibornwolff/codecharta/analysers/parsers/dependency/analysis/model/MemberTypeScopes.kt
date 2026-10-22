@@ -22,9 +22,9 @@ internal class MemberTypeScopes(
 
         private val SUPERTYPE_USAGES = setOf(TypeOfUsage.INHERITANCE, TypeOfUsage.IMPLEMENTATION)
 
-        /** The scopes of a node, with the supertypes it names resolved by [resolver]. */
-        internal fun of(node: Node, resolver: TypeImportResolver, project: ProjectNames): MemberTypeScopes {
-            val supertypes = node.usedTypes.filter { it.usageSource in SUPERTYPE_USAGES }.map { resolver.resolve(it.name) }
+        /** The scopes of a node, with the supertypes it names resolved by its language's [resolveSupertype]. */
+        internal fun of(node: Node, resolveSupertype: (String) -> Path, project: ProjectNames): MemberTypeScopes {
+            val supertypes = node.usedTypes.filter { it.usageSource in SUPERTYPE_USAGES }.map { resolveSupertype(it.name) }
             return of(node.pathWithName, supertypes, project.internalNodePaths, project.projectDictionary)
         }
 

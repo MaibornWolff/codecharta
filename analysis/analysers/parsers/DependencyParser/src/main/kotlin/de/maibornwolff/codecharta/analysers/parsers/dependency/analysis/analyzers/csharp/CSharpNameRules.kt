@@ -21,19 +21,20 @@ internal object CSharpNameRules : NameRules {
             project.languageDictionary,
             project.fileScopedPaths
         )
-        val nestedTypes = MemberTypeScopes.of(node, resolver, project)
         val namespaces = CSharpNamespaces(namespace, node.dependencies)
+        val inNamespaces = { name: String -> resolveInNamespaces(name, resolver, namespaces, project) }
+        val nestedTypes = MemberTypeScopes.of(node, inNamespaces, project)
         return DeclarationNames { name ->
             when {
                 name.contains(QUALIFIER_SEPARATOR) -> resolver.resolve(name)
                 nestedTypes.isOwnName(name) -> resolver.resolveOwnName(name)
-                else -> nestedTypes.memberNamed(name)
-                    ?: resolver.candidatesNamed(name)?.let { namespaces.find(it) }
-                    ?: project.languageDictionary[name]
-                    ?: Path.unknown(name)
+                else -> nestedTypes.memberNamed(name) ?: inNamespaces(name)
             }
         }
     }
+
+    private fun resolveInNamespaces(name: String, resolver: TypeImportResolver, namespaces: CSharpNamespaces, project: ProjectNames): Path =
+        resolver.candidatesNamed(name)?.let { namespaces.find(it) } ?: project.languageDictionary[name] ?: Path.unknown(name)
 
     override fun afterResolution(nodes: List<Node>): List<Node> = CSharpImplementedInterfaces.mark(nodes)
 }
