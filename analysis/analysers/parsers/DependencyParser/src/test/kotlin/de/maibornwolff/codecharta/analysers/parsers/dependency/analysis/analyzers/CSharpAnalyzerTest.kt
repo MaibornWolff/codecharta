@@ -373,6 +373,35 @@ class CSharpAnalyzerTest {
     }
 
     @Test
+    fun `should give a nested type the namespace and the usings of the type around it`() {
+        // Arrange
+        val cSharpCode = """
+            namespace Shop
+            {
+                using System;
+
+                public class Outer
+                {
+                    public class Inner
+                    {
+                    }
+                }
+            }
+        """.trimIndent()
+
+        // Act
+        val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
+
+        // Assert
+        val inner = report.nodes.single { it.name() == "Inner" }
+        assertThat(inner.dependencies).containsExactlyInAnyOrder(
+            Dependency(Path.fromStringWithDots("Shop"), true),
+            Dependency(Path.fromStringWithDots("Shop.Outer"), true),
+            Dependency(Path.fromStringWithDots("System"), true)
+        )
+    }
+
+    @Test
     fun `should add the path of the classes package as an implicit wildcard dependency`() {
         // Arrange
         val cSharpCode = """

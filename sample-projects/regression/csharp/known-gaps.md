@@ -114,19 +114,17 @@ extra leaf a/Report.cs#Report -> a/Section.cs#Section
 
 ## spec-namespace-using-in-nested-type
 
-The C# extractor gives the members of a nested type to the type around it.
+The C# extractor gives the uses of a nested type also to the type around it.
 
 ```text
-missing leaf a/Outer.cs#Inner -> b/Config.cs#Config
 extra leaf a/Outer.cs#Outer -> b/Config.cs#Config
 ```
 
 ## spec-nested-type-own-leaf
 
-The C# extractor gives the members of a nested type to the type around it.
+The C# extractor gives the uses of a nested type also to the type around it.
 
 ```text
-missing leaf a/Outer.cs#Inner -> a/Service.cs#Service
 extra leaf a/Outer.cs#Outer -> a/Service.cs#Service
 ```
 
