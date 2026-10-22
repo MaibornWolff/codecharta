@@ -26,7 +26,7 @@ class CSharpAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
             // A using alias imports nothing; ImportAliases replaces it in the names it is written in
             val usings = visibleImports
                 .filter { it.bindingName == null }
-                .map { it.toDependency().copy(declaredIn = it.namespacePath) }
+                .map { it.toDependency().copy(scope = it.namespacePath) }
             val ownScopes = listOf(namespacePath, declaration.parentPath).map { Dependency(path = Path(it), isWildcard = true) }
             val dependencies = (usings + ownScopes).toSet()
 

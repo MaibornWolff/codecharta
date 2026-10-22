@@ -279,12 +279,12 @@ class CSharpAnalyzerTest {
         assertEquals(4, dependencies.size)
         assertThat(dependencies).containsExactlyInAnyOrder(
             Dependency(Path.fromStringWithDots("De.Maibornwolff.DependaCharta.Analysis.Analyzers"), true),
-            Dependency(Path.fromStringWithDots("System"), true, declaredIn = emptyList()),
-            Dependency(Path.fromStringWithDots("System.Collections.Generic"), true, declaredIn = emptyList()),
+            Dependency(Path.fromStringWithDots("System"), true, scope = emptyList()),
+            Dependency(Path.fromStringWithDots("System.Collections.Generic"), true, scope = emptyList()),
             Dependency(
                 Path.fromStringWithDots("Microsoft.Extensions.Options"),
                 true,
-                declaredIn = listOf("De", "Maibornwolff", "DependaCharta", "Analysis", "Analyzers")
+                scope = listOf("De", "Maibornwolff", "DependaCharta", "Analysis", "Analyzers")
             )
         )
     }
@@ -326,17 +326,17 @@ class CSharpAnalyzerTest {
             Dependency(
                 Path.fromStringWithDots("System"),
                 true,
-                declaredIn = listOf("De", "Maibornwolff", "DependaCharta", "Analysis", "Analyzers1")
+                scope = listOf("De", "Maibornwolff", "DependaCharta", "Analysis", "Analyzers1")
             ),
             Dependency(
                 Path.fromStringWithDots("System.Collections.Generic"),
                 true,
-                declaredIn = listOf("De", "Maibornwolff", "DependaCharta", "Analysis", "Analyzers1")
+                scope = listOf("De", "Maibornwolff", "DependaCharta", "Analysis", "Analyzers1")
             ),
             Dependency(
                 Path.fromStringWithDots("Microsoft.Extensions.Options"),
                 true,
-                declaredIn = listOf("De", "Maibornwolff", "DependaCharta", "Analysis", "Analyzers1")
+                scope = listOf("De", "Maibornwolff", "DependaCharta", "Analysis", "Analyzers1")
             )
         )
         val node2 = report.nodes[1]
@@ -379,9 +379,9 @@ class CSharpAnalyzerTest {
         val node1 = report.nodes[0]
         assertThat(node1.dependencies).containsExactlyInAnyOrder(
             Dependency(Path.fromStringWithDots("Simple"), true),
-            Dependency(Path.fromStringWithDots("System"), true, declaredIn = listOf("Simple")),
-            Dependency(Path.fromStringWithDots("System.Collections.Generic"), true, declaredIn = listOf("Simple")),
-            Dependency(Path.fromStringWithDots("Microsoft.Extensions.Options"), true, declaredIn = listOf("Simple"))
+            Dependency(Path.fromStringWithDots("System"), true, scope = listOf("Simple")),
+            Dependency(Path.fromStringWithDots("System.Collections.Generic"), true, scope = listOf("Simple")),
+            Dependency(Path.fromStringWithDots("Microsoft.Extensions.Options"), true, scope = listOf("Simple"))
         )
         val node2 = report.nodes[1]
         assertThat(node2.dependencies).containsExactlyInAnyOrder(
@@ -414,7 +414,7 @@ class CSharpAnalyzerTest {
         assertThat(inner.dependencies).containsExactlyInAnyOrder(
             Dependency(Path.fromStringWithDots("Shop"), true),
             Dependency(Path.fromStringWithDots("Shop.Outer"), true),
-            Dependency(Path.fromStringWithDots("System"), true, declaredIn = listOf("Shop"))
+            Dependency(Path.fromStringWithDots("System"), true, scope = listOf("Shop"))
         )
     }
 
