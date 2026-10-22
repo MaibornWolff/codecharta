@@ -24,4 +24,11 @@ class ProjectNames(
     val languageDictionary: Map<String, Path>,
     val internalNodePaths: Set<String>,
     val fileScopedPaths: FileScopedPaths
-)
+) {
+    /** The package or namespace a declaration lies in: its path without the declarations around it. */
+    fun packageOf(path: Path): List<String> {
+        var parts = path.withoutName()
+        while (parts.isNotEmpty() && Path(parts).withDots() in internalNodePaths) parts = parts.dropLast(1)
+        return parts
+    }
+}

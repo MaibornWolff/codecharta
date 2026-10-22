@@ -1,7 +1,10 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpNameRules
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.DefaultNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileScopedPaths
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.resolveTypes
@@ -29,10 +32,17 @@ class DependencyResolverService {
                     dictionaryByScope.getValue(scope),
                     standardLibraryFor(node.language).get(),
                     knownNodePathsByScope.getValue(scope),
-                    fileScopedPaths
+                    fileScopedPaths,
+                    nameRulesFor(node.language)
                 )
             }
-            return ImplementedInterfaces.mark(resolvedNodes)
+            return resolvedNodes
+                .map {
+                    nameRulesFor(
+                        it.language
+                    )
+                }.distinct()
+                .fold(resolvedNodes) { current, rules -> rules.afterResolution(current) }
         }
 
         /**
@@ -73,6 +83,11 @@ class DependencyResolverService {
                 .groupBy({ it.pathWithName.withDots() }, { it.physicalPath })
                 .mapValues { (_, files) -> files.toSet() }
             return FileScopedPaths(filesByPath)
+        }
+
+        private fun nameRulesFor(language: SupportedLanguage): NameRules = when (language) {
+            SupportedLanguage.C_SHARP -> CSharpNameRules
+            else -> DefaultNameRules
         }
 
         private fun standardLibraryFor(language: SupportedLanguage): StandardLibrary = when (language) {

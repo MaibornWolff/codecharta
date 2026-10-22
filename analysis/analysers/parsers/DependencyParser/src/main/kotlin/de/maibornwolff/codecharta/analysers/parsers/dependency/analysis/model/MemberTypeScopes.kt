@@ -20,6 +20,14 @@ internal class MemberTypeScopes(
     companion object {
         val NONE = MemberTypeScopes(Path(emptyList()), emptyList(), emptyMap())
 
+        private val SUPERTYPE_USAGES = setOf(TypeOfUsage.INHERITANCE, TypeOfUsage.IMPLEMENTATION)
+
+        /** The scopes of a node, with the supertypes it names resolved by [resolver]. */
+        internal fun of(node: Node, resolver: TypeImportResolver, project: ProjectNames): MemberTypeScopes {
+            val supertypes = node.usedTypes.filter { it.usageSource in SUPERTYPE_USAGES }.map { resolver.resolve(it.name) }
+            return of(node.pathWithName, supertypes, project.internalNodePaths, project.projectDictionary)
+        }
+
         fun of(
             ownPath: Path,
             supertypes: List<Path>,
