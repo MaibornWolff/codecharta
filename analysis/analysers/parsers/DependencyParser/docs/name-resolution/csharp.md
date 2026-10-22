@@ -74,8 +74,8 @@ the rule yet; `sample-projects/regression/csharp/known-gaps.md` says how it devi
 | 3.2 using directive | `spec-using-namespace` | ok |
 | 3.2 using directive inside the namespace, for a nested type | `spec-namespace-using-in-nested-type` | ok |
 | 3.2 two using directives: ambiguous | `spec-ambiguous-usings` | gap |
-| 3.2 using alias of a type | `spec-alias-to-type` | gap |
-| 3.2 a using alias imports no other name | `spec-alias-imports-no-other-name` | gap |
+| 3.2 using alias of a type | `spec-alias-to-type` | ok |
+| 3.2 a using alias imports no other name | `spec-alias-imports-no-other-name` | ok |
 | 3.2 `using static` | `spec-using-static-nested-type` | ok |
 | 3.1 and 3.2: own namespace over a using | `spec-namespace-beats-using` | ok |
 | 3.1 and 3.2: enclosing namespace over a using at the top | `spec-outer-namespace-beats-top-using` | gap |

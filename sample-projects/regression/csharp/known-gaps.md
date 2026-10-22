@@ -5,24 +5,6 @@ The probes of this folder whose output deviates from their `expected.txt` today,
 expected line the parser does not draw yet and `extra <line>` a wrong line it draws; `ProbeRegressionTest` fails once a
 gap closes, and the closed lines are deleted here.
 
-## spec-alias-imports-no-other-name
-
-A using alias is read as a using directive of its target, so the target's own name becomes visible.
-
-```text
-extra file a/App.cs -> b/Config.cs
-extra leaf a/App.cs#App -> b/Config.cs#Config
-```
-
-## spec-alias-to-type
-
-A using alias of a type draws no edge.
-
-```text
-missing file a/App.cs -> b/Config.cs
-missing leaf a/App.cs#App -> b/Config.cs#Config
-```
-
 ## spec-ambiguous-usings
 
 Two using directives that both import the name are not ambiguous to the parser: the first one wins.

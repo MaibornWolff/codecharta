@@ -229,7 +229,7 @@ Rounds 1 and 2, all rerun:
 | --- | --- | --- | --- |
 | namespace `using`, fully qualified name, `new`, static member, base type, interface, attribute on class, generic argument `List<Centaur>`, interface default method, namespace `using` inside a block namespace | edge | yes | ok |
 | `Dto.Creature` and domain `Creature` from `CreatureFacade.cs` | two edges | both | ok |
-| `using Entity = …CreatureEntity;` (`CreatureRepository.cs`) | edge | no | missing |
+| `using Entity = …CreatureEntity;` (`CreatureRepository.cs`) | edge | yes | ok (fixed by the C# alias rule) |
 | `using static …Dice;` + `RollD20()` (`CreatureUtil.cs`) | edge | no | missing |
 | property types `ArmorClass?`, `HitPoints?` (`Creature.cs`) | 2 edges | no | missing |
 | `global using` in `GlobalUsings.cs` (`CreatureEntity.cs -> CreatureType.cs`) | edge | no | missing |
