@@ -10,6 +10,32 @@ Bring every language of `ccsh dependencyparser` to the state Java and Kotlin rea
 `plans/2026-10-21-name-resolution-spec.md`: its name rules written down, probes derived from them, and the resolver
 following them, in small commits Christian reviews one by one. Branch `fix/dependency-name-resolution`.
 
+## Resume here (for a fresh agent)
+
+- **State:** Java, Kotlin and C# are done. Branch `fix/dependency-name-resolution-csharp` holds the last C# commits;
+  Christian pushes it and reviews it on GitHub. Next: ask Christian which language comes next (AskUserQuestion).
+- **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
+  it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
+  per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
+  then, with the commit list, the checks and the regressions; he pushes.
+- **Rules from Christian:** ask before every modelling decision, with a drawn example; one commit per change, test
+  first; structural changes in their own `refactor` commit before the behaviour change; a language's rules in its own
+  folder; report every regression as "correct but regression" (the new output follows the spec) or "bad and
+  regression" (fix it before the commit); commit only in an `&&` chain behind the green checks; diff every edit of a
+  `known-gaps.md` against HEAD before committing.
+- **Tools** (`.claude/name-resolution-tools/`, git-ignored): `ccsh-baseline` (the release build), `cp-probes` (the
+  197 checkpoint probes) with `cp-compare.py`, `edgediff.py`, `lines.py`, and two scripts that take build tags; a
+  build tag is a copy of `analysis/build/install/codecharta-analysis` in `ccsh-<tag>`, and `ccsh-csharp` is the head
+  of the C# branch, the comparison build for the first commit of the next language:
+  - `accept.sh <prev> <new>`: edge diffs on samples, `analysis/`, `visualization/app`; the probes against their
+    expectations; the checkpoint probes against the release; the gate on both parts.
+  - `xcheck.sh <prev> <new>`: the whole output of both builds on every sample, probe, checkpoint probe, `analysis/`
+    and `visualization/app`; for a refactor it must say 0 differences, otherwise only the language's files may differ.
+- **One commit, the chain:** `cd analysis && ./gradlew ktlintCheck test && ./gradlew distTar installDist &&
+  ./gradlew integrationTest`, copy the build to `ccsh-<tag>`, `npm run format:check`, `accept.sh`, `xcheck.sh`, then
+  commit. A run with `--bypass-gitignore` also reads `build/` copies of test resources; edges between such copies are
+  no regression of real code.
+
 ## How one language is done
 
 1. **Spec.** `analysis/analysers/parsers/DependencyParser/docs/name-resolution/<language>.md`, one page, in the shape
@@ -46,43 +72,29 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 - Shared rules live in `docs/name-resolution/README.md` and change every language; say so in the commit and measure
   all languages.
-- A copy rule follows the using file's language, never the logical path: C# keeps the first declaring file until its
-  spec exists (partial classes, `file` types, `.csproj`), SQL the latest migration.
+- A copy rule follows the using file's language, never the logical path: `CopyRules` per language, `NearestCopy` by
+  default, `SqlCopyRules` (latest migration) and `CSharpCopyRules` (every file of the nearest project) in their folders.
+- A language's own rules live next to its analyzer (`analyzers/<language>/`): `NameRules` (lookup order, step after
+  resolution), `CopyRules`; `processing/dependencies/LanguageRules` picks them. Shared code changes only when it is
+  good for every language and the cross-language check shows the others unchanged; Christian says yes first.
 - In `treeSitterExcavationSite`, `shared/domain` holds only what every language uses; a helper of a language family
   lives in one language's folder (`kotlin` uses `java`'s `LocalTypeScopes`, `cpp` uses `c`).
 - An existing test that encodes behaviour a spec decision changed is rewritten to the decision, with its name.
 
 ## Order and state
 
-- Done or in progress: Java, Kotlin (see the plan above). Next, by Christian's choice when asked: C#, TypeScript and
-  JavaScript (with Vue and Angular templates), Python, Go, C and C++, PHP, Rust, Delphi, SQL.
+- Done: Java, Kotlin (see the plan above), C#. Next, by Christian's choice when asked: TypeScript and JavaScript
+  (with Vue and Angular templates), Python, Go, C and C++, PHP, Rust, Delphi, SQL.
 - Material: the checkpoint branch `fix/nearest-file-for-shared-logical-path` holds an earlier, unreviewed attempt and
   its reviewer probes; use them for ideas and as the regression net, not as code to copy.
 
-## C# (in progress, 2026-10-22)
+## C# (done, 2026-10-22)
 
-Done: spec (`beee1e14b`), probes (`3775f95a9`), items 1–7 of the gap list (nested type own leaf, type parameters,
-base-list kinds, nested types first, aliases, namespace lookup order). Cross-language check after them: only edges
-between `.cs` files changed.
-
-Decided 2026-10-22 (Christian): a language's name rules live next to its analyzer, behind one interface; shared code
-changes only when the cross-language check proves every other language unchanged.
-
-- [x] refactor: `NameRules` interface in `analysis/model` (resolve the names of one declaration; a step after all
-  nodes are resolved), `DefaultNameRules` = today's behaviour for every language; `DependencyResolverService` picks the
-  rules per language as it picks the standard library (`c8151e304`)
-- [x] refactor: `Dependency.declaredIn` becomes the language-neutral `scope` (where an import is written) (`1fc9db813`)
-- [x] refactor: C# into `analyzers/csharp/CSharpNameRules` (namespace lookup, nested types, implemented interfaces) (`d4f586e1e, fix f98e47117`)
-- [x] refactor: Java and Kotlin into `analyzers/java/JavaNameRules` (packages, star imports, qualified names) (`0eec50f0e`)
-- [x] fix: item 8, qualified names relative to the enclosing namespaces and `global::`, in `CSharpNameRules`
-- [x] item 9, attributes by the compiler's choice (decision 6): spec and probes `72914313e` (gap section restored in
-  `df781e4fe`), `ProjectNames` per language `d3e9b3ed0`, parser `151de7d2c`, extractor `e777e7328`
-- [x] item 10, `file` types: extractor `isFileScoped`, `CSharpAnalyzer` passes it on (branch
-  `fix/dependency-name-resolution-csharp`)
-- [x] items 11–12: copies and partial types by project (decision 2, `partial` not read, no `.csproj` = one project):
-  `CopyRules` per language with each copy's file scope, `CSharpProjects` / `CSharpCopyRules` in the C# folder. No C#
-  gap left. Checkpoint probes worse than the release by decision: `r3-cs2proj`, `r3-csmix`, `r3-csnested` (expect
-  copies without `.csproj` to stay apart)
+Spec `docs/name-resolution/csharp.md` (decisions 1–6), 39 probes under `sample-projects/regression/csharp/`, no gap
+left. The first part is on `main`; the rest (`file` types, copies by project) is on branch
+`fix/dependency-name-resolution-csharp`, waiting for Christian's push and review. Checkpoint probes worse than the
+release by decision: `java/r1-jnest` (nested = own leaf), `csharp/r3-cs2proj`, `r3-csmix`, `r3-csnested` (copies
+without a `.csproj` are one project).
 
 ## Steps
 
