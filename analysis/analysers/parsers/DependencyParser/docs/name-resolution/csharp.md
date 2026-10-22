@@ -69,16 +69,16 @@ the rule yet; `sample-projects/regression/csharp/known-gaps.md` says how it devi
 | 2. nested type of an enclosing type | `spec-enclosing-nested-type` | ok |
 | 2. inherited nested type | `spec-inherited-nested-type` | ok |
 | 3.1 own namespace | `spec-own-namespace` | ok |
-| 3.1 enclosing namespace | `spec-parent-namespace` | gap |
+| 3.1 enclosing namespace | `spec-parent-namespace` | ok |
 | 3.1 global namespace | `spec-global-namespace` | ok |
 | 3.2 using directive | `spec-using-namespace` | ok |
 | 3.2 using directive inside the namespace, for a nested type | `spec-namespace-using-in-nested-type` | ok |
-| 3.2 two using directives: ambiguous | `spec-ambiguous-usings` | gap |
+| 3.2 two using directives: ambiguous | `spec-ambiguous-usings` | ok |
 | 3.2 using alias of a type | `spec-alias-to-type` | ok |
 | 3.2 a using alias imports no other name | `spec-alias-imports-no-other-name` | ok |
 | 3.2 `using static` | `spec-using-static-nested-type` | ok |
 | 3.1 and 3.2: own namespace over a using | `spec-namespace-beats-using` | ok |
-| 3.1 and 3.2: enclosing namespace over a using at the top | `spec-outer-namespace-beats-top-using` | gap |
+| 3.1 and 3.2: enclosing namespace over a using at the top | `spec-outer-namespace-beats-top-using` | ok |
 | 3.1 and 3.2: using inside a namespace over an enclosing namespace | `spec-inner-using-beats-outer-namespace` | ok |
 | 4. library type | `spec-library-type` | ok |
 | 3.1 and 4: own namespace over a library type | `spec-namespace-shadows-library` | ok |
@@ -107,6 +107,7 @@ the rule yet; `sample-projects/regression/csharp/known-gaps.md` says how it devi
   `InternalsVisibleTo` are not checked. Projects only group the parts of partial types.
 - Generic arity: `Result` and `Result<T>` share the logical path `Namespace.Result`, and the copies rule picks the file.
 - A `private` or `protected` nested type counts as visible everywhere.
+- Two declarations of one namespace in one file: the using directives of either count for the types of both.
 - `extern alias` and an alias-qualified name `alias::N` other than `global::`.
 - A member or variable that has the same name as a type (`Color Color`): the name means the type.
 - Nested types inherited over more than one level, or by an enclosing type: rule 2 looks at the own type's direct

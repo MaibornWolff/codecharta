@@ -21,9 +21,12 @@ class CSharpAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
 
         val nodes = result.declarations.map { declaration ->
             val namespacePath = namespaceOf(declaration.parentPath, typePaths)
-            val visibleImports = result.imports.filter { it.namespacePath.isEmpty() || it.namespacePath == namespacePath }
+            // The using directives of every namespace declaration around the type, each with the namespace it is written in
+            val visibleImports = result.imports.filter { namespacePath.take(it.namespacePath.size) == it.namespacePath }
             // A using alias imports nothing; ImportAliases replaces it in the names it is written in
-            val usings = visibleImports.filter { it.bindingName == null }.map { it.toDependency() }
+            val usings = visibleImports
+                .filter { it.bindingName == null }
+                .map { it.toDependency().copy(declaredIn = it.namespacePath) }
             val ownScopes = listOf(namespacePath, declaration.parentPath).map { Dependency(path = Path(it), isWildcard = true) }
             val dependencies = (usings + ownScopes).toSet()
 
