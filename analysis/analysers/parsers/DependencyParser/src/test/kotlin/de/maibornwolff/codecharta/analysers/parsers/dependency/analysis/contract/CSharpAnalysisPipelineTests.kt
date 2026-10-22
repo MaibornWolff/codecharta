@@ -19,7 +19,7 @@ class SotsCSharpExpectedNodesBuilder : SotsExpectedNodesBuilder() {
             expectedNode.copy(
                 nodes = expectedNode.nodes.map { it.withUsingsAtTheTop() },
                 ignorableDependencies = setOf(
-                    Dependency.asWildcard("Microsoft", "Extensions", "DependencyInjection").copy(declaredIn = emptyList())
+                    Dependency.asWildcard("Microsoft", "Extensions", "DependencyInjection").copy(scope = emptyList())
                 ),
                 ignorableTypes = setOf(
                     Type.simple("List"),
@@ -53,7 +53,7 @@ class SotsCSharpExpectedNodesBuilder : SotsExpectedNodesBuilder() {
             ) {
                 it
             } else {
-                it.copy(declaredIn = emptyList())
+                it.copy(scope = emptyList())
             }
         }
     )

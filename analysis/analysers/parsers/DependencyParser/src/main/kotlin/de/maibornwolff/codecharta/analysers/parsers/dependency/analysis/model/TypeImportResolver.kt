@@ -63,7 +63,7 @@ internal class TypeImportResolver(
         for (length in declaration.ownPackage.size downTo 0) {
             val namespace = declaration.ownPackage.take(length)
             candidates.firstOrNull { it.withoutName() == namespace }?.let { return it }
-            val importedNamespaces = wildcardDependencies.filter { it.declaredIn == namespace }.map { it.path.parts }
+            val importedNamespaces = wildcardDependencies.filter { it.scope == namespace }.map { it.path.parts }
             val importedTypes = candidates.filter { it.withoutName() in importedNamespaces }.distinctBy { it.withDots() }
             if (importedTypes.isNotEmpty()) return importedTypes.singleOrNull()
         }
