@@ -13,15 +13,3 @@ A name declared in several files of one package means the first of them only.
 missing file core/core.go -> fs/open_windows.go
 missing leaf core/core.go#Use -> fs/open_windows.go#Open
 ```
-
-## spec-external-test-package
-
-The external test package shares the package of its folder, so its `setup` means the one of `store.go`, and its
-edge into `store` counts as one inside the package.
-
-```text
-missing leaf store/store_test.go#TestOpen -> store/store_test.go#setup
-missing leaf store/store_test.go#setup -> store/store.go#Open
-extra leaf store/store_test.go#TestOpen -> store/store.go#setup
-extra leaf store/store_test.go#setup -> store/store.go#Open upward
-```
