@@ -66,13 +66,13 @@ the rule yet; `sample-projects/regression/csharp/known-gaps.md` says how it devi
 | Declarations: a file type | `spec-file-type` | gap |
 | 1. type parameter | `spec-type-parameter` | gap |
 | 2. nested type of the own type | `spec-own-nested-type` | gap |
-| 2. nested type of an enclosing type | `spec-enclosing-nested-type` | gap |
+| 2. nested type of an enclosing type | `spec-enclosing-nested-type` | ok |
 | 2. inherited nested type | `spec-inherited-nested-type` | gap |
 | 3.1 own namespace | `spec-own-namespace` | ok |
 | 3.1 enclosing namespace | `spec-parent-namespace` | gap |
 | 3.1 global namespace | `spec-global-namespace` | ok |
 | 3.2 using directive | `spec-using-namespace` | ok |
-| 3.2 using directive inside the namespace, for a nested type | `spec-namespace-using-in-nested-type` | gap |
+| 3.2 using directive inside the namespace, for a nested type | `spec-namespace-using-in-nested-type` | ok |
 | 3.2 two using directives: ambiguous | `spec-ambiguous-usings` | gap |
 | 3.2 using alias of a type | `spec-alias-to-type` | gap |
 | 3.2 a using alias imports no other name | `spec-alias-imports-no-other-name` | gap |
@@ -91,7 +91,7 @@ the rule yet; `sample-projects/regression/csharp/known-gaps.md` says how it devi
 | Attributes: `NameAttribute` | `spec-attribute-suffix` | ok |
 | Attributes: `Name` | `spec-attribute-plain-name` | ok |
 | Attributes: both: ambiguous | `spec-attribute-ambiguous` | gap |
-| Decision 1, nested type is its own leaf | `spec-nested-type-own-leaf` | gap |
+| Decision 1, nested type is its own leaf | `spec-nested-type-own-leaf` | ok |
 | Decision 2, every part of a partial type | `spec-partial-every-part` | gap |
 | Decision 2, partial type of the nearest project | `spec-partial-nearest-project` | gap |
 | Shared rule 1, name scope | `spec-name-scope` | ok |

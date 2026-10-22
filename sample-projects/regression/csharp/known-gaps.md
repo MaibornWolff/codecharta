@@ -69,15 +69,6 @@ extra file second/Checkout.cs -> first/Util.cs
 extra leaf second/Checkout.cs#Checkout -> first/Util.cs#Util
 ```
 
-## spec-enclosing-nested-type
-
-The outer type takes over the uses of its nested type and resolves them to the namespace's type.
-
-```text
-extra file a/Order.cs -> a/Line.cs
-extra leaf a/Order.cs#Order -> a/Line.cs#Line
-```
-
 ## spec-file-type
 
 A file type counts like any other type: every file of the namespace means the first copy.
@@ -110,22 +101,6 @@ missing leaf a/Report.cs#Report -> a/Document.cs#Section
 extra file a/Report.cs -> a/Section.cs
 extra leaf a/Report.cs#Report -> a/Document.cs#Document
 extra leaf a/Report.cs#Report -> a/Section.cs#Section
-```
-
-## spec-namespace-using-in-nested-type
-
-The C# extractor gives the uses of a nested type also to the type around it.
-
-```text
-extra leaf a/Outer.cs#Outer -> b/Config.cs#Config
-```
-
-## spec-nested-type-own-leaf
-
-The C# extractor gives the uses of a nested type also to the type around it.
-
-```text
-extra leaf a/Outer.cs#Outer -> a/Service.cs#Service
 ```
 
 ## spec-outer-namespace-beats-top-using

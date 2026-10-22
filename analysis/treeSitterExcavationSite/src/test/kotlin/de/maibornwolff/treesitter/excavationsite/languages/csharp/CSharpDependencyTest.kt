@@ -751,6 +751,29 @@ class CSharpDependencyTest {
 
     @Nested
     inner class UsedTypeExtraction {
+        @Test
+        fun `should give the uses of a nested type to the nested type only`() {
+            // Arrange
+            val code = """
+                namespace MyNamespace;
+                public class Outer : IOuter {
+                    private Repository repository;
+                    public class Inner : IInner {
+                        private Service service;
+                        public Result Run(Request request) { return new Result(); }
+                    }
+                }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.CSHARP)
+
+            // Assert
+            val usedTypesByName = result.declarations.associate { it.name to it.usedTypes.map { type -> type.name } }
+            assertThat(usedTypesByName["Outer"]).containsExactlyInAnyOrder("IOuter", "Repository")
+            assertThat(usedTypesByName["Inner"]).containsExactlyInAnyOrder("IInner", "Service", "Result", "Request")
+        }
+
         @Nested
         inner class ConstructorParameters {
             @Test
