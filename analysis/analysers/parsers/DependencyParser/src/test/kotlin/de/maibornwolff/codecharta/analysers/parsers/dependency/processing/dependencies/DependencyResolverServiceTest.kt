@@ -342,6 +342,65 @@ class DependencyResolverServiceTest {
     }
 
     @Test
+    fun `should resolve a C# attribute to whichever of its two names is an attribute class`() {
+        // Arrange
+        val attribute = Type("Audited", TypeOfUsage.USAGE, emptyList(), alternativeName = "AuditedAttribute")
+        val suffixedIsAttribute = listOf(
+            csharpClass("App", usedTypes = setOf(attribute)),
+            csharpClass("Audited"),
+            csharpClass("AuditedAttribute", baseTypes = listOf("System.Attribute"))
+        )
+        val plainIsAttributeThroughItsBase = listOf(
+            csharpClass("App", usedTypes = setOf(attribute)),
+            csharpClass("Audited", baseTypes = listOf("AuditBase")),
+            csharpClass("AuditBase", baseTypes = listOf("Attribute")),
+            csharpClass("AuditedAttribute")
+        )
+
+        // Act
+        val suffixedTargets = internalTargetsOf("App", suffixedIsAttribute)
+        val plainTargets = internalTargetsOf("App", plainIsAttributeThroughItsBase)
+
+        // Assert
+        assertThat(suffixedTargets).containsExactly("Shop.AuditedAttribute")
+        assertThat(plainTargets).containsExactly("Shop.Audited")
+    }
+
+    @Test
+    fun `should resolve a C# attribute to the suffixed name when neither is an attribute class and to the one that exists`() {
+        // Arrange
+        val attribute = Type("Audited", TypeOfUsage.USAGE, emptyList(), alternativeName = "AuditedAttribute")
+        val app = csharpClass("App", usedTypes = setOf(attribute, Type.simple("Audited")))
+        val bothOrdinary = listOf(app, csharpClass("Audited"), csharpClass("AuditedAttribute"))
+        val onlyPlain = listOf(csharpClass("App", usedTypes = setOf(attribute)), csharpClass("Audited"))
+
+        // Act
+        val bothOrdinaryTargets = internalTargetsOf("App", bothOrdinary)
+        val onlyPlainTargets = internalTargetsOf("App", onlyPlain)
+
+        // Assert
+        assertThat(bothOrdinaryTargets).containsExactlyInAnyOrder("Shop.AuditedAttribute", "Shop.Audited")
+        assertThat(onlyPlainTargets).containsExactly("Shop.Audited")
+    }
+
+    private fun csharpClass(name: String, usedTypes: Set<Type> = emptySet(), baseTypes: List<String> = emptyList()) = Node.build(
+        pathWithName = Path(listOf("Shop", name)),
+        physicalPath = "$name.cs",
+        language = SupportedLanguage.C_SHARP,
+        dependencies = setOf(Dependency(Path(listOf("Shop")), isWildcard = true, scope = emptyList())),
+        usedTypes = usedTypes + baseTypes.map { Type(it, TypeOfUsage.INHERITANCE, emptyList()) }
+    )
+
+    private fun internalTargetsOf(name: String, nodes: List<Node>): List<String> = DependencyResolverService
+        .resolveNodes(listOf(FileReport(nodes)))
+        .first {
+            it.name() == name
+        }.resolvedNodeDependencies.internalDependencies
+        .map {
+            it.withDots()
+        }
+
+    @Test
     fun `should resolve C# node and filter out standard library types`() {
         // Arrange
         val csClass = Node.build(

@@ -16,6 +16,10 @@ interface NameRules {
 fun interface DeclarationNames {
     /** The declaration a written name means: a project declaration, a library type or [Path.unknown]. */
     fun resolve(writtenName: String): Path
+
+    /** The declaration a use means that may stand for either of two names; the first that is known, by default. */
+    fun resolveEither(writtenName: String, alternativeName: String): Path =
+        resolve(writtenName).takeUnless { it.isUnknown() } ?: resolve(alternativeName)
 }
 
 /** What the name rules of every language look a name up in. */
@@ -23,7 +27,9 @@ class ProjectNames(
     val projectDictionary: Map<String, List<Path>>,
     val languageDictionary: Map<String, Path>,
     val internalNodePaths: Set<String>,
-    val fileScopedPaths: FileScopedPaths
+    val fileScopedPaths: FileScopedPaths,
+    /** The base types each declaration names as written, by its dotted path. */
+    val baseTypeNames: Map<String, List<String>> = emptyMap()
 ) {
     /** The package or namespace a declaration lies in: its path without the declarations around it. */
     fun packageOf(path: Path): List<String> {

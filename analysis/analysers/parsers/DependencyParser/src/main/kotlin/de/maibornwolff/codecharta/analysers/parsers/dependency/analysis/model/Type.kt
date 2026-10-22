@@ -1,6 +1,13 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model
 
-data class Type(val name: String, val usageSource: TypeOfUsage, val genericTypes: List<Type>, val resolvedPath: Path? = null) {
+/** @property alternativeName a second name the same use may mean, as `NameAttribute` for a C# attribute written `[Name]` */
+data class Type(
+    val name: String,
+    val usageSource: TypeOfUsage,
+    val genericTypes: List<Type>,
+    val resolvedPath: Path? = null,
+    val alternativeName: String? = null
+) {
     companion object {
         fun generic(name: String, genericTypes: List<Type>) = Type(name.trim(), TypeOfUsage.USAGE, genericTypes)
 
@@ -26,6 +33,7 @@ data class Type(val name: String, val usageSource: TypeOfUsage, val genericTypes
         if (name != other.name) return false
         if (genericTypes != other.genericTypes) return false
         if (resolvedPath != other.resolvedPath) return false
+        if (alternativeName != other.alternativeName) return false
 
         return true
     }
@@ -34,6 +42,7 @@ data class Type(val name: String, val usageSource: TypeOfUsage, val genericTypes
         var result = name.hashCode()
         result = 31 * result + genericTypes.hashCode()
         result = 31 * result + (resolvedPath?.hashCode() ?: 0)
+        result = 31 * result + (alternativeName?.hashCode() ?: 0)
         return result
     }
 
