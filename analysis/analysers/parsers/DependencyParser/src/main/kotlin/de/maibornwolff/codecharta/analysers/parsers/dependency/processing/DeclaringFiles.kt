@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.CopyRules
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.DeclaringCopy
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FilePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
@@ -13,21 +14,27 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.depend
  */
 internal class DeclaringFiles private constructor(private val filesByLogicalPath: Map<String, List<DeclaringFile>>) {
     fun filesFor(logicalPath: String, usingFile: FilePath, usingLanguage: SupportedLanguage): List<FilePath> {
-        val files = filesByLogicalPath[logicalPath]
+        val copies = filesByLogicalPath[logicalPath]
             .orEmpty()
-            .filter { it.nameScope == usingLanguage.nameScope && (!it.isFileScoped || it.file == usingFile) }
-            .map { it.file }
-        return if (files.isEmpty()) emptyList() else LanguageRules.copiesOf(usingLanguage).filesFor(files, usingFile)
+            .filter { it.nameScope == usingLanguage.nameScope && (!it.copy.isFileScoped || it.copy.file == usingFile) }
+            .map { it.copy }
+        return if (copies.isEmpty()) emptyList() else LanguageRules.copiesOf(usingLanguage).filesFor(copies, usingFile)
     }
 
-    private data class DeclaringFile(val file: FilePath, val nameScope: SupportedLanguage, val isFileScoped: Boolean)
+    private data class DeclaringFile(val copy: DeclaringCopy, val nameScope: SupportedLanguage)
 
     companion object {
         fun of(resolvedNodes: Collection<Node>): DeclaringFiles {
             val filesByLogicalPath = LinkedHashMap<String, MutableList<DeclaringFile>>()
             resolvedNodes.forEach { node ->
                 val files = filesByLogicalPath.getOrPut(node.pathWithName.withDots()) { mutableListOf() }
-                DeclaringFile(FilePath.of(node), node.language.nameScope, node.isFileScoped).let { if (it !in files) files.add(it) }
+                DeclaringFile(DeclaringCopy(FilePath.of(node), node.isFileScoped), node.language.nameScope).let {
+                    if (it !in
+                        files
+                    ) {
+                        files.add(it)
+                    }
+                }
             }
             return DeclaringFiles(filesByLogicalPath)
         }

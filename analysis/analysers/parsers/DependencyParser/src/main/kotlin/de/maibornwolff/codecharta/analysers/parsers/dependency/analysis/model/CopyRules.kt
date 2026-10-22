@@ -5,14 +5,17 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model
  * [NearestCopy] unless the language's own rules next to its analyzer say otherwise.
  */
 fun interface CopyRules {
-    /** The files a use in [usingFile] points at among the [declaringFiles] it can see, in scan order; at least one. */
-    fun filesFor(declaringFiles: List<FilePath>, usingFile: FilePath): List<FilePath>
+    /** The files a use in [usingFile] points at among the [copies] it can see, in scan order; at least one. */
+    fun filesFor(copies: List<DeclaringCopy>, usingFile: FilePath): List<FilePath>
 }
+
+/** A file that declares a logical path; a file-scoped copy only its own file can name. */
+data class DeclaringCopy(val file: FilePath, val isFileScoped: Boolean)
 
 /** Shared rule 2 of `docs/name-resolution/README.md`: the file sharing the longest folder path, the first of equally near. */
 object NearestCopy : CopyRules {
-    override fun filesFor(declaringFiles: List<FilePath>, usingFile: FilePath): List<FilePath> =
-        listOf(declaringFiles.maxBy { sharedFolderCount(it, usingFile) })
+    override fun filesFor(copies: List<DeclaringCopy>, usingFile: FilePath): List<FilePath> =
+        listOf(copies.maxBy { sharedFolderCount(it.file, usingFile) }.file)
 
     private fun sharedFolderCount(declaringFile: FilePath, usingFile: FilePath): Int = declaringFile.segments
         .dropLast(1)
