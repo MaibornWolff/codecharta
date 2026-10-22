@@ -1,0 +1,5 @@
+# csharp.md, attributes: the attribute [Audited] means AuditedAttribute, the field type Audited the class Audited
+file a/App.cs -> a/Audited.cs
+file a/App.cs -> a/AuditedAttribute.cs
+leaf a/App.cs#App -> a/Audited.cs#Audited
+leaf a/App.cs#App -> a/AuditedAttribute.cs#AuditedAttribute

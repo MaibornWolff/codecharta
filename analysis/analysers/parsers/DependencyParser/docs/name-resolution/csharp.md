@@ -52,8 +52,10 @@ interface, so the kind follows from the declaration the name resolves to.
 
 ## Attributes
 
-An attribute written `[Name]` means the type `NameAttribute` or the type `Name`, whichever exists; both existing makes
-it ambiguous: no edge.
+An attribute written `[Name]` means `Name` or `NameAttribute`, whichever is an attribute class: one that names
+`Attribute` in its base list, directly or through a project class. Code that compiles has at most one of them, as
+both being attribute classes is an error. With both in the project and neither recognisable as an attribute class,
+`[Name]` means `NameAttribute`. The same name written as a type elsewhere (`Audited lastCheck;`) means only `Name`.
 
 ## Probes
 
@@ -90,7 +92,9 @@ the rule yet; `sample-projects/regression/csharp/known-gaps.md` says how it devi
 | Base types | `spec-base-list-kinds` | ok |
 | Attributes: `NameAttribute` | `spec-attribute-suffix` | ok |
 | Attributes: `Name` | `spec-attribute-plain-name` | ok |
-| Attributes: both: ambiguous | `spec-attribute-ambiguous` | gap |
+| Attributes: both exist, the attribute class wins | `spec-attribute-both-exist` | gap |
+| Attributes: both exist, a project base class makes `Name` the attribute class | `spec-attribute-base-decides` | gap |
+| Attributes: the attribute and the same name as a field type | `spec-attribute-and-field` | ok |
 | Decision 1, nested type is its own leaf | `spec-nested-type-own-leaf` | ok |
 | Decision 2, every part of a partial type | `spec-partial-every-part` | gap |
 | Decision 2, partial type of the nearest project | `spec-partial-nearest-project` | gap |
@@ -122,3 +126,5 @@ the rule yet; `sample-projects/regression/csharp/known-gaps.md` says how it devi
 3. `global using` is not supported (decided 2026-10-22).
 4. A type's generic arity is not part of its logical path (decided 2026-10-22).
 5. A base-list entry's kind follows from the declaration it resolves to, not from its name (decided 2026-10-22).
+6. An attribute follows the compiler: it means the attribute class of `Name` and `NameAttribute`, else `NameAttribute`,
+   never no edge (decided 2026-10-22).

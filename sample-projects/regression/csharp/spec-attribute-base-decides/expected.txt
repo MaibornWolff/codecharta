@@ -1,0 +1,5 @@
+# csharp.md, attributes: [Name] means Name when only Name is an attribute class, here through a project base class
+file a/App.cs -> a/Audited.cs
+file a/Audited.cs -> a/AuditBase.cs
+leaf a/App.cs#App -> a/Audited.cs#Audited
+leaf a/Audited.cs#Audited -> a/AuditBase.cs#AuditBase usage=inheritance
