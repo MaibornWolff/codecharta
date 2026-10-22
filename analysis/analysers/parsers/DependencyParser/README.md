@@ -79,8 +79,10 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
   rule DependaCharta applies, and why a pair weighs 1 at declaration level unless the source is declared
   more than once in its file, when each declaration that references the target counts once. **Only PHP reports
   every kind today**: its extractor in `TreeSitterExcavationSite` classifies a type by the clause it
-  appears in and says so in `UsedType.usage`. Java and Kotlin report `inheritance` and `implementation`,
-  which their name resolution needs for inherited member types. The extractors of Java, Kotlin and C# make the other
+  appears in and says so in `UsedType.usage`. Java, Kotlin and C# report `inheritance` and `implementation`,
+  which their name resolution needs for inherited member types; C# writes a base class and interfaces in one
+  list, so its extractor reports `inheritance` and the resolver turns it into `implementation` where a class
+  names an interface. The extractors of Java, Kotlin and C# make the other
   distinctions internally — separate `extractInheritanceTypes`, `extractParameterTypes`, `extractReturnTypes`,
   `extractObjectCreationTypes` passes — but do not fill `usage` yet. DependaCharta has the same gap.
 - A name declared in several files — a C# partial class, a Go function name reused within a package, two

@@ -3,6 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.csharp
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
+import de.maibornwolff.treesitter.excavationsite.api.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -961,7 +962,7 @@ class CSharpDependencyTest {
         @Nested
         inner class InheritanceTypes {
             @Test
-            fun `should extract base class and interface types`() {
+            fun `should report every base-list entry as inheritance`() {
                 // Arrange
                 val code = """
                     namespace MyNamespace;
@@ -973,8 +974,8 @@ class CSharpDependencyTest {
 
                 // Assert
                 assertThat(result.declarations[0].usedTypes).containsExactlyInAnyOrder(
-                    UsedType("BaseClass"),
-                    UsedType("IInterface")
+                    UsedType("BaseClass", usage = TypeUsage.INHERITANCE),
+                    UsedType("IInterface", usage = TypeUsage.INHERITANCE)
                 )
             }
         }
@@ -1248,8 +1249,8 @@ class CSharpDependencyTest {
                 UsedType("AsType"),
                 UsedType("GenericArg"),
                 UsedType("IConstraint"),
-                UsedType("BaseClass"),
-                UsedType("IInterface"),
+                UsedType("BaseClass", usage = TypeUsage.INHERITANCE),
+                UsedType("IInterface", usage = TypeUsage.INHERITANCE),
                 UsedType("MyFieldType"),
                 UsedType("List", listOf(UsedType("GenericArg"))),
                 UsedType("CreatedType"),
