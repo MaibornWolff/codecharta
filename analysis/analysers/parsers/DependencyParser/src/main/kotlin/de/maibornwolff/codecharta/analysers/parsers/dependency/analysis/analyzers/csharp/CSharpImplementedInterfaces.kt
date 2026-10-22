@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies
+package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
@@ -10,7 +10,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLa
  * A C# base list names the base class and the interfaces alike, so its entries arrive as inheritance; once they are
  * resolved, an interface that a class, record or struct names there is one it implements (decision 5 of csharp.md).
  */
-internal object ImplementedInterfaces {
+internal object CSharpImplementedInterfaces {
     fun mark(resolvedNodes: List<Node>): List<Node> {
         val interfacePaths = resolvedNodes.filter { it.nodeType == NodeType.INTERFACE }.mapTo(HashSet()) { it.pathWithName.withDots() }
         return resolvedNodes.map { node -> if (namesInterfacesItImplements(node)) node.withImplementedInterfaces(interfacePaths) else node }

@@ -12,8 +12,7 @@ internal class TypeImportResolver(
 ) {
     private val ownPath = declaration.path
     private val dependencies = declaration.dependencies
-    private val wildcardDependencies = dependencies.filter { it.isWildcard }
-    private val wildcardImports = wildcardDependencies.map { it.path }
+    private val wildcardImports = dependencies.filter { it.isWildcard }.map { it.path }
 
     /** The own name means the declaration itself, unless a single-type import names another declaration by it. */
     fun resolveOwnName(plainTypeName: String): Path = findDirectImport(plainTypeName, candidatesNamed(plainTypeName)) ?: ownPath
@@ -28,8 +27,8 @@ internal class TypeImportResolver(
             ?: Path.unknown(plainTypeName)
     }
 
-    // Excludes self-references to prevent REEXPORT nodes from depending on themselves
-    private fun candidatesNamed(plainTypeName: String): List<Path>? = projectDictionary[plainTypeName]?.filter {
+    /** The project declarations of a simple name the declaration can see, without itself, so a re-export node does not depend on itself. */
+    fun candidatesNamed(plainTypeName: String): List<Path>? = projectDictionary[plainTypeName]?.filter {
         it != ownPath && fileScopedPaths.isVisible(it, declaration.physicalPath)
     }
 
@@ -43,11 +42,8 @@ internal class TypeImportResolver(
         .firstOrNull { candidates?.contains(it.path) ?: true }
         ?.path
 
-    private fun findAmongCandidates(fullName: String, candidates: List<Path>): Path? = when {
-        importsNameTypesOnly() -> findInPackageOrOnDemandImport(candidates)
-        declaration.language == SupportedLanguage.C_SHARP && !fullName.contains(".") -> findInEnclosingNamespaces(candidates)
-        else -> findByImportHeuristics(fullName, candidates)
-    }
+    private fun findAmongCandidates(fullName: String, candidates: List<Path>): Path? =
+        if (importsNameTypesOnly()) findInPackageOrOnDemandImport(candidates) else findByImportHeuristics(fullName, candidates)
 
     // Rules 5 and 6 of java.md and kotlin.md: the own package, then exactly the packages a star import names, of which
     // two declaring the name make it ambiguous
@@ -55,19 +51,6 @@ internal class TypeImportResolver(
         findInSamePackage(candidates)?.let { return it }
         val starPackages = wildcardImports.map { it.parts }.filter { it != declaration.ownPackage }
         return candidates.filter { it.withoutName() in starPackages }.distinctBy { it.withDots() }.singleOrNull()
-    }
-
-    // Rule 3 of csharp.md: each enclosing namespace from the innermost outwards, its own types before the types its
-    // using directives import, of which two make the name ambiguous
-    private fun findInEnclosingNamespaces(candidates: List<Path>): Path? {
-        for (length in declaration.ownPackage.size downTo 0) {
-            val namespace = declaration.ownPackage.take(length)
-            candidates.firstOrNull { it.withoutName() == namespace }?.let { return it }
-            val importedNamespaces = wildcardDependencies.filter { it.scope == namespace }.map { it.path.parts }
-            val importedTypes = candidates.filter { it.withoutName() in importedNamespaces }.distinctBy { it.withDots() }
-            if (importedTypes.isNotEmpty()) return importedTypes.singleOrNull()
-        }
-        return null
     }
 
     private fun findByImportHeuristics(fullName: String, candidates: List<Path>): Path? = findInSamePackage(candidates)

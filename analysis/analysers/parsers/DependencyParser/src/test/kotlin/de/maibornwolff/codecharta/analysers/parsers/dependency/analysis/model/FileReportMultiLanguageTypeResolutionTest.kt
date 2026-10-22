@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -24,7 +25,7 @@ class FileReportMultiLanguageTypeResolutionTest {
         )
 
         // Act
-        val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
+        val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf(), nameRules = CSharpNameRules)
 
         // Assert - Generic approach should resolve this correctly
         val expectedPath = Path(listOf("MyProject", "Models", "User"))
@@ -51,7 +52,7 @@ class FileReportMultiLanguageTypeResolutionTest {
         )
 
         // Act
-        val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
+        val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf(), nameRules = CSharpNameRules)
 
         // Assert
         val resolvedPath = resolvedNode.usedTypes.first().resolvedPath
