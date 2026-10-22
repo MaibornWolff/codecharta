@@ -68,15 +68,17 @@ between `.cs` files changed.
 Decided 2026-10-22 (Christian): a language's name rules live next to its analyzer, behind one interface; shared code
 changes only when the cross-language check proves every other language unchanged.
 
-- [ ] refactor: `NameRules` interface in `analysis/model` (resolve the names of one declaration; a step after all
+- [x] refactor: `NameRules` interface in `analysis/model` (resolve the names of one declaration; a step after all
   nodes are resolved), `DefaultNameRules` = today's behaviour for every language; `DependencyResolverService` picks the
-  rules per language as it picks the standard library
-- [ ] refactor: `Dependency.declaredIn` becomes the language-neutral `scope` (where an import is written)
-- [ ] refactor: C# into `analyzers/csharp/CSharpNameRules` (namespace lookup, nested types, implemented interfaces)
-- [ ] refactor: Java and Kotlin into `analyzers/java/JavaNameRules` (packages, star imports, qualified names)
-- [ ] fix: item 8, qualified names relative to the enclosing namespaces and `global::`, in `CSharpNameRules`
-  (backup of the first attempt: scratchpad `c8-backup/full.patch`)
-- [ ] fix: items 9–12: ambiguous attributes, `file` types, copies to the nearest file, partial types per `.csproj`
+  rules per language as it picks the standard library (`c8151e304`)
+- [x] refactor: `Dependency.declaredIn` becomes the language-neutral `scope` (where an import is written) (`1fc9db813`)
+- [x] refactor: C# into `analyzers/csharp/CSharpNameRules` (namespace lookup, nested types, implemented interfaces) (`d4f586e1e, fix f98e47117`)
+- [x] refactor: Java and Kotlin into `analyzers/java/JavaNameRules` (packages, star imports, qualified names) (`0eec50f0e`)
+- [x] fix: item 8, qualified names relative to the enclosing namespaces and `global::`, in `CSharpNameRules`
+- [x] item 9, attributes by the compiler's choice (decision 6): spec and probes `72914313e` (gap section restored in
+  `df781e4fe`), `ProjectNames` per language `d3e9b3ed0`, parser `151de7d2c`, extractor `e777e7328`
+- [ ] item 10, `file` types: extractor `isFileScoped` done; next: `CSharpAnalyzer` passes it on (closes `spec-file-type`)
+- [ ] items 11–12: copies to the nearest file, partial types per `.csproj` (behind a C# hook, not in `DeclaringFiles`)
 
 ## Steps
 
