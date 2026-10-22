@@ -239,13 +239,13 @@ class GoDependencyTest {
         }
 
         @Test
-        fun `should extract a type declared inside a function as well`() {
+        fun `should not extract a type declared inside a function, whose uses are the function's`() {
             // Arrange
             val code = """
                 package shop
 
                 func Build() {
-                    type draft struct{}
+                    type draft struct{ order Order }
                 }
             """.trimIndent()
 
@@ -253,7 +253,8 @@ class GoDependencyTest {
             val result = analyze(code)
 
             // Assert
-            assertThat(result.declarations.map { it.name }).containsExactly("Build", "draft")
+            assertThat(result.declarations.map { it.name }).containsExactly("Build")
+            assertThat(usedTypeNamesOf(code, "Build")).containsExactly("Order")
         }
     }
 

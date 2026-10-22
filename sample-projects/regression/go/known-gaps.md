@@ -64,14 +64,6 @@ extra file app/app.go -> google/uuid/uuid.go
 extra leaf app/app.go#Run -> google/uuid/uuid.go#New
 ```
 
-## spec-local-type
-
-A type declared in a function is a leaf of its file with its own uses.
-
-```text
-extra leaf shop/run.go#Mount -> model/rider.go#Rider
-```
-
 ## spec-longest-module-path
 
 go.mod is not read; the suffix match finds the folder `plugin/x`.
