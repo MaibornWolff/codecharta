@@ -44,7 +44,7 @@ script and the review findings are reused, its code is not copied wholesale.
 - [x] Complete Task 2: Nearest declaring file for shared logical paths
 - [x] Complete Task 3: Kotlin and Java spec
 - [x] Complete Task 4: Kotlin and Java probes
-- [ ] Complete Task 5: Kotlin and Java implementation
+- [x] Complete Task 5: Kotlin and Java implementation
 - [ ] Complete Task 6: Next languages
 
 ## State of Task 5 (2026-10-21)
@@ -67,7 +67,7 @@ Next, one commit each, Christian reviews after each and says "continue":
 - [x] 6b (`d284bd0d7`): Kotlin extractor no longer reports the class a call goes through (`Outer.Node()`,
   `Node.build()`) as a use of its own; closes `kotlin/spec-qualified-constructor-call`,
   `kotlin/spec-extension-through-receiver`. No Java or Kotlin gaps left
-- [ ] Tick Task 5, then ask which language comes next (`plans/2026-10-21-name-resolution-next-languages.md`)
+- [x] Tick Task 5, then ask which language comes next (`plans/2026-10-21-name-resolution-next-languages.md`): C#
 
 Checkpoint probe worse than the release: `java/r1-jnest`, correct but regression (its `expected.txt` predates decision
 "nested = own leaf"). Cross-language check 5a–6b (2026-10-22, `2d65485d2` against `d284bd0d7`, whole output on 269
