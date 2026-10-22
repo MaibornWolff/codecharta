@@ -47,6 +47,37 @@ script and the review findings are reused, its code is not copied wholesale.
 - [ ] Complete Task 5: Kotlin and Java implementation
 - [ ] Complete Task 6: Next languages
 
+## State of Task 5 (2026-10-21)
+
+Done, each reviewed by Christian: name scope, C# first file, type parameters and local classes, Java usage kinds,
+`TypeImportResolver(ImportingDeclaration, …)`, Java nested paths and member types (3b), qualified names (3c), Kotlin
+supertype kinds (4a, `4b0cab4ab`), own package before exactly one star import (4, `2d65485d2`).
+
+Next, one commit each, Christian reviews after each and says "continue":
+
+- [x] 5a (`4c5eea8e5`): Kotlin import alias (`import b.Config as RemoteConfig`: a plain `Config` then means the own package);
+  closes `kotlin/spec-import-alias`
+- [x] 5b (`ac24c39a8`): `private` top-level declarations visible only in their own file; closes `kotlin/spec-private-top-level` and
+  the checkpoint probe `kotlin/r2-ktp`. Decided 2026-10-21: TSE `Declaration.isFileScoped` (default false), set by
+  the Kotlin extractor for a private top-level declaration and all nested in it; Node carries it; the resolver drops
+  a candidate declared only file-scoped in other files; `DeclaringFiles` points at a file-scoped copy only from its
+  own file. A `private` class nested in a class is not supported (counts as public; add to the spec's list)
+- [x] 6a (`d6cbd33dd`): an import alias in front of a qualified name (`RemoteConfig.Section`); needed first so 6b
+  keeps `ExtractStage -> keywords/Language.kt`; new probe `kotlin/spec-alias-as-qualifier`
+- [x] 6b (`d284bd0d7`): Kotlin extractor no longer reports the class a call goes through (`Outer.Node()`,
+  `Node.build()`) as a use of its own; closes `kotlin/spec-qualified-constructor-call`,
+  `kotlin/spec-extension-through-receiver`. No Java or Kotlin gaps left
+- [ ] Tick Task 5, then ask which language comes next (`plans/2026-10-21-name-resolution-next-languages.md`)
+
+Checkpoint probe worse than the release: `java/r1-jnest`, correct but regression (its `expected.txt` predates decision
+"nested = own leaf"). Cross-language check 5a–6b (2026-10-22, `2d65485d2` against `d284bd0d7`, whole output on 269
+inputs): every non-Kotlin input identical; the 11 Kotlin inputs that differ are all correct by the spec.
+Gate baseline: 0 errors, 45 warnings analysis, 20 visualization. Helper scripts: checkpoint comparison
+`cp-compare.py`, release build `ccsh-baseline` and the checkpoint probes `cp-probes` in
+`/tmp/claude-1000/-Users-christian-huehn-Projects-Suite-codecharta/00b7a67e-c7f4-4a26-a1ca-7b613c1bd097/scratchpad`;
+file and leaf edge diff `edgediff.py` in
+`/tmp/claude-1000/-Users-christian-huehn-Projects-Suite-codecharta/e0a83720-4ac2-4bec-a29b-8056382d0173/scratchpad`.
+
 ## Notes
 
 - One topic per commit, small enough to review in one sitting; each step's reviewer checks it against the spec
