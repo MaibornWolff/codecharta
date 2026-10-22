@@ -15,7 +15,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
  *
  * A name written behind a selector on a plain name (`http.Client`, `util.New()`) carries that name as its
  * [UsedType.namespacePrefix], which may be an import or a value. A method called on anything else (`a.b.C()`,
- * `x().M()`) is a method of a value whose type is not inferred, so it is left out.
+ * `x().M()`) or on a name the function declares is a method of a value whose type is not inferred, so it is left out,
+ * as is every other name that [LocalNames] finds declared in the code around it.
  */
 internal object UsedTypeExtractor {
     private const val FUNCTION_DECLARATION = "function_declaration"
@@ -44,7 +45,9 @@ internal object UsedTypeExtractor {
 
     fun extract(declaration: SyntaxNode): Set<UsedType> {
         val relevantNodes = TreeTraversal.findAllDescendantsOfType(declaration, *RELEVANT_TYPES.toTypedArray())
-        val typeReferences = relevantNodes.filter { it.type in TYPE_REFERENCES && !isDeclaredName(it) }.map { typeReference(it) }
+        val typeReferences = relevantNodes
+            .filter { it.type in TYPE_REFERENCES && !isDeclaredName(it) }
+            .mapNotNull { typeReference(it) }
         val isFunction = declaration.type in FUNCTION_TYPES
         val usedTypes = if (isFunction) namesUsedByFunction(declaration, relevantNodes) + typeReferences else typeReferences
         return usedTypes.toCollection(LinkedHashSet())
@@ -57,14 +60,16 @@ internal object UsedTypeExtractor {
     }
 
     // A qualified type itself stays as written; its name inside it carries the package
-    private fun typeReference(node: SyntaxNode): UsedType = if (node.type == TYPE_IDENTIFIER) qualifiedName(node) else UsedType(node.text)
+    private fun typeReference(node: SyntaxNode): UsedType? = if (node.type == TYPE_IDENTIFIER) qualifiedName(node) else UsedType(node.text)
 
-    /** The name with the package written before it, when its parent is a qualified type. */
-    private fun qualifiedName(name: SyntaxNode): UsedType {
-        val qualifiedType = name.parent.orNull()?.takeIf { it.type == QUALIFIED_TYPE } ?: return UsedType(name.text)
-        val packageName = qualifiedType.fieldOfType(PACKAGE_FIELD, PACKAGE_IDENTIFIER) ?: return UsedType(name.text)
+    /** The name with the package written before it when its parent is a qualified type, else the name unless it is local. */
+    private fun qualifiedName(name: SyntaxNode): UsedType? {
+        val qualifiedType = name.parent.orNull()?.takeIf { it.type == QUALIFIED_TYPE } ?: return unlessLocal(name)
+        val packageName = qualifiedType.fieldOfType(PACKAGE_FIELD, PACKAGE_IDENTIFIER) ?: return unlessLocal(name)
         return UsedType(name.text, namespacePrefix = listOf(packageName.text))
     }
+
+    private fun unlessLocal(name: SyntaxNode): UsedType? = if (LocalNames.isLocal(name, name.text)) null else UsedType(name.text)
 
     private fun namesUsedByFunction(function: SyntaxNode, relevantNodes: List<SyntaxNode>): List<UsedType> {
         val nodesByType = relevantNodes.groupBy { it.type }
@@ -81,9 +86,9 @@ internal object UsedTypeExtractor {
 
     private fun parameterTypeName(parameter: SyntaxNode): UsedType? = parameter.children().firstNotNullOfOrNull { child ->
         when (child.type) {
-            TYPE_IDENTIFIER -> UsedType(child.text)
+            TYPE_IDENTIFIER -> unlessLocal(child)
             QUALIFIED_TYPE -> child.getChildByFieldName(NAME_FIELD).orNull()?.let { qualifiedName(it) }
-            POINTER_TYPE -> pointedAtTypeIdentifier(child)?.let { UsedType(it) }
+            POINTER_TYPE -> child.namedChildren().firstOrNull()?.takeIf { it.type == TYPE_IDENTIFIER }?.let { unlessLocal(it) }
             else -> null
         }
     }
@@ -95,7 +100,7 @@ internal object UsedTypeExtractor {
     }
 
     private fun typeNamesOf(type: SyntaxNode): List<UsedType> = when (type.type) {
-        TYPE_IDENTIFIER -> listOf(UsedType(type.text))
+        TYPE_IDENTIFIER -> listOfNotNull(unlessLocal(type))
         QUALIFIED_TYPE -> listOfNotNull(type.getChildByFieldName(NAME_FIELD).orNull()?.let { qualifiedName(it) })
         POINTER_TYPE -> type.namedChildren().firstOrNull()?.let { typeNamesOf(it) }.orEmpty()
         PARENTHESIZED_TYPE -> type.namedChildren().flatMap { typeNamesOf(it) }.toList()
@@ -104,7 +109,7 @@ internal object UsedTypeExtractor {
 
     private fun calledMethodNames(calls: List<SyntaxNode>): List<UsedType> = calls
         .mapNotNull { call -> call.fieldOfType(FUNCTION_FIELD, SELECTOR_EXPRESSION) }
-        .filter { selector -> selector.fieldOfType(OPERAND_FIELD, IDENTIFIER) != null }
+        .filter { selector -> selector.fieldOfType(OPERAND_FIELD, IDENTIFIER)?.let { unlessLocal(it) } != null }
         .mapNotNull { selector -> selector.fieldOfType(FIELD_FIELD, FIELD_IDENTIFIER) }
         .let { methodNames -> inSourceOrder(methodNames) }
         .filter { it.text.isNotEmpty() }
@@ -116,15 +121,15 @@ internal object UsedTypeExtractor {
     }
 
     private fun calledFunctionNames(calls: List<SyntaxNode>): List<UsedType> = calls
-        .mapNotNull { call -> call.fieldOfType(FUNCTION_FIELD, IDENTIFIER)?.text }
-        .filter { it.isNotEmpty() }
-        .map { UsedType(it) }
+        .mapNotNull { call -> call.fieldOfType(FUNCTION_FIELD, IDENTIFIER) }
+        .filter { it.text.isNotEmpty() }
+        .mapNotNull { unlessLocal(it) }
 
     private fun namesOfPackageQualifiedTypes(qualifiedTypes: List<SyntaxNode>): List<UsedType> = qualifiedTypes
         .filter { qualifiedType -> qualifiedType.fieldOfType(PACKAGE_FIELD, PACKAGE_IDENTIFIER) != null }
         .mapNotNull { qualifiedType -> qualifiedType.fieldOfType(NAME_FIELD, TYPE_IDENTIFIER) }
         .let { names -> inSourceOrder(names) }
-        .map { qualifiedName(it) }
+        .mapNotNull { qualifiedName(it) }
 
     // The names stand behind what they belong to, so the outer of two nested nodes has the later name: `a.B().C()`
     // yields B before C although the call of C is the outer node

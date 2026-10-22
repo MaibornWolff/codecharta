@@ -64,23 +64,12 @@ extra file app/app.go -> google/uuid/uuid.go
 extra leaf app/app.go#Run -> google/uuid/uuid.go#New
 ```
 
-## spec-local-declaration
-
-Variables of the enclosing function are not known, so the call `price()` means the function of the own package.
-
-```text
-extra file shop/run.go -> shop/price.go
-extra leaf shop/run.go#Run -> shop/price.go#price
-```
-
 ## spec-local-type
 
-A type declared in a function is a leaf of its file with its own uses, and hides no type of the own package.
+A type declared in a function is a leaf of its file with its own uses.
 
 ```text
-extra file shop/run.go -> shop/mount.go
 extra leaf shop/run.go#Mount -> model/rider.go#Rider
-extra leaf shop/run.go#Run -> shop/mount.go#Mount
 ```
 
 ## spec-longest-module-path
@@ -132,15 +121,6 @@ which the one-segment import cannot resolve.
 ```text
 missing file app/app.go -> model/dice.go
 missing leaf app/app.go#Start -> model/dice.go#NewDice
-```
-
-## spec-type-parameter
-
-Type parameters are not known, so `T` means the type of the own package.
-
-```text
-extra file shop/map.go -> shop/t.go
-extra leaf shop/map.go#Map -> shop/t.go#T
 ```
 
 ## spec-vendor
