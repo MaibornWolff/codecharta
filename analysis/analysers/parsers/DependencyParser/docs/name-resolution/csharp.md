@@ -92,8 +92,8 @@ the rule yet; `sample-projects/regression/csharp/known-gaps.md` says how it devi
 | Base types | `spec-base-list-kinds` | ok |
 | Attributes: `NameAttribute` | `spec-attribute-suffix` | ok |
 | Attributes: `Name` | `spec-attribute-plain-name` | ok |
-| Attributes: both exist, the attribute class wins | `spec-attribute-both-exist` | gap |
-| Attributes: both exist, a project base class makes `Name` the attribute class | `spec-attribute-base-decides` | gap |
+| Attributes: both exist, the attribute class wins | `spec-attribute-both-exist` | ok |
+| Attributes: both exist, a project base class makes `Name` the attribute class | `spec-attribute-base-decides` | ok |
 | Attributes: the attribute and the same name as a field type | `spec-attribute-and-field` | ok |
 | Decision 1, nested type is its own leaf | `spec-nested-type-own-leaf` | ok |
 | Decision 2, every part of a partial type | `spec-partial-every-part` | gap |

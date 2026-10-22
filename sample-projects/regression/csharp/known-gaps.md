@@ -5,24 +5,6 @@ The probes of this folder whose output deviates from their `expected.txt` today,
 expected line the parser does not draw yet and `extra <line>` a wrong line it draws; `ProbeRegressionTest` fails once a
 gap closes, and the closed lines are deleted here.
 
-## spec-attribute-both-exist
-
-An attribute links to both `Name` and `NameAttribute`, not only to the one that is an attribute class.
-
-```text
-extra file a/App.cs -> a/Audited.cs
-extra leaf a/App.cs#App -> a/Audited.cs#Audited
-```
-
-## spec-attribute-base-decides
-
-An attribute links to both `Name` and `NameAttribute`, not only to the one that is an attribute class.
-
-```text
-extra file a/App.cs -> a/AuditedAttribute.cs
-extra leaf a/App.cs#App -> a/AuditedAttribute.cs#AuditedAttribute
-```
-
 ## spec-copies-nearest
 
 C# takes the first declaring file, not the nearest one.

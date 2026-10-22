@@ -29,6 +29,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   using directives both import links to neither, and `Settings.Config` inside `namespace Shop` means
   `Shop.Settings.Config` before a top-level `Settings.Config`, unless written with `global::`.
 
+- **Attributes in C#**: `dependencyparser` links a C# attribute such as `[Audited]` to whichever of `Audited` and
+  `AuditedAttribute` is the attribute class, instead of to both.
+
 - **Using aliases in C#**: `dependencyparser` links a name written through a C# using alias such as
   `using Dto = Shop.Dto;` to the type or namespace it stands for, and no longer takes the alias for an import of
   every type of that namespace.

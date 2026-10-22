@@ -169,12 +169,11 @@ class CSharpAnalyzerTest {
         // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsExactlyInAnyOrder(
-            Type.simple("Obsolete"),
-            Type.simple("ObsoleteAttribute"),
-            Type.simple("OtherAttributeAttribute"),
-            Type.simple("OtherAttribute"),
-            Type.simple("System.Diagnostics.CodeAnalysis.SuppressMessage"),
-            Type.simple("System.Diagnostics.CodeAnalysis.SuppressMessageAttribute"),
+            Type.simple("Obsolete").copy(alternativeName = "ObsoleteAttribute"),
+            Type.simple("OtherAttribute").copy(alternativeName = "OtherAttributeAttribute"),
+            Type
+                .simple("System.Diagnostics.CodeAnalysis.SuppressMessage")
+                .copy(alternativeName = "System.Diagnostics.CodeAnalysis.SuppressMessageAttribute"),
             Type.simple("string"),
             Type.simple("void")
         )

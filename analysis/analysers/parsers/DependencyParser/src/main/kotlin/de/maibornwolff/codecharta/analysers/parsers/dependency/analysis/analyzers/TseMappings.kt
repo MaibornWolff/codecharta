@@ -30,7 +30,14 @@ fun ImportDeclaration.defaultImportPath(): List<String> {
     return path
 }
 
-fun UsedType.toType(): Type = Type.generic(name, genericTypes.map { it.toType() }, usage.toTypeOfUsage())
+fun UsedType.toType(): Type = Type
+    .generic(
+        name,
+        genericTypes.map {
+            it.toType()
+        },
+        usage.toTypeOfUsage()
+    ).copy(alternativeName = alternativeName)
 
 fun TypeUsage.toTypeOfUsage(): TypeOfUsage = when (this) {
     TypeUsage.USAGE -> TypeOfUsage.USAGE

@@ -70,22 +70,16 @@ enum class TypeUsage {
 /**
  * A type referenced inside a declaration body.
  *
- * `namespacePrefix` holds the namespace or scope segments that were written
- * alongside the type at the use site (e.g. `A::B` for `A::B::Settings`). It
- * is empty for unqualified uses. This slot exists for languages like C++
- * where fully-qualified inline type references are idiomatic; Java / Kotlin
- * / C# code typically imports types at the top of the file and uses short
- * names inline, so their extractors leave it empty.
- *
- * Adapters that consume `UsedType` may use `namespacePrefix` to synthesize
- * wildcard imports per qualified usage, which feeds the resolver the same
- * hint a `using namespace A::B;` directive would.
+ * @property namespacePrefix the scope written before the type at the use site (`A::B` for `A::B::Settings`), empty for
+ *   unqualified uses; C++ adapters turn it into the wildcard import a `using namespace A::B;` would be
+ * @property alternativeName a second name the same use may mean, as `NameAttribute` for a C# attribute `[Name]`
  */
 data class UsedType(
     val name: String,
     val genericTypes: List<UsedType> = emptyList(),
     val namespacePrefix: List<String> = emptyList(),
-    val usage: TypeUsage = TypeUsage.USAGE
+    val usage: TypeUsage = TypeUsage.USAGE,
+    val alternativeName: String? = null
 ) {
     fun isUppercase(): Boolean = name.firstOrNull()?.isUpperCase() == true
 }
