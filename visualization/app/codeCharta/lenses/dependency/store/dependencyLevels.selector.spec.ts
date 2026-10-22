@@ -1,5 +1,5 @@
 import { TEST_FILE_DATA } from "../../../mocks/dataMocks"
-import { CCFile, CcState, DependencyLevelData, FileSelectionState, FileState } from "../../../model/codeCharta.model"
+import { CCFile, CcState, DependencyLevelData, Edge, FileSelectionState, FileState } from "../../../model/codeCharta.model"
 import { clone } from "../../../util/clone"
 import {
     dependencyLevelsSelector,
@@ -9,10 +9,11 @@ import {
 } from "./dependencyLevels.selector"
 
 describe("dependency lens levels", () => {
-    function fileWith(name: string, dependencyLevels: DependencyLevelData): CCFile {
+    function fileWith(name: string, dependencyLevels: DependencyLevelData, edges?: Edge[]): CCFile {
         const file = clone(TEST_FILE_DATA)
         file.fileMeta.fileName = name
         file.settings.fileSettings.dependencyLevels = dependencyLevels
+        file.settings.fileSettings.edges = edges ?? file.settings.fileSettings.edges
         return file
     }
 
@@ -90,12 +91,12 @@ describe("dependency lens levels", () => {
     })
 
     describe("hasDependencyDataSelector", () => {
-        it("should be true when a visible file carries levels", () => {
+        it("should be true when the visible files carry levels and an edge metric", () => {
             // Arrange
-            const levels = { "/root/a.ts": 0 }
+            const files = [fileState(fileWith("analysed", { "/root/a.ts": 0 }), FileSelectionState.Partial)]
 
             // Act
-            const hasData = hasDependencyDataSelector.projector(levels)
+            const hasData = hasDependencyDataSelector.projector(files)
 
             // Assert
             expect(hasData).toBe(true)
@@ -103,10 +104,33 @@ describe("dependency lens levels", () => {
 
         it("should be false when no visible file carries levels", () => {
             // Arrange
-            const levels = {}
+            const files = [fileState(fileWith("plain", {}), FileSelectionState.Partial)]
 
             // Act
-            const hasData = hasDependencyDataSelector.projector(levels)
+            const hasData = hasDependencyDataSelector.projector(files)
+
+            // Assert
+            expect(hasData).toBe(false)
+        })
+
+        it("should be false when the visible files carry levels but no edges", () => {
+            // Arrange
+            const files = [fileState(fileWith("withoutEdges", { "/root/a.ts": 0 }, []), FileSelectionState.Partial)]
+
+            // Act
+            const hasData = hasDependencyDataSelector.projector(files)
+
+            // Assert
+            expect(hasData).toBe(false)
+        })
+
+        it("should be false when the visible files carry levels and edges without an edge metric", () => {
+            // Arrange
+            const edgeWithoutMetric: Edge = { fromNodeName: "/root/a.ts", toNodeName: "/root/b.ts", attributes: {} }
+            const files = [fileState(fileWith("withoutMetric", { "/root/a.ts": 0 }, [edgeWithoutMetric]), FileSelectionState.Partial)]
+
+            // Act
+            const hasData = hasDependencyDataSelector.projector(files)
 
             // Assert
             expect(hasData).toBe(false)
@@ -131,6 +155,33 @@ describe("dependency lens levels", () => {
                 files: [
                     fileState(fileWith("plain", {}), FileSelectionState.Partial),
                     fileState(fileWith("analysed", { "/root/a.ts": 0 }), FileSelectionState.Partial)
+                ]
+            } as CcState
+
+            // Act
+            const isWithout = isLoadedFileSetWithoutDependencyLensSelector(state)
+
+            // Assert
+            expect(isWithout).toBe(false)
+        })
+
+        it("should be true when the visible files carry levels but no edge metric", () => {
+            // Arrange
+            const state = { files: [fileState(fileWith("withoutEdges", { "/root/a.ts": 0 }, []), FileSelectionState.Partial)] } as CcState
+
+            // Act
+            const isWithout = isLoadedFileSetWithoutDependencyLensSelector(state)
+
+            // Assert
+            expect(isWithout).toBe(true)
+        })
+
+        it("should be false when one visible file carries levels and another the edge metrics", () => {
+            // Arrange
+            const state = {
+                files: [
+                    fileState(fileWith("levelsOnly", { "/root/a.ts": 0 }, []), FileSelectionState.Partial),
+                    fileState(fileWith("edgesOnly", {}), FileSelectionState.Partial)
                 ]
             } as CcState
 
