@@ -216,8 +216,8 @@ describe("LabelSettingsPanelComponent", () => {
             const sliderContainer = screen.getByTitle("Scale floating label font size")
             const sliders = sliderContainer.querySelectorAll("input")
             expect(sliders).toHaveLength(2)
-            expect((sliders[0] as HTMLInputElement).value).toBe("1")
-            expect((sliders[1] as HTMLInputElement).value).toBe("1")
+            expect((sliders[0] as HTMLInputElement).value).toBe("1.25")
+            expect((sliders[1] as HTMLInputElement).value).toBe("1.25")
         })
 
         it("should dispatch setLabelSize when the slider value changes", async () => {
@@ -263,7 +263,7 @@ describe("LabelSettingsPanelComponent", () => {
 
             // Assert
             const lastCall = dispatchSpy.mock.calls.at(-1)?.[0] as { value?: { mapState?: { labelSize?: number } } }
-            expect(lastCall?.value?.mapState?.labelSize).toBe(1)
+            expect(lastCall?.value?.mapState?.labelSize).toBe(1.25)
         })
     })
 })
