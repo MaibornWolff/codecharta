@@ -12,8 +12,10 @@ directives, "Partial declarations" and "Attribute specification". The rules shar
 - A nested type has the path of the type it is declared in plus its name: `Namespace.Outer.Nested`.
 - A project is the folder of a `.csproj` file with everything below it, up to the next folder with a `.csproj`. With
   no `.csproj` among the analysed files, they all form one project.
-- A partial type is one type over the files of one project that declare a part of it. A name that means it points
-  at every part file of the nearest project that declares it (shared rule 2, applied to projects instead of files).
+- One project cannot declare a type twice, so a logical path that several files of one project declare is one partial
+  type over those files; the `partial` keyword is not read. A name that means a path declared in several files points
+  at every file of the nearest project that declares it: all parts of a partial type, or the one copy of that project
+  (shared rule 2, applied to projects instead of files).
 - A `file` type (`file class Helper`) and every type nested in it can be named in its own file only.
 
 ## A simple name `N`
@@ -99,7 +101,8 @@ the rule yet; `sample-projects/regression/csharp/known-gaps.md` says how it devi
 | Decision 2, every part of a partial type | `spec-partial-every-part` | gap |
 | Decision 2, partial type of the nearest project | `spec-partial-nearest-project` | gap |
 | Shared rule 1, name scope | `spec-name-scope` | ok |
-| Shared rule 2, copies | `spec-copies-nearest` | gap |
+| Shared rule 2, copies in two projects | `spec-copies-nearest` | gap |
+| Decision 2, copies without a `.csproj` are parts of one project | `spec-copies-without-project` | gap |
 | Shared rule 3, no match | `spec-no-using` | ok |
 | Shared rule 4, self | `spec-self` | ok |
 
@@ -122,7 +125,8 @@ the rule yet; `sample-projects/regression/csharp/known-gaps.md` says how it devi
 1. A nested type is a leaf of its own below its outer type (`Namespace.Outer.Nested`), and only its own uses are its
    dependencies; the outer type does not take them over (decided 2026-10-22, as for Java and Kotlin).
 2. Each part of a partial type is a leaf of its own file with its own uses; a use of the type points at every part
-   file of the nearest project that declares it (decided 2026-10-22).
+   file of the nearest project that declares it (decided 2026-10-22). Copies inside one project count as parts, as
+   nothing else compiles, and without any `.csproj` the analysed files are one project (decided 2026-10-22).
 3. `global using` is not supported (decided 2026-10-22).
 4. A type's generic arity is not part of its logical path (decided 2026-10-22).
 5. A base-list entry's kind follows from the declaration it resolves to, not from its name (decided 2026-10-22).

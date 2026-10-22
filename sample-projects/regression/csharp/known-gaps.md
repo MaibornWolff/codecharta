@@ -16,6 +16,15 @@ extra file second/Checkout.cs -> first/Util.cs
 extra leaf second/Checkout.cs#Checkout -> first/Util.cs#Util
 ```
 
+## spec-copies-without-project
+
+C# takes the first declaring file, not every file of the one project the analysed files form.
+
+```text
+missing file second/Checkout.cs -> second/Util.cs
+missing leaf second/Checkout.cs#Checkout -> second/Util.cs#Util
+```
+
 ## spec-partial-every-part
 
 A use of a partial type points at one part file only.
