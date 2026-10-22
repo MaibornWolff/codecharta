@@ -14,18 +14,9 @@ internal object DeclarationExtractor {
     private const val IDENTIFIER = "identifier"
     private const val NAMESPACE_SEPARATOR = "."
 
-    private val DECLARATION_TYPES = setOf(
-        "class_declaration",
-        "struct_declaration",
-        "record_declaration",
-        "interface_declaration",
-        "enum_declaration",
-        "delegate_declaration"
-    )
-
     fun extract(rootNode: SyntaxNode): List<Declaration> {
         val allDeclarations = TreeTraversal
-            .findAllDescendantsOfType(rootNode, *DECLARATION_TYPES.toTypedArray())
+            .findAllDescendantsOfType(rootNode, *CSharpScopes.TYPE_DECLARATIONS.toTypedArray())
         val namesByStartByte = allDeclarations.associate { node ->
             node.startByte to TreeTraversal.findFirstChildTextByType(node, IDENTIFIER)
         }
@@ -62,7 +53,7 @@ internal object DeclarationExtractor {
         val parents = mutableListOf<String>()
         var current = node.parent
         while (!current.isNull) {
-            if (current.type in DECLARATION_TYPES) {
+            if (current.type in CSharpScopes.TYPE_DECLARATIONS) {
                 val parentName = namesByStartByte[current.startByte]
                 if (!parentName.isNullOrBlank()) {
                     parents.add(0, parentName)
