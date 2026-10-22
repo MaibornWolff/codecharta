@@ -12,8 +12,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 ## Resume here (for a fresh agent)
 
-- **State:** Java, Kotlin and C# are done. Branch `fix/dependency-name-resolution-csharp` holds the last C# commits;
-  Christian pushes it and reviews it on GitHub. Next: ask Christian which language comes next (AskUserQuestion).
+- **State:** Java, Kotlin and C# are done; Go is in progress on branch `fix/dependency-name-resolution-go`, cut from
+  `fix/dependency-name-resolution-csharp`. See the section "Go" below for where it stands.
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -83,8 +83,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 ## Order and state
 
-- Done: Java, Kotlin (see the plan above), C#. Next, by Christian's choice when asked: TypeScript and JavaScript
-  (with Vue and Angular templates), Python, Go, C and C++, PHP, Rust, Delphi, SQL.
+- Done: Java, Kotlin (see the plan above), C#; in progress: Go. Next, by Christian's choice when asked: TypeScript
+  and JavaScript (with Vue and Angular templates), Python, C and C++, PHP, Rust, Delphi, SQL.
 - Material: the checkpoint branch `fix/nearest-file-for-shared-logical-path` holds an earlier, unreviewed attempt and
   its reviewer probes; use them for ideas and as the regression net, not as code to copy.
 
@@ -96,7 +96,14 @@ left. The first part is on `main`; the rest (`file` types, copies by project) is
 release by decision: `java/r1-jnest` (nested = own leaf), `csharp/r3-cs2proj`, `r3-csmix`, `r3-csnested` (copies
 without a `.csproj` are one project).
 
+## Go (in progress, 2026-10-22)
+
+Spec `docs/name-resolution/go.md` (decisions 1–5): import paths through `go.mod` and `vendor/`, folder path as logical
+path, build-tag variants mean every file, `x_test` is its own package, a selector on a value draws no edge. Next:
+probes under `sample-projects/regression/go/`, then the implementation commits.
+
 ## Steps
 
 - [x] Ask Christian which language comes next: C# (2026-10-22)
+- [x] Next language: Go (left to Claude by Christian, 2026-10-22)
 - [ ] For each language: spec, probes, implementation commits, acceptance
