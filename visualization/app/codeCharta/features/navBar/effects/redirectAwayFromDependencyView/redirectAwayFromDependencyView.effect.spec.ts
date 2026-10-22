@@ -3,7 +3,7 @@ import { NavigationEnd, Router } from "@angular/router"
 import { EffectsModule } from "@ngrx/effects"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { Subject } from "rxjs"
-import { DependencyLevelData, FileSelectionState, FileState } from "../../../../model/codeCharta.model"
+import { DependencyLevelData, Edge, FileSelectionState, FileState } from "../../../../model/codeCharta.model"
 import { routeLinks } from "../../../../routing/routePaths"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { ToastService } from "../../../shared/facade"
@@ -28,10 +28,12 @@ describe("RedirectAwayFromDependencyViewEffect", () => {
         store = TestBed.inject(MockStore)
     }
 
-    function loadFile(dependencyLevels: DependencyLevelData) {
+    const EDGE_WITH_METRIC: Edge = { fromNodeName: "/root/a.ts", toNodeName: "/root/b.ts", attributes: { dependencies: 1 } }
+
+    function loadFile(dependencyLevels: DependencyLevelData, edges: Edge[] = [EDGE_WITH_METRIC]) {
         const files = [
             {
-                file: { fileMeta: { fileChecksum: "checksum" }, settings: { fileSettings: { dependencyLevels } } },
+                file: { fileMeta: { fileChecksum: "checksum" }, settings: { fileSettings: { dependencyLevels, edges } } },
                 selectedAs: FileSelectionState.Partial
             }
         ] as FileState[]
@@ -74,7 +76,19 @@ describe("RedirectAwayFromDependencyViewEffect", () => {
         expect(router.navigateByUrl).toHaveBeenCalledWith(routeLinks.metrics, { replaceUrl: true })
     })
 
-    it("should stay on the dependency view when the file carries dependency levels", async () => {
+    it("should send the reader to the map when the file carries dependency levels but no edge metric", async () => {
+        // Arrange
+        setup(routeLinks.dependencies)
+
+        // Act
+        loadFile({ "/root/a.ts": 0 }, [])
+        await settle()
+
+        // Assert
+        expect(router.navigateByUrl).toHaveBeenCalledWith(routeLinks.metrics, { replaceUrl: true })
+    })
+
+    it("should stay on the dependency view when the file carries dependency levels and an edge metric", async () => {
         // Arrange
         setup(routeLinks.dependencies)
 

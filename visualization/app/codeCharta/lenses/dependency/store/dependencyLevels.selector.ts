@@ -19,13 +19,20 @@ export const pathsWithDependencyLevelsSelector = createSelector(dependencyLevels
     return paths as ReadonlySet<string>
 })
 
-export const hasDependencyDataSelector = createSelector(dependencyLevelsSelector, levels => Object.keys(levels).length > 0)
+const carriesDependencyLevels = ({ file }: FileState) => Object.keys(file.settings.fileSettings.dependencyLevels ?? {}).length > 0
 
-const carriesNoDependencyLens = ({ file }: FileState) => Object.keys(file.settings.fileSettings.dependencyLevels ?? {}).length === 0
+const carriesEdgeMetrics = ({ file }: FileState) =>
+    (file.settings.fileSettings.edges ?? []).some(edge => Object.keys(edge.attributes ?? {}).length > 0)
+
+/** Levels alone lay out boxes without a single line between them, so the view also needs an edge metric to draw. */
+const carriesDependencyViewData = (fileStates: FileState[]) =>
+    fileStates.some(carriesDependencyLevels) && fileStates.some(carriesEdgeMetrics)
+
+export const hasDependencyDataSelector = createSelector(visibleFileStatesSelector, carriesDependencyViewData)
 
 export const isLoadedFileSetWithoutDependencyLensSelector = createSelector(
     visibleFileStatesWithCurrentSettingsSelector,
-    visibleFileStates => visibleFileStates.length > 0 && visibleFileStates.every(carriesNoDependencyLens)
+    visibleFileStates => visibleFileStates.length > 0 && !carriesDependencyViewData(visibleFileStates)
 )
 
 function mergeDependencyLevels(files: CCFile[], withFileNamePrefix: boolean): DependencyLevelData {
