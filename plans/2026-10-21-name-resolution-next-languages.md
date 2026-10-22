@@ -59,6 +59,25 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 - Material: the checkpoint branch `fix/nearest-file-for-shared-logical-path` holds an earlier, unreviewed attempt and
   its reviewer probes; use them for ideas and as the regression net, not as code to copy.
 
+## C# (in progress, 2026-10-22)
+
+Done: spec (`beee1e14b`), probes (`3775f95a9`), items 1–7 of the gap list (nested type own leaf, type parameters,
+base-list kinds, nested types first, aliases, namespace lookup order). Cross-language check after them: only edges
+between `.cs` files changed.
+
+Decided 2026-10-22 (Christian): a language's name rules live next to its analyzer, behind one interface; shared code
+changes only when the cross-language check proves every other language unchanged.
+
+- [ ] refactor: `NameRules` interface in `analysis/model` (resolve the names of one declaration; a step after all
+  nodes are resolved), `DefaultNameRules` = today's behaviour for every language; `DependencyResolverService` picks the
+  rules per language as it picks the standard library
+- [ ] refactor: `Dependency.declaredIn` becomes the language-neutral `scope` (where an import is written)
+- [ ] refactor: C# into `analyzers/csharp/CSharpNameRules` (namespace lookup, nested types, implemented interfaces)
+- [ ] refactor: Java and Kotlin into `analyzers/java/JavaNameRules` (packages, star imports, qualified names)
+- [ ] fix: item 8, qualified names relative to the enclosing namespaces and `global::`, in `CSharpNameRules`
+  (backup of the first attempt: scratchpad `c8-backup/full.patch`)
+- [ ] fix: items 9–12: ambiguous attributes, `file` types, copies to the nearest file, partial types per `.csproj`
+
 ## Steps
 
 - [x] Ask Christian which language comes next: C# (2026-10-22)
