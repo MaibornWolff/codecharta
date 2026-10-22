@@ -28,9 +28,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   or package in front, such as `Outer.Nested`, `Speed.class`, `com.ex.Config` or a Kotlin import alias in front of
   a nested class, to that declaration, and not also to the class in front.
 
-- **Nested classes**: `dependencyparser` keeps a Java, Kotlin or C# nested class below the class around it and no
-  longer counts what it uses for the outer class, and finds a Java or Kotlin one through an import such as
-  `import …CreatureFacade.Builder`.
+- **Nested classes**: `dependencyparser` keeps a Java, Kotlin or C# nested class below the class around it, no longer
+  counts what it uses for the outer class, links a name to the nested class of the own or the base class before any
+  other class of that name, and finds a Java or Kotlin one through an import such as `import …CreatureFacade.Builder`.
 
 - **Type parameters and local classes**: `dependencyparser` no longer links a Java, Kotlin or C# type parameter or a
   Java or Kotlin local class to a class of the same name elsewhere in the package.

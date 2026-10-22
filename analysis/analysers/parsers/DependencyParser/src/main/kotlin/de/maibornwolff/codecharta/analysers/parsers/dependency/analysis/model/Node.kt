@@ -32,7 +32,7 @@ data class Node(
                 languageDictionary,
                 fileScopedPaths
             )
-        val memberTypes = if (followsJavaRules) memberTypeScopes(resolver, internalNodePaths, projectDictionary) else MemberTypeScopes.NONE
+        val memberTypes = memberTypeScopes(resolver, internalNodePaths, projectDictionary)
         val qualifiedNames = if (followsJavaRules) QualifiedNames(resolver, memberTypes, internalNodePaths) else null
         val resolvedUsedTypes = usedTypes.map { it.toResolvedType(resolver, memberTypes, qualifiedNames) }.toSet()
 
@@ -82,6 +82,7 @@ data class Node(
         internalNodePaths: Set<String>,
         projectDictionary: Map<String, List<Path>>
     ): MemberTypeScopes {
+        if (language.nameScope != SupportedLanguage.JAVA && language != SupportedLanguage.C_SHARP) return MemberTypeScopes.NONE
         val supertypes = usedTypes.filter { it.usageSource in SUPERTYPE_USAGES }.map { resolver.resolve(it.name) }
         return MemberTypeScopes.of(pathWithName, supertypes, internalNodePaths, projectDictionary)
     }

@@ -75,16 +75,6 @@ missing file a/App.cs -> settings/Config.cs
 missing leaf a/App.cs#App -> settings/Config.cs#Config
 ```
 
-## spec-inherited-nested-type
-
-A nested type inherited from the base class does not shadow a type of the own namespace.
-
-```text
-missing leaf a/Report.cs#Report -> a/Document.cs#Section
-extra file a/Report.cs -> a/Section.cs
-extra leaf a/Report.cs#Report -> a/Section.cs#Section
-```
-
 ## spec-outer-namespace-beats-top-using
 
 A using directive at the top of the file wins over a type of an enclosing namespace.
@@ -94,16 +84,6 @@ missing file a/b/App.cs -> a/Config.cs
 missing leaf a/b/App.cs#App -> a/Config.cs#Config
 extra file a/b/App.cs -> c/Config.cs
 extra leaf a/b/App.cs#App -> c/Config.cs#Config
-```
-
-## spec-own-nested-type
-
-A nested type of the own type does not shadow a type of the own namespace.
-
-```text
-missing leaf a/Order.cs#Order -> a/Order.cs#Line
-extra file a/Order.cs -> a/Line.cs
-extra leaf a/Order.cs#Order -> a/Line.cs#Line
 ```
 
 ## spec-parent-namespace

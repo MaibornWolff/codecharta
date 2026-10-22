@@ -2,7 +2,8 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model
 
 /**
  * The types whose member types a simple name means before any import or package (rule 3 of
- * `docs/name-resolution/java.md` and `kotlin.md`): the own type, its supertypes, then each enclosing type outwards.
+ * `docs/name-resolution/java.md` and `kotlin.md`, rule 2 of `csharp.md`): the own type, its supertypes, then each
+ * enclosing type outwards.
  */
 internal class MemberTypeScopes(
     private val ownPath: Path,
