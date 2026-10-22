@@ -300,6 +300,48 @@ class DependencyResolverServiceTest {
     }
 
     @Test
+    fun `should resolve a C# name to a nested type of the own type or of its base type before a type of the namespace`() {
+        // Arrange
+        fun csharpType(vararg pathWithName: String, usedTypes: Set<Type> = emptySet()) = Node.build(
+            pathWithName = Path(pathWithName.toList()),
+            physicalPath = "${pathWithName[1]}.cs",
+            language = SupportedLanguage.C_SHARP,
+            dependencies = setOf(Dependency(Path(listOf("Shop")), true)),
+            usedTypes = usedTypes
+        )
+        val order = csharpType(
+            "Shop",
+            "Order",
+            usedTypes = setOf(
+                Type("Document", TypeOfUsage.INHERITANCE, emptyList()),
+                Type.simple("Line"),
+                Type.simple("Section")
+            )
+        )
+        val report = FileReport(
+            nodes = listOf(
+                order,
+                csharpType("Shop", "Order", "Line"),
+                csharpType("Shop", "Line"),
+                csharpType("Shop", "Document"),
+                csharpType("Shop", "Document", "Section"),
+                csharpType("Shop", "Section")
+            )
+        )
+
+        // Act
+        val resolvedNodes = DependencyResolverService.resolveNodes(listOf(report))
+
+        // Assert
+        val resolvedOrder = resolvedNodes.first { it.pathWithName == order.pathWithName }
+        assertThat(resolvedOrder.resolvedNodeDependencies.internalDependencies).containsExactlyInAnyOrder(
+            Dependency(Path(listOf("Shop", "Document")), type = TypeOfUsage.INHERITANCE),
+            Dependency(Path(listOf("Shop", "Order", "Line"))),
+            Dependency(Path(listOf("Shop", "Document", "Section")))
+        )
+    }
+
+    @Test
     fun `should resolve C# node and filter out standard library types`() {
         // Arrange
         val csClass = Node.build(
