@@ -165,12 +165,3 @@ missing leaf a/App.cs#App -> a/settings/Config.cs#Config
 extra file a/App.cs -> settings/Config.cs
 extra leaf a/App.cs#App -> settings/Config.cs#Config
 ```
-
-## spec-type-parameter
-
-A type parameter does not shadow a type of the own namespace.
-
-```text
-extra file a/Box.cs -> a/Item.cs
-extra leaf a/Box.cs#Box -> a/Item.cs#Item
-```

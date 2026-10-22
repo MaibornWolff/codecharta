@@ -937,6 +937,25 @@ class CSharpDependencyTest {
                 // Assert
                 assertThat(result.declarations[0].usedTypes).containsExactlyInAnyOrder(UsedType("IFoobar"))
             }
+
+            @Test
+            fun `should not report a type parameter of the type or of a method as a used type`() {
+                // Arrange
+                val code = """
+                    namespace MyNamespace;
+                    public class Box<Item> {
+                        private Item content;
+                        private List<Item> all;
+                        public Result Map<Target>(Target target) { return null; }
+                    }
+                """.trimIndent()
+
+                // Act
+                val result = TreeSitterDependencies.analyze(code, Language.CSHARP)
+
+                // Assert
+                assertThat(result.declarations[0].usedTypes).containsExactlyInAnyOrder(UsedType("List"), UsedType("Result"))
+            }
         }
 
         @Nested

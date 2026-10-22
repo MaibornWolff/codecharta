@@ -23,7 +23,8 @@ internal object CSharpTypeHelper {
             QUALIFIED_NAME -> extractQualifiedType(typeNode)
             NULLABLE_TYPE -> extractNullableType(typeNode)
             ARRAY_TYPE -> extractArrayElementType(typeNode)
-            IDENTIFIER, PREDEFINED_TYPE -> UsedType(name = typeNode.text.trim())
+            IDENTIFIER -> typeNode.text.trim().takeUnless { CSharpScopes.isTypeParameter(typeNode, it) }?.let { UsedType(name = it) }
+            PREDEFINED_TYPE -> UsedType(name = typeNode.text.trim())
             else -> null
         }
     }
