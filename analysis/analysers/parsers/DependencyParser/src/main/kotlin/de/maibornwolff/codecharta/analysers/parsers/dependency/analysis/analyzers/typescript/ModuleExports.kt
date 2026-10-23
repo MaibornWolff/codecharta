@@ -3,11 +3,9 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_DEFAULT_EXPORT_NAME
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.WILDCARD_EXPORT_NAME
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
-import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.DependencyResult
 import de.maibornwolff.treesitter.excavationsite.api.ImportKind
-import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
@@ -67,7 +65,9 @@ internal class ModuleExports private constructor(private val analysisRoot: File)
     private fun read(moduleFile: File): ExportTable {
         if (moduleFile.name.endsWith(VUE_ENDING)) return ExportTable.NONE
         val content = runCatching { moduleFile.readText() }.getOrNull() ?: return ExportTable.NONE
-        val result = runCatching { TreeSitterDependencies.analyze(content, languageOf(moduleFile)) }.getOrNull() ?: return ExportTable.NONE
+        val result =
+            runCatching { TreeSitterDependencies.analyze(content, ModuleLanguages.tseLanguageOf(moduleFile)) }.getOrNull()
+                ?: return ExportTable.NONE
         val ownNameByExport = result.declarations
             .filter { it.type == DeclarationType.REEXPORT && it.parentPath.isEmpty() }
             .mapNotNull { export ->
@@ -107,7 +107,7 @@ internal class ModuleExports private constructor(private val analysisRoot: File)
     private fun reexportedModulesOf(result: DependencyResult, moduleFile: File, content: String): List<Pair<String?, File>> {
         val fileInfo =
             FileInfo(
-                languageOfFileInfo(moduleFile),
+                ModuleLanguages.languageOf(moduleFile),
                 moduleFile.canonicalFile.relativeTo(analysisRoot.canonicalFile).invariantSeparatorsPath,
                 content,
                 analysisRoot
@@ -134,21 +134,8 @@ internal class ModuleExports private constructor(private val analysisRoot: File)
 
     companion object {
         private const val VUE_ENDING = ".vue"
-        private val JAVASCRIPT_ENDINGS = listOf(".js", ".jsx", ".mjs", ".cjs")
-        private const val TSX_ENDING = ".tsx"
         private val exportsByRoot = ConcurrentHashMap<String, ModuleExports>()
 
         fun of(analysisRoot: File): ModuleExports = exportsByRoot.computeIfAbsent(analysisRoot.absolutePath) { ModuleExports(analysisRoot) }
-
-        private fun isJavascript(moduleFile: File): Boolean = JAVASCRIPT_ENDINGS.any { moduleFile.name.endsWith(it) }
-
-        private fun languageOf(moduleFile: File): Language = when {
-            moduleFile.name.endsWith(TSX_ENDING) -> Language.TSX
-            isJavascript(moduleFile) -> Language.JAVASCRIPT
-            else -> Language.TYPESCRIPT
-        }
-
-        private fun languageOfFileInfo(moduleFile: File): SupportedLanguage =
-            if (isJavascript(moduleFile)) SupportedLanguage.JAVASCRIPT else SupportedLanguage.TYPESCRIPT
     }
 }
