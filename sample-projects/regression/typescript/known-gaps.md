@@ -25,15 +25,6 @@ missing leaf routes.ts#loadStats -> stats.ts#Stats
 missing leaf routes.ts#routes -> admin.ts#AdminComponent
 ```
 
-## spec-export-local-alias
-
-`export { A as B }` without `from` is not read.
-
-```text
-missing file use.ts -> service.ts
-missing leaf use.ts#Use -> service.ts#Impl
-```
-
 ## spec-global-alternatives
 
 A name that no import binds is not looked up among the declarations of script files.
@@ -120,17 +111,6 @@ missing leaf app.ts#draw -> shapes.ts#Circle
 ```text
 missing file ui/index.ts -> ui/button.ts
 missing leaf ui/index.ts#Button -> ui/button.ts#Button
-```
-
-## spec-reexport-imported
-
-An imported name that the file exports again is no re-export.
-
-```text
-missing file lib/index.ts -> lib/a.ts
-missing file use.ts -> lib/index.ts
-missing leaf lib/index.ts#A -> lib/a.ts#A
-missing leaf use.ts#Use -> lib/index.ts#A
 ```
 
 ## spec-reexport-star

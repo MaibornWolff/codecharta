@@ -58,4 +58,19 @@ class ModuleExportsTest {
         assertThat(exports.defaultNameOf(withoutDefault)).isNull()
         assertThat(exports.defaultNameOf(component)).isNull()
     }
+
+    @Test
+    fun `should name an exported name by the own declaration it stands for`(
+        @TempDir root: File
+    ) {
+        // Arrange
+        val service = root.withFile("service.ts", "class Impl {}\nexport class Plain {}\nexport { Impl as Service }")
+
+        // Act
+        val exports = ModuleExports.of(root)
+
+        // Assert
+        assertThat(exports.nameOf(service, "Service")).isEqualTo("Impl")
+        assertThat(exports.nameOf(service, "Plain")).isEqualTo("Plain")
+    }
 }

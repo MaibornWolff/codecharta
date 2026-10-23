@@ -7,18 +7,27 @@ import de.maibornwolff.treesitter.excavationsite.api.UsedType
 import java.io.File
 
 /**
- * The default imports of one file, by "What an import binds" of `docs/name-resolution/typescript.md`: `import D from
- * './m'` binds `D` to the default export of `m`, so a use of `D` is written as the full path of that declaration.
+ * The imports of one file that name a member of a project module, by "What an import binds" of
+ * `docs/name-resolution/typescript.md`: `import D from './m'` binds `D` to the default export of `m`, `import { A }` to
+ * the declaration `m` exports as `A`, so a use is written as the full path of that declaration where it is not the
+ * module path plus the imported name.
  */
-internal class DefaultImports(private val analysisRoot: File) {
+internal class MemberImports(private val analysisRoot: File) {
     private val targetByBinding = HashMap<String, Path>()
 
-    /** The declaration a default import of [moduleFile] means, null for an import that is none or a module without a default. */
+    /** The declaration a member import of [moduleFile] means, null where it is the module path plus the imported name. */
     fun targetOf(import: ImportDeclaration, moduleFile: File, module: Path): Path? {
-        if (!ImportedModules.namesMember(import) || import.path.lastOrNull() != TSE_DEFAULT_EXPORT_NAME) return null
-        val target = defaultOf(moduleFile, module) ?: return null
-        import.bindingName?.let { targetByBinding[it] = target }
-        return target
+        if (!ImportedModules.namesMember(import)) return null
+        val importedName = import.path.lastOrNull() ?: return null
+        if (importedName == TSE_DEFAULT_EXPORT_NAME) {
+            val target = defaultOf(moduleFile, module) ?: return null
+            import.bindingName?.let { targetByBinding[it] = target }
+            return target
+        }
+        val ownName = ModuleExports.of(analysisRoot).nameOf(moduleFile, importedName)
+        if (ownName == importedName) return null
+        // The extractor writes a use of a renamed import under the imported name, `Model` for `import { Model as Base }`
+        return (module + ownName).also { targetByBinding[importedName] = it }
     }
 
     fun rewrite(usedTypes: Set<UsedType>): Set<UsedType> = usedTypes.mapTo(LinkedHashSet()) { rewrite(it) }
