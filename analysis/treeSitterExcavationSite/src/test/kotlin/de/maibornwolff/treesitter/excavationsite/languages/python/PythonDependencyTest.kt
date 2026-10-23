@@ -17,6 +17,8 @@ class PythonDependencyTest {
     private fun usedTypesOf(code: String, declarationName: String): Set<UsedType> =
         analyze(code).declarations.first { it.name == declarationName }.usedTypes
 
+    private fun use(name: String, vararg module: String) = UsedType(name, namespacePrefix = module.toList())
+
     private fun memberImport(vararg path: String, alias: String? = null) =
         ImportDeclaration(path = path.toList(), isWildcard = false, kind = ImportKind.MEMBER, bindingName = alias)
 
@@ -224,6 +226,8 @@ class PythonDependencyTest {
         fun `should extract a class nested in a class as a declaration of its own below the outer class`() {
             // Arrange
             val code = """
+                from shop import Money, Product
+
                 class Order:
                     class Line:
                         def __init__(self, product: Product):
@@ -251,6 +255,8 @@ class PythonDependencyTest {
         fun `should extract a decorated nested class and a class nested in it with the classes around them as parent path`() {
             // Arrange
             val code = """
+                from dataclasses import dataclass
+
                 class Shop:
                     @dataclass
                     class Order:
@@ -267,7 +273,7 @@ class PythonDependencyTest {
                 tuple("Order", listOf("Shop")),
                 tuple("Line", listOf("Shop", "Order"))
             )
-            assertThat(result.declarations[1].usedTypes).containsExactly(UsedType("dataclass"))
+            assertThat(result.declarations[1].usedTypes).containsExactly(use("dataclass", "dataclasses"))
         }
 
         @Test
@@ -338,25 +344,99 @@ class PythonDependencyTest {
     @Nested
     inner class UsedNames {
         @Test
-        fun `should extract the identifiers of a definition that are uses, in source order`() {
+        fun `should report a name an import binds as the imported name behind its module`() {
             // Arrange
             val code = """
-                class Order(Entity):
-                    def total(self, tax: Rate):
-                        return Money(self)
+                from shop.orders import Order, Invoice as Bill
+
+                class Cart(Order):
+                    def total(self) -> Bill:
+                        pass
             """.trimIndent()
 
             // Act
-            val usedTypes = usedTypesOf(code, "Order")
+            val usedTypes = usedTypesOf(code, "Cart")
 
             // Assert
-            assertThat(usedTypes.map { it.name }).containsExactly("Entity", "Rate", "Money")
+            assertThat(usedTypes).containsExactly(use("Order", "shop", "orders"), use("Invoice", "shop", "orders"))
         }
 
         @Test
-        fun `should extract the identifiers of a decorator`() {
+        fun `should report a declaration of the own module without a module`() {
             // Arrange
             val code = """
+                class Base:
+                    pass
+
+                class Cart(Base):
+                    pass
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "Cart")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(UsedType("Base"))
+        }
+
+        @Test
+        fun `should report a name behind an imported module with the attribute names behind it`() {
+            // Arrange
+            val code = """
+                import shop.orders as orders
+                import shop.billing
+
+                def load():
+                    return orders.Order(), shop.billing.Invoice.create()
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "load")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(use("Order", "shop", "orders"), use("billing.Invoice.create", "shop"))
+        }
+
+        @Test
+        fun `should report a name of a relative import behind one dot segment per leading dot`() {
+            // Arrange
+            val code = """
+                from ..core.base import Entity
+                from . import helper
+
+                def load():
+                    return Entity(), helper.Helper()
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "load")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(use("Entity", ".", ".", "core", "base"), use("helper.Helper", "."))
+        }
+
+        @Test
+        fun `should report no builtin and no name that nothing binds`() {
+            // Arrange
+            val code = """
+                def load(values):
+                    print(len(values))
+                    return Unknown()
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "load")
+
+            // Assert
+            assertThat(usedTypes).isEmpty()
+        }
+
+        @Test
+        fun `should report a decorator`() {
+            // Arrange
+            val code = """
+                from app import register
+
                 @register
                 class Order:
                     pass
@@ -366,33 +446,16 @@ class PythonDependencyTest {
             val usedTypes = usedTypesOf(code, "Order")
 
             // Assert
-            assertThat(usedTypes).containsExactly(UsedType("register"))
+            assertThat(usedTypes).containsExactly(use("register", "app"))
         }
 
         @Test
-        fun `should extract an attribute access as its last name with the rest as namespace prefix, and its first name`() {
+        fun `should report the annotations and default values of parameters, not their names`() {
             // Arrange
             val code = """
-                def load():
-                    return shop.orders.Order()
-            """.trimIndent()
+                from shop import Rate, LIMIT
 
-            // Act
-            val usedTypes = usedTypesOf(code, "load")
-
-            // Assert
-            assertThat(usedTypes).containsExactly(
-                UsedType("shop"),
-                UsedType("Order", namespacePrefix = listOf("shop", "orders")),
-                UsedType("orders", namespacePrefix = listOf("shop"))
-            )
-        }
-
-        @Test
-        fun `should not extract the names of parameters, but their annotations and default values`() {
-            // Arrange
-            val code = """
-                def load(first, second: Rate, third=LIMIT, fourth: int = DEFAULT, *rest, **options):
+                def load(first, second: Rate, third=LIMIT, *rest, **options):
                     return None
             """.trimIndent()
 
@@ -400,13 +463,15 @@ class PythonDependencyTest {
             val usedTypes = usedTypesOf(code, "load")
 
             // Assert
-            assertThat(usedTypes.map { it.name }).containsExactly("Rate", "LIMIT", "int", "DEFAULT")
+            assertThat(usedTypes).containsExactly(use("Rate", "shop"), use("LIMIT", "shop"))
         }
 
         @Test
-        fun `should not extract the keyword of a keyword argument, but its value`() {
+        fun `should report the value of a keyword argument, not its keyword`() {
             // Arrange
             val code = """
+                from shop import Base, Meta
+
                 class Order(Base, metaclass=Meta):
                     pass
             """.trimIndent()
@@ -415,11 +480,11 @@ class PythonDependencyTest {
             val usedTypes = usedTypesOf(code, "Order")
 
             // Assert
-            assertThat(usedTypes.map { it.name }).containsExactly("Base", "Meta")
+            assertThat(usedTypes).containsExactly(use("Base", "shop"), use("Meta", "shop"))
         }
 
         @Test
-        fun `should not extract the names of an import or a global statement inside a definition`() {
+        fun `should report no name of an import or a global statement inside a definition`() {
             // Arrange
             val code = """
                 def load():
@@ -437,9 +502,11 @@ class PythonDependencyTest {
         }
 
         @Test
-        fun `should extract the class of a class pattern, not its keywords`() {
+        fun `should report the class of a class pattern, not its keywords`() {
             // Arrange
             val code = """
+                from shapes import Point
+
                 def describe(shape):
                     match shape:
                         case Point(x=0):
@@ -450,16 +517,184 @@ class PythonDependencyTest {
             val usedTypes = usedTypesOf(code, "describe")
 
             // Assert
-            assertThat(usedTypes.map { it.name }).containsExactly("Point")
+            assertThat(usedTypes).containsExactly(use("Point", "shapes"))
+        }
+
+        @Test
+        fun `should report a nested class through the class around it as one name`() {
+            // Arrange
+            val code = """
+                class Order:
+                    class Line:
+                        pass
+
+                class Invoice:
+                    def add(self, line: Order.Line):
+                        pass
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "Invoice")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(UsedType("Order.Line"))
         }
     }
 
     @Nested
-    inner class NamesOfTheEnclosingFunction {
+    inner class BindingPythonSees {
         @Test
-        fun `should not extract a parameter used in the body`() {
+        fun `should report the own declaration that follows an import of its name for a use in a function body`() {
             // Arrange
             val code = """
+                from app.other import Node
+
+                class Node:
+                    pass
+
+                def grow():
+                    return Node()
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "grow")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(UsedType("Node"))
+        }
+
+        @Test
+        fun `should report the import that follows a declaration of its name for a use in a function body`() {
+            // Arrange
+            val code = """
+                class Node:
+                    pass
+
+                from app.other import Node
+
+                def grow():
+                    return Node()
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "grow")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(use("Node", "app", "other"))
+        }
+
+        @Test
+        fun `should report for a base class the binding before its statement and for a body the last one`() {
+            // Arrange
+            val code = """
+                from app.lib import Node
+
+                class Tree(Node):
+                    def child(self):
+                        return Node()
+
+                class Node:
+                    pass
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "Tree")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(use("Node", "app", "lib"), UsedType("Node"))
+        }
+
+        @Test
+        fun `should report for a decorator the binding before its statement`() {
+            // Arrange
+            val code = """
+                from app.lib import register
+
+                @register
+                def handle():
+                    return None
+
+                def register(function):
+                    return function
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "handle")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(use("register", "app", "lib"))
+        }
+
+        @Test
+        fun `should report for an annotation the last binding of the module`() {
+            // Arrange
+            val code = """
+                from app.lib import Node
+
+                class Tree:
+                    def child(self) -> Node:
+                        return None
+
+                class Node:
+                    pass
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "Tree")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(UsedType("Node"))
+        }
+
+        @Test
+        fun `should report the latest wildcard import first and the earlier one as fallback, but no private name`() {
+            // Arrange
+            val code = """
+                from app.first import *
+                from app.second import *
+
+                def grow():
+                    return Node(), _hidden()
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "grow")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(
+                use("Node", "app", "second").copy(fallbacks = listOf(use("Node", "app", "first")))
+            )
+        }
+
+        @Test
+        fun `should report a wildcard import after an explicit one first and the explicit one as fallback`() {
+            // Arrange
+            val code = """
+                from app.models import Node
+                from app.extra import *
+
+                def grow():
+                    return Node()
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "grow")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(
+                use("Node", "app", "extra").copy(fallbacks = listOf(use("Node", "app", "models")))
+            )
+        }
+    }
+
+    @Nested
+    inner class NamesOfTheEnclosingScopes {
+        @Test
+        fun `should not report a parameter used in the body`() {
+            // Arrange
+            val code = """
+                from shop import Model
+
                 def build(Model, *parts, **options):
                     return Model(parts, options)
             """.trimIndent()
@@ -472,24 +707,27 @@ class PythonDependencyTest {
         }
 
         @Test
-        fun `should not extract a name the function binds anywhere in its body`() {
+        fun `should not report a name the function binds anywhere in its body`() {
             // Arrange
             val code = """
+                from shop import Model, Item, Handle, Count
+                from errors import Error
+
                 def rebuild(items):
                     first = Model
                     Model = object
-                    for index, item in enumerate(items):
+                    for index, Item in enumerate(items):
                         pass
-                    with open() as handle:
+                    with open() as Handle:
                         pass
                     try:
                         pass
                     except Error as error:
                         pass
-                    if (count := len(items)):
+                    if (Count := len(items)):
                         pass
                     def helper():
-                        return Model, index, item, handle, error, count
+                        return Model, index, Item, Handle, error, Count
                     return first
             """.trimIndent()
 
@@ -497,13 +735,15 @@ class PythonDependencyTest {
             val usedTypes = usedTypesOf(code, "rebuild")
 
             // Assert
-            assertThat(usedTypes.map { it.name }).containsExactly("object", "enumerate", "open", "Error", "len")
+            assertThat(usedTypes).containsExactly(use("Error", "errors"))
         }
 
         @Test
-        fun `should extract a name a global statement hands on to the module`() {
+        fun `should report a name a global statement hands on to the module`() {
             // Arrange
             val code = """
+                from shop import Registry
+
                 def reset():
                     global Registry
                     Registry = Registry()
@@ -513,13 +753,15 @@ class PythonDependencyTest {
             val usedTypes = usedTypesOf(code, "reset")
 
             // Assert
-            assertThat(usedTypes.map { it.name }).containsExactly("Registry")
+            assertThat(usedTypes).containsExactly(use("Registry", "shop"))
         }
 
         @Test
-        fun `should not extract the variable of a comprehension or the parameter of a lambda`() {
+        fun `should not report the variable of a comprehension or the parameter of a lambda`() {
             // Arrange
             val code = """
+                from shop import Key, entry
+
                 def collect(items):
                     keys = [Key(item) for item in items]
                     return sorted(keys, key=lambda entry: entry.name)
@@ -529,13 +771,15 @@ class PythonDependencyTest {
             val usedTypes = usedTypesOf(code, "collect")
 
             // Assert
-            assertThat(usedTypes.map { it.name }).containsExactly("Key", "sorted")
+            assertThat(usedTypes).containsExactly(use("Key", "shop"))
         }
 
         @Test
-        fun `should not extract an attribute behind a name the function binds`() {
+        fun `should not report an attribute behind a name the function binds`() {
             // Arrange
             val code = """
+                import shop.models as models
+
                 def make(models):
                     return models.Model()
             """.trimIndent()
@@ -548,25 +792,32 @@ class PythonDependencyTest {
         }
 
         @Test
-        fun `should extract a name an import inside the function binds`() {
+        fun `should report a name an import inside a function binds in that function only`() {
             // Arrange
             val code = """
                 def make():
                     from shop.models import Model
                     return Model()
+
+                def other():
+                    return Model()
             """.trimIndent()
 
             // Act
-            val usedTypes = usedTypesOf(code, "make")
+            val makeUses = usedTypesOf(code, "make")
+            val otherUses = usedTypesOf(code, "other")
 
             // Assert
-            assertThat(usedTypes).containsExactly(UsedType("Model"))
+            assertThat(makeUses).containsExactly(use("Model", "shop", "models"))
+            assertThat(otherUses).isEmpty()
         }
 
         @Test
-        fun `should extract a name of a parameter's annotation or default value, which the scope around evaluates`() {
+        fun `should report a parameter's annotation and default value, which the scope around evaluates`() {
             // Arrange
             val code = """
+                from shop import Model
+
                 def make(Model: Model = Model()):
                     return None
             """.trimIndent()
@@ -575,7 +826,30 @@ class PythonDependencyTest {
             val usedTypes = usedTypesOf(code, "make")
 
             // Assert
-            assertThat(usedTypes).containsExactly(UsedType("Model"))
+            assertThat(usedTypes).containsExactly(use("Model", "shop"))
+        }
+
+        @Test
+        fun `should report for a class body the nested class it declared before, for a method the module's name`() {
+            // Arrange
+            val code = """
+                from app.other import Inner
+
+                class Outer:
+                    class Inner:
+                        pass
+
+                    default = Inner()
+
+                    def make(self):
+                        return Inner()
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "Outer")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(UsedType("Outer.Inner"), use("Inner", "app", "other"))
         }
     }
 }

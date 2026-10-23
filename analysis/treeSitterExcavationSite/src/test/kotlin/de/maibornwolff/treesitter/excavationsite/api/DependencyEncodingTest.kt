@@ -49,7 +49,7 @@ class DependencyEncodingTest {
     @Test
     fun `should extract whole names after the noncharacters in a Python file`() {
         // Arrange
-        val code = "LABEL = \"\uFFFE-\uFFFF\"\n\nclass AfterTheRange(RangeBase):\n    pass\n"
+        val code = "from base import RangeBase\n\nLABEL = \"\uFFFE-\uFFFF\"\n\nclass AfterTheRange(RangeBase):\n    pass\n"
 
         // Act
         val result = TreeSitterDependencies.analyze(code, Language.PYTHON)

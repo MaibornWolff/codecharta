@@ -84,7 +84,7 @@ the rule yet; `sample-projects/regression/python/known-gaps.md` says how it devi
 | --- | --- | --- |
 | Declarations: the file path is the logical path | `spec-module-path` | ok |
 | Declarations: a module-level variable | `spec-module-variable` | ok |
-| Declarations, decision 4: a nested class is a leaf of its own | `spec-nested-class` | gap |
+| Declarations, decision 4: a nested class is a leaf of its own | `spec-nested-class` | ok |
 | Declarations and 1: a class declared in a function | `spec-local-class` | ok |
 | Declarations, decision 2: re-export leaf of `__init__.py` | `spec-reexport-init` | ok |
 | Declarations, decision 2: a re-export under an alias | `spec-reexport-alias` | ok |
@@ -101,20 +101,20 @@ the rule yet; `sample-projects/regression/python/known-gaps.md` says how it devi
 | Binding: `import a.b.c` | `spec-import-dotted` | ok |
 | Binding: `import a.b.c as m` | `spec-import-module-alias` | ok |
 | Binding: `from m import N`, N a submodule | `spec-from-import-submodule` | ok |
-| Binding: `from m import N as A` | `spec-from-import-alias` | gap |
+| Binding: `from m import N as A` | `spec-from-import-alias` | ok |
 | Binding: `from m import *` | `spec-wildcard-import` | ok |
-| Binding: a wildcard skips names starting with `_` | `spec-wildcard-public-only` | gap |
+| Binding: a wildcard skips names starting with `_` | `spec-wildcard-public-only` | ok |
 | Binding: a wildcard follows `__all__` | `spec-wildcard-all` | gap |
 | Binding: an import alone draws no edge | `spec-unused-import` | ok |
 | 1. a parameter or variable of the function | `spec-function-local-binding` | ok |
-| 1. an import inside a function | `spec-function-local-import` | gap |
-| 1. a class body and its methods | `spec-class-scope` | gap |
-| 2, decision 3: a definition after an import | `spec-definition-after-import` | gap |
+| 1. an import inside a function | `spec-function-local-import` | ok |
+| 1. a class body and its methods | `spec-class-scope` | ok |
+| 2, decision 3: a definition after an import | `spec-definition-after-import` | ok |
 | 2, decision 3: an import after a definition | `spec-import-after-definition` | ok |
-| 2, decision 3: two wildcard imports, the later wins | `spec-wildcard-last-wins` | gap |
-| 2, decision 3: a base class at definition time | `spec-definition-time` | gap |
+| 2, decision 3: two wildcard imports, the later wins | `spec-wildcard-last-wins` | ok |
+| 2, decision 3: a base class at definition time | `spec-definition-time` | ok |
 | 2, decision 3: a decorator at definition time | `spec-decorator-definition-time` | ok |
-| 2, decision 3: a lazy annotation | `spec-annotation-lazy` | gap |
+| 2, decision 3: a lazy annotation | `spec-annotation-lazy` | ok |
 | 3. builtin | `spec-builtin` | ok |
 | 2 and 3: a module binding over a builtin | `spec-module-shadows-builtin` | ok |
 | Attribute through a class | `spec-class-attribute` | ok |

@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.python.PythonAnalyzer
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
@@ -11,6 +10,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import java.io.File
 
 class PythonAnalyzerTest {
@@ -133,242 +133,161 @@ from .mod import Foo as Bar
     }
 
     @Test
-    fun `should parse from imports and add them to the node's dependencies and add used types`() {
+    fun `should make a use of an imported name that module's name, its package's name as fallback`() {
         // Arrange
         val pythonCode = """
-from de.sots.cellarsandcentaurs.domain.models import Creature, Speed
+from shop.models import Creature
 
-class TestClass():
-    def __init__(creature: Creature):
+class Keeper:
+    def __init__(self, creature: Creature):
         self.creature = creature
         """
-        val physicalPath = File("MyExample/Path/PythonAnalyzerTest.py").path
+        val physicalPath = File("shop/keeper.py").path
 
         // Act
         val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
 
         // Assert
-        val dependencies = report.nodes.first().dependencies
-        assertEquals(4, dependencies.size)
-        assertThat(dependencies).containsExactlyInAnyOrder(
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.domain.models.Creature")),
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.domain.models.__init__.Creature")),
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.domain.models.Speed")),
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.domain.models.__init__.Speed"))
-        )
-
-        val usedTypes = report.nodes.first().usedTypes
-        assertEquals(2, usedTypes.size)
-        assertThat(usedTypes).containsExactlyInAnyOrder(
-            Type.simple("Creature"),
-            Type.simple("self")
+        assertThat(report.nodes.single().usedTypes).containsExactly(
+            Type.simple("shop.models.Creature").copy(fallbacks = listOf(Type.simple("shop.models.__init__.Creature")))
         )
     }
 
     @Test
-    fun `should parse from wildcard imports and add them to the node's dependencies`() {
+    fun `should make a use of a declaration of the own module its path below the file`() {
         // Arrange
         val pythonCode = """
-from de.sots.cellarsandcentaurs.domain.models import *
+class Base:
+    pass
 
-class TestClass():
-    def __init__(creature: Creature):
-        self.creature = creature
-        """
-        val physicalPath = File("MyExample/Path/PythonAnalyzerTest.py").path
-
-        // Act
-        val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
-
-        // Assert
-        val dependencies = report.nodes.first().dependencies
-        assertEquals(2, dependencies.size)
-        assertThat(dependencies).containsExactlyInAnyOrder(
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.domain.models"), true),
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.domain.models.__init__"), true)
-        )
-    }
-
-    @Test
-    fun `should parse relative from imports and add them to the node's dependencies`() {
-        // Arrange
-        val pythonCode = """
-from .creature_service import Creature_Service
-from ..models import *
-from ...application.creature_facade import CreatureFacade
-
-class TestClass():
+class Cart(Base):
     pass
         """
-        val physicalPath = File("de/sots/cellarsandcentaurs/domain/services/creatures.py").path
+        val physicalPath = File("shop/cart.py").path
 
         // Act
         val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
 
         // Assert
-        val dependencies = report.nodes.first().dependencies
-        assertEquals(6, dependencies.size)
-        assertThat(dependencies).containsExactlyInAnyOrder(
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.domain.services.creature_service.Creature_Service")),
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.domain.services.creature_service.__init__.Creature_Service")),
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.application.creature_facade.CreatureFacade")),
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.application.creature_facade.__init__.CreatureFacade")),
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.domain.models"), true),
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.domain.models.__init__"), true)
-        )
+        assertThat(report.nodes.last().usedTypes).containsExactly(Type.simple("shop.cart.Base"))
     }
 
     @Test
-    fun `should parse aliased from imports and add them to the node's dependencies`() {
+    fun `should resolve a relative import against the package of the file`() {
         // Arrange
         val pythonCode = """
-from de.sots.cellarsandcentaurs.domain.services.creature_service import Creature_Service as cs
+from .creature_service import CreatureService
+from ...application.creature_facade import CreatureFacade
 
-class TestClass():
-    def __init__(self, creature_service: cs):
-        pass
+class Creatures(CreatureService, CreatureFacade):
+    pass
         """
-        val physicalPath = File("MyExample/Path/PythonAnalyzerTest.py").path
+        val physicalPath = File("shop/domain/services/creatures.py").path
 
         // Act
         val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
 
         // Assert
-        val dependencies = report.nodes.first().dependencies
-        assertEquals(2, dependencies.size)
-        assertThat(dependencies).containsExactlyInAnyOrder(
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.domain.services.creature_service.Creature_Service")),
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.domain.services.creature_service.__init__.Creature_Service"))
+        assertThat(report.nodes.single().usedTypes.map { it.name }).containsExactly(
+            "shop.domain.services.creature_service.CreatureService",
+            "shop.application.creature_facade.CreatureFacade"
         )
-
-        val usedTypes = report.nodes.first().usedTypes
-        assertEquals(1, usedTypes.size)
-        assertThat(usedTypes).containsExactly(Type.simple("Creature_Service"))
     }
 
     @Test
-    fun `should not add dependencies for unused imports`() {
+    fun `should make a use behind a module alias the names its chain can mean, the deepest declaration first`() {
         // Arrange
         val pythonCode = """
-from de.sots.cellarsandcentaurs.domain.models.creature import Creature as crt
+import shop.models as md
 
-class TestClass():
+def create():
+    md.Creature.spawn()
+        """
+        val physicalPath = File("shop/factory.py").path
+
+        // Act
+        val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
+
+        // Assert
+        val use = report.nodes.single().usedTypes.single()
+        assertThat(listOf(use.name) + use.fallbacks.map { it.name }).containsExactly(
+            "shop.models.Creature.spawn",
+            "shop.models.Creature",
+            "shop.models.__init__.Creature.spawn",
+            "shop.models.__init__.Creature",
+            "shop.models.Creature.__init__.spawn"
+        )
+    }
+
+    @Test
+    fun `should make a use with fallbacks the names of the use, then those of its fallbacks`() {
+        // Arrange
+        val pythonCode = """
+from shop.first import *
+from shop.second import *
+
+def grow():
+    return Node()
+        """
+        val physicalPath = File("shop/tree.py").path
+
+        // Act
+        val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
+
+        // Assert
+        val use = report.nodes.single().usedTypes.single()
+        assertThat(listOf(use.name) + use.fallbacks.map { it.name }).containsExactly(
+            "shop.second.Node",
+            "shop.second.__init__.Node",
+            "shop.first.Node",
+            "shop.first.__init__.Node"
+        )
+    }
+
+    @Test
+    fun `should make no use of an import alone`() {
+        // Arrange
+        val pythonCode = """
+from shop.models.creature import Creature as crt
+
+class Keeper():
     def __init__(self):
         pass
         """
-        val physicalPath = File("MyExample/Path/PythonAnalyzerTest.py").path
+        val physicalPath = File("shop/keeper.py").path
 
         // Act
         val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
 
         // Assert
-        val dependencies = report.nodes.first().dependencies
-        assertEquals(0, dependencies.size)
-        assertThat(report.nodes.first().usedTypes).isEmpty()
+        assertThat(report.nodes.single().usedTypes).isEmpty()
     }
 
     @Test
-    fun `should parse imports and add them to the node's dependencies`() {
+    fun `should look a module up below its import root`(
+        @TempDir root: File
+    ) {
         // Arrange
+        listOf("svc/src/app/__init__.py", "svc/src/app/models.py").forEach {
+            root
+                .resolve(it)
+                .also { file ->
+                    file.parentFile.mkdirs()
+                }.writeText("")
+        }
         val pythonCode = """
-import de.sots.cellarsandcentaurs.domain.models
+from app.models import Model
 
-def doSomething():
-    de.sots.cellarsandcentaurs.domain.models.Creature.doSomething()
+class View(Model):
+    pass
         """
-        val physicalPath = File("MyExample/Path/PythonAnalyzerTest.py").path
+        val physicalPath = File("svc/src/app/views.py").path
 
         // Act
-        val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
+        val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode, root)).analyze()
 
         // Assert
-        val dependencies = report.nodes.first().dependencies
-        assertEquals(2, dependencies.size)
-        assertThat(dependencies).containsExactlyInAnyOrder(
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.domain.models.Creature")),
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.domain.models.__init__.Creature"))
-        )
-
-        val usedTypes = report.nodes.first().usedTypes
-        assertEquals(2, usedTypes.size)
-        assertThat(usedTypes).containsExactlyInAnyOrder(
-            Type.simple("de"),
-            Type.simple("de.sots.cellarsandcentaurs.domain.models.Creature").copy(
-                fallbacks = listOf(Type.simple("de.sots.cellarsandcentaurs.domain.models.__init__.Creature"))
-            )
-        )
-    }
-
-    @Test
-    fun `should parse aliased imports and add them to the node's dependencies`() {
-        // Arrange
-        val pythonCode = """
-import de.sots.cellarsandcentaurs.domain.models as md
-
-def doSomething():
-    md.Creature.doSomething()
-        """
-        val physicalPath = File("MyExample/Path/PythonAnalyzerTest.py").path
-
-        // Act
-        val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
-
-        // Assert
-        val dependencies = report.nodes.first().dependencies
-        assertEquals(2, dependencies.size)
-        assertThat(dependencies).containsExactlyInAnyOrder(
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.domain.models.Creature")),
-            Dependency(Path.fromStringWithDots("de.sots.cellarsandcentaurs.domain.models.__init__.Creature"))
-        )
-
-        val usedTypes = report.nodes.first().usedTypes
-        assertEquals(2, usedTypes.size)
-        assertThat(usedTypes).containsExactlyInAnyOrder(
-            Type.simple("md"),
-            Type.simple("de.sots.cellarsandcentaurs.domain.models.Creature").copy(
-                fallbacks = listOf(Type.simple("de.sots.cellarsandcentaurs.domain.models.__init__.Creature"))
-            )
-        )
-    }
-
-    @Test
-    fun `should report a name written behind an imported module as that module's name, its package's name as fallback`() {
-        // Arrange
-        val pythonCode = """
-import app.models as am
-
-def make():
-    return am.Model()
-        """
-        val physicalPath = File("app/factory.py").path
-
-        // Act
-        val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
-
-        // Assert
-        assertThat(report.nodes.first().usedTypes).contains(
-            Type.simple("app.models.Model").copy(fallbacks = listOf(Type.simple("app.models.__init__.Model")))
-        )
-    }
-
-    @Test
-    fun `should report a name written behind an imported submodule as that submodule's name`() {
-        // Arrange
-        val pythonCode = """
-from ..model import speed as tempo
-
-def make():
-    return tempo.Speed(30)
-        """
-        val physicalPath = File("app/service/factory.py").path
-
-        // Act
-        val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
-
-        // Assert
-        assertThat(report.nodes.first().usedTypes).contains(
-            Type.simple("app.model.speed.Speed").copy(fallbacks = listOf(Type.simple("app.model.speed.__init__.Speed")))
-        )
+        assertThat(report.nodes.single().usedTypes).containsExactly(Type.simple("svc.src.app.models.Model"))
     }
 
     @Test
