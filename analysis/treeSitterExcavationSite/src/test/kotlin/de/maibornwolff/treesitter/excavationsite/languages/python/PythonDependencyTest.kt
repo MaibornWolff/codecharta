@@ -688,6 +688,103 @@ class PythonDependencyTest {
     }
 
     @Nested
+    inner class AlternativeBranches {
+        @Test
+        fun `should report each binding of the branches of a try statement`() {
+            // Arrange
+            val code = """
+                try:
+                    from app.dice import roll
+                except ImportError:
+                    from app.fallback import roll
+
+                def surprise():
+                    return roll()
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "surprise")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(use("roll", "app", "fallback"), use("roll", "app", "dice"))
+        }
+
+        @Test
+        fun `should report only a binding that follows the branches of an if statement`() {
+            // Arrange
+            val code = """
+                if windows:
+                    from app.windows import Console
+                elif mac:
+                    from app.mac import Console
+                else:
+                    from app.posix import Console
+                from app.plain import Console
+
+                def make():
+                    return Console()
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "make")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(use("Console", "app", "plain"))
+        }
+
+        @Test
+        fun `should report each binding of the branches of an if statement, and not one of a finally clause as alternative`() {
+            // Arrange
+            val code = """
+                if windows:
+                    from app.windows import Console
+                elif mac:
+                    from app.mac import Console
+                else:
+                    from app.posix import Console
+
+                try:
+                    from app.lib import Shell
+                finally:
+                    from app.base import Shell
+
+                def make():
+                    return Console(), Shell()
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "make")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(
+                use("Console", "app", "posix"),
+                use("Console", "app", "mac"),
+                use("Console", "app", "windows"),
+                use("Shell", "app", "base")
+            )
+        }
+
+        @Test
+        fun `should report each binding of the branches of a try statement inside a function`() {
+            // Arrange
+            val code = """
+                def surprise():
+                    try:
+                        from app.dice import roll
+                    except ImportError:
+                        from app.fallback import roll
+                    return roll()
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "surprise")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(use("roll", "app", "fallback"), use("roll", "app", "dice"))
+        }
+    }
+
+    @Nested
     inner class NamesOfTheEnclosingScopes {
         @Test
         fun `should not report a parameter used in the body`() {

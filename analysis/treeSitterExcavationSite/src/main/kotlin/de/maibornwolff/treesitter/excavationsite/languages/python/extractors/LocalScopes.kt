@@ -13,14 +13,16 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 internal class LocalScopes {
     private val bindingsByScope = HashMap<Pair<Int, String>, List<NamedBinding>>()
 
-    fun bindingOf(name: SyntaxNode): Binding? {
+    /** The bindings of the innermost scope around that binds the name: its last one and the alternatives to it. */
+    fun bindingsOf(name: SyntaxNode): List<Binding>? {
         val scopes = name.ancestors().filter { encloses(it, name) }.toList()
         return scopes.withIndex().firstNotNullOfOrNull { (index, scope) ->
-            when {
-                scope.type != CLASS_DEFINITION -> bindingsOf(scope).lastOrNull { it.name == name.text }?.binding
-                index == 0 -> bindingsOf(scope).lastOrNull { it.name == name.text && it.position <= name.startByte }?.binding
-                else -> null
+            val visible = when {
+                scope.type != CLASS_DEFINITION -> scopeBindings(scope)
+                index == 0 -> scopeBindings(scope).filter { it.position <= name.startByte }
+                else -> emptyList()
             }
+            visible.lastWithAlternatives(name.text).map { it.binding }.ifEmpty { null }
         }
     }
 
@@ -33,7 +35,7 @@ internal class LocalScopes {
         else -> false
     }
 
-    private fun bindingsOf(scope: SyntaxNode): List<NamedBinding> = bindingsByScope.getOrPut(scope.startByte to scope.type) {
+    private fun scopeBindings(scope: SyntaxNode): List<NamedBinding> = bindingsByScope.getOrPut(scope.startByte to scope.type) {
         when (scope.type) {
             in ScopeBindings.COMPREHENSIONS ->
                 scope

@@ -27,6 +27,3 @@ internal object ImportBindings {
         else -> Binding.ImportedModule(import.path.take(1))
     }
 }
-
-/** A name a statement binds, from the byte [position] on; a wildcard import binds no single name. */
-internal data class NamedBinding(val name: String?, val binding: Binding, val position: Int)

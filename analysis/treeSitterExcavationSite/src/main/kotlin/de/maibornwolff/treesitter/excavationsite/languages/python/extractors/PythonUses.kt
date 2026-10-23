@@ -7,19 +7,22 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.ancestors
 
 /**
  * The used types of a Python declaration: every name [UseSites] calls a use, with the attribute names behind it, as
- * what the binding Python sees there means; the names a wildcard import may bind come first and the binding after them
- * as fallbacks. A name the code around binds as a value, or nothing binds (a builtin), uses no declaration.
+ * what the binding Python sees there means, one use for each of its alternatives; the names a wildcard import may bind
+ * come first and the binding after them as fallbacks. A name the code around binds as a value, or nothing binds (a builtin), uses no declaration.
  */
 internal class PythonUses(private val module: ModuleBindings, private val scopes: LocalScopes) {
     fun of(definition: SyntaxNode, nestedDeclarations: List<SyntaxNode>): Set<UsedType> = TreeTraversal
         .findAllDescendantsOfType(definition, IDENTIFIER)
         .filter { name -> nestedDeclarations.none { it.contains(name) } && UseSites.isUse(name) }
-        .mapNotNullTo(LinkedHashSet()) { name -> useOf(name) }
+        .flatMapTo(LinkedHashSet()) { name -> usesOf(name) }
 
-    private fun useOf(name: SyntaxNode): UsedType? {
-        val bindings = scopes.bindingOf(name)?.let { listOf(it) } ?: module.of(name.text, positionOf(name))
-        val uses = bindings.mapNotNull { it.useOf(name.text, attributesBehind(name)) }
-        return uses.firstOrNull()?.copy(fallbacks = uses.drop(1))
+    // One use per meaning the name may have, each with the uses it falls back to
+    private fun usesOf(name: SyntaxNode): List<UsedType> {
+        val meanings = scopes.bindingsOf(name)?.map { listOf(it) } ?: module.of(name.text, positionOf(name))
+        return meanings.mapNotNull { bindings ->
+            val uses = bindings.mapNotNull { it.useOf(name.text, attributesBehind(name)) }
+            uses.firstOrNull()?.copy(fallbacks = uses.drop(1))
+        }
     }
 
     // The attribute names of the chain the name starts: `b`, `c` of `a.b.c`

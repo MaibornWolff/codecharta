@@ -120,8 +120,8 @@ the rule yet; `sample-projects/regression/python/known-gaps.md` says how it devi
 | 2, decision 3: a base class at definition time | `spec-definition-time` | ok |
 | 2, decision 3: a decorator at definition time | `spec-decorator-definition-time` | ok |
 | 2, decision 3: a lazy annotation | `spec-annotation-lazy` | ok |
-| 2, decision 5: alternatives in `try` and `except` | `spec-alternative-try` | gap |
-| 2, decision 5: alternatives in `if` and `else`, hidden by a later binding | `spec-alternative-if` | gap |
+| 2, decision 5: alternatives in `try` and `except` | `spec-alternative-try` | ok |
+| 2, decision 5: alternatives in `if` and `else`, hidden by a later binding | `spec-alternative-if` | ok |
 | 3. builtin | `spec-builtin` | ok |
 | 2 and 3: a module binding over a builtin | `spec-module-shadows-builtin` | ok |
 | Attribute through a class | `spec-class-attribute` | ok |
