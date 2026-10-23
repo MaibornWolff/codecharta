@@ -1,0 +1,73 @@
+package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript
+
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_DEFAULT_EXPORT_NAME
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
+import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
+import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
+import de.maibornwolff.treesitter.excavationsite.api.ImportKind
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
+import java.io.File
+
+class MemberImportsTest {
+    @TempDir
+    lateinit var analysisRoot: File
+
+    private fun node(vararg usedTypes: String) = Node(
+        pathWithName = Path(listOf("app", "draw")),
+        physicalPath = "app.ts",
+        nodeType = NodeType.FUNCTION,
+        language = SupportedLanguage.TYPESCRIPT,
+        dependencies = emptySet(),
+        usedTypes = usedTypes.map { Type.simple(it) }.toSet()
+    )
+
+    private fun defaultImportOf(moduleFile: File, binding: String): MemberImports {
+        val memberImports = MemberImports(analysisRoot)
+        val import = ImportDeclaration(
+            path = listOf(".", moduleFile.nameWithoutExtension, TSE_DEFAULT_EXPORT_NAME),
+            isWildcard = false,
+            kind = ImportKind.MEMBER,
+            bindingName = binding
+        )
+        memberImports.targetOf(import, moduleFile, Path(listOf(moduleFile.nameWithoutExtension)))
+        return memberImports
+    }
+
+    @Test
+    fun `should write a qualified name behind a default import as the path of its member, each shorter one a fallback`() {
+        // Arrange
+        val geo = File(
+            analysisRoot,
+            "geo.ts"
+        ).apply { writeText("export namespace Shapes { export class Circle {} }\nexport default Shapes") }
+        val memberImports = defaultImportOf(geo, "Geo")
+
+        // Act
+        val nodes = memberImports.rewrite(listOf(node("Geo.Circle")))
+
+        // Assert
+        val use = nodes.single().usedTypes.single()
+        assertThat(use.name).isEqualTo("geo.Shapes.Circle")
+        assertThat(use.fallbacks.map { it.name }).containsExactly("geo.Shapes")
+    }
+
+    @Test
+    fun `should leave a qualified name alone whose first segment no import binds`() {
+        // Arrange
+        val geo = File(analysisRoot, "geo.ts").apply { writeText("export default class Shape {}") }
+        val memberImports = defaultImportOf(geo, "Geo")
+
+        // Act
+        val nodes = memberImports.rewrite(listOf(node("Other.Geo")))
+
+        // Assert
+        val use = nodes.single().usedTypes.single()
+        assertThat(use.name).isEqualTo("Other.Geo")
+        assertThat(use.fallbacks).isEmpty()
+    }
+}
