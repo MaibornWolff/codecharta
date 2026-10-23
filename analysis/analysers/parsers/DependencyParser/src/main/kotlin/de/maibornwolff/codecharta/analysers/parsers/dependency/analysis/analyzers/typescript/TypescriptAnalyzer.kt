@@ -79,7 +79,10 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
 
     override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> {
         qualifiedNames.remember(declaration.usedTypes)
-        val usedTypes = GlobalUses.of(ModuleScriptUses.of(declaration.usedTypes, fileInfo), fileInfo.analysisRoot)
+        val usedTypes = GlobalUses.of(
+            ModuleScriptUses.of(DefaultExportUses.of(declaration.usedTypes, fileInfo), fileInfo),
+            fileInfo.analysisRoot
+        )
         return withEnclosingNamespacesWrittenInFull(declaration, usedTypes)
     }
 
