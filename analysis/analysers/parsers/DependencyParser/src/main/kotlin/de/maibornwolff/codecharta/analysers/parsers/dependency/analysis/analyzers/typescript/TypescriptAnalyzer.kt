@@ -24,13 +24,13 @@ import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
 import java.io.File
 
-class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
+open class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     override val language = SupportedLanguage.TYPESCRIPT
 
     // The extension is taken from the file as spelled, so `.mts`, `.cts` and `Foo.TSX` strip cleanly.
     private val extension = fileInfo.physicalPath.substringAfterLast('.', "").lowercase()
     private val isTsx = extension == "tsx"
-    private val physicalFilePath by lazy { fileInfo.physicalPathAsPath().withoutFileSuffix(extension) }
+    protected val physicalFilePath by lazy { fileInfo.physicalPathAsPath().withoutFileSuffix(extension) }
 
     private val moduleImports = ModuleImports(fileInfo)
     private val qualifiedNames by lazy { QualifiedNames(physicalFilePath) }
@@ -47,7 +47,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     }
 
     override fun analyze(): FileReport {
-        val declaredNodes = moduleImports.rewrite(super.analyze().nodes)
+        val declaredNodes = moduleImports.rewrite(declaredNodes())
         val baseReport = FileReport(qualifiedNames.resolvedIn(DefaultExports.withoutOwnNames(declaredNodes)))
         val analysisRoot = fileInfo.analysisRoot ?: return baseReport
         val ownNames = baseReport.nodes
@@ -63,6 +63,9 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         }
         return FileReport(nodes)
     }
+
+    /** The node of each declaration of the file, before the uses of its imports and its qualified names are written in full. */
+    protected open fun declaredNodes(): List<Node> = super.analyze().nodes
 
     override fun selectImports(declaration: Declaration, imports: List<ImportDeclaration>): List<ImportDeclaration> {
         if (declaration.type != DeclarationType.REEXPORT) return imports
