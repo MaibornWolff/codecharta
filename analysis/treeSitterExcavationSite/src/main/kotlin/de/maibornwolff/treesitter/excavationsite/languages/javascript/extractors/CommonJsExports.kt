@@ -23,6 +23,12 @@ internal object CommonJsExports {
         return assignment.getChildByFieldName(RIGHT_FIELD).orNull()
     }
 
+    /** The value `module.exports = …` gives the whole module, its default export; null for any other statement. */
+    fun moduleValueOf(statement: SyntaxNode): SyntaxNode? {
+        val value = valueOf(statement) ?: return null
+        return value.takeIf { it.parent.getChildByFieldName(LEFT_FIELD).text == MODULE_EXPORTS }
+    }
+
     private fun isExportTarget(target: SyntaxNode): Boolean {
         if (target.type != MEMBER_EXPRESSION) return false
         if (target.text == MODULE_EXPORTS) return true
