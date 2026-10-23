@@ -69,16 +69,18 @@ internal object DeclarationExtractor {
         if (moduleName.contains("*")) return emptyList()
         val parentPath = listOf(AMBIENT_MODULE) + moduleName.split("/")
         val body = moduleNode.children().firstOrNull { it.type == STATEMENT_BLOCK } ?: return emptyList()
-        return body
-            .children()
-            .flatMap { child ->
-                when (child.type) {
-                    EXPORT_STATEMENT -> extractFromExportStatement(child, parentPath, names)
-                    else -> declarationsOf(child).flatMap { extractFromNode(it, parentPath, names) }
-                }
-            }.filter { it.name.isNotBlank() }
-            .toList()
+        return extractFromBlock(body, parentPath, names)
     }
+
+    private fun extractFromBlock(body: SyntaxNode, parentPath: List<String>, names: ModuleNames): List<Declaration> = body
+        .children()
+        .flatMap { child ->
+            when (child.type) {
+                EXPORT_STATEMENT -> extractFromExportStatement(child, parentPath, names)
+                else -> declarationsOf(child).flatMap { extractFromNode(it, parentPath, names) }
+            }
+        }.filter { it.name.isNotBlank() }
+        .toList()
 
     private fun extractFromExportStatement(
         node: SyntaxNode,
