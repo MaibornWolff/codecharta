@@ -169,8 +169,8 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Declarations, decision 8: an own declaration over `export *` | `spec-reexport-star-own-wins` | ok |
 | Declarations, decision 8: a name two `export *` offer | `spec-reexport-star-ambiguous` | gap |
 | Declarations: `export { A as B }` without `from` | `spec-export-local-alias` | gap |
-| Declarations and 3: a script file is global | `spec-global-script` | gap |
-| Declarations and 3: `declare global` | `spec-declare-global` | gap |
+| Declarations and 3: a script file is global | `spec-global-script` | ok |
+| Declarations and 3: `declare global` | `spec-declare-global` | ok |
 | Declarations and specifiers 2.4: `declare module` | `spec-ambient-module` | ok |
 | Specifiers 1: a relative specifier | `spec-relative-parent` | ok |
 | Specifiers: a file before a folder of the same name | `spec-file-over-folder` | ok |
@@ -196,7 +196,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | 1. a type parameter | `spec-type-parameter` | gap |
 | 2. declarations that merge | `spec-declaration-merging` | ok |
 | 2 and 3: a module binding over a global | `spec-module-shadows-global` | ok |
-| 3, decision 9: globals of one name in several files | `spec-global-alternatives` | gap |
+| 3, decision 9: globals of one name in several files | `spec-global-alternatives` | ok |
 | 4. a global of the runtime | `spec-builtin-global` | ok |
 | Simple name: JSX tags | `spec-jsx-tag` | gap |
 | Qualified: a chain through a re-exported module | `spec-qualified-chain` | ok |
@@ -210,7 +210,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | JavaScript, binding: `exports.A =` | `javascript/spec-commonjs-exports-property` | ok |
 | JavaScript, decision 2: a named default export | `javascript/spec-js-default-named` | gap |
 | JavaScript, binding: a default import of a CommonJS module | `javascript/spec-esm-import-commonjs` | gap |
-| JavaScript, 3: a script file is global | `javascript/spec-script-global` | gap |
+| JavaScript, 3: a script file is global | `javascript/spec-script-global` | ok |
 | JavaScript, decision 3: a `require` not bound | `javascript/spec-require-side-effect` | ok |
 | Vue: the component is named after its file | `vue/spec-component-file-name` | gap |
 | Vue tag 2: a binding of `<script setup>` | `vue/spec-script-setup-tag` | ok |

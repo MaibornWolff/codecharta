@@ -49,7 +49,7 @@ class TypescriptDependencyUsedTypeTest {
         }
 
         @Test
-        fun `should not extract lowercase object from member access`() {
+        fun `should report the free lower-case object of a member access as a possible global`() {
             // Arrange
             val code = "export class Foo { bar() { return myModule.value } }"
 
@@ -57,8 +57,8 @@ class TypescriptDependencyUsedTypeTest {
             val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
 
             // Assert
-            val usedTypeNames = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).doesNotContain("myModule")
+            val uses = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name to it.namespacePrefix }
+            assertThat(uses).containsExactly("myModule" to listOf("GLOBAL"))
         }
 
         @Test
@@ -114,7 +114,7 @@ class TypescriptDependencyUsedTypeTest {
         }
 
         @Test
-        fun `should not extract lowercase identifiers`() {
+        fun `should report a free lower-case identifier as a possible global`() {
             // Arrange
             val code = "export class Foo { bar() { return myFactory } }"
 
@@ -122,8 +122,8 @@ class TypescriptDependencyUsedTypeTest {
             val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
 
             // Assert
-            val usedTypeNames = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).doesNotContain("myFactory")
+            val uses = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name to it.namespacePrefix }
+            assertThat(uses).containsExactly("myFactory" to listOf("GLOBAL"))
         }
 
         @Test
@@ -284,7 +284,7 @@ class TypescriptDependencyUsedTypeTest {
 
             // Assert
             val usedTypeNames = result.declarations.first { it.name == "Controller" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("UserService")
+            assertThat(usedTypeNames).containsExactlyInAnyOrder("createService", "UserService")
         }
 
         @Test
@@ -403,7 +403,7 @@ class TypescriptDependencyUsedTypeTest {
     @Nested
     inner class UsedTypeEdgeCases {
         @Test
-        fun `should not emit lowercase constructor call as usedType`() {
+        fun `should report a free lower-case constructor as a possible global`() {
             // Arrange
             val code = "export class Foo { x = new xmlParser() }"
 
@@ -411,8 +411,8 @@ class TypescriptDependencyUsedTypeTest {
             val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
 
             // Assert
-            val usedTypeNames = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).doesNotContain("xmlParser")
+            val uses = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name to it.namespacePrefix }
+            assertThat(uses).containsExactly("xmlParser" to listOf("GLOBAL"))
         }
     }
 
@@ -504,7 +504,7 @@ class TypescriptDependencyUsedTypeTest {
             val names = usedNames(code, "each")
 
             // Assert
-            assertThat(names).isEmpty()
+            assertThat(names).containsExactly("console")
         }
 
         @Test
@@ -523,7 +523,7 @@ class TypescriptDependencyUsedTypeTest {
 
             // Assert
             val dynamicImport = "dynamic_import_" + code.indexOf("import('./centaur')")
-            assertThat(names).containsExactlyInAnyOrder("$dynamicImport.Centaur", "Helper")
+            assertThat(names).containsExactlyInAnyOrder("$dynamicImport.Centaur", "Helper", "require")
         }
     }
 

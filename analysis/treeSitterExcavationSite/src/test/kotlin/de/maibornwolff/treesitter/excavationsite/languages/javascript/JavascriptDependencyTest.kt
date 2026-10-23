@@ -463,7 +463,7 @@ class JavascriptDependencyTest {
 
             // Assert
             val appDeclaration = result.declarations.first { it.name == "App" }
-            assertThat(appDeclaration.usedTypes.map { it.name }).containsExactlyInAnyOrder("App", "MyComponent")
+            assertThat(appDeclaration.usedTypes.map { it.name }).containsExactly("MyComponent")
         }
     }
 
@@ -484,7 +484,7 @@ class JavascriptDependencyTest {
 
             // Assert
             val usedTypeNames = result.declarations.first { it.name == "App" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("App", "ContextMenu")
+            assertThat(usedTypeNames).containsExactly("ContextMenu")
         }
 
         @Test
@@ -502,7 +502,7 @@ class JavascriptDependencyTest {
 
             // Assert
             val usedTypeNames = result.declarations.first { it.name == "App" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("App", "Transform")
+            assertThat(usedTypeNames).containsExactly("Transform")
         }
 
         @Test
@@ -520,7 +520,7 @@ class JavascriptDependencyTest {
 
             // Assert
             val usedTypeNames = result.declarations.first { it.name == "App" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("App", "TYPES")
+            assertThat(usedTypeNames).containsExactly("TYPES")
         }
 
         @Test
@@ -538,7 +538,7 @@ class JavascriptDependencyTest {
 
             // Assert
             val usedTypeNames = result.declarations.first { it.name == "App" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("App", "releaseCache")
+            assertThat(usedTypeNames).containsExactly("releaseCache")
         }
 
         @Test
@@ -556,7 +556,7 @@ class JavascriptDependencyTest {
 
             // Assert
             val usedTypeNames = result.declarations.first { it.name == "App" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("App", "processData")
+            assertThat(usedTypeNames).containsExactly("processData")
         }
     }
 
@@ -615,7 +615,7 @@ class JavascriptDependencyTest {
 
             // Assert — MyClass also appears because JS class names are plain `identifier` nodes (PascalCase check)
             val usedTypeNames = result.declarations.first { it.name == "MyClass" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("MyClass", "myMethod")
+            assertThat(usedTypeNames).containsExactly("myMethod")
         }
 
         @Test
@@ -633,7 +633,7 @@ class JavascriptDependencyTest {
 
             // Assert — MyClass also appears because JS class names are plain `identifier` nodes (PascalCase check)
             val usedTypeNames = result.declarations.first { it.name == "MyClass" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("MyClass", "myMethod")
+            assertThat(usedTypeNames).containsExactly("myMethod")
         }
     }
 
@@ -642,7 +642,7 @@ class JavascriptDependencyTest {
         // JS parser does not produce `as_expression` or `satisfies_expression` nodes — those are TS-only syntax.
         // This test confirms that plain value-position expressions do not introduce noise in usedTypes.
         @Test
-        fun `should not emit usedTypes for value-position expressions in JavaScript`() {
+        fun `should report a free lower-case function call as a possible global in JavaScript`() {
             // Arrange
             val code = "export class Foo { run() { return doSomething() } }"
 
@@ -650,12 +650,12 @@ class JavascriptDependencyTest {
             val result = TreeSitterDependencies.analyze(code, Language.JAVASCRIPT)
 
             // Assert
-            val usedTypeNames = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).doesNotContain("doSomething")
+            val uses = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name to it.namespacePrefix }
+            assertThat(uses).containsExactly("doSomething" to listOf("GLOBAL"))
         }
 
         @Test
-        fun `should not emit lowercase constructor call as usedType`() {
+        fun `should report a free lower-case constructor as a possible global`() {
             // Arrange
             val code = "export class Foo { x = new xmlParser() }"
 
@@ -663,8 +663,8 @@ class JavascriptDependencyTest {
             val result = TreeSitterDependencies.analyze(code, Language.JAVASCRIPT)
 
             // Assert
-            val usedTypeNames = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).doesNotContain("xmlParser")
+            val uses = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name to it.namespacePrefix }
+            assertThat(uses).containsExactly("xmlParser" to listOf("GLOBAL"))
         }
 
         // JS parser does not produce `type_arguments` nodes — generic type parameters are TypeScript-only syntax.

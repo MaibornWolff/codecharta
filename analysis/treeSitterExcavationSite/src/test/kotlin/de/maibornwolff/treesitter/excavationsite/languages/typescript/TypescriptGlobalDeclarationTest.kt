@@ -53,4 +53,32 @@ class TypescriptGlobalDeclarationTest {
             "BUILD" to listOf("GLOBAL")
         )
     }
+
+    @Test
+    fun `should mark a name no module binding binds as a possible global, not an imported or an own one`() {
+        // Arrange
+        val code = """
+            import { Model } from './model'
+            const VERSION = '1'
+            export function info(registry: Registry, model: Model): string {
+              return VERSION + legacyHelper()
+            }
+        """.trimIndent()
+
+        // Act
+        val uses = TreeSitterDependencies
+            .analyze(code, Language.TYPESCRIPT)
+            .declarations
+            .single { it.name == "info" }
+            .usedTypes
+            .map { it.name to it.namespacePrefix }
+
+        // Assert
+        assertThat(uses).containsExactlyInAnyOrder(
+            "Registry" to listOf("GLOBAL"),
+            "legacyHelper" to listOf("GLOBAL"),
+            "Model" to emptyList(),
+            "VERSION" to emptyList()
+        )
+    }
 }

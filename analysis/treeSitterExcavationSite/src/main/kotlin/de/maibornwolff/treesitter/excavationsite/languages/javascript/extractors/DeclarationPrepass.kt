@@ -14,6 +14,9 @@ internal data class ModuleNames(
     val localDeclarationNames: Set<String>,
     val dynamicImports: DynamicImportBindings
 ) {
+    /** Whether a binding of the module binds [name]: an import, a namespace or dynamic import, a top-level declaration. */
+    fun binds(name: String): Boolean = name in aliasMap || name in namespaceNames || name in localDeclarationNames
+
     /** The names a declaration sees, without its own, which names the declaration itself rather than a use. */
     fun without(ownName: String): ModuleNames = copy(localDeclarationNames = localDeclarationNames - ownName)
 }
