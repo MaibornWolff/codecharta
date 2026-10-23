@@ -21,8 +21,7 @@ internal object DeclarationPrepass {
         .flatMap { child ->
             when (child.type) {
                 EXPORT_STATEMENT -> extractNamesFromExportStatement(child)
-                in DECLARATION_NODE_TYPES -> extractNamesFromNode(child)
-                else -> emptyList()
+                else -> declarationsOf(child).flatMap { extractNamesFromNode(it) }
             }
         }.filter { it.isNotBlank() }
         .toSet()
@@ -46,7 +45,7 @@ internal object DeclarationPrepass {
         }
         return node
             .children()
-            .filter { it.type in DECLARATION_NODE_TYPES }
+            .flatMap { declarationsOf(it) }
             .flatMap { extractNamesFromNode(it) }
             .toList()
     }

@@ -6,7 +6,6 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
-private const val AMBIENT_DECLARATION = "ambient_declaration"
 private const val MODULE_DECLARATION = "module"
 private const val STATEMENT_BLOCK = "statement_block"
 
@@ -28,7 +27,10 @@ internal object DeclarationExtractor {
                         child,
                         aliasMap = aliasMap,
                         localDeclarationNames = localDeclarationNames
-                    )
+                    ) +
+                        declarationsOf(
+                            child
+                        ).flatMap { extractFromNode(it, aliasMap = aliasMap, localDeclarationNames = localDeclarationNames) }
                     in DECLARATION_NODE_TYPES -> extractFromNode(
                         child,
                         aliasMap = aliasMap,
@@ -79,8 +81,7 @@ internal object DeclarationExtractor {
             .flatMap { child ->
                 when (child.type) {
                     EXPORT_STATEMENT -> extractFromExportStatement(child, parentPath, aliasMap, localDeclarationNames)
-                    in DECLARATION_NODE_TYPES -> extractFromNode(child, parentPath, aliasMap, localDeclarationNames)
-                    else -> emptyList()
+                    else -> declarationsOf(child).flatMap { extractFromNode(it, parentPath, aliasMap, localDeclarationNames) }
                 }
             }.filter { it.name.isNotBlank() }
             .toList()
@@ -111,7 +112,7 @@ internal object DeclarationExtractor {
         val angular = AngularDecoratorExtractor.extract(decorators.asSequence())
         return node
             .children()
-            .filter { it.type in DECLARATION_NODE_TYPES }
+            .flatMap { declarationsOf(it) }
             .flatMap { extractFromNode(it, parentPath, aliasMap, localDeclarationNames) }
             .map { decl -> decl.copy(usedTypes = decl.usedTypes + decoratorUsedTypes, angular = decl.angular ?: angular) }
             .toList()
