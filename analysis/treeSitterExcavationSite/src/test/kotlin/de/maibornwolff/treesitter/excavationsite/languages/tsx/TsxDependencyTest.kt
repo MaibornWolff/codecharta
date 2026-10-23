@@ -466,4 +466,19 @@ class TsxDependencyTest {
             assertThat(TreeSitterDependencies.isDependencyAnalysisSupported(Language.TSX)).isTrue()
         }
     }
+
+    @Test
+    fun `should report no use for a lower-case JSX tag, even one named like an import`() {
+        // Arrange
+        val code = """
+            import { UserCard, card } from './card'
+            export function Page() { return <section><UserCard /><card /></section> }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.TSX)
+
+        // Assert
+        assertThat(result.declarations.single { it.name == "Page" }.usedTypes.map { it.name }).containsExactlyInAnyOrder("Page", "UserCard")
+    }
 }
