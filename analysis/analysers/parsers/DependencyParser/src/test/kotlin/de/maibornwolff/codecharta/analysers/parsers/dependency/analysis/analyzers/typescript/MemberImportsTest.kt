@@ -74,7 +74,10 @@ class MemberImportsTest {
     @Test
     fun `should write a name behind a namespace import as the path of its member, no shorter one than the module's export`() {
         // Arrange
-        val lib = File(analysisRoot, "lib.ts").apply { writeText("export namespace Shapes { export class Circle {} }") }
+        val lib = File(analysisRoot, "models/lib.ts").apply {
+            parentFile.mkdirs()
+            writeText("export namespace Shapes { export class Circle {} }")
+        }
         val memberImports = MemberImports(analysisRoot)
         val import = ImportDeclaration(path = listOf(".", "lib"), isWildcard = true, bindingName = "ns")
         memberImports.targetOf(import, lib, Path(listOf("models", "lib")))
@@ -86,5 +89,29 @@ class MemberImportsTest {
         val uses = nodes.single().usedTypes.associateBy { it.name }
         assertThat(uses.keys).containsExactlyInAnyOrder("models.lib.Shapes.Circle", "ns")
         assertThat(uses.getValue("models.lib.Shapes.Circle").fallbacks.map { it.name }).containsExactly("models.lib.Shapes")
+    }
+
+    @Test
+    fun `should walk a name behind a namespace import through a module the module exports as a name`() {
+        // Arrange
+        File(analysisRoot, "shapes.ts").writeText("export class Circle {}")
+        val lib = File(analysisRoot, "lib.ts").apply { writeText("export * as figures from './shapes'") }
+        val memberImports = MemberImports(analysisRoot)
+        memberImports.targetOf(
+            ImportDeclaration(path = listOf(".", "lib"), isWildcard = true, bindingName = "ns"),
+            lib,
+            Path(listOf("lib"))
+        )
+        val namedImport =
+            ImportDeclaration(path = listOf(".", "lib", "figures"), isWildcard = false, kind = ImportKind.MEMBER, bindingName = "figures")
+        memberImports.targetOf(namedImport, lib, Path(listOf("lib")))
+
+        // Act
+        val nodes = memberImports.rewrite(listOf(node("ns.figures.Circle", "figures.Circle")))
+
+        // Assert
+        val uses = nodes.single().usedTypes
+        assertThat(uses.map { it.name }).containsExactly("shapes.Circle")
+        assertThat(uses.single().fallbacks).isEmpty()
     }
 }

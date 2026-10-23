@@ -15,8 +15,8 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * What the modules of a project export, by "Declarations" and "What an import binds" of
  * `docs/name-resolution/typescript.md`: the own declaration an exported name stands for, the default export, and the
- * names a module exports by name, through `export *` too; each module read once per analysis root, as every file that
- * imports it may ask.
+ * names a module exports by name, through `export *` too, and the modules it exports as a name by `export * as`; each
+ * module read once per analysis root, as every file that imports it may ask.
  */
 internal class ModuleExports private constructor(private val analysisRoot: File) {
     private val tableByFile = ConcurrentHashMap<String, ExportTable>()
@@ -36,6 +36,18 @@ internal class ModuleExports private constructor(private val analysisRoot: File)
      * exports by name, without its default export, a name of [ownNames], and a name two sources offer.
      */
     fun starExports(sources: List<File>, ownNames: Set<String>): Map<String, File> = starExports(sources, ownNames, emptySet())
+
+    /** The module [moduleFile] exports as [exportedName] by `export * as`, itself or through `export *`; null for any other name. */
+    fun moduleExportOf(moduleFile: File, exportedName: String): File? = moduleExportOf(moduleFile, exportedName, emptySet())
+
+    private fun moduleExportOf(moduleFile: File, exportedName: String, visited: Set<String>): File? {
+        if (moduleFile.absolutePath in visited) return null
+        val table = tableOf(moduleFile)
+        return table.moduleExports[exportedName] ?: table.starSources
+            .mapNotNull { moduleExportOf(it, exportedName, visited + moduleFile.absolutePath) }
+            .distinct()
+            .singleOrNull()
+    }
 
     private fun starExports(sources: List<File>, ownNames: Set<String>, visited: Set<String>): Map<String, File> = sources
         .distinct()
@@ -67,11 +79,13 @@ internal class ModuleExports private constructor(private val analysisRoot: File)
             }.toMap()
         val hasDefault = result.declarations.any { it.name == TSE_DEFAULT_EXPORT_NAME }
         val defaultName = if (hasDefault) ownNameByExport[TSE_DEFAULT_EXPORT_NAME] ?: DefaultExports.LEAF_NAME else null
+        val reexportedModules = reexportedModulesOf(result, moduleFile, content)
         return ExportTable(
             ownNameByExport,
             defaultName,
             namedExportsIn(result, ownNameByExport),
-            starSourcesOf(result, moduleFile, content)
+            starSources = reexportedModules.filter { (name, _) -> name == null }.map { (_, module) -> module },
+            moduleExports = reexportedModules.mapNotNull { (name, module) -> name?.let { it to module } }.toMap()
         )
     }
 
@@ -89,7 +103,8 @@ internal class ModuleExports private constructor(private val analysisRoot: File)
         return (exportedDeclarations + reexports).toSet()
     }
 
-    private fun starSourcesOf(result: DependencyResult, moduleFile: File, content: String): List<File> {
+    // The modules `export *` re-exports the names of, each with no name, and those `export * as name` exports as a name
+    private fun reexportedModulesOf(result: DependencyResult, moduleFile: File, content: String): List<Pair<String?, File>> {
         val fileInfo =
             FileInfo(
                 languageOfFileInfo(moduleFile),
@@ -99,7 +114,7 @@ internal class ModuleExports private constructor(private val analysisRoot: File)
             )
         return result.imports
             .filter { it.kind == ImportKind.REEXPORT && it.isWildcard }
-            .mapNotNull { ImportedModules.fileOf(it, fileInfo) }
+            .mapNotNull { import -> ImportedModules.fileOf(import, fileInfo)?.let { import.bindingName to it } }
     }
 
     private fun declares(result: DependencyResult, name: String): Boolean =
@@ -109,10 +124,11 @@ internal class ModuleExports private constructor(private val analysisRoot: File)
         val ownNameByExport: Map<String, String>,
         val defaultName: String?,
         val namedExports: Set<String>,
-        val starSources: List<File>
+        val starSources: List<File>,
+        val moduleExports: Map<String, File>
     ) {
         companion object {
-            val NONE = ExportTable(emptyMap(), null, emptySet(), emptyList())
+            val NONE = ExportTable(emptyMap(), null, emptySet(), emptyList(), emptyMap())
         }
     }
 

@@ -111,11 +111,15 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         val analysisRoot = fileInfo.analysisRoot ?: return dependenciesByWrittenPath(import)
         val moduleFile = ImportedModules.fileOf(import, fileInfo) ?: return dependenciesByWrittenPath(import)
         val module = ImportedModules.logicalPathOf(moduleFile, analysisRoot)
-        if (import.isWildcard && import.kind == ImportKind.REEXPORT) starSources.add(moduleFile)
+        if (isStarReexport(import)) starSources.add(moduleFile)
         memberImports?.targetOf(import, moduleFile, module)?.let { return setOf(Dependency(path = it)) }
         val importedName = if (ImportedModules.namesMember(import)) listOf(import.defaultImportPath().last()) else emptyList()
         return setOf(Dependency(path = Path(module.parts + importedName), isWildcard = import.isWildcard))
     }
+
+    // `export * from` re-exports the names of the module, `export * as ns from` binds the module as one name
+    private fun isStarReexport(import: ImportDeclaration): Boolean =
+        import.isWildcard && import.kind == ImportKind.REEXPORT && import.bindingName == null
 
     // A module the specifier names no project file of keeps the path as written, for the library or file it may mean
     private fun dependenciesByWrittenPath(import: ImportDeclaration): Set<Dependency> {
