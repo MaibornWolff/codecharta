@@ -11,6 +11,9 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
  * module code is a script, whose declarations are global.
  */
 internal class ExportedNames private constructor(private val names: Set<String>, private val isModule: Boolean) {
+    /** Whether the file is a script: without any import, export or CommonJS module code. */
+    val isScript: Boolean get() = !isModule
+
     fun isFileScoped(name: String): Boolean = isModule && name !in names
 
     companion object {

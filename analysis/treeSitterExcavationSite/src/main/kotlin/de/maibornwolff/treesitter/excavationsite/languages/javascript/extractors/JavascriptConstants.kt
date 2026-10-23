@@ -7,6 +7,7 @@ internal const val DEFAULT_KEYWORD = "default"
 // not below the file; any other parent path is below the file, as the namespace a declaration is a member of
 internal const val AMBIENT_MODULE = "AMBIENT_MODULE"
 internal const val MODULE_SCRIPT = "MODULE_SCRIPT"
+internal const val GLOBAL_SCOPE = "GLOBAL"
 
 internal fun normalizeDefaultKeyword(name: String): String = if (name == DEFAULT_KEYWORD) DEFAULT_EXPORT else name
 
