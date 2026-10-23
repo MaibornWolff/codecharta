@@ -114,4 +114,19 @@ class MemberImportsTest {
         assertThat(uses.map { it.name }).containsExactly("shapes.Circle")
         assertThat(uses.single().fallbacks).isEmpty()
     }
+
+    @Test
+    fun `should write a member read through a default binding of a module without a default declaration as its export`() {
+        // Arrange
+        val module = File(analysisRoot, "a.js").apply { writeText("class Svc {}\nfunction helper() {}\nmodule.exports = { Svc, helper }") }
+        val memberImports = defaultImportOf(module, "lib")
+
+        // Act
+        val nodes = memberImports.rewrite(listOf(node("lib.helper")))
+
+        // Assert
+        val use = nodes.single().usedTypes.single()
+        assertThat(use.name).isEqualTo("a.helper")
+        assertThat(use.fallbacks).isEmpty()
+    }
 }
