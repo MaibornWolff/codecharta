@@ -586,4 +586,25 @@ class TypescriptDependencyUsedTypeTest {
         // Assert
         assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactlyInAnyOrder("format", "size")
     }
+
+    @Test
+    fun `should report the default export that defineAsyncComponent loads as a use, by its specifier`() {
+        // Arrange
+        val code = """
+            import { defineAsyncComponent } from 'vue'
+            export const LazyForm = defineAsyncComponent(() => import('./Form.vue'))
+            export const LazyCard = defineAsyncComponent({ loader: () => import('../ui/Card.vue'), delay: 200 })
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+        // Assert
+        val loaded = result.declarations.associate { declaration ->
+            declaration.name to declaration.usedTypes.filter { it.name == "DEFAULT_EXPORT" }.map { it.namespacePrefix }
+        }
+        assertThat(loaded).containsExactlyInAnyOrderEntriesOf(
+            mapOf("LazyForm" to listOf(listOf(".", "Form.vue")), "LazyCard" to listOf(listOf("..", "ui", "Card.vue")))
+        )
+    }
 }

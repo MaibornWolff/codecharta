@@ -1,0 +1,5 @@
+# typescript.md, Vue, decision 13: defineAsyncComponent(() => import('./X.vue')) stands for the default export of X
+file lazy.ts -> components/Form.vue
+file views/Viewer.vue -> components/Form.vue
+leaf lazy.ts#LazyForm -> components/Form.vue#Form
+leaf views/Viewer.vue#Viewer -> components/Form.vue#Form

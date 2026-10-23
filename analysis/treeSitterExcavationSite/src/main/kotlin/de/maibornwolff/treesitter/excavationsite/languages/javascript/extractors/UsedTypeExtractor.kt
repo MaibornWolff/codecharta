@@ -82,7 +82,7 @@ internal object UsedTypeExtractor {
             typeIdentifiers, constructorCalls, memberAccesses, extensions,
             relevantIdentifiers, constraintTypes, typeAliasRhsTypes, jsxComponents, typeAssertions, genericTypeArgs
         ).flatten().map { markedGlobalIfFree(it, names) }
-        return (namesInScope + methodCalls)
+        return (namesInScope + methodCalls + AsyncComponents.usesIn(declaration))
             .map { usedType -> aliasMap[usedType.name]?.let { UsedType(name = it) } ?: usedType }
             .toSet()
     }
