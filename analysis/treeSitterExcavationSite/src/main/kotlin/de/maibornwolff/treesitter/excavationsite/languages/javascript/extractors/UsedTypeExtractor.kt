@@ -22,6 +22,9 @@ internal object UsedTypeExtractor {
     private const val SATISFIES_EXPRESSION = "satisfies_expression"
     private const val TYPE_ARGUMENTS = "type_arguments"
     private const val NESTED_TYPE_IDENTIFIER = "nested_type_identifier"
+
+    // `{ format }` in an object literal reads the name `format`, as `{ format: format }` does
+    private const val SHORTHAND_PROPERTY_IDENTIFIER = "shorthand_property_identifier"
     private const val QUALIFIER_SEPARATOR = "."
     private const val NAME_FIELD = "name"
     private val PATTERNS = setOf(ARRAY_PATTERN, OBJECT_PATTERN, PAIR_PATTERN, "assignment_pattern", "rest_pattern")
@@ -38,6 +41,7 @@ internal object UsedTypeExtractor {
         IMPLEMENTS_CLAUSE,
         CONSTRAINT,
         IDENTIFIER,
+        SHORTHAND_PROPERTY_IDENTIFIER,
         JSX_OPENING_ELEMENT,
         JSX_SELF_CLOSING_ELEMENT,
         AS_EXPRESSION,
@@ -95,7 +99,7 @@ internal object UsedTypeExtractor {
 
     // A name a local binding hides is no use; a node that is no name, such as a call or an annotation, is checked by its names
     private fun isHiddenName(node: SyntaxNode, scopes: LocalScopes): Boolean =
-        (node.type == IDENTIFIER || node.type == TYPE_IDENTIFIER) && scopes.hides(node)
+        (node.type == IDENTIFIER || node.type == SHORTHAND_PROPERTY_IDENTIFIER || node.type == TYPE_IDENTIFIER) && scopes.hides(node)
 
     private fun collectTypeIdentifiersFromNodes(nodes: List<SyntaxNode>, scopes: LocalScopes): List<UsedType> = nodes
         .flatMap { TreeTraversal.findAllDescendantsOfType(it, TYPE_IDENTIFIER) }
@@ -157,7 +161,7 @@ internal object UsedTypeExtractor {
     // JS uses `identifier` nodes for class names (unlike TS which uses `type_identifier`),
     // so PascalCase class names are captured here via the uppercase check.
     private fun extractRelevantIdentifiers(buckets: Map<String, List<SyntaxNode>>, names: ModuleNames): List<UsedType> =
-        buckets[IDENTIFIER].orEmpty().mapNotNull { node ->
+        (buckets[IDENTIFIER].orEmpty() + buckets[SHORTHAND_PROPERTY_IDENTIFIER].orEmpty()).mapNotNull { node ->
             val name = node.text.trim()
             if (isPlatformElementTag(node) || isQualifierOfAType(node) || isDeclaredName(node)) return@mapNotNull null
             names.dynamicImports.exportOf(node)?.let { return@mapNotNull UsedType(name = it) }

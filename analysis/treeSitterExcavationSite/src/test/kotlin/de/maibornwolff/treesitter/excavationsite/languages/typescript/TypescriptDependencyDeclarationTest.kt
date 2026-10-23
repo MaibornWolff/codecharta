@@ -236,7 +236,7 @@ class TypescriptDependencyDeclarationTest {
         }
 
         @Test
-        fun `should make export default of an object literal a DEFAULT_EXPORT variable`() {
+        fun `should make export default of an object literal a DEFAULT_EXPORT variable that uses the names it reads`() {
             // Arrange
             val code = "export default { performance }"
 
@@ -247,7 +247,7 @@ class TypescriptDependencyDeclarationTest {
             assertThat(result.declarations).hasSize(1)
             assertThat(result.declarations[0].name).isEqualTo("DEFAULT_EXPORT")
             assertThat(result.declarations[0].type).isEqualTo(DeclarationType.VARIABLE)
-            assertThat(result.declarations[0].usedTypes).isEmpty()
+            assertThat(result.declarations[0].usedTypes.map { it.name }).containsExactly("performance")
         }
 
         @Test
