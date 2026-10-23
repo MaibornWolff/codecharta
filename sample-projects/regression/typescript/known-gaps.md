@@ -124,17 +124,6 @@ missing leaf geo.ts#Shapes -> point.ts#Point
 missing leaf geo.ts#unit -> geo.ts#Shapes
 ```
 
-## spec-package-json-types
-
-A folder means its `index`; its `package.json` is not read.
-
-```text
-extra file app.ts -> vendor/chart/index.ts
-extra leaf app.ts#show -> vendor/chart/index.ts#Chart
-missing file app.ts -> vendor/chart/lib/chart.d.ts
-missing leaf app.ts#show -> vendor/chart/lib/chart.d.ts#Chart
-```
-
 ## spec-parameter-shadows-import
 
 A parameter does not hide the import of the same name.
