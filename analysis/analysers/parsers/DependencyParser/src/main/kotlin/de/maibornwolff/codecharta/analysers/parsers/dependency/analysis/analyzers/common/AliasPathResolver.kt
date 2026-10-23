@@ -5,9 +5,9 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.federation.FederationAliasResolver
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.federation.FederationConfigResolver
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.model.DirectImport
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.tsconfig.PathAliasResolver
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.tsconfig.TsConfigResolver
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.toRelativePath
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.tsconfig.PathAliasResolver
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.tsconfig.TsConfigResolver
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import java.io.File

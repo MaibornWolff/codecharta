@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.tsconfig
+package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.tsconfig
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
