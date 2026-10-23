@@ -59,6 +59,35 @@ class VueDependencyTest {
     @Nested
     inner class TemplateComponents {
         @Test
+        fun `should extract no Vue built-in as a component, however it is written`() {
+            // Arrange
+            val code = """
+                <template>
+                  <transition><keep-alive><KeepAlive><component :is="view" /></KeepAlive></keep-alive></transition>
+                  <TransitionGroup /><teleport /><Suspense /><slot /><OrderList />
+                </template>
+            """.trimIndent()
+
+            // Act
+            val usedComponents = usedComponentsOf(code)
+
+            // Assert
+            assertThat(usedComponents).containsExactly("OrderList")
+        }
+
+        @Test
+        fun `should mark a component of a tag as one, apart from the names of the scripts`() {
+            // Arrange
+            val code = "<template><order-list /></template>"
+
+            // Act
+            val usedType = analyze(code).declarations.single().usedTypes.single()
+
+            // Assert
+            assertThat(usedType.namespacePrefix).containsExactly("COMPONENT_TAG")
+        }
+
+        @Test
         fun `should extract the tags of a pug template, but not those in its comments, text and keywords`() {
             // Arrange
             val code = """
