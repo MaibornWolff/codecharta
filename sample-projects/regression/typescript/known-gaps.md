@@ -218,21 +218,3 @@ A name bound by destructuring is no declaration.
 ```text
 missing leaf app.ts#start -> routes.ts#left
 ```
-
-## spec-workspace-package
-
-A bare specifier that no configuration maps is not looked up among the workspace packages.
-
-```text
-missing file apps/web/app.ts -> packages/core/index.ts
-missing leaf apps/web/app.ts#App -> packages/core/index.ts#Store
-```
-
-## spec-workspace-subpath
-
-A bare specifier that no configuration maps is not looked up among the workspace packages.
-
-```text
-missing file apps/web/app.ts -> packages/core/model.ts
-missing leaf apps/web/app.ts#App -> packages/core/model.ts#Model
-```

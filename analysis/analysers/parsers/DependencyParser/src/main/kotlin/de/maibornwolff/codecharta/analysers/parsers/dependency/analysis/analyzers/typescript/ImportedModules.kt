@@ -9,8 +9,8 @@ import java.io.File
 
 /**
  * The project file an import names, by "Module specifiers" of `docs/name-resolution/typescript.md`: a relative
- * specifier from the folder of the importing file, a bare one through the configured aliases, then the file
- * [ModuleFiles] finds there. None for a library or a specifier that names no project file.
+ * specifier from the folder of the importing file, a bare one through the configured aliases or else the workspace
+ * package of that name, then the file [ModuleFiles] finds there. None for a library or a specifier that names no project file.
  */
 internal object ImportedModules {
     private const val SEPARATOR = "/"
@@ -23,7 +23,9 @@ internal object ImportedModules {
         val target = if (specifier.first() in RELATIVE_STARTS) {
             analysisRoot.resolve(fileInfo.physicalPath).parentFile.resolve(specifier.joinToString(SEPARATOR))
         } else {
-            AliasPathResolver.resolveFile(specifier.joinToString(SEPARATOR), fileInfo) ?: return null
+            val bareSpecifier = specifier.joinToString(SEPARATOR)
+            AliasPathResolver.resolveFile(bareSpecifier, fileInfo) ?: WorkspacePackages.of(analysisRoot).pathOf(bareSpecifier)
+                ?: return null
         }
         return ModuleFiles.fileAt(target.normalize())?.takeIf { it.canonicalFile.startsWith(analysisRoot.canonicalFile) }
     }
