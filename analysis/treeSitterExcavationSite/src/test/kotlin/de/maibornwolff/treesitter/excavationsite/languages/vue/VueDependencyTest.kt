@@ -59,6 +59,31 @@ class VueDependencyTest {
     @Nested
     inner class TemplateComponents {
         @Test
+        fun `should extract the tags of a pug template, but not those in its comments, text and keywords`() {
+            // Arrange
+            val code = """
+                <template lang="pug">
+                //- a comment naming CommentCard
+                  CommentChild
+                section.lair
+                  CreatureBadge(:label="x ? 'a' : 'b'")
+                  p Text naming TextCard
+                  if ok
+                    user-card#first.wide
+                  li: StableLink(to="/")
+                  p.
+                    BlockText naming BlockCard
+                </template>
+            """.trimIndent()
+
+            // Act
+            val usedComponents = usedComponentsOf(code)
+
+            // Assert
+            assertThat(usedComponents).containsExactly("CreatureBadge", "UserCard", "StableLink")
+        }
+
+        @Test
         fun `should extract the tags that are no HTML elements in Pascal case`() {
             // Arrange
             val code = """
