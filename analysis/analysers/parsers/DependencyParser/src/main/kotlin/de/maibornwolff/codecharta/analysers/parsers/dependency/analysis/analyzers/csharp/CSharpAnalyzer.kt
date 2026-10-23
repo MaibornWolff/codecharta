@@ -36,7 +36,8 @@ class CSharpAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
                 language = SupportedLanguage.C_SHARP,
                 nodeType = declaration.type.toNodeType(),
                 dependencies = dependencies,
-                usedTypes = ImportAliases.resolve(declaration.usedTypes, visibleImports).map { it.toType() }.toSet()
+                usedTypes = ImportAliases.resolve(declaration.usedTypes, visibleImports).map { it.toType() }.toSet(),
+                isFileScoped = declaration.isFileScoped
             )
         }
         return FileReport(nodes)

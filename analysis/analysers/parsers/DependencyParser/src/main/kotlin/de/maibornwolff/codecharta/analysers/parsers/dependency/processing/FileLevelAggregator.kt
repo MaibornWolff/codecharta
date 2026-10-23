@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FilePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 
 /** One file's outgoing dependencies, folded up from the declarations the file contains. */
@@ -16,14 +17,16 @@ data class AggregatedFileEdge(val from: FilePath, val to: FilePath, val weight: 
  *
  * A logical path declared in several files (a C# partial class, a Go function name reused in a package, two
  * projects with the same package) is one leaf per file. Each copy's dependencies count for the file they are
- * written in, while a dependency *on* the path points at the file [DeclaringFiles] picks for the using file, the
- * same copy the leaf edge targets. Cycles are found per logical path, so when two copies in different files
+ * written in, while a dependency *on* the path points at the files [DeclaringFiles] picks for the using file, the
+ * same copies the leaf edges target. Cycles are found per logical path, so when two copies in different files
  * reference the same cyclic target, both file edges count as cyclic.
  */
 object FileLevelAggregator {
-    fun aggregate(resolvedNodes: Collection<Node>, cyclicEdgesByDeclaration: Map<String, Set<String>>): List<AggregatedFileEdge> {
-        val declaringFiles = DeclaringFiles.of(resolvedNodes)
-
+    internal fun aggregate(
+        resolvedNodes: Collection<Node>,
+        cyclicEdgesByDeclaration: Map<String, Set<String>>,
+        declaringFiles: DeclaringFiles = DeclaringFiles.of(resolvedNodes)
+    ): List<AggregatedFileEdge> {
         val weightByEndpoints = LinkedHashMap<Pair<FilePath, FilePath>, Int>()
         val cyclicEndpoints = HashSet<Pair<FilePath, FilePath>>()
 
@@ -36,12 +39,11 @@ object FileLevelAggregator {
                 val targetId = dependency.withDots()
                 // A dependency whose declaration no analyzer produced (e.g. a node dropped as a Rust
                 // re-export carrier) has no file to point at, so there is no edge to draw.
-                val targetFile = declaringFiles.fileFor(targetId, sourceFile, node.language) ?: return@forEach
-                if (targetFile == sourceFile) return@forEach
-
-                val endpoints = sourceFile to targetFile
-                weightByEndpoints.merge(endpoints, 1, Int::plus)
-                if (targetId in cyclicTargets) cyclicEndpoints.add(endpoints)
+                declaringFiles.filesFor(targetId, sourceFile, node.language).filter { it != sourceFile }.forEach { targetFile ->
+                    val endpoints = sourceFile to targetFile
+                    weightByEndpoints.merge(endpoints, 1, Int::plus)
+                    if (targetId in cyclicTargets) cyclicEndpoints.add(endpoints)
+                }
             }
         }
 

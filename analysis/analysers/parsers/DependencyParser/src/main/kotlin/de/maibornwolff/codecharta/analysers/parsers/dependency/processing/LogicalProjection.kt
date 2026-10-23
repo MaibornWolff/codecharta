@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FilePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization.GraphIndex
@@ -12,9 +13,9 @@ private const val PATH_SEPARATOR = "."
 internal class LogicalProjection(
     private val resolvedNodes: Collection<Node>,
     private val cyclicEdgesByDeclaration: Map<String, Set<String>>,
-    private val namespaceTree: LevelizedNamespaceTree?
+    private val namespaceTree: LevelizedNamespaceTree?,
+    private val declaringFiles: DeclaringFiles
 ) {
-    private val declaringFiles = DeclaringFiles.of(resolvedNodes)
     private val keyByFileAndLogicalPath = uniqueKeysPerFile()
 
     fun addTo(physical: DependencyGraph): DependencyGraph {
@@ -71,7 +72,7 @@ internal class LogicalProjection(
         val edgesByEndpoints = LinkedHashMap<Pair<DeclarationAddress, DeclarationAddress>, DeclarationEdge>()
         resolvedNodes.forEach { node ->
             node.resolvedNodeDependencies.internalDependencies
-                .mapNotNull { dependency -> edgeBetween(node, dependency) }
+                .flatMap { dependency -> edgesBetween(node, dependency) }
                 .forEach { edge -> edgesByEndpoints.merge(edge.from to edge.to, edge, ::fold) }
         }
         return edgesByEndpoints.values.toList()
@@ -79,23 +80,24 @@ internal class LogicalProjection(
 
     // A used type is identified by its name, so a pair arrives once per node and weighs 1 as in
     // DependaCharta. A dependency whose declaration no analyzer produced (e.g. a node dropped as a Rust
-    // re-export carrier) has nothing to point at, and a target declared in several files is the one
-    // [DeclaringFiles] picks for the using file, the file [FileLevelAggregator] points the file edge at.
-    private fun edgeBetween(node: Node, dependency: Dependency): DeclarationEdge? {
+    // re-export carrier) has nothing to point at, and a target declared in several files is each one
+    // [DeclaringFiles] picks for the using file, the files [FileLevelAggregator] points the file edges at.
+    private fun edgesBetween(node: Node, dependency: Dependency): List<DeclarationEdge> {
         val sourcePath = node.pathWithName.withDots()
         val targetPath = dependency.withDots()
+        if (targetPath == sourcePath) return emptyList()
         val sourceFile = FilePath.of(node)
-        val targetFile = declaringFiles.fileFor(targetPath, sourceFile, node.language)
-        if (targetFile == null || targetPath == sourcePath) return null
         val isCyclic = targetPath in cyclicEdgesByDeclaration[sourcePath].orEmpty()
-        return DeclarationEdge(
-            from = addressOf(sourceFile, sourcePath),
-            to = addressOf(targetFile, targetPath),
-            weight = 1,
-            usage = listOf(dependency.type.rawValue),
-            isCyclic = isCyclic,
-            isPointingUpwards = pointsUpwards(sourcePath, targetPath, isCyclic)
-        )
+        return declaringFiles.filesFor(targetPath, sourceFile, node.language).map { targetFile ->
+            DeclarationEdge(
+                from = addressOf(sourceFile, sourcePath),
+                to = addressOf(targetFile, targetPath),
+                weight = 1,
+                usage = listOf(dependency.type.rawValue),
+                isCyclic = isCyclic,
+                isPointingUpwards = pointsUpwards(sourcePath, targetPath, isCyclic)
+            )
+        }
     }
 
     // A class and a declaration nested in it cannot be ranked, so neither edge between them points upwards on its

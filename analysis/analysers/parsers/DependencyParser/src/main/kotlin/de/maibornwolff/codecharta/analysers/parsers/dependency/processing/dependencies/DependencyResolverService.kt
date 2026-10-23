@@ -1,11 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies
 
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpNameRules
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.java.JavaNameRules
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.DefaultNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileScopedPaths
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.ProjectNames
@@ -43,15 +39,10 @@ class DependencyResolverService {
                 )
             }
             val resolvedNodes = nodes.map { node ->
-                node.resolveTypes(projectNamesByLanguage.getValue(node.language), nameRulesFor(node.language))
+                node.resolveTypes(projectNamesByLanguage.getValue(node.language), LanguageRules.namesOf(node.language))
             }
-            return resolvedNodes
-                .map {
-                    nameRulesFor(
-                        it.language
-                    )
-                }.distinct()
-                .fold(resolvedNodes) { current, rules -> rules.afterResolution(current) }
+            val rulesInUse = resolvedNodes.map { LanguageRules.namesOf(it.language) }.distinct()
+            return rulesInUse.fold(resolvedNodes) { current, rules -> rules.afterResolution(current) }
         }
 
         /**
@@ -98,12 +89,6 @@ class DependencyResolverService {
                 .groupBy({ it.pathWithName.withDots() }, { it.physicalPath })
                 .mapValues { (_, files) -> files.toSet() }
             return FileScopedPaths(filesByPath)
-        }
-
-        private fun nameRulesFor(language: SupportedLanguage): NameRules = when (language) {
-            SupportedLanguage.C_SHARP -> CSharpNameRules
-            SupportedLanguage.JAVA, SupportedLanguage.KOTLIN -> JavaNameRules
-            else -> DefaultNameRules
         }
 
         private fun standardLibraryFor(language: SupportedLanguage): StandardLibrary = when (language) {

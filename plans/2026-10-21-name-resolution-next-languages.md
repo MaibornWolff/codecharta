@@ -77,8 +77,12 @@ changes only when the cross-language check proves every other language unchanged
 - [x] fix: item 8, qualified names relative to the enclosing namespaces and `global::`, in `CSharpNameRules`
 - [x] item 9, attributes by the compiler's choice (decision 6): spec and probes `72914313e` (gap section restored in
   `df781e4fe`), `ProjectNames` per language `d3e9b3ed0`, parser `151de7d2c`, extractor `e777e7328`
-- [ ] item 10, `file` types: extractor `isFileScoped` done; next: `CSharpAnalyzer` passes it on (closes `spec-file-type`)
-- [ ] items 11–12: copies to the nearest file, partial types per `.csproj` (behind a C# hook, not in `DeclaringFiles`)
+- [x] item 10, `file` types: extractor `isFileScoped`, `CSharpAnalyzer` passes it on (branch
+  `fix/dependency-name-resolution-csharp`)
+- [x] items 11–12: copies and partial types by project (decision 2, `partial` not read, no `.csproj` = one project):
+  `CopyRules` per language with each copy's file scope, `CSharpProjects` / `CSharpCopyRules` in the C# folder. No C#
+  gap left. Checkpoint probes worse than the release by decision: `r3-cs2proj`, `r3-csmix`, `r3-csnested` (expect
+  copies without `.csproj` to stay apart)
 
 ## Steps
 
