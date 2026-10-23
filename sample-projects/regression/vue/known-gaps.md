@@ -14,24 +14,6 @@ missing file views/Home.vue -> components/Badge.vue
 missing leaf views/Home.vue#Home -> components/Badge.vue#Badge
 ```
 
-## spec-binding-over-auto-import
-
-A default import of a `.vue` file does not name its component, so neither the tag nor the import finds it.
-
-```text
-missing file views/Home.vue -> b/Badge.vue
-missing leaf views/Home.vue#Home -> b/Badge.vue#Badge
-```
-
-## spec-components-option
-
-A tag is not looked up in the `components` option.
-
-```text
-missing file views/CreatureList.vue -> components/CreatureCard.vue
-missing leaf views/CreatureList.vue#CreatureList -> components/CreatureCard.vue#CreatureCard
-```
-
 ## spec-global-registration
 
 A global registration is not read.
