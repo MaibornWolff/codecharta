@@ -125,6 +125,8 @@ A lower-case JSX tag (`<div>`) is an element of the platform: no edge.
   `<script setup>` or the plain `<script>` binds, as the compiler puts the template into `setup()`; a name a `v-for`
   or a slot binds is local to its element. Without a `<script setup>` the template reads its names from the component
   instance: no edge (decision 12).
+- `defineAsyncComponent(() => import('./Form.vue'))`, also with `{ loader: () => import(…) }`, stands for the default
+  export of `Form.vue`, as the runtime renders it: the declaration it is written in uses that export (decision 13).
 - A template in pug (`<template lang="pug">`) is read for its tags, as the compiler reads the HTML it turns pug into:
   the word a line starts with and the one after a `:` block expansion, not its comments, text and keywords.
 - A tag `T`, written `UserCard` or `user-card`, means, in the order the Vue compiler and runtime look it up:
@@ -236,6 +238,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Vue, decision 12: a `v-for` name is local | `vue/spec-template-local` | gap |
 | Vue tag 1: a built-in before a project component | `vue/spec-builtin-tag` | ok |
 | Vue: the tags of a pug template | `vue/spec-pug-template` | ok |
+| Vue, decision 13: `defineAsyncComponent` | `vue/spec-async-component` | ok |
 | Vue tag 5: the component itself | `vue/spec-self-reference` | ok |
 | Angular: `templateUrl` and an element selector | `angular/spec-template-url` | ok |
 | Angular 1: the imports of a standalone component | `angular/spec-standalone-scope` | ok |
@@ -256,8 +259,8 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 - The type of a value: `p.N` on a parameter, a variable or a call result draws no edge (see qualified names).
 - `exports` and `imports` maps of a `package.json` beyond its `types`, `typings` and `main` fields, conditional exports,
   and `node_modules` folders inside the analysed folder.
-- Vue: components registered by a plugin other than `app.component`, `defineAsyncComponent`, the
-  `name` option as the component's name, and the expressions of a pug template.
+- Vue: components registered by a plugin other than `app.component`, a `defineAsyncComponent` loader with a block
+  body, the `name` option as the component's name, and the expressions of a pug template.
 - Angular: selectors with `:not(…)` or several elements, directives matched through `hostDirectives`, and modules
   returned by a `forRoot()` call.
 
@@ -289,3 +292,5 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 12. A name in a template expression is looked up as the Vue compiler does: with a `<script setup>` in the bindings of
     `<script setup>` and the plain `<script>`, a `v-for` or slot name first; without one on the component instance,
     which draws no edge, as a member of a value (decided 2026-10-23).
+13. `defineAsyncComponent` with a loader `() => import('./X.vue')` stands for the default export of `X`, as the Vue
+    runtime renders it; a use of what it returns is a use of that export (decided 2026-10-23).
