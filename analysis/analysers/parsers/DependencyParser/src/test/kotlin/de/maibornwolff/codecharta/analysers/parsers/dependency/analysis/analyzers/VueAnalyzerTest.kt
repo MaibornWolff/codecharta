@@ -559,4 +559,85 @@ class VueAnalyzerTest {
         assertThat(component.pathWithName).isEqualTo(Path(listOf("src", "Comp")))
         assertThat(component.usedTypes.map { it.name }).containsExactly("B")
     }
+
+    private fun vueFiles(analysisRoot: File, vararg paths: String) = paths.forEach { path ->
+        File(analysisRoot, path).apply { parentFile.mkdirs() }.writeText("<template><span>$path</span></template>")
+    }
+
+    private fun usesOf(analysisRoot: File, physicalPath: String, vueCode: String): List<String> =
+        VueAnalyzer(FileInfo(SupportedLanguage.VUE, physicalPath, vueCode, analysisRoot = analysisRoot))
+            .analyze()
+            .nodes
+            .first()
+            .usedTypes
+            .map { it.name }
+
+    @Test
+    fun `should look a tag up among the script setup bindings in camel case too`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange
+        vueFiles(analysisRoot, "a/Badge.vue", "b/Badge.vue")
+        val vueCode = """
+            <script setup lang="ts">
+            import badge from '../b/Badge.vue'
+            </script>
+            <template><Badge /></template>
+        """.trimIndent()
+
+        // Act
+        val uses = usesOf(analysisRoot, "views/Home.vue", vueCode)
+
+        // Assert
+        assertThat(uses).containsExactly("b.Badge")
+    }
+
+    @Test
+    fun `should look a tag up in the components option of the plain script`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange
+        vueFiles(analysisRoot, "components/CreatureCard.vue", "components/other/CreatureCard.vue")
+        val vueCode = """
+            <script>
+            import Card from '../components/CreatureCard.vue'
+            export default { components: { CreatureCard: Card } }
+            </script>
+            <template><creature-card /></template>
+        """.trimIndent()
+
+        // Act
+        val uses = usesOf(analysisRoot, "views/List.vue", vueCode)
+
+        // Assert
+        assertThat(uses).containsExactly("components.CreatureCard")
+    }
+
+    @Test
+    fun `should take the one component of a tag's name in the project, written in kebab case too`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange
+        vueFiles(analysisRoot, "components/creature-badge.vue")
+
+        // Act
+        val uses = usesOf(analysisRoot, "views/Home.vue", "<template><CreatureBadge /></template>")
+
+        // Assert
+        assertThat(uses).containsExactly("components.creature-badge")
+    }
+
+    @Test
+    fun `should draw nothing for a tag of several components, of none, or of the component itself`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange
+        vueFiles(analysisRoot, "a/Badge.vue", "b/Badge.vue", "other/Tree.vue")
+
+        // Act
+        val uses = usesOf(analysisRoot, "tree/Tree.vue", "<template><Badge /><Tree /><Unknown /></template>")
+
+        // Assert
+        assertThat(uses).isEmpty()
+    }
 }

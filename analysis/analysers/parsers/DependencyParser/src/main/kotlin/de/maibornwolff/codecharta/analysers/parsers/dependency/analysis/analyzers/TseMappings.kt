@@ -20,6 +20,9 @@ const val TSE_AMBIENT_MODULE_SEGMENT = "AMBIENT_MODULE"
 // name no module binding binds, which may mean one
 const val TSE_GLOBAL_SEGMENT = "GLOBAL"
 
+// The prefix of a use TSE reports for a tag of a Vue template, which names a component by the tag rules
+const val TSE_COMPONENT_TAG_SEGMENT = "COMPONENT_TAG"
+
 // The sentinel name of a use TSE reports for a JavaScript or TypeScript side-effect import, its specifier as the prefix
 const val TSE_MODULE_SCRIPT_NAME = "MODULE_SCRIPT"
 
