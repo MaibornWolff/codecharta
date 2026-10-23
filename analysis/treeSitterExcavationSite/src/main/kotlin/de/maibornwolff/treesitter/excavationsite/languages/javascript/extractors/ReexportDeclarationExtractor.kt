@@ -10,10 +10,11 @@ private const val PLAIN_SPECIFIER_SIZE = 1
 private const val ALIASED_SPECIFIER_SIZE = 2
 
 internal object ReexportDeclarationExtractor {
-    fun extract(exportNode: SyntaxNode): List<Declaration> = if (hasExportClause(exportNode)) {
-        extractNamedReexports(exportNode)
-    } else {
-        listOf(Declaration(name = WILDCARD_REEXPORT, type = DeclarationType.REEXPORT, usedTypes = emptySet()))
+    // `export * as shapes from` binds a module, which is no declaration
+    fun extract(exportNode: SyntaxNode): List<Declaration> = when {
+        hasExportClause(exportNode) -> extractNamedReexports(exportNode)
+        exportNode.children().any { it.type == NAMESPACE_EXPORT } -> emptyList()
+        else -> listOf(Declaration(name = WILDCARD_REEXPORT, type = DeclarationType.REEXPORT, usedTypes = emptySet()))
     }
 
     private fun extractNamedReexports(node: SyntaxNode): List<Declaration> {

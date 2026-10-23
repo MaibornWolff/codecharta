@@ -299,6 +299,23 @@ class TypescriptDependencyImportTest {
         }
 
         @Test
+        fun `should bind the name of a namespace re-export to its module and declare nothing for it`() {
+            // Arrange
+            val code = "export * as shapes from './shapes'"
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+            // Assert
+            val import = result.imports.single()
+            assertThat(import.path).containsExactly(".", "shapes")
+            assertThat(import.isWildcard).isTrue()
+            assertThat(import.kind).isEqualTo(ImportKind.REEXPORT)
+            assertThat(import.bindingName).isEqualTo("shapes")
+            assertThat(result.declarations).isEmpty()
+        }
+
+        @Test
         fun `should extract dynamic import`() {
             // Arrange
             val code = "const mod = import('./utils')"
