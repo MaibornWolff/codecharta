@@ -76,8 +76,20 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         return imports.filter { it.path.isNotEmpty() && it.path.last() in reexportNames }
     }
 
-    override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> =
-        memberImports?.rewrite(declaration.usedTypes) ?: declaration.usedTypes
+    override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> {
+        val usedTypes = memberImports?.rewrite(declaration.usedTypes) ?: declaration.usedTypes
+        return withEnclosingNamespacesWrittenInFull(declaration, usedTypes)
+    }
+
+    // A member of a namespace that names a namespace around it means that namespace of the own file
+    private fun withEnclosingNamespacesWrittenInFull(declaration: Declaration, usedTypes: Set<UsedType>): Set<UsedType> {
+        val namespacePath = declaration.parentPath.takeUnless { it.firstOrNull() == TSE_AMBIENT_MODULE_SEGMENT }.orEmpty()
+        if (namespacePath.isEmpty()) return usedTypes
+        return usedTypes.mapTo(LinkedHashSet()) { usedType ->
+            val depth = namespacePath.lastIndexOf(usedType.name)
+            if (depth < 0) usedType else usedType.copy(name = (physicalFilePath + Path(namespacePath.take(depth + 1))).withDots())
+        }
+    }
 
     override fun nodesOf(declaration: Declaration, node: Node, embedded: List<EmbeddedDeclarations>): List<Node> {
         val angular = declaration.angular ?: return listOf(node)

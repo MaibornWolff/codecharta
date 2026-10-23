@@ -1655,4 +1655,22 @@ class TypescriptAnalyzerTest {
         assertThat(reexport.dependencies.filter { !it.isWildcard }.map { it.path })
             .containsExactly(Path(listOf("user.service", "UserService")))
     }
+
+    @Test
+    fun `should write a use of a namespace around a member as the full path of that namespace`() {
+        // Arrange
+        val typescriptCode = """
+            export namespace Shapes {
+                class Hidden {}
+                export const unit = new Hidden()
+            }
+        """.trimIndent()
+
+        // Act
+        val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "geo/shapes.ts", typescriptCode)).analyze()
+
+        // Assert
+        val unit = report.nodes.single { it.pathWithName == Path(listOf("geo", "shapes", "Shapes", "unit")) }
+        assertThat(unit.usedTypes.map { it.name }).containsExactly("geo.shapes.Shapes")
+    }
 }
