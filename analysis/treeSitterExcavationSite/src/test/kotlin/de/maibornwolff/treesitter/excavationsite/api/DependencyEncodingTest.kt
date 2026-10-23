@@ -43,7 +43,7 @@ class DependencyEncodingTest {
 
         // Assert
         assertThat(result.declarations.map { it.name }).containsExactly("AfterTheRange")
-        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactly("AfterTheRange", "RangeBase")
+        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactly("RangeBase")
     }
 
     @Test

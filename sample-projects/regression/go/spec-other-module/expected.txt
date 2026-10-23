@@ -1,0 +1,3 @@
+# go.md, import paths, rule 1: a package of another module of the analysed folder
+file app/roll/roll.go -> libs/dicebag/bag.go
+leaf app/roll/roll.go#Roll -> libs/dicebag/bag.go#Throw

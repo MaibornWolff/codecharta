@@ -156,7 +156,7 @@ class GoAnalyzerImportTest {
     }
 
     @Test
-    fun `should handle standard import with qualified type usage`() {
+    fun `should keep a standard library import and name nothing through it`() {
         // Arrange - Standard import with qualified type usage
         val goCode = """
             package main
@@ -179,13 +179,13 @@ class GoAnalyzerImportTest {
         val dependencies = report.nodes.first().dependencies
         assertThat(dependencies).contains(Dependency(Path(listOf("fmt"))))
 
-        // Should extract qualified type names (fmt.Formatter -> Formatter)
+        // A library package holds no project declaration, so fmt.Formatter names none
         val useFormatterNode = report.nodes.find { it.pathWithName.parts.last() == "useFormatter" }
-        assertThat(useFormatterNode?.usedTypes?.map { it.name }).contains("Formatter")
+        assertThat(useFormatterNode?.usedTypes).isEmpty()
     }
 
     @Test
-    fun `should handle remote import with qualified type usage`() {
+    fun `should keep a remote library import and name nothing through it`() {
         // Arrange - Remote import with qualified type usage
         val goCode = """
             package main
@@ -208,16 +208,16 @@ class GoAnalyzerImportTest {
         val dependencies = report.nodes.first().dependencies
         assertThat(dependencies).contains(Dependency(Path(listOf("github_com", "user", "repo"))))
 
-        // Should extract qualified type names
+        // A library package holds no project declaration, so repo.Data and repo.Client name none
         val processDataNode = report.nodes.find { it.pathWithName.parts.last() == "processData" }
-        assertThat(processDataNode?.usedTypes?.map { it.name }).contains("Data")
+        assertThat(processDataNode?.usedTypes).isEmpty()
 
         val createClientNode = report.nodes.find { it.pathWithName.parts.last() == "createClient" }
-        assertThat(createClientNode?.usedTypes?.map { it.name }).contains("Client")
+        assertThat(createClientNode?.usedTypes).isEmpty()
     }
 
     @Test
-    fun `should handle named import with alias usage`() {
+    fun `should keep an aliased library import and name nothing through its alias`() {
         // Arrange - Named import with alias usage
         val goCode = """
             package main
@@ -236,13 +236,13 @@ class GoAnalyzerImportTest {
         val dependencies = report.nodes.first().dependencies
         assertThat(dependencies).contains(Dependency(Path(listOf("encoding", "json"))))
 
-        // Should extract type names used with alias (json.Decoder -> Decoder)
+        // json.Decoder goes through a library package and names no project declaration
         val parseJSONNode = report.nodes.find { it.pathWithName.parts.last() == "parseJSON" }
-        assertThat(parseJSONNode?.usedTypes?.map { it.name }).contains("Decoder")
+        assertThat(parseJSONNode?.usedTypes?.map { it.name }).containsExactlyInAnyOrder("byte", "error")
     }
 
     @Test
-    fun `should handle blank import for side effects only`() {
+    fun `should keep a blank import and name nothing through a library import`() {
         // Arrange - Blank import for side effects (no direct usage)
         val goCode = """
             package main
@@ -267,9 +267,9 @@ class GoAnalyzerImportTest {
         // Should also have regular import dependency
         assertThat(dependencies).contains(Dependency(Path(listOf("database", "sql"))))
 
-        // Should extract type from regular import
+        // sql.DB goes through a library package and names no project declaration
         val connectDBNode = report.nodes.find { it.pathWithName.parts.last() == "connectDB" }
-        assertThat(connectDBNode?.usedTypes?.map { it.name }).contains("DB")
+        assertThat(connectDBNode?.usedTypes?.map { it.name }).containsExactly("error")
     }
 
     @Test

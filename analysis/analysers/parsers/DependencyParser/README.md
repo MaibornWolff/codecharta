@@ -91,7 +91,7 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
   *on* the name points at the file that shares the longest folder path with the file using it, and among
   equally near files at the first as the scan lists them (path order); for SQL at the latest migration, and
   for C# at every file of the nearest project (the folder of a `.csproj`) that declares it, the parts of a
-  partial class. A Kotlin `private` top-level copy or a C# `file` type counts only for the file it is written in.
+  partial class; for Go at every file of the package that declares it, its build-tag variants. A Kotlin `private` top-level copy or a C# `file` type counts only for the file it is written in.
 - `kind` is the declaration kind: `class`, `valueclass`, `interface`, `annotation`, `enum`, `function`,
   `variable`, `reexport`, `script` or `unknown`.
 - `leafEdges` is a list of its own rather than a widened `Edge`, because `edges` is what the edge-metric
@@ -152,7 +152,8 @@ edges on common project layouts; every item below is a bug in DependaCharta that
 
 1. **Extract.** Every source file is parsed with tree-sitter into the declarations it contains and the
    types they use. Imports are resolved through the language's own rules, plus tsconfig/jsconfig path
-   aliases, bundler aliases (webpack, vite, vue.config) and Module Federation remotes.
+   aliases, bundler aliases (webpack, vite, vue.config), Module Federation remotes and Go's `go.mod` files and
+   `vendor/` folders.
 2. **Resolve.** Used types are matched against the declarations the whole project offers, with a
    per-language standard-library filter so `java.util.List` does not become a project dependency. A name is
    matched only against languages that can refer to each other by name (`SupportedLanguage.nameScope`): Java

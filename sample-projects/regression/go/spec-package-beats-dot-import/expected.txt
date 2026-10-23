@@ -1,0 +1,3 @@
+# go.md, rules 2 and 3: the own package before a dot-imported one
+file app/app.go -> app/map.go
+leaf app/app.go#Run -> app/map.go#Map

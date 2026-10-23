@@ -1,0 +1,3 @@
+# go.md, rules 2 and 4: a declaration of the own package hides a predeclared identifier
+file app/app.go -> app/len.go
+leaf app/app.go#Run -> app/len.go#len

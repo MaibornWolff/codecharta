@@ -114,8 +114,9 @@ declarations:
   copy's dependencies leave the file they are written in, while a dependency *on* the name points at the file that
   shares the longest folder path with the file using it, and among equally near files at the first as the scan
   lists them (path order); for SQL at the latest migration, and for C# at every file of the nearest project (the
-  folder of a `.csproj`) that declares it, the parts of a partial class. A Kotlin `private` top-level copy or a C#
-  `file` type counts only for the file it is written in.
+  folder of a `.csproj`) that declares it, the parts of a partial class; for Go at every file of the package that
+  declares it, its build-tag variants. A Kotlin `private` top-level copy or a C# `file` type counts only for the file
+  it is written in.
 - `kind` is the declaration kind: `class`, `valueclass`, `interface`, `annotation`, `enum`, `function`,
   `variable`, `reexport`, `script` or `unknown`.
 
@@ -151,6 +152,12 @@ A name in the code refers only to declarations of a language that can name them:
 as do TypeScript, JavaScript, Vue and Angular templates, and C and C++; every other language keeps its own. A
 repository with several languages thus draws no edge from a Python name to a SQL table or from a C++ class to a
 Python class of the same name.
+
+Go finds an imported package through the `go.mod` files of the analysed folder: the path on a `module` line stands for
+the folder of its `go.mod`, a module's `vendor/` folder holds the packages it vendors, and a file under no `go.mod`
+finds the folder its import path ends with in at least two segments. A name written through an import, such as
+`model.Creature`, means the declaration of that package; a method called on a variable draws no edge, as the parser
+does not infer the variable's type.
 
 SQL has no imports: a table, view, synonym, package or routine is found by its name, whatever file creates it and
 in whatever dialect. A name with a schema (`dbo.orders`) finds the object of that schema, or else one created

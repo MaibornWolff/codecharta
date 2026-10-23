@@ -1,0 +1,1 @@
+# go.md, import paths, rule 4: an import path of no module of the analysed folder is a library
