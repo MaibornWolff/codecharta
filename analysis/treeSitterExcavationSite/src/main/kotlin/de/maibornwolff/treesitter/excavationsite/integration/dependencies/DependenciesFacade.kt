@@ -23,13 +23,11 @@ object DependenciesFacade {
         val grammar = NativeTreeSitter.grammar(wholeFileGrammar ?: LanguageRegistry.getGrammarLibrary(language))
         val embeddedSources = mapping.embeddedSources ?: definition.embeddedSources
         val collected = DependencyCollector(grammar, mapping, embeddedSources).collectDependencies(processedContent)
-        val sources = collected.embeddedSources
+        val analyzedSources = collected.embeddedSources.map { it to analyze(it.content, it.language) }
         return collected.ofFile.copy(
-            imports = collected.ofFile.imports + sources.filter { it.owner == null }.flatMap { analyze(it.content, it.language).imports },
-            embedded = sources.mapNotNull { source ->
-                source.owner?.let { owner ->
-                    EmbeddedDeclarations(owner, source.language, analyze(source.content, source.language).declarations)
-                }
+            imports = collected.ofFile.imports + analyzedSources.flatMap { (_, result) -> result.imports },
+            embedded = analyzedSources.mapNotNull { (source, result) ->
+                source.owner?.let { owner -> EmbeddedDeclarations(owner, source.language, result.declarations) }
             }
         )
     }
