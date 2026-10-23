@@ -1,5 +1,5 @@
 # typescript.md, binding, decision 3: a side-effect import is a use of the imported file's script leaf, if it has one
 file main.ts -> polyfill.ts
 file polyfill.ts -> registry.ts
-leaf main.ts#main.script -> polyfill.ts#polyfill.script
-leaf polyfill.ts#polyfill.script -> registry.ts#Registry
+leaf main.ts#main_script -> polyfill.ts#polyfill_script
+leaf polyfill.ts#polyfill_script -> registry.ts#Registry

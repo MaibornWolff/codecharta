@@ -35,13 +35,11 @@ missing leaf app.mjs#make -> svc.cjs#Svc
 
 ## spec-require-side-effect
 
-Top-level code outside every declaration is no declaration, and a `require` whose result is not bound draws nothing.
+A `require` whose result is not bound draws nothing.
 
 ```text
 missing file main.js -> setup.js
-missing file setup.js -> registry.js
-missing leaf main.js#main.script -> setup.js#setup.script
-missing leaf setup.js#setup.script -> registry.js#register
+missing leaf main.js#main_script -> setup.js#setup_script
 ```
 
 ## spec-script-global

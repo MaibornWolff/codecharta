@@ -23,8 +23,8 @@ JavaScript file or a Vue component and the other way round, by the same rules.
   `module.exports = X` (and TypeScript `export = X`) is the default export.
 - Code at the top level outside every declaration (`bootstrap(AppModule)`, `app.use(router)`, a statement of a
   polyfill) is one declaration of the kind script, named after the file without its ending plus `.script`
-  (`main.script`), that uses what this code names; imports and exports are no such code, except a side-effect import
-  (decision 3).
+  (`main.script`, in the map `main_script` as every dot of a leaf name, like the script leaves of SQL), that uses
+  what this code names; imports and exports are no such code, except a side-effect import (decision 3).
 - A re-export makes a declaration of the re-exporting file, of the kind re-export, named by the name it exports, that
   depends on what it re-exports (decision 8):
   - `export { A } from './m'`, `export { A as B } from './m'`, `export { default as B } from './m'`, and an imported
@@ -160,7 +160,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Declarations, decision 2: a named default export | `spec-default-named` | gap |
 | Declarations, decision 2: an anonymous default export | `spec-default-anonymous` | gap |
 | Declarations: `export default name` | `spec-default-identifier` | gap |
-| Declarations, decision 3: top-level code is a script leaf | `spec-script-top-level` | gap |
+| Declarations, decision 3: top-level code is a script leaf | `spec-script-top-level` | ok |
 | Declarations, decision 8: `export { A } from`, a use through a barrel | `spec-reexport-named` | ok |
 | Declarations, decision 8: `export { A as B } from` | `spec-reexport-alias` | ok |
 | Declarations, decision 8: `export { default as B } from` | `spec-reexport-default` | gap |

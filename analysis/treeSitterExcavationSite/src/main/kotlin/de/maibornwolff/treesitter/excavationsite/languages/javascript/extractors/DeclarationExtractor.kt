@@ -32,7 +32,7 @@ internal object DeclarationExtractor {
             }.filter { it.name.isNotBlank() }
             .toList()
             .withExportVisibility(ExportedNames.of(rootNode))
-        return declarations + listOfNotNull(defaultExportOf(rootNode, names))
+        return declarations + listOfNotNull(defaultExportOf(rootNode, names), TopLevelCode.scriptOf(rootNode, names))
     }
 
     // A default export that names a declaration is a re-export of that name; an anonymous one a declaration of its own

@@ -1,5 +1,5 @@
 # typescript.md, Vue tag 4, decision 6: a tag no binding decides means the component app.component registers under that name
 file main.ts -> components/CreatureBadge.vue
 file views/Panel.vue -> components/CreatureBadge.vue
-leaf main.ts#main.script -> components/CreatureBadge.vue#CreatureBadge
+leaf main.ts#main_script -> components/CreatureBadge.vue#CreatureBadge
 leaf views/Panel.vue#Panel -> components/CreatureBadge.vue#CreatureBadge
