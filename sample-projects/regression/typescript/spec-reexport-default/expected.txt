@@ -1,0 +1,5 @@
+# typescript.md, declarations, decisions 2 and 8: export { default as B } from is a re-export leaf B of the default export
+file page.ts -> ui/index.ts
+file ui/index.ts -> ui/button.ts
+leaf page.ts#Page -> ui/index.ts#Button
+leaf ui/index.ts#Button -> ui/button.ts#Button

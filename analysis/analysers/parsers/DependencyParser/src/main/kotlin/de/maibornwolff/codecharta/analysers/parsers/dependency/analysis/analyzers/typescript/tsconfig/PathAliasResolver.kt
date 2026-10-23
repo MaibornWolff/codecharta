@@ -10,7 +10,11 @@ object PathAliasResolver {
     private const val WILDCARD_SUFFIX = "/*"
 
     // Main entry point: resolves "@app/models" with paths config to Path(["src", "app", "models"])
-    fun resolve(import: DirectImport, config: TsConfigData, tsconfigDir: File, analysisRoot: File): Path? {
+    fun resolve(import: DirectImport, config: TsConfigData, tsconfigDir: File, analysisRoot: File): Path? =
+        resolveFile(import, config, tsconfigDir)?.let { toRelativePath(it, analysisRoot, stripExtension = true) }
+
+    /** The file or folder a `paths` entry or the `baseUrl` maps the import to, without its ending. */
+    fun resolveFile(import: DirectImport, config: TsConfigData, tsconfigDir: File): File? {
         val compilerOptions = config.compilerOptions ?: return null
         val result = resolveAgainstConfig(import.directPath, compilerOptions) ?: return null
         val absolutePath = computeAbsolutePath(result.resolvedPath, compilerOptions.baseUrl, tsconfigDir)
@@ -21,7 +25,7 @@ object PathAliasResolver {
             return null
         }
 
-        return toRelativePath(absolutePath, analysisRoot, stripExtension = true)
+        return absolutePath
     }
 
     private data class ResolveResult(val resolvedPath: String, val isBaseUrlFallback: Boolean)

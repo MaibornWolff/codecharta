@@ -1,0 +1,3 @@
+# typescript.md, declarations: export { A as B } without from names the own declaration A
+file use.ts -> service.ts
+leaf use.ts#Use -> service.ts#Impl

@@ -3,58 +3,76 @@ package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractor
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
-private const val AMBIENT_DECLARATION = "ambient_declaration"
 private const val MODULE_DECLARATION = "module"
 private const val STATEMENT_BLOCK = "statement_block"
+private const val GLOBAL_KEYWORD = "global"
 
 internal object DeclarationExtractor {
     fun extract(rootNode: SyntaxNode): List<Declaration> {
         val imports = ImportExtractor.extract(rootNode)
-        val aliasMap = DeclarationPrepass.buildAliasMap(imports)
-        val localDeclarationNames = DeclarationPrepass.extractLocalDeclarationNames(rootNode)
+        val names = DeclarationPrepass.moduleNamesOf(rootNode, imports)
+        val exportedNames = ExportedNames.of(rootNode)
         val declarations = rootNode
             .children()
             .flatMap { child ->
                 when (child.type) {
                     EXPORT_STATEMENT -> extractFromExportStatement(
                         child,
-                        aliasMap = aliasMap,
-                        localDeclarationNames = localDeclarationNames
+                        names = names
                     )
                     AMBIENT_DECLARATION -> extractFromAmbientDeclaration(
                         child,
-                        aliasMap = aliasMap,
-                        localDeclarationNames = localDeclarationNames
-                    )
-                    in DECLARATION_NODE_TYPES -> extractFromNode(
-                        child,
-                        aliasMap = aliasMap,
-                        localDeclarationNames = localDeclarationNames
-                    )
-                    else -> emptyList()
+                        names = names
+                    ) + extractFromGlobalBlock(child, names) +
+                        declarationsOf(
+                            child
+                        ).flatMap { extractFromNode(it, names = names) }
+                    else -> declarationsOf(child).flatMap { extractFromNode(it, names = names) }
                 }
             }.filter { it.name.isNotBlank() }
             .toList()
-        return when (val shape = DefaultExportClassifier.classify(rootNode)) {
-            is DefaultExport.Reexport -> {
-                val resolvedType = declarations.firstOrNull { it.name == shape.name }?.type
-                    ?: DeclarationType.REEXPORT
-                declarations + Declaration(DEFAULT_EXPORT, resolvedType, setOf(UsedType(shape.name)))
-            }
-            is DefaultExport.Anonymous, DefaultExport.Value ->
-                declarations + Declaration(DEFAULT_EXPORT, DeclarationType.REEXPORT, emptySet())
-            is DefaultExport.Named, DefaultExport.None -> declarations
-        }
+            .withExportVisibility(exportedNames)
+            .let { if (exportedNames.isScript) it.inGlobalScope() else it }
+        return declarations + listOfNotNull(defaultExportOf(rootNode, names), TopLevelCode.scriptOf(rootNode, names))
     }
 
-    private fun extractFromAmbientDeclaration(
-        node: SyntaxNode,
-        aliasMap: Map<String, String>,
-        localDeclarationNames: Set<String>
-    ): List<Declaration> {
+    // A default export that names a declaration is a re-export of that name; an anonymous one a declaration of its own
+    private fun defaultExportOf(rootNode: SyntaxNode, names: ModuleNames): Declaration? =
+        when (val shape = DefaultExportClassifier.classify(rootNode)) {
+            is DefaultExport.Named -> Declaration(DEFAULT_EXPORT, DeclarationType.REEXPORT, setOf(UsedType(shape.name)))
+            is DefaultExport.Reexport -> Declaration(DEFAULT_EXPORT, DeclarationType.REEXPORT, setOf(UsedType(shape.name)))
+            is DefaultExport.Anonymous -> {
+                val usedTypes = DefaultExportClassifier
+                    .anonymousValue(
+                        rootNode
+                    )?.let { UsedTypeExtractor.extract(it, names) }
+                Declaration(DEFAULT_EXPORT, shape.type, usedTypes.orEmpty())
+            }
+            DefaultExport.None -> null
+        }
+
+    // A top-level declaration that its module does not export only its own file can name
+    private fun List<Declaration>.withExportVisibility(exported: ExportedNames): List<Declaration> = map { declaration ->
+        val isTopLevel = declaration.parentPath.isEmpty() && declaration.type != DeclarationType.REEXPORT
+        if (isTopLevel) declaration.copy(isFileScoped = exported.isFileScoped(declaration.name)) else declaration
+    }
+
+    // The top-level declarations of a script file are global (rule 3), as no module encloses them
+    private fun List<Declaration>.inGlobalScope(): List<Declaration> = map { declaration ->
+        val isTopLevel = declaration.parentPath.isEmpty() && declaration.type != DeclarationType.REEXPORT
+        if (isTopLevel) declaration.copy(parentPath = listOf(GLOBAL_SCOPE)) else declaration
+    }
+
+    // `declare global { … }` declares global names in a module (rule 3)
+    private fun extractFromGlobalBlock(node: SyntaxNode, names: ModuleNames): List<Declaration> {
+        if (node.children().none { it.type == GLOBAL_KEYWORD }) return emptyList()
+        val body = node.children().firstOrNull { it.type == STATEMENT_BLOCK } ?: return emptyList()
+        return extractFromBlock(body, listOf(GLOBAL_SCOPE), names)
+    }
+
+    private fun extractFromAmbientDeclaration(node: SyntaxNode, names: ModuleNames): List<Declaration> {
         val moduleNode = node.children().firstOrNull { it.type == MODULE_DECLARATION } ?: return emptyList()
         val moduleName = moduleNode
             .children()
@@ -65,93 +83,78 @@ internal object DeclarationExtractor {
             ?.trim()
             ?: return emptyList()
         if (moduleName.contains("*")) return emptyList()
-        val parentPath = moduleName.split("/")
+        val parentPath = listOf(AMBIENT_MODULE) + moduleName.split("/")
         val body = moduleNode.children().firstOrNull { it.type == STATEMENT_BLOCK } ?: return emptyList()
-        return body
-            .children()
-            .flatMap { child ->
-                when (child.type) {
-                    EXPORT_STATEMENT -> extractFromExportStatement(child, parentPath, aliasMap, localDeclarationNames)
-                    in DECLARATION_NODE_TYPES -> extractFromNode(child, parentPath, aliasMap, localDeclarationNames)
-                    else -> emptyList()
-                }
-            }.filter { it.name.isNotBlank() }
-            .toList()
+        return extractFromBlock(body, parentPath, names)
     }
+
+    private fun extractFromBlock(body: SyntaxNode, parentPath: List<String>, names: ModuleNames): List<Declaration> = body
+        .children()
+        .flatMap { child ->
+            when (child.type) {
+                EXPORT_STATEMENT -> extractFromExportStatement(child, parentPath, names)
+                else -> declarationsOf(child).flatMap { extractFromNode(it, parentPath, names) }
+            }
+        }.filter { it.name.isNotBlank() }
+        .toList()
 
     private fun extractFromExportStatement(
         node: SyntaxNode,
         parentPath: List<String> = emptyList(),
-        aliasMap: Map<String, String>,
-        localDeclarationNames: Set<String>
-    ): List<Declaration> = if (hasSource(node)) {
+        names: ModuleNames
+    ): List<Declaration> = if (hasSource(node) || hasExportClause(node)) {
         ReexportDeclarationExtractor.extract(node)
     } else {
-        extractDecoratedDeclarations(node, parentPath, aliasMap, localDeclarationNames)
+        extractDecoratedDeclarations(node, parentPath, names)
     }
 
     // The decorators of an exported class are children of the export statement, not of the class declaration
-    private fun extractDecoratedDeclarations(
-        node: SyntaxNode,
-        parentPath: List<String>,
-        aliasMap: Map<String, String>,
-        localDeclarationNames: Set<String>
-    ): List<Declaration> {
+    private fun extractDecoratedDeclarations(node: SyntaxNode, parentPath: List<String>, names: ModuleNames): List<Declaration> {
         val decorators = node.children().filter { it.type == DECORATOR }.toList()
         val decoratorUsedTypes = decorators
-            .flatMap { UsedTypeExtractor.extract(it, aliasMap, localDeclarationNames).toList() }
+            .flatMap { UsedTypeExtractor.extract(it, names).toList() }
             .toSet()
         val angular = AngularDecoratorExtractor.extract(decorators.asSequence())
         return node
             .children()
-            .filter { it.type in DECLARATION_NODE_TYPES }
-            .flatMap { extractFromNode(it, parentPath, aliasMap, localDeclarationNames) }
+            .flatMap { declarationsOf(it) }
+            .flatMap { extractFromNode(it, parentPath, names) }
             .map { decl -> decl.copy(usedTypes = decl.usedTypes + decoratorUsedTypes, angular = decl.angular ?: angular) }
             .toList()
     }
 
-    private fun extractFromNode(
-        node: SyntaxNode,
-        parentPath: List<String> = emptyList(),
-        aliasMap: Map<String, String>,
-        localDeclarationNames: Set<String>
-    ): List<Declaration> = when (node.type) {
-        LEXICAL_DECLARATION, VARIABLE_DECLARATION -> extractVariableDeclarations(
-            node,
-            parentPath,
-            aliasMap,
-            localDeclarationNames
-        )
-        INTERNAL_MODULE -> {
-            val name = extractDeclarationName(node)
-            listOf(Declaration(name = name, type = DeclarationType.UNKNOWN, usedTypes = emptySet(), parentPath = parentPath))
+    private fun extractFromNode(node: SyntaxNode, parentPath: List<String> = emptyList(), names: ModuleNames): List<Declaration> =
+        when (node.type) {
+            LEXICAL_DECLARATION, VARIABLE_DECLARATION -> extractVariableDeclarations(
+                node,
+                parentPath,
+                names
+            )
+            INTERNAL_MODULE -> NamespaceDeclarations.extract(node, parentPath, names) { statement, memberPath ->
+                extractFromExportStatement(statement, memberPath, names)
+            }
+            else -> {
+                val name = extractDeclarationName(node)
+                val type = declarationType(node.type)
+                val usedTypes = UsedTypeExtractor.extract(node, names.without(name))
+                val angular = AngularDecoratorExtractor.extract(node.children().filter { it.type == DECORATOR })
+                listOf(Declaration(name = name, type = type, usedTypes = usedTypes, parentPath = parentPath, angular = angular))
+            }
         }
-        else -> {
-            val name = extractDeclarationName(node)
-            val type = declarationType(node.type)
-            val usedTypes = UsedTypeExtractor.extract(node, aliasMap, localDeclarationNames - name)
-            val angular = AngularDecoratorExtractor.extract(node.children().filter { it.type == DECORATOR })
-            listOf(Declaration(name = name, type = type, usedTypes = usedTypes, parentPath = parentPath, angular = angular))
-        }
-    }
 
     private fun extractVariableDeclarations(
         node: SyntaxNode,
         parentPath: List<String> = emptyList(),
-        aliasMap: Map<String, String>,
-        localDeclarationNames: Set<String>
+        names: ModuleNames
     ): List<Declaration> = node
         .children()
         .filter { it.type == VARIABLE_DECLARATOR }
-        .mapNotNull { declarator ->
-            val name = TreeTraversal.findFirstChildTextByType(declarator, IDENTIFIER)?.trim()
-            if (name.isNullOrBlank()) {
-                null
-            } else {
+        .flatMap { declarator ->
+            BindingPatterns.declaredNames(declarator).filter { it.isNotBlank() }.map { name ->
                 Declaration(
                     name = name,
                     type = DeclarationType.VARIABLE,
-                    usedTypes = UsedTypeExtractor.extract(declarator, aliasMap, localDeclarationNames - name),
+                    usedTypes = UsedTypeExtractor.extract(declarator, names.without(name)),
                     parentPath = parentPath
                 )
             }

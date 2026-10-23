@@ -1,0 +1,3 @@
+# typescript.md, module specifiers 2.3, decision 5: a subpath of a workspace package is the path below its folder
+file apps/web/app.ts -> packages/core/model.ts
+leaf apps/web/app.ts#App -> packages/core/model.ts#Model

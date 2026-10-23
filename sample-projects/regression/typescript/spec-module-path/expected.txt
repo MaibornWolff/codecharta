@@ -1,0 +1,3 @@
+# typescript.md, declarations: the file path without its last ending is the logical path, a dotted file name one segment
+file app/app.ts -> app/user.service.ts
+leaf app/app.ts#App -> app/user.service.ts#UserService

@@ -1,0 +1,6 @@
+# typescript.md, Vue tags 3 and 4: the components option comes before a global registration of the same name
+file main.ts -> components/other/CreatureCard.vue
+file views/CreatureList.vue -> components/CreatureCard.vue
+leaf main.ts#main_script -> components/other/CreatureCard.vue#CreatureCard
+leaf main.ts#main_script -> main.ts#app
+leaf views/CreatureList.vue#CreatureList -> components/CreatureCard.vue#CreatureCard

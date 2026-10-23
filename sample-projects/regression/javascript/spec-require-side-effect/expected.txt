@@ -1,0 +1,5 @@
+# typescript.md, binding, decision 3: a require whose result is not bound is a use of the required file's script leaf
+file main.js -> setup.js
+file setup.js -> registry.js
+leaf main.js#main_script -> setup.js#setup_script
+leaf setup.js#setup_script -> registry.js#register

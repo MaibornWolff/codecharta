@@ -841,7 +841,7 @@ class TypescriptAnalyzerTest {
     }
 
     @Test
-    fun `should add default export of a file as separate node`() {
+    fun `should make the default export of a name the file does not declare a node default`() {
         // Arrange
         val typescriptCode = """
             export default MyDefaultExport;      
@@ -857,15 +857,23 @@ class TypescriptAnalyzerTest {
         ).analyze()
 
         // Assert
-        val node = report.nodes[0]
-        assertThat(node.dependencies).containsExactly(
-            Dependency(
-                Path(listOf("MyDirectory", "MyClass")),
-                isWildcard = true
-            )
-        )
-        assertThat(node.pathWithName).isEqualTo(Path(listOf("MyDirectory", "MyClass", "MyDirectory_MyClass_DEFAULT_EXPORT")))
+        val node = report.nodes.single()
+        assertThat(node.pathWithName).isEqualTo(Path(listOf("MyDirectory", "MyClass", "default")))
         assertThat(node.usedTypes).containsExactly(Type.simple("MyDefaultExport"))
+    }
+
+    @Test
+    fun `should make no node of its own for the default export of a declaration of the file`() {
+        // Arrange
+        val typescriptCode = """
+            export default class Base {}
+        """.trimIndent()
+
+        // Act
+        val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "MyDirectory/Base.ts", typescriptCode)).analyze()
+
+        // Assert
+        assertThat(report.nodes.map { it.pathWithName }).containsExactly(Path(listOf("MyDirectory", "Base", "Base")))
     }
 
     @Test
@@ -1550,7 +1558,7 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should resolve namespace alias constructor call to module dependency`() {
-        // Arrange - Logger is only used via new types.Logger() with no type annotation
+        // Arrange
         val typescriptCode = """
             import * as types from './types'
 
@@ -1570,10 +1578,9 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // Assert - Logger is captured as usedType (extracted from new types.Logger() constructor call)
-        // and the wildcard dep on the types module is recorded for project-wide resolution
+        // Assert
         val node = report.nodes.first { it.pathWithName.getName() == "Consumer" }
-        assertThat(node.usedTypes).contains(Type.simple("Logger"))
+        assertThat(node.usedTypes.map { it.name }).contains("types.Logger")
         assertThat(node.dependencies).contains(Dependency(path = Path(listOf("types")), isWildcard = true))
     }
 
@@ -1646,5 +1653,23 @@ class TypescriptAnalyzerTest {
         assertThat(reexport.nodeType).isEqualTo(NodeType.REEXPORT)
         assertThat(reexport.dependencies.filter { !it.isWildcard }.map { it.path })
             .containsExactly(Path(listOf("user.service", "UserService")))
+    }
+
+    @Test
+    fun `should write a use of a namespace around a member as the full path of that namespace`() {
+        // Arrange
+        val typescriptCode = """
+            export namespace Shapes {
+                class Hidden {}
+                export const unit = new Hidden()
+            }
+        """.trimIndent()
+
+        // Act
+        val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "geo/shapes.ts", typescriptCode)).analyze()
+
+        // Assert
+        val unit = report.nodes.single { it.pathWithName == Path(listOf("geo", "shapes", "Shapes", "unit")) }
+        assertThat(unit.usedTypes.map { it.name }).containsExactly("geo.shapes.Shapes")
     }
 }

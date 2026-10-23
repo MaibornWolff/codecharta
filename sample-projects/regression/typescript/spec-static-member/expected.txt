@@ -1,0 +1,4 @@
+# typescript.md, qualified names: a static member or an enum member is a use of the class or enum
+file app.ts -> config.ts
+leaf app.ts#start -> config.ts#Color
+leaf app.ts#start -> config.ts#Config

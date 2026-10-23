@@ -1,0 +1,3 @@
+# typescript.md, 1: a type parameter hides the import of the same name
+file box.ts -> model.ts
+leaf box.ts#Real -> model.ts#Model

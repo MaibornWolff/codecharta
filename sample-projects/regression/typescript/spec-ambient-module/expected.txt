@@ -1,0 +1,3 @@
+# typescript.md, declarations and module specifiers 2.4: a bare specifier a declare module block declares
+file app.ts -> types/legacy.d.ts
+leaf app.ts#use -> types/legacy.d.ts#Api

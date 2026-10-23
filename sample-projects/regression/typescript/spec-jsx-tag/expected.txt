@@ -1,0 +1,3 @@
+# typescript.md, simple name: an upper-case JSX tag is a name, a lower-case one an element of the platform
+file page.tsx -> card.tsx
+leaf page.tsx#Page -> card.tsx#UserCard

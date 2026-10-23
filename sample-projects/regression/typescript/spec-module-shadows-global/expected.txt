@@ -1,0 +1,3 @@
+# typescript.md, 2 and 3: a module binding wins over a global of the same name
+file app.ts -> registry.ts
+leaf app.ts#info -> registry.ts#Registry

@@ -1,0 +1,13 @@
+# typescript.md, Angular 1: the NgModule declaring the component and the exports of the modules it imports decide
+file app/app.module.ts -> app/card.component.ts
+file app/app.module.ts -> shared/shared.module.ts
+file app/card.component.html -> shared/badge.component.ts
+file app/card.component.ts -> app/card.component.html
+file shared/shared.module.ts -> shared/badge.component.ts
+leaf app/app.module.ts#AppModule -> app/card.component.ts#CardComponent
+leaf app/app.module.ts#AppModule -> shared/shared.module.ts#SharedModule
+leaf app/card.component.html#card_component_html -> shared/badge.component.ts#BadgeComponent
+leaf app/card.component.ts#CardComponent -> app/card.component.html#card_component_html
+leaf legacy/badge.component.ts#BadgeComponent -> legacy/badge.component.ts#template
+leaf shared/badge.component.ts#BadgeComponent -> shared/badge.component.ts#template
+leaf shared/shared.module.ts#SharedModule -> shared/badge.component.ts#BadgeComponent

@@ -1,0 +1,5 @@
+# typescript.md, binding and qualified names: import * as ns binds the module, ns.A is its export A, ns alone draws nothing
+file app.ts -> models/user.ts
+leaf app.ts#App -> models/user.ts#User
+leaf app.ts#App -> models/user.ts#create
+leaf models/user.ts#create -> models/user.ts#User

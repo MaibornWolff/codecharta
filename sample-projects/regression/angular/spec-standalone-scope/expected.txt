@@ -1,0 +1,9 @@
+# typescript.md, Angular 1: the imports of a standalone component decide between two classes of one selector
+file app/card.component.html -> shared/badge.component.ts
+file app/card.component.ts -> app/card.component.html
+file app/card.component.ts -> shared/badge.component.ts
+leaf app/card.component.html#card_component_html -> shared/badge.component.ts#BadgeComponent
+leaf app/card.component.ts#CardComponent -> app/card.component.html#card_component_html
+leaf app/card.component.ts#CardComponent -> shared/badge.component.ts#BadgeComponent
+leaf legacy/badge.component.ts#BadgeComponent -> legacy/badge.component.ts#template
+leaf shared/badge.component.ts#BadgeComponent -> shared/badge.component.ts#template

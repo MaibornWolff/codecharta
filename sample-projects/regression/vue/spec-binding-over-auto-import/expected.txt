@@ -1,0 +1,3 @@
+# typescript.md, Vue tags 2 and 6: a binding of script setup decides between components of the same name
+file views/Home.vue -> b/Badge.vue
+leaf views/Home.vue#Home -> b/Badge.vue#Badge

@@ -10,10 +10,11 @@ import java.io.File
  * Handles prefix matching: "Shared" alias matches "Shared/Utils".
  */
 object BundlerAliasResolver {
-    fun resolve(import: DirectImport, config: BundlerConfigData, analysisRoot: File): Path? {
-        val resolved = resolveAlias(import.directPath, config.aliases) ?: return null
-        return toRelativePath(resolved, analysisRoot, stripExtension = true)
-    }
+    fun resolve(import: DirectImport, config: BundlerConfigData, analysisRoot: File): Path? =
+        resolveFile(import, config)?.let { toRelativePath(it, analysisRoot, stripExtension = true) }
+
+    /** The file or folder an alias maps the import to, as written in the alias, without looking for it on disk. */
+    fun resolveFile(import: DirectImport, config: BundlerConfigData): File? = resolveAlias(import.directPath, config.aliases)
 
     private fun resolveAlias(importPath: String, aliases: Map<String, String>): File? {
         for ((alias, target) in aliases) {

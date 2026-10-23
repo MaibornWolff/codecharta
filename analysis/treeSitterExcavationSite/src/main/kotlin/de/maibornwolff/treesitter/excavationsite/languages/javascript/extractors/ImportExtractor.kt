@@ -1,6 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportDeclaration
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportKind
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 
@@ -42,7 +43,13 @@ internal object ImportExtractor {
                     val defaultIdentifier = importClause.children().firstOrNull { it.type == IDENTIFIER }
                     if (defaultIdentifier != null) {
                         val bindingText = defaultIdentifier.text.trim()
-                        named + ImportDeclaration(path = basePath + DEFAULT_EXPORT, isWildcard = false, bindingName = bindingText)
+                        named +
+                            ImportDeclaration(
+                                path = basePath + DEFAULT_EXPORT,
+                                isWildcard = false,
+                                kind = ImportKind.MEMBER,
+                                bindingName = bindingText
+                            )
                     } else {
                         named
                     }
@@ -63,8 +70,18 @@ internal object ImportExtractor {
                     .map { it.text.trim() }
                     .toList()
                 when (identifiers.size) {
-                    1 -> ImportDeclaration(path = basePath + identifiers[0], isWildcard = false, bindingName = identifiers[0])
-                    2 -> ImportDeclaration(path = basePath + identifiers[0], isWildcard = false, bindingName = identifiers[1])
+                    1 -> ImportDeclaration(
+                        path = basePath + identifiers[0],
+                        isWildcard = false,
+                        kind = ImportKind.MEMBER,
+                        bindingName = identifiers[0]
+                    )
+                    2 -> ImportDeclaration(
+                        path = basePath + identifiers[0],
+                        isWildcard = false,
+                        kind = ImportKind.MEMBER,
+                        bindingName = identifiers[1]
+                    )
                     else -> null
                 }
             }.toList()
@@ -83,16 +100,23 @@ internal object ImportExtractor {
             val basePath = splitPath(pathText)
             val declarator = callNode.parent
             if (declarator.isNull || declarator.type != VARIABLE_DECLARATOR) {
-                return@flatMap listOf(ImportDeclaration(path = basePath + DEFAULT_EXPORT, isWildcard = false))
+                return@flatMap listOf(ImportDeclaration(path = basePath + DEFAULT_EXPORT, isWildcard = false, kind = ImportKind.MEMBER))
             }
             val nameChild = declarator.children().firstOrNull { it.type == OBJECT_PATTERN || it.type == IDENTIFIER }
             when (nameChild?.type) {
                 OBJECT_PATTERN -> extractDestructuredCommonJs(nameChild, basePath)
                 IDENTIFIER -> {
                     val bindingText = nameChild.text.trim()
-                    listOf(ImportDeclaration(path = basePath + DEFAULT_EXPORT, isWildcard = false, bindingName = bindingText))
+                    listOf(
+                        ImportDeclaration(
+                            path = basePath + DEFAULT_EXPORT,
+                            isWildcard = false,
+                            kind = ImportKind.MEMBER,
+                            bindingName = bindingText
+                        )
+                    )
                 }
-                else -> listOf(ImportDeclaration(path = basePath + DEFAULT_EXPORT, isWildcard = false))
+                else -> listOf(ImportDeclaration(path = basePath + DEFAULT_EXPORT, isWildcard = false, kind = ImportKind.MEMBER))
             }
         }
 
@@ -115,7 +139,7 @@ internal object ImportExtractor {
                         ?.trim()
                         ?: return@mapNotNull null
                     val name = normalizeDefaultKeyword(rawName)
-                    ImportDeclaration(path = basePath + name, isWildcard = false)
+                    ImportDeclaration(path = basePath + name, isWildcard = false, kind = ImportKind.REEXPORT)
                 }.toList()
         }
 
@@ -126,8 +150,22 @@ internal object ImportExtractor {
                 !TreeTraversal.containsNodeOfType(exportNode, EXPORT_CLAUSE)
         }.mapNotNull { exportNode ->
             val pathText = extractStringText(exportNode) ?: return@mapNotNull null
-            ImportDeclaration(path = splitPath(pathText), isWildcard = true)
+            ImportDeclaration(
+                path = splitPath(pathText),
+                isWildcard = true,
+                kind = ImportKind.REEXPORT,
+                bindingName = namespaceExportName(exportNode)
+            )
         }
+
+    // `export * as shapes from './shapes'` binds `shapes` to the module
+    private fun namespaceExportName(exportNode: SyntaxNode): String? = exportNode
+        .children()
+        .firstOrNull { it.type == NAMESPACE_EXPORT }
+        ?.children()
+        ?.firstOrNull { it.type == IDENTIFIER }
+        ?.text
+        ?.trim()
 
     private fun extractDynamicImports(rootNode: SyntaxNode): List<ImportDeclaration> = TreeTraversal
         .findAllDescendantsOfType(rootNode, CALL_EXPRESSION)
@@ -136,7 +174,7 @@ internal object ImportExtractor {
             val args = callNode.children().firstOrNull { it.type == ARGUMENTS }
                 ?: return@mapNotNull null
             val pathText = extractStringText(args) ?: return@mapNotNull null
-            ImportDeclaration(path = splitPath(pathText), isWildcard = false)
+            ImportDeclaration(path = splitPath(pathText), isWildcard = true, bindingName = DynamicImports.bindingNameOf(callNode))
         }
 
     private fun extractDestructuredCommonJs(objectPattern: SyntaxNode, basePath: List<String>): List<ImportDeclaration> = objectPattern
@@ -148,7 +186,7 @@ internal object ImportExtractor {
                     if (name.isBlank()) {
                         null
                     } else {
-                        ImportDeclaration(path = basePath + name, isWildcard = false, bindingName = name)
+                        ImportDeclaration(path = basePath + name, isWildcard = false, kind = ImportKind.MEMBER, bindingName = name)
                     }
                 }
                 PAIR_PATTERN -> {
@@ -167,6 +205,7 @@ internal object ImportExtractor {
                         ImportDeclaration(
                             path = basePath + realName,
                             isWildcard = false,
+                            kind = ImportKind.MEMBER,
                             bindingName = binding?.takeIf { it.isNotBlank() } ?: realName
                         )
                     }

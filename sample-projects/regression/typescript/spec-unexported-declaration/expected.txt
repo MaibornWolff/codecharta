@@ -1,0 +1,2 @@
+# typescript.md, declarations and 2: a top-level declaration that is not exported is a leaf of the module
+leaf api.ts#Api -> api.ts#helper

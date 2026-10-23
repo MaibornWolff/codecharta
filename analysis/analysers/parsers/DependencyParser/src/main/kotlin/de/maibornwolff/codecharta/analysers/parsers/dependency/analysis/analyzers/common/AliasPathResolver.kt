@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.federation.FederationAliasResolver
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.federation.FederationConfigResolver
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.model.DirectImport
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.toRelativePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.tsconfig.PathAliasResolver
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.tsconfig.TsConfigResolver
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
@@ -36,36 +37,32 @@ object AliasPathResolver {
      */
     fun resolve(importString: String, fileInfo: FileInfo): Path? {
         val analysisRoot = fileInfo.analysisRoot ?: return null
+        return resolveFile(importString, fileInfo)?.let { toRelativePath(it, analysisRoot, stripExtension = true) }
+    }
+
+    /** The file or folder the first configuration that maps the bare specifier names, as the configuration writes it. */
+    fun resolveFile(importString: String, fileInfo: FileInfo): File? {
+        val analysisRoot = fileInfo.analysisRoot ?: return null
         val sourceFile = analysisRoot.resolve(fileInfo.physicalPath)
         val import = DirectImport(importString)
 
-        return tryTsConfig(import, sourceFile, analysisRoot)
-            ?: tryBundler(import, sourceFile, analysisRoot)
-            ?: tryFederation(import, sourceFile, analysisRoot)
+        return tryTsConfig(import, sourceFile)
+            ?: tryBundler(import, sourceFile)
+            ?: tryFederation(import, sourceFile)
     }
 
-    private fun tryTsConfig(import: DirectImport, sourceFile: File, analysisRoot: File): Path? {
+    private fun tryTsConfig(import: DirectImport, sourceFile: File): File? {
         val tsConfigResult = tsConfigResolver.findTsConfig(sourceFile) ?: return null
-        return PathAliasResolver.resolve(
-            import,
-            tsConfigResult.data,
-            tsConfigResult.file.parentFile,
-            analysisRoot
-        )
+        return PathAliasResolver.resolveFile(import, tsConfigResult.data, tsConfigResult.file.parentFile)
     }
 
-    private fun tryBundler(import: DirectImport, sourceFile: File, analysisRoot: File): Path? {
+    private fun tryBundler(import: DirectImport, sourceFile: File): File? {
         val bundlerResult = bundlerConfigResolver.findBundlerConfig(sourceFile) ?: return null
-        return BundlerAliasResolver.resolve(import, bundlerResult.data, analysisRoot)
+        return BundlerAliasResolver.resolveFile(import, bundlerResult.data)
     }
 
-    private fun tryFederation(import: DirectImport, sourceFile: File, analysisRoot: File): Path? {
+    private fun tryFederation(import: DirectImport, sourceFile: File): File? {
         val federationResult = federationConfigResolver.findConsumerConfig(sourceFile) ?: return null
-        return FederationAliasResolver.resolve(
-            import,
-            federationResult,
-            federationConfigResolver,
-            analysisRoot
-        )
+        return FederationAliasResolver.resolveFile(import, federationResult, federationConfigResolver)
     }
 }

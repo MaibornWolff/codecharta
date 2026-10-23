@@ -1,0 +1,3 @@
+# typescript.md, Vue tag 6, decision 6: else the one project component of that name
+file views/Home.vue -> components/Badge.vue
+leaf views/Home.vue#Home -> components/Badge.vue#Badge

@@ -1,0 +1,1 @@
+# typescript.md, Vue tag 5 and README shared rule 4: a component naming itself draws no edge, not even to a namesake
