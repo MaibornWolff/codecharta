@@ -85,7 +85,8 @@ data class UsedType(
     val genericTypes: List<UsedType> = [],  // [UsedType("String")] for List<String>
     val namespacePrefix: List<String> = [], // ["A", "B"] for A::B::Settings; [] for unqualified
     val usage: TypeUsage = USAGE,           // how the declaration uses the type; only PHP tells the ways apart
-    val alternativeName: String? = null     // "ObsoleteAttribute" for the C# attribute [Obsolete]; null elsewhere
+    val alternativeName: String? = null,    // "ObsoleteAttribute" for the C# attribute [Obsolete]; null elsewhere
+    val fallbacks: List<UsedType> = []      // what the use means, in order, when it names nothing; Python only
 )
 ```
 
