@@ -7,11 +7,13 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
 private const val MODULE_DECLARATION = "module"
 private const val STATEMENT_BLOCK = "statement_block"
+private const val GLOBAL_KEYWORD = "global"
 
 internal object DeclarationExtractor {
     fun extract(rootNode: SyntaxNode): List<Declaration> {
         val imports = ImportExtractor.extract(rootNode)
         val names = DeclarationPrepass.moduleNamesOf(rootNode, imports)
+        val exportedNames = ExportedNames.of(rootNode)
         val declarations = rootNode
             .children()
             .flatMap { child ->
@@ -23,7 +25,7 @@ internal object DeclarationExtractor {
                     AMBIENT_DECLARATION -> extractFromAmbientDeclaration(
                         child,
                         names = names
-                    ) +
+                    ) + extractFromGlobalBlock(child, names) +
                         declarationsOf(
                             child
                         ).flatMap { extractFromNode(it, names = names) }
@@ -31,7 +33,8 @@ internal object DeclarationExtractor {
                 }
             }.filter { it.name.isNotBlank() }
             .toList()
-            .withExportVisibility(ExportedNames.of(rootNode))
+            .withExportVisibility(exportedNames)
+            .let { if (exportedNames.isScript) it.inGlobalScope() else it }
         return declarations + listOfNotNull(defaultExportOf(rootNode, names), TopLevelCode.scriptOf(rootNode, names))
     }
 
@@ -54,6 +57,19 @@ internal object DeclarationExtractor {
     private fun List<Declaration>.withExportVisibility(exported: ExportedNames): List<Declaration> = map { declaration ->
         val isTopLevel = declaration.parentPath.isEmpty() && declaration.type != DeclarationType.REEXPORT
         if (isTopLevel) declaration.copy(isFileScoped = exported.isFileScoped(declaration.name)) else declaration
+    }
+
+    // The top-level declarations of a script file are global (rule 3), as no module encloses them
+    private fun List<Declaration>.inGlobalScope(): List<Declaration> = map { declaration ->
+        val isTopLevel = declaration.parentPath.isEmpty() && declaration.type != DeclarationType.REEXPORT
+        if (isTopLevel) declaration.copy(parentPath = listOf(GLOBAL_SCOPE)) else declaration
+    }
+
+    // `declare global { … }` declares global names in a module (rule 3)
+    private fun extractFromGlobalBlock(node: SyntaxNode, names: ModuleNames): List<Declaration> {
+        if (node.children().none { it.type == GLOBAL_KEYWORD }) return emptyList()
+        val body = node.children().firstOrNull { it.type == STATEMENT_BLOCK } ?: return emptyList()
+        return extractFromBlock(body, listOf(GLOBAL_SCOPE), names)
     }
 
     private fun extractFromAmbientDeclaration(node: SyntaxNode, names: ModuleNames): List<Declaration> {
