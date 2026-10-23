@@ -1,0 +1,1 @@
+# typescript.md, binding: an import alone draws no edge

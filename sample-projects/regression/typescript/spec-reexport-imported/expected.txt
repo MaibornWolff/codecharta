@@ -1,0 +1,5 @@
+# typescript.md, declarations, decision 8: an imported name the file exports again is a re-export leaf
+file lib/index.ts -> lib/a.ts
+file use.ts -> lib/index.ts
+leaf lib/index.ts#A -> lib/a.ts#A
+leaf use.ts#Use -> lib/index.ts#A

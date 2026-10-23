@@ -1,0 +1,7 @@
+# typescript.md, binding, decision 4: a name read from a dynamic import's result is a use of that export
+file routes.ts -> admin.ts
+file routes.ts -> report.ts
+file routes.ts -> stats.ts
+leaf routes.ts#loadStats -> stats.ts#Stats
+leaf routes.ts#routes -> admin.ts#AdminComponent
+leaf routes.ts#routes -> report.ts#ReportComponent

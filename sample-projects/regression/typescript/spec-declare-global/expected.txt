@@ -1,0 +1,3 @@
+# typescript.md, 3: a declaration inside declare global is global
+file app.ts -> setup.ts
+leaf app.ts#isDebug -> setup.ts#Settings

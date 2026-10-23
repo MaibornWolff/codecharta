@@ -1,0 +1,3 @@
+# typescript.md, declarations: export default name is the declaration name
+file user.ts -> settings.ts
+leaf user.ts#debug -> settings.ts#settings

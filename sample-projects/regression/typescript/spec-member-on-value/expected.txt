@@ -1,0 +1,1 @@
+# typescript.md, qualified names: a member of a value draws no edge, also where it is named like a project declaration

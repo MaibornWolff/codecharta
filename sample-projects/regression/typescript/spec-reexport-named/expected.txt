@@ -1,0 +1,5 @@
+# typescript.md, declarations, decision 8: a use through a barrel points at its re-export leaf; module specifiers 3: a folder's index
+file models/index.ts -> models/model.ts
+file user.ts -> models/index.ts
+leaf models/index.ts#Model -> models/model.ts#Model
+leaf user.ts#User -> models/index.ts#Model

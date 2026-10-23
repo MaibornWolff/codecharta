@@ -1,0 +1,3 @@
+<template>
+  <creature-badge />
+</template>

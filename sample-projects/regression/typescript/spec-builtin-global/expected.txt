@@ -1,0 +1,1 @@
+# typescript.md, 4: a global of the runtime is no project declaration of the same name in a module

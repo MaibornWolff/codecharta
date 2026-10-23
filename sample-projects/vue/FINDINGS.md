@@ -495,6 +495,9 @@ default export of a `.vue` file (not resolved by path). Template tags are matche
 | `.cjs` (`postcss.config.cjs`) | analysed | analysed (1 leaf) | analysed |
 | `.json` | named as unsupported | skipped silently | skipped silently |
 
+- Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/typescript.md`): listed
+  per probe in `regression/vue/known-gaps.md`.
+
 ## Domain language parser
 
 Commands (exit 0 unless noted):

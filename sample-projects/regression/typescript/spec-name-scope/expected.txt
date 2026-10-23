@@ -1,0 +1,5 @@
+# README shared rule 1: TypeScript and JavaScript name each other
+file a.ts -> b.js
+file c.js -> a.ts
+leaf a.ts#A -> b.js#helper
+leaf c.js#make -> a.ts#A

@@ -1,0 +1,3 @@
+# typescript.md, 1: a parameter hides the import of the same name in its function
+file use.ts -> model.ts
+leaf use.ts#plain -> model.ts#Model

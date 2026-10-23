@@ -1,0 +1,4 @@
+# typescript.md, 3: a declaration of a script file is global
+file app.ts -> types/globals.d.ts
+leaf app.ts#info -> types/globals.d.ts#Registry
+leaf app.ts#info -> types/globals.d.ts#VERSION

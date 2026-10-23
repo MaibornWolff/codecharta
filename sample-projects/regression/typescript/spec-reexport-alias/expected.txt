@@ -1,0 +1,5 @@
+# typescript.md, declarations, decision 8: export { A as B } from is a re-export leaf B
+file models/index.ts -> models/model.ts
+file user.ts -> models/index.ts
+leaf models/index.ts#Entity -> models/model.ts#Model
+leaf user.ts#User -> models/index.ts#Entity

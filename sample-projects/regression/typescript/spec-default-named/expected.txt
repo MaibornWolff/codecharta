@@ -1,0 +1,3 @@
+# typescript.md, declarations, decision 2: a named default export is the declaration under its own name
+file user.ts -> base.ts
+leaf user.ts#User -> base.ts#Base

@@ -1,0 +1,3 @@
+# typescript.md, declarations, decision 3: top-level code is a script leaf <file>.script
+file main.ts -> app.ts
+leaf main.ts#main.script -> app.ts#AppModule

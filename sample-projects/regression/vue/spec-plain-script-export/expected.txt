@@ -1,0 +1,4 @@
+# typescript.md, Vue: a named export of a plain script block is a leaf of its own
+file use.ts -> components/Comp.vue
+leaf components/Comp.vue#Comp -> components/Comp.vue#Props
+leaf use.ts#size -> components/Comp.vue#Props

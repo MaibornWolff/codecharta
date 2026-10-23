@@ -1,0 +1,1 @@
+# typescript.md, binding, decision 4: a dynamic import whose result is not read by name draws no edge

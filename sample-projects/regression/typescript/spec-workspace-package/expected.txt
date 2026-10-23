@@ -1,0 +1,3 @@
+# typescript.md, module specifiers 2.3, decision 5: a bare specifier names the workspace package of that package.json name
+file apps/web/app.ts -> packages/core/index.ts
+leaf apps/web/app.ts#App -> packages/core/index.ts#Store

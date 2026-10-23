@@ -1,0 +1,3 @@
+# typescript.md, module specifiers 1: a relative specifier starts at the importing file's folder; a function is a name like a class
+file app/feature/view.ts -> lib/util.ts
+leaf app/feature/view.ts#render -> lib/util.ts#formatDate

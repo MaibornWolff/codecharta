@@ -1,0 +1,4 @@
+# typescript.md, binding: const x = require binds the module, x.A is its export A
+file b.js -> a.js
+leaf b.js#run -> a.js#Svc
+leaf b.js#run -> a.js#helper
