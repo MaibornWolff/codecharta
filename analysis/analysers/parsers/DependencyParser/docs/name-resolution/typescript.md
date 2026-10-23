@@ -71,10 +71,12 @@ What an import binds, in the module it is written in:
   block gives it.
 - `import D from './m'` and `import { default as D }` bind `D` to the default export of `m`.
 - `import * as ns from './m'` binds `ns` to the module `m`: `ns.A` is the export `A` of `m`.
-- `const x = require('./m')` and `import x = require('./m')` bind `x` to the module `m`: `x.A` is the export `A` of
-  `m`, and `x` itself (called, constructed, extended) is its default export. `const { A, B: C } = require('./m')`
-  binds `A` and `C` to the exports `A` and `B` of `m`. A CommonJS module exports `A` by `exports.A = …`,
-  `module.exports.A = …` or `module.exports = { A, … }`.
+- `const x = require('./m')` and `import x = require('./m')` bind `x` to what `m` exports as `module.exports`
+  (decision 10): `x` itself (called, constructed, extended) is its default export; `x.A` is a member of that default
+  export where `module.exports = X` names a declaration (`x.create` with `module.exports = Svc` is a use of `Svc`), else
+  the export `A` of `m`. A default import of a CommonJS module, `import X from './m.cjs'`, binds the same.
+  `const { A, B: C } = require('./m')` binds `A` and `C` to the exports `A` and `B` of `m`. A CommonJS module exports
+  `A` by `exports.A = …`, `module.exports.A = …` or `module.exports = { A, … }`.
 - `import './m'` and a `require('./m')` whose result is not bound bind nothing: they are a use, by the script
   declaration of the importing file, of the script declaration of `m`, if `m` has one (decision 3).
 - `import('./m')` is a module `m` loaded later: a name read from its result, `.then(m => m.A)`, `.then(({ A }) => …)`
@@ -207,6 +209,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | JavaScript, binding: `const x = require` | `javascript/spec-commonjs-require-module` | gap |
 | JavaScript, binding: `const { A, B: C } = require` | `javascript/spec-commonjs-destructure` | ok |
 | JavaScript, declarations: `module.exports = X` | `javascript/spec-commonjs-default` | gap |
+| JavaScript, decision 10: a member of a required `module.exports = X` | `javascript/spec-commonjs-default-member` | gap |
 | JavaScript, binding: `exports.A =` | `javascript/spec-commonjs-exports-property` | ok |
 | JavaScript, decision 2: a named default export | `javascript/spec-js-default-named` | gap |
 | JavaScript, binding: a default import of a CommonJS module | `javascript/spec-esm-import-commonjs` | gap |
@@ -266,3 +269,6 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
    Python package's `__init__.py` (python.md decision 2).
 9. Global declarations of the same name in several files are alternatives, and a use points at each, as Python
    alternative bindings and Go build-tag variants (python.md decision 5, go.md decision 3).
+10. A name `require` binds stands for the module's `module.exports`, as at runtime: with `module.exports = Svc`,
+    `x.create` is a member of `Svc` and a use of it, as `Color.Red` is a use of the enum `Color`; with
+    `module.exports = { A, … }` or `exports.A = …`, `x.A` is the export `A` (decided 2026-10-23).
