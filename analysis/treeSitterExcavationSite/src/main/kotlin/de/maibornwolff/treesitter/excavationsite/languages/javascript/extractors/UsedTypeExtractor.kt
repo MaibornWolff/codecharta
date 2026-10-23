@@ -20,6 +20,7 @@ internal object UsedTypeExtractor {
     private const val AS_EXPRESSION = "as_expression"
     private const val SATISFIES_EXPRESSION = "satisfies_expression"
     private const val TYPE_ARGUMENTS = "type_arguments"
+    private val JSX_TAG_ELEMENTS = setOf(JSX_OPENING_ELEMENT, JSX_SELF_CLOSING_ELEMENT, "jsx_closing_element")
 
     private val ALL_NODE_TYPES = setOf(
         TYPE_ANNOTATION,
@@ -151,9 +152,14 @@ internal object UsedTypeExtractor {
         localDeclarationNames: Set<String>
     ): List<UsedType> = buckets[IDENTIFIER].orEmpty().mapNotNull { node ->
         val name = node.text.trim()
+        if (isPlatformElementTag(node)) return@mapNotNull null
         if (name.firstOrNull()?.isUpperCase() != true && name !in aliasMap && name !in localDeclarationNames) return@mapNotNull null
         UsedType(name = name)
     }
+
+    // A lower-case JSX tag names an element of the platform, whatever the module binds under that name
+    private fun isPlatformElementTag(node: SyntaxNode): Boolean =
+        node.parent.type in JSX_TAG_ELEMENTS && node.text.firstOrNull()?.isLowerCase() == true
 
     private fun extractJsxComponents(buckets: Map<String, List<SyntaxNode>>, scopes: LocalScopes): List<UsedType> {
         val jsxNodes = buckets[JSX_OPENING_ELEMENT].orEmpty() + buckets[JSX_SELF_CLOSING_ELEMENT].orEmpty()

@@ -46,14 +46,6 @@ missing leaf app.ts#info -> types/globals.d.ts#Registry
 missing leaf app.ts#info -> types/globals.d.ts#VERSION
 ```
 
-## spec-jsx-tag
-
-A lower-case JSX tag is reported as a name.
-
-```text
-extra leaf page.tsx#Page -> card.tsx#card
-```
-
 ## spec-namespace-import
 
 Through a namespace import only names starting upper case are reported.
