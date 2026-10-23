@@ -178,6 +178,27 @@ class VueDependencyTest {
         }
 
         @Test
+        fun `should hand what a script setup block declares to the component, its imports to the file`() {
+            // Arrange
+            val code = """
+                <script setup lang="ts">
+                import { format } from './format'
+                const label = format(1)
+                </script>
+            """.trimIndent()
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            val embedded = result.embedded.single()
+            assertThat(embedded.owner).isEqualTo("DEFAULT_EXPORT")
+            assertThat(embedded.language).isEqualTo(Language.TYPESCRIPT)
+            assertThat(embedded.declarations.map { it.name }).containsExactly("label")
+            assertThat(result.imports.map { it.path }).containsExactly(listOf(".", "format", "format"))
+        }
+
+        @Test
         fun `should not extract what a script block declares`() {
             // Arrange
             val code = "<script>export class Helper {}</script>"
