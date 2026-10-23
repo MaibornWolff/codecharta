@@ -51,7 +51,7 @@ class VueDependencyTest {
             val result = analyze(code)
 
             // Assert
-            assertThat(result.declarations.single().usedTypes).isEmpty()
+            assertThat(result.declarations.first().usedTypes).isEmpty()
         }
     }
 
@@ -199,7 +199,7 @@ class VueDependencyTest {
         }
 
         @Test
-        fun `should not extract what a script block declares`() {
+        fun `should extract what a plain script block declares as declarations of the file, after the component`() {
             // Arrange
             val code = "<script>export class Helper {}</script>"
 
@@ -207,7 +207,7 @@ class VueDependencyTest {
             val result = analyze(code)
 
             // Assert
-            assertThat(result.declarations.map { it.name }).containsExactly("DEFAULT_EXPORT")
+            assertThat(result.declarations.map { it.name }).containsExactly("DEFAULT_EXPORT", "Helper")
         }
 
         @Test
