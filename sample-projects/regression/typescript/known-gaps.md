@@ -48,14 +48,10 @@ missing leaf app.ts#info -> types/globals.d.ts#VERSION
 
 ## spec-namespace-member
 
-A namespace is one leaf without members and without uses; `Shapes.Circle` is a use of `Shapes`.
+`Shapes.Circle` in a type is reported as a use of `Shapes` and of `Circle`, and a use of the namespace `Shapes` by its member `unit` is not found.
 
 ```text
 extra leaf draw.ts#draw -> geo.ts#Shapes
-missing file geo.ts -> point.ts
-missing leaf draw.ts#draw -> geo.ts#Circle
-missing leaf geo.ts#Circle -> point.ts#Point
-missing leaf geo.ts#Shapes -> point.ts#Point
 missing leaf geo.ts#unit -> geo.ts#Shapes
 ```
 
