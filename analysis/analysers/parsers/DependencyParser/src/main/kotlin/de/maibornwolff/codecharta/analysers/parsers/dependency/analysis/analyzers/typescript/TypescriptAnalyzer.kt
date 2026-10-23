@@ -81,7 +81,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
 
     override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> {
         qualifiedNames.remember(declaration.usedTypes)
-        return withEnclosingNamespacesWrittenInFull(declaration, declaration.usedTypes)
+        return withEnclosingNamespacesWrittenInFull(declaration, ModuleScriptUses.of(declaration.usedTypes, fileInfo))
     }
 
     // A member of a namespace that names a namespace around it means that namespace of the own file

@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.DefaultExports
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ImportedModules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.MemberImports
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ModuleScriptUses
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ScriptLeaf
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
@@ -16,6 +17,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLa
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
+import de.maibornwolff.treesitter.excavationsite.api.UsedType
 
 // Unlike TypescriptAnalyzer, JavascriptAnalyzer does not expand wildcard re-exports
 // (`export * from './module'`) into one node per re-exported name. A JS wildcard re-export is
@@ -31,6 +33,9 @@ class JavascriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         if (declaration.type == DeclarationType.SCRIPT) return ScriptLeaf.pathIn(modulePath)
         return modulePath + localExportName(declaration.name)
     }
+
+    override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> =
+        ModuleScriptUses.of(declaration.usedTypes, fileInfo)
 
     override fun analyze(): FileReport {
         val declaredNodes = super.analyze().nodes.let { memberImports?.rewrite(it) ?: it }
