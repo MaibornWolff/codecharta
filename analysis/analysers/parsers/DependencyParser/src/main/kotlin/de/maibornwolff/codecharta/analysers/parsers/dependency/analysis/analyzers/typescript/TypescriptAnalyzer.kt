@@ -51,7 +51,8 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     }
 
     override fun analyze(): FileReport {
-        val baseReport = FileReport(qualifiedNames.resolvedIn(DefaultExports.withoutOwnNames(super.analyze().nodes)))
+        val declaredNodes = super.analyze().nodes.let { memberImports?.rewrite(it) ?: it }
+        val baseReport = FileReport(qualifiedNames.resolvedIn(DefaultExports.withoutOwnNames(declaredNodes)))
         val analysisRoot = fileInfo.analysisRoot ?: return baseReport
         val ownNames = baseReport.nodes
             .filter { it.pathWithName.parts.lastOrNull() != WILDCARD_EXPORT_NAME }
@@ -79,8 +80,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
 
     override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> {
         qualifiedNames.remember(declaration.usedTypes)
-        val usedTypes = memberImports?.rewrite(declaration.usedTypes) ?: declaration.usedTypes
-        return withEnclosingNamespacesWrittenInFull(declaration, usedTypes)
+        return withEnclosingNamespacesWrittenInFull(declaration, declaration.usedTypes)
     }
 
     // A member of a namespace that names a namespace around it means that namespace of the own file
