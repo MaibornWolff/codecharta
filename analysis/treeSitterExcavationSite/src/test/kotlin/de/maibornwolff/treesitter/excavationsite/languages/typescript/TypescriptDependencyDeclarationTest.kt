@@ -584,7 +584,7 @@ class TypescriptDependencyDeclarationTest {
     @Nested
     inner class NamespaceDeclaration {
         @Test
-        fun `should extract namespace declaration as UNKNOWN type`() {
+        fun `should extract a namespace and what it exports as declarations below it`() {
             // Arrange
             val code = "export namespace EngineArgs { export type ApplyMigrations = { foo: string } }"
 
@@ -592,22 +592,43 @@ class TypescriptDependencyDeclarationTest {
             val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
 
             // Assert
-            val byName = result.declarations.associateBy { it.name }
-            assertThat(byName).containsKey("EngineArgs")
-            assertThat(byName["EngineArgs"]?.type).isEqualTo(DeclarationType.UNKNOWN)
-            assertThat(byName["EngineArgs"]?.usedTypes).isEmpty()
+            assertThat(result.declarations.map { (it.parentPath + it.name) to it.type }).containsExactlyInAnyOrder(
+                listOf("EngineArgs") to DeclarationType.UNKNOWN,
+                listOf("EngineArgs", "ApplyMigrations") to DeclarationType.CLASS
+            )
         }
 
         @Test
-        fun `should not extract namespace declaration without export keyword`() {
+        fun `should extract a namespace without export keyword as a declaration only its file can name`() {
             // Arrange
-            val code = "namespace Foo {}"
+            val code = "namespace Foo {}\nexport class Other {}"
 
             // Act
             val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
 
             // Assert
-            assertThat(result.declarations).isEmpty()
+            assertThat(result.declarations.map { it.name to it.isFileScoped }).containsExactlyInAnyOrder("Foo" to true, "Other" to false)
+        }
+
+        @Test
+        fun `should give the namespace the uses of what it does not export, and a use of such a member to the namespace`() {
+            // Arrange
+            val code = """
+                export namespace Shapes {
+                    export class Circle { center?: Point }
+                    class Hidden { origin?: Origin }
+                    export const unit = new Hidden()
+                }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+            // Assert
+            val usesByName = result.declarations.associate { it.name to it.usedTypes.map { use -> use.name } }
+            assertThat(usesByName).containsExactlyInAnyOrderEntriesOf(
+                mapOf("Shapes" to listOf("Origin"), "Circle" to listOf("Point"), "unit" to listOf("Shapes"))
+            )
         }
     }
 

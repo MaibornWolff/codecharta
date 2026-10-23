@@ -27,11 +27,7 @@ internal object DeclarationExtractor {
                         declarationsOf(
                             child
                         ).flatMap { extractFromNode(it, names = names) }
-                    in DECLARATION_NODE_TYPES -> extractFromNode(
-                        child,
-                        names = names
-                    )
-                    else -> emptyList()
+                    else -> declarationsOf(child).flatMap { extractFromNode(it, names = names) }
                 }
             }.filter { it.name.isNotBlank() }
             .toList()
@@ -116,9 +112,8 @@ internal object DeclarationExtractor {
                 parentPath,
                 names
             )
-            INTERNAL_MODULE -> {
-                val name = extractDeclarationName(node)
-                listOf(Declaration(name = name, type = DeclarationType.UNKNOWN, usedTypes = emptySet(), parentPath = parentPath))
+            INTERNAL_MODULE -> NamespaceDeclarations.extract(node, parentPath, names) { statement, memberPath ->
+                extractFromExportStatement(statement, memberPath, names)
             }
             else -> {
                 val name = extractDeclarationName(node)
