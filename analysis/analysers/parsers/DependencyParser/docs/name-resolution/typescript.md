@@ -224,18 +224,18 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | JavaScript, binding: a default import of a CommonJS module | `javascript/spec-esm-import-commonjs` | ok |
 | JavaScript, 3: a script file is global | `javascript/spec-script-global` | ok |
 | JavaScript, decision 3: a `require` not bound | `javascript/spec-require-side-effect` | ok |
-| Vue: the component is named after its file | `vue/spec-component-file-name` | gap |
+| Vue: the component is named after its file | `vue/spec-component-file-name` | ok |
 | Vue tag 2: a binding of `<script setup>` | `vue/spec-script-setup-tag` | ok |
-| Vue tags 3 and 4: `components` before a global registration | `vue/spec-components-option` | gap |
-| Vue tag 4, decision 6: a global registration | `vue/spec-global-registration` | gap |
-| Vue tag 6, decision 6: the one component of that name | `vue/spec-auto-import-unique` | gap |
+| Vue tags 3 and 4: `components` before a global registration | `vue/spec-components-option` | ok |
+| Vue tag 4, decision 6: a global registration | `vue/spec-global-registration` | ok |
+| Vue tag 6, decision 6: the one component of that name | `vue/spec-auto-import-unique` | ok |
 | Vue tag 6, decision 6: several of that name | `vue/spec-auto-import-ambiguous` | ok |
-| Vue tags 2 and 6: a binding decides between namesakes | `vue/spec-binding-over-auto-import` | gap |
-| Vue: names in template expressions | `vue/spec-template-expression` | gap |
-| Vue: a named export of a plain `<script>` | `vue/spec-plain-script-export` | gap |
-| Vue, decision 11: a plain `<script>` is the module's top level | `vue/spec-plain-script-module-level` | gap |
-| Vue, decision 12: a template without `<script setup>` | `vue/spec-options-api-template` | gap |
-| Vue, decision 12: a `v-for` name is local | `vue/spec-template-local` | gap |
+| Vue tags 2 and 6: a binding decides between namesakes | `vue/spec-binding-over-auto-import` | ok |
+| Vue: names in template expressions | `vue/spec-template-expression` | ok |
+| Vue: a named export of a plain `<script>` | `vue/spec-plain-script-export` | ok |
+| Vue, decision 11: a plain `<script>` is the module's top level | `vue/spec-plain-script-module-level` | ok |
+| Vue, decision 12: a template without `<script setup>` | `vue/spec-options-api-template` | ok |
+| Vue, decision 12: a `v-for` name is local | `vue/spec-template-local` | ok |
 | Vue tag 1: a built-in before a project component | `vue/spec-builtin-tag` | ok |
 | Vue: the tags of a pug template | `vue/spec-pug-template` | ok |
 | Vue, decision 13: `defineAsyncComponent` | `vue/spec-async-component` | ok |
