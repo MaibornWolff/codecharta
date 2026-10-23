@@ -41,8 +41,25 @@ class PythonAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         val dependencies = imports.memberDependencies + imports.wildcardDependencies +
             aliasedMembersInUse.flatMap { PythonImports.inModuleOrPackage(it.dropLast(1), listOf(it.last())) } +
             qualifiedNames.flatMap { dependenciesOnImportedModule(it, imports) }
-        val usedTypes = plainNames.map { Type.simple(imports.aliasedMembers[it.name]?.last() ?: it.name) }
+        val usedTypes = plainNames.map { Type.simple(imports.aliasedMembers[it.name]?.last() ?: it.name) } +
+            qualifiedNames.mapNotNull { typeBehindImportedModule(it, imports) }
         return node(declaration.name, declaration.type.toNodeType(), dependencies.toSet(), usedTypes.toSet())
+    }
+
+    // A name behind a module an import binds means exactly that module's name, or its package's
+    private fun typeBehindImportedModule(qualifiedName: UsedType, imports: PythonImports): Type? {
+        val module = importedModuleOf(qualifiedName.namespacePrefix, imports) ?: return null
+        val paths = PythonImports.pathsInModuleOrPackage(module, listOf(qualifiedName.name)).map { it.joinToString(SEGMENT_SEPARATOR) }
+        return Type.simple(paths.first()).copy(fallbacks = paths.drop(1).map { Type.simple(it) })
+    }
+
+    private fun importedModuleOf(qualifier: List<String>, imports: PythonImports): List<String>? {
+        val dottedQualifier = qualifier.joinToString(SEGMENT_SEPARATOR)
+        return when {
+            dottedQualifier in imports.modules -> qualifier
+            dottedQualifier in imports.aliasedModules -> imports.aliasedModules[dottedQualifier]
+            else -> imports.boundMembers[dottedQualifier]
+        }
     }
 
     private fun dependenciesOnImportedModule(qualifiedName: UsedType, imports: PythonImports): List<Dependency> {

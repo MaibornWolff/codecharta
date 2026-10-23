@@ -14,6 +14,7 @@ import de.maibornwolff.treesitter.excavationsite.api.ImportKind
  * @property memberDependencies the names imported with `from module import name`
  * @property wildcardDependencies the modules imported with `from module import *`
  * @property aliasedMembers alias to the path of the name it stands for, for `from module import name as alias`
+ * @property boundMembers the name each `from module import name [as alias]` binds to the path of the name it stands for
  * @property modules the dotted names imported with `import module`
  * @property aliasedModules alias to the path of the module it stands for, for `import module as alias`
  */
@@ -21,6 +22,7 @@ class PythonImports private constructor(
     val memberDependencies: List<Dependency>,
     val wildcardDependencies: List<Dependency>,
     val aliasedMembers: Map<String, List<String>>,
+    val boundMembers: Map<String, List<String>>,
     val modules: Set<String>,
     val aliasedModules: Map<String, List<String>>
 ) {
@@ -39,13 +41,17 @@ class PythonImports private constructor(
                 memberDependencies = members.filter { it.bindingName == null }.flatMap { inModuleOrPackage(moduleOf(it), nameOf(it)) },
                 wildcardDependencies = wildcards.flatMap { wildcardOnModuleOrPackage(it.path) },
                 aliasedMembers = pathsByAlias(members) { moduleOf(it) + nameOf(it) },
+                boundMembers = members.associate { (it.bindingName ?: it.path.last()) to moduleOf(it) + nameOf(it) },
                 modules = moduleImports.filter { it.bindingName == null }.map { it.path.joinToString(SEGMENT_SEPARATOR) }.toSet(),
                 aliasedModules = pathsByAlias(moduleImports) { it.path }
             )
         }
 
         fun inModuleOrPackage(module: List<String>, name: List<String>): List<Dependency> =
-            listOf(Dependency(Path(module + name)), Dependency(Path(module + PACKAGE_FILE + name)))
+            pathsInModuleOrPackage(module, name).map { Dependency(Path(it)) }
+
+        fun pathsInModuleOrPackage(module: List<String>, name: List<String>): List<List<String>> =
+            listOf(module + name, module + PACKAGE_FILE + name)
 
         private fun wildcardOnModuleOrPackage(module: List<String>): List<Dependency> =
             listOf(Dependency.asWildcard(module), Dependency.asWildcard(module + PACKAGE_FILE))

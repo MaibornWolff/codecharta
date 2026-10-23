@@ -286,7 +286,7 @@ def doSomething():
         )
 
         val usedTypes = report.nodes.first().usedTypes
-        assertEquals(7, usedTypes.size)
+        assertEquals(8, usedTypes.size)
         assertThat(usedTypes).containsExactlyInAnyOrder(
             Type.simple("doSomething"),
             Type.simple("de"),
@@ -294,7 +294,10 @@ def doSomething():
             Type.simple("cellarsandcentaurs"),
             Type.simple("domain"),
             Type.simple("models"),
-            Type.simple("Creature")
+            Type.simple("Creature"),
+            Type.simple("de.sots.cellarsandcentaurs.domain.models.Creature").copy(
+                fallbacks = listOf(Type.simple("de.sots.cellarsandcentaurs.domain.models.__init__.Creature"))
+            )
         )
     }
 
@@ -321,11 +324,54 @@ def doSomething():
         )
 
         val usedTypes = report.nodes.first().usedTypes
-        assertEquals(3, usedTypes.size)
+        assertEquals(4, usedTypes.size)
         assertThat(usedTypes).containsExactlyInAnyOrder(
             Type.simple("doSomething"),
             Type.simple("md"),
-            Type.simple("Creature")
+            Type.simple("Creature"),
+            Type.simple("de.sots.cellarsandcentaurs.domain.models.Creature").copy(
+                fallbacks = listOf(Type.simple("de.sots.cellarsandcentaurs.domain.models.__init__.Creature"))
+            )
+        )
+    }
+
+    @Test
+    fun `should report a name written behind an imported module as that module's name, its package's name as fallback`() {
+        // Arrange
+        val pythonCode = """
+import app.models as am
+
+def make():
+    return am.Model()
+        """
+        val physicalPath = File("app/factory.py").path
+
+        // Act
+        val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
+
+        // Assert
+        assertThat(report.nodes.first().usedTypes).contains(
+            Type.simple("app.models.Model").copy(fallbacks = listOf(Type.simple("app.models.__init__.Model")))
+        )
+    }
+
+    @Test
+    fun `should report a name written behind an imported submodule as that submodule's name`() {
+        // Arrange
+        val pythonCode = """
+from ..model import speed as tempo
+
+def make():
+    return tempo.Speed(30)
+        """
+        val physicalPath = File("app/service/factory.py").path
+
+        // Act
+        val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
+
+        // Assert
+        assertThat(report.nodes.first().usedTypes).contains(
+            Type.simple("app.model.speed.Speed").copy(fallbacks = listOf(Type.simple("app.model.speed.__init__.Speed")))
         )
     }
 }

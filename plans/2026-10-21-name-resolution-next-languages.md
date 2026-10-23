@@ -122,14 +122,15 @@ first names nothing, for wildcard imports). Implementation, one commit per item:
 1. `refactor`: `PythonNameRules` next to the Python analyzer, still the default rules (xcheck: 0 differences).
 2. TSE: `UsedType.fallbacks`, set by no extractor yet.
 3. Parser: `Type.fallbacks`, tried in order when a name resolves to nothing (xcheck: 0 differences).
-4. Module paths below the import roots, then the suffix fallback (`PythonModules`).
+4. A name written behind an imported module (`am.Model`, `tempo.Speed`) means exactly that module's name.
 5. TSE: stop reporting names that are no uses (the declared name, parameters, keyword arguments, attribute names).
 6. TSE: hide the names the enclosing function binds.
-7. A class nested in a class is a leaf of its own.
-8. A re-export under an alias is a leaf of its `__init__.py`.
-9. TSE and rules: a name means the binding Python sees (order, definition time, class scope, wildcards, function
+7. Module paths below the import roots, then the suffix fallback (`PythonModules`); after 4 and 5, as the roots
+   alone let the bare name inside `am.Model` win over the alias (`r5-py-twice-*`).
+8. A class nested in a class is a leaf of its own.
+9. A re-export under an alias is a leaf of its `__init__.py`.
+10. TSE and rules: a name means the binding Python sees (order, definition time, class scope, wildcards, function
    imports); one commit, as the format of a use changes on both sides.
-10. `__all__` of a wildcard-imported module.
 11. CHANGELOG, README and `gh-pages/.../dependency.md`, the plan.
 
 ## Steps
