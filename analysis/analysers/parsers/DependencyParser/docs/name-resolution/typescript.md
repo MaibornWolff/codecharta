@@ -206,7 +206,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Qualified: a member of a value | `spec-member-on-value` | ok |
 | Shared rule 1, name scope | `spec-name-scope` | ok |
 | Shared rule 4, self | `spec-self` | ok |
-| JavaScript, binding: `const x = require` | `javascript/spec-commonjs-require-module` | gap |
+| JavaScript, binding: `const x = require` | `javascript/spec-commonjs-require-module` | ok |
 | JavaScript, binding: `const { A, B: C } = require` | `javascript/spec-commonjs-destructure` | ok |
 | JavaScript, declarations: `module.exports = X` | `javascript/spec-commonjs-default` | ok |
 | JavaScript, decision 10: a member of a required `module.exports = X` | `javascript/spec-commonjs-default-member` | ok |

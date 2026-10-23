@@ -6,8 +6,9 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 
 /**
  * The member chains read through a module binding: `ns.Shapes.Circle` is one name, what the module exports under
- * `Shapes` and its member `Circle`. A module binding is a namespace import, a dynamic import's module or one of its
- * exports, or `(await import('./m'))` itself.
+ * `Shapes` and its member `Circle`. A module binding is a namespace import, a default import or `require` binding,
+ * which stands for `module.exports` (decision 10), a dynamic import's module or one of its exports, or
+ * `(await import('./m'))` itself.
  */
 internal object NamespaceMembers {
     private const val MEMBER_EXPRESSION = "member_expression"
@@ -27,7 +28,7 @@ internal object NamespaceMembers {
         if (receiver.type != IDENTIFIER) return DynamicImports.moduleReadBy(receiver)
         if (scopes.hides(receiver)) return null
         val name = receiver.text.trim()
-        if (name in names.namespaceNames) return name
+        if (name in names.namespaceNames || name in names.defaultImportNames) return name
         return names.dynamicImports.moduleOf(receiver) ?: names.dynamicImports.exportOf(receiver)
     }
 

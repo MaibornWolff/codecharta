@@ -62,4 +62,29 @@ class JavascriptCommonJsDefaultExportTest {
         // Assert
         assertThat(defaults).containsExactly(DeclarationType.REEXPORT to listOf("Svc"))
     }
+
+    @Test
+    fun `should report a member chain read through a require or a default import binding as one name`() {
+        // Arrange
+        val code = """
+            const a = require('./a')
+            import settings from './settings'
+            function run() {
+              return a.helper() + new a.Svc() + settings.debug
+            }
+        """.trimIndent()
+
+        // Act
+        val uses = TreeSitterDependencies
+            .analyze(
+                code,
+                Language.JAVASCRIPT
+            ).declarations
+            .single { it.name == "run" }
+            .usedTypes
+            .map { it.name }
+
+        // Assert
+        assertThat(uses).containsExactlyInAnyOrder("a", "settings", "a.helper", "a.Svc", "settings.debug")
+    }
 }
