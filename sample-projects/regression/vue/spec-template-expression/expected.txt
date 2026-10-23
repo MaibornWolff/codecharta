@@ -1,0 +1,4 @@
+# typescript.md, Vue: a name in a template expression that script setup binds is a use; an import alone is none
+file components/Item.vue -> fmt.ts
+leaf components/Item.vue#Item -> fmt.ts#defaults
+leaf components/Item.vue#Item -> fmt.ts#format

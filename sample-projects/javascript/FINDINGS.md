@@ -270,6 +270,9 @@ What the language offers: a real module system with relative specifiers, so reso
 extension and `index.js` rules are applied. What CodeCharta resolves itself: alias to export name (wrong on
 a name clash), barrels (only named `export { X } from`), directory imports (not done), JSDoc types (ignored).
 
+- Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/typescript.md`): listed
+  per probe in `regression/javascript/known-gaps.md`.
+
 ## Domain language parser
 
 Commands (exit 0 unless noted):

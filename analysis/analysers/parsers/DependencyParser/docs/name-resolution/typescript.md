@@ -153,6 +153,84 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 
 | Rule | Probe | Today |
 | --- | --- | --- |
+| Declarations: the file path is the logical path | `spec-module-path` | ok |
+| Declarations: a top-level declaration that is not exported | `spec-unexported-declaration` | ok |
+| Declarations: every name a `const` binds, also by destructuring | `spec-variable-declaration` | gap |
+| Declarations, decision 7: a namespace member is a leaf of its own | `spec-namespace-member` | gap |
+| Declarations, decision 2: a named default export | `spec-default-named` | gap |
+| Declarations, decision 2: an anonymous default export | `spec-default-anonymous` | gap |
+| Declarations: `export default name` | `spec-default-identifier` | gap |
+| Declarations, decision 3: top-level code is a script leaf | `spec-script-top-level` | gap |
+| Declarations, decision 8: `export { A } from`, a use through a barrel | `spec-reexport-named` | ok |
+| Declarations, decision 8: `export { A as B } from` | `spec-reexport-alias` | ok |
+| Declarations, decision 8: `export { default as B } from` | `spec-reexport-default` | gap |
+| Declarations, decision 8: an imported name exported again | `spec-reexport-imported` | gap |
+| Declarations, decision 8: `export *` without default and unexported names | `spec-reexport-star` | gap |
+| Declarations, decision 8: an own declaration over `export *` | `spec-reexport-star-own-wins` | ok |
+| Declarations, decision 8: a name two `export *` offer | `spec-reexport-star-ambiguous` | gap |
+| Declarations: `export { A as B }` without `from` | `spec-export-local-alias` | gap |
+| Declarations and 3: a script file is global | `spec-global-script` | gap |
+| Declarations and 3: `declare global` | `spec-declare-global` | gap |
+| Declarations and specifiers 2.4: `declare module` | `spec-ambient-module` | ok |
+| Specifiers 1: a relative specifier | `spec-relative-parent` | ok |
+| Specifiers: a file before a folder of the same name | `spec-file-over-folder` | ok |
+| Specifiers 1: `.js` written, the `.ts` file found | `spec-js-extension-maps-to-ts` | ok |
+| Specifiers 2: the order of the endings | `spec-extension-order` | ok |
+| Specifiers 3: a folder's `package.json` | `spec-package-json-types` | gap |
+| Specifiers 2.1: tsconfig `paths` | `spec-tsconfig-paths` | ok |
+| Specifiers 2.1: tsconfig `baseUrl` | `spec-tsconfig-baseurl` | ok |
+| Specifiers 2.2: a bundler alias | `spec-bundler-alias` | ok |
+| Specifiers 2.3, decision 5: a workspace package | `spec-workspace-package` | gap |
+| Specifiers 2.3, decision 5: a subpath of a workspace package | `spec-workspace-subpath` | gap |
+| Specifiers 2.5: a library | `spec-library-import` | ok |
+| Specifiers: no project file | `spec-unresolved-specifier` | ok |
+| Binding: `import { A as B }` | `spec-import-alias` | ok |
+| Binding: `import type` | `spec-import-type` | ok |
+| Binding: `import * as ns` | `spec-namespace-import` | gap |
+| Binding: an import alone draws no edge | `spec-unused-import` | ok |
+| Binding, decision 3: a side-effect import | `spec-side-effect-import` | gap |
+| Binding, decision 4: a dynamic import read by name | `spec-dynamic-import` | gap |
+| Binding, decision 4: a dynamic import not read | `spec-dynamic-import-unread` | ok |
+| 1. a local class | `spec-local-declaration` | gap |
+| 1. a parameter | `spec-parameter-shadows-import` | gap |
+| 1. a type parameter | `spec-type-parameter` | gap |
+| 2. declarations that merge | `spec-declaration-merging` | ok |
+| 2 and 3: a module binding over a global | `spec-module-shadows-global` | ok |
+| 3, decision 9: globals of one name in several files | `spec-global-alternatives` | gap |
+| 4. a global of the runtime | `spec-builtin-global` | ok |
+| Simple name: JSX tags | `spec-jsx-tag` | gap |
+| Qualified: a chain through a re-exported module | `spec-qualified-chain` | gap |
+| Qualified: a static member, an enum member | `spec-static-member` | ok |
+| Qualified: a member of a value | `spec-member-on-value` | ok |
+| Shared rule 1, name scope | `spec-name-scope` | ok |
+| Shared rule 4, self | `spec-self` | ok |
+| JavaScript, binding: `const x = require` | `javascript/spec-commonjs-require-module` | gap |
+| JavaScript, binding: `const { A, B: C } = require` | `javascript/spec-commonjs-destructure` | ok |
+| JavaScript, declarations: `module.exports = X` | `javascript/spec-commonjs-default` | gap |
+| JavaScript, binding: `exports.A =` | `javascript/spec-commonjs-exports-property` | ok |
+| JavaScript, decision 2: a named default export | `javascript/spec-js-default-named` | gap |
+| JavaScript, binding: a default import of a CommonJS module | `javascript/spec-esm-import-commonjs` | gap |
+| JavaScript, 3: a script file is global | `javascript/spec-script-global` | gap |
+| JavaScript, decision 3: a `require` not bound | `javascript/spec-require-side-effect` | gap |
+| Vue: the component is named after its file | `vue/spec-component-file-name` | gap |
+| Vue tag 2: a binding of `<script setup>` | `vue/spec-script-setup-tag` | ok |
+| Vue tags 3 and 4: `components` before a global registration | `vue/spec-components-option` | gap |
+| Vue tag 4, decision 6: a global registration | `vue/spec-global-registration` | gap |
+| Vue tag 6, decision 6: the one component of that name | `vue/spec-auto-import-unique` | gap |
+| Vue tag 6, decision 6: several of that name | `vue/spec-auto-import-ambiguous` | ok |
+| Vue tags 2 and 6: a binding decides between namesakes | `vue/spec-binding-over-auto-import` | gap |
+| Vue: names in template expressions | `vue/spec-template-expression` | gap |
+| Vue: a named export of a plain `<script>` | `vue/spec-plain-script-export` | gap |
+| Vue tag 1: a built-in before a project component | `vue/spec-builtin-tag` | ok |
+| Vue tag 5: the component itself | `vue/spec-self-reference` | ok |
+| Angular: `templateUrl` and an element selector | `angular/spec-template-url` | ok |
+| Angular 1: the imports of a standalone component | `angular/spec-standalone-scope` | ok |
+| Angular 1: the NgModule and the exports of its imports | `angular/spec-ngmodule-scope` | ok |
+| Angular 2, decision 6: the one class of a selector | `angular/spec-unique-selector` | ok |
+| Angular 3: several classes, no scope decides | `angular/spec-ambiguous-selector` | ok |
+| Angular: an attribute directive | `angular/spec-attribute-directive` | gap |
+| Angular: a pipe | `angular/spec-pipe` | ok |
+| Angular: an inline template | `angular/spec-inline-template` | ok |
 
 ## Not supported
 

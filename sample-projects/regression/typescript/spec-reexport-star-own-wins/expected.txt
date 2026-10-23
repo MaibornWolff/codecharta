@@ -1,0 +1,6 @@
+# typescript.md, declarations, decision 8: a name the file declares itself wins over export *
+file models/index.ts -> models/model.ts
+file user.ts -> models/index.ts
+leaf models/index.ts#Other -> models/model.ts#Other
+leaf user.ts#User -> models/index.ts#Model
+leaf user.ts#User -> models/index.ts#Other

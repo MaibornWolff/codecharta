@@ -198,6 +198,9 @@ relative paths, directory imports to `index.ts`, the `tsconfig.json` alias, `.js
 `import("...").X` in type positions, side-effect imports, triple-slash references, `export { default as }`, and it
 does not treat a type predicate as a use of the type.
 
+- Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/typescript.md`): listed
+  per probe in `regression/typescript/known-gaps.md`.
+
 ## Unified parser
 
 Command (exit 0): `ccsh unifiedparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/unified.cc.json`, 39 files.

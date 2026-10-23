@@ -1,0 +1,3 @@
+interface Registry {
+  size: number
+}

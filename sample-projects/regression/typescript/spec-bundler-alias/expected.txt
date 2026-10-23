@@ -1,0 +1,3 @@
+# typescript.md, module specifiers 2.2: an alias of the bundler configuration
+file app/app.ts -> lib/store.ts
+leaf app/app.ts#App -> lib/store.ts#Store

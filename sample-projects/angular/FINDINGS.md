@@ -45,6 +45,8 @@ hitPoints, armorClass (not titlecase, ambiguous roll, [ccGlow]); panel→armorCl
   file with ending (`creature-card_component_html`), language `angular`.
 - Unresolved as intended: router-outlet, mat-icon, uppercase, titlecase, ambiguous `roll`.
 - Gap: attribute directives (`[ccGlow]`) draw no edge.
+- Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/typescript.md`): listed
+  per probe in `regression/angular/known-gaps.md`.
 
 ## Unified parser
 - All 33 files analysed; all 9 HTML files match the expected table exactly; function metrics 0.

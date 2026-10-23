@@ -1,0 +1,3 @@
+# typescript.md, binding: import type binds like import
+file draw.ts -> shape.ts
+leaf draw.ts#draw -> shape.ts#Shape

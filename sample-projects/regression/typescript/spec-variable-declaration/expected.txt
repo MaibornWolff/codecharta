@@ -1,0 +1,6 @@
+# typescript.md, declarations: every name a top-level const binds is a leaf, also by destructuring
+file app.ts -> routes.ts
+file routes.ts -> home.ts
+leaf app.ts#start -> routes.ts#left
+leaf app.ts#start -> routes.ts#routes
+leaf routes.ts#routes -> home.ts#Home

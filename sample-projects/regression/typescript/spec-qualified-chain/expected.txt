@@ -1,0 +1,3 @@
+# typescript.md, qualified names: a chain through a re-exported module walks on to its export
+file app.ts -> shapes.ts
+leaf app.ts#draw -> shapes.ts#Circle

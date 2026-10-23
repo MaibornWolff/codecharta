@@ -1,0 +1,3 @@
+# typescript.md, module specifiers 3: a folder means the file its package.json names in types before its index
+file app.ts -> vendor/chart/lib/chart.d.ts
+leaf app.ts#show -> vendor/chart/lib/chart.d.ts#Chart

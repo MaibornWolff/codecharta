@@ -1,0 +1,3 @@
+# typescript.md, binding: a default import of a CommonJS module means its module.exports
+file app.mjs -> svc.cjs
+leaf app.mjs#make -> svc.cjs#Svc

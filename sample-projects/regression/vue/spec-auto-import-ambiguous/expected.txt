@@ -1,0 +1,1 @@
+# typescript.md, Vue tag 6, decision 6: several project components of that name and nothing decides: no edge
