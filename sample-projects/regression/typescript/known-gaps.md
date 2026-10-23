@@ -46,15 +46,6 @@ missing leaf app.ts#info -> types/globals.d.ts#Registry
 missing leaf app.ts#info -> types/globals.d.ts#VERSION
 ```
 
-## spec-qualified-chain
-
-`export * as ns` is read like `export *`, so `lib.ts` gets a re-export leaf for every name of the module.
-
-```text
-extra file lib.ts -> shapes.ts
-extra leaf lib.ts#Circle -> shapes.ts#Circle
-```
-
 ## spec-reexport-default
 
 `export { default as B } from` makes a re-export leaf that does not point at the default export.

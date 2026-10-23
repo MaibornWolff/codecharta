@@ -199,7 +199,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | 3, decision 9: globals of one name in several files | `spec-global-alternatives` | gap |
 | 4. a global of the runtime | `spec-builtin-global` | ok |
 | Simple name: JSX tags | `spec-jsx-tag` | gap |
-| Qualified: a chain through a re-exported module | `spec-qualified-chain` | gap |
+| Qualified: a chain through a re-exported module | `spec-qualified-chain` | ok |
 | Qualified: a static member, an enum member | `spec-static-member` | ok |
 | Qualified: a member of a value | `spec-member-on-value` | ok |
 | Shared rule 1, name scope | `spec-name-scope` | ok |

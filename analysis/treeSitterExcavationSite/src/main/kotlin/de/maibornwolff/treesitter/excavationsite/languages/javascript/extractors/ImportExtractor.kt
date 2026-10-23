@@ -150,8 +150,22 @@ internal object ImportExtractor {
                 !TreeTraversal.containsNodeOfType(exportNode, EXPORT_CLAUSE)
         }.mapNotNull { exportNode ->
             val pathText = extractStringText(exportNode) ?: return@mapNotNull null
-            ImportDeclaration(path = splitPath(pathText), isWildcard = true, kind = ImportKind.REEXPORT)
+            ImportDeclaration(
+                path = splitPath(pathText),
+                isWildcard = true,
+                kind = ImportKind.REEXPORT,
+                bindingName = namespaceExportName(exportNode)
+            )
         }
+
+    // `export * as shapes from './shapes'` binds `shapes` to the module
+    private fun namespaceExportName(exportNode: SyntaxNode): String? = exportNode
+        .children()
+        .firstOrNull { it.type == NAMESPACE_EXPORT }
+        ?.children()
+        ?.firstOrNull { it.type == IDENTIFIER }
+        ?.text
+        ?.trim()
 
     private fun extractDynamicImports(rootNode: SyntaxNode): List<ImportDeclaration> = TreeTraversal
         .findAllDescendantsOfType(rootNode, CALL_EXPRESSION)
