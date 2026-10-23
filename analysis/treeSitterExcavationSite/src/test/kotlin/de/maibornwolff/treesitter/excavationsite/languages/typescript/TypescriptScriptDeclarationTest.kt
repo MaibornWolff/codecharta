@@ -23,7 +23,7 @@ class TypescriptScriptDeclarationTest {
 
         // Assert
         val script = result.declarations.single { it.type == DeclarationType.SCRIPT }
-        assertThat(script.usedTypes.map { it.name }).containsExactlyInAnyOrder("AppModule", "Router")
+        assertThat(script.usedTypes.map { it.name }).containsExactlyInAnyOrder("bootstrap", "AppModule", "Router", "debug")
         assertThat(script.isFileScoped).isFalse()
     }
 

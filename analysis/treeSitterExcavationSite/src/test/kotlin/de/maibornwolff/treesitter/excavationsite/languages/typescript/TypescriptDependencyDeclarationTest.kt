@@ -232,7 +232,7 @@ class TypescriptDependencyDeclarationTest {
             assertThat(result.declarations).hasSize(1)
             assertThat(result.declarations[0].name).isEqualTo("DEFAULT_EXPORT")
             assertThat(result.declarations[0].type).isEqualTo(DeclarationType.VARIABLE)
-            assertThat(result.declarations[0].usedTypes.map { it.name }).containsExactly("Plugin")
+            assertThat(result.declarations[0].usedTypes.map { it.name }).containsExactlyInAnyOrder("defineConfig", "Plugin")
         }
 
         @Test

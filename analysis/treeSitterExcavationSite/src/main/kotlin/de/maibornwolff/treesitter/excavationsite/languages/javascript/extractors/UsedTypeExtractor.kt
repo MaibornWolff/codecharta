@@ -3,6 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractor
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
+import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 
 internal object UsedTypeExtractor {
     private const val TYPE_ANNOTATION = "type_annotation"
@@ -21,6 +22,9 @@ internal object UsedTypeExtractor {
     private const val SATISFIES_EXPRESSION = "satisfies_expression"
     private const val TYPE_ARGUMENTS = "type_arguments"
     private const val NESTED_TYPE_IDENTIFIER = "nested_type_identifier"
+    private const val QUALIFIER_SEPARATOR = "."
+    private const val NAME_FIELD = "name"
+    private val PATTERNS = setOf(ARRAY_PATTERN, OBJECT_PATTERN, PAIR_PATTERN, "assignment_pattern", "rest_pattern")
     private val QUALIFIER_PARENTS = setOf(NESTED_TYPE_IDENTIFIER, "nested_identifier")
     private val JSX_TAG_ELEMENTS = setOf(JSX_OPENING_ELEMENT, JSX_SELF_CLOSING_ELEMENT, "jsx_closing_element")
 
@@ -70,12 +74,23 @@ internal object UsedTypeExtractor {
         }
         val jsxComponents = extractJsxComponents(buckets, scopes)
 
-        return listOf(
-            typeIdentifiers, constructorCalls, memberAccesses, methodCalls, extensions,
+        val namesInScope = listOf(
+            typeIdentifiers, constructorCalls, memberAccesses, extensions,
             relevantIdentifiers, constraintTypes, typeAliasRhsTypes, jsxComponents, typeAssertions, genericTypeArgs
-        ).flatten()
+        ).flatten().map { markedGlobalIfFree(it, names) }
+        return (namesInScope + methodCalls)
             .map { usedType -> aliasMap[usedType.name]?.let { UsedType(name = it) } ?: usedType }
             .toSet()
+    }
+
+    // A name no module binding binds may mean a global (rule 3), which the analyzer looks it up among
+    private fun markedGlobalIfFree(usedType: UsedType, names: ModuleNames): UsedType = if (names.binds(
+            usedType.name.substringBefore(QUALIFIER_SEPARATOR)
+        )
+    ) {
+        usedType
+    } else {
+        usedType.copy(namespacePrefix = listOf(GLOBAL_SCOPE))
     }
 
     // A name a local binding hides is no use; a node that is no name, such as a call or an annotation, is checked by its names
@@ -144,13 +159,18 @@ internal object UsedTypeExtractor {
     private fun extractRelevantIdentifiers(buckets: Map<String, List<SyntaxNode>>, names: ModuleNames): List<UsedType> =
         buckets[IDENTIFIER].orEmpty().mapNotNull { node ->
             val name = node.text.trim()
-            if (isPlatformElementTag(node) || isQualifierOfAType(node)) return@mapNotNull null
+            if (isPlatformElementTag(node) || isQualifierOfAType(node) || isDeclaredName(node)) return@mapNotNull null
             names.dynamicImports.exportOf(node)?.let { return@mapNotNull UsedType(name = it) }
             if (names.dynamicImports.moduleOf(node) != null) return@mapNotNull null
-            val isModuleName = name in names.aliasMap || name in names.localDeclarationNames
-            if (name.firstOrNull()?.isUpperCase() != true && !isModuleName) return@mapNotNull null
             UsedType(name = name)
         }
+
+    // A name a declaration binds, its own name or one its destructuring binds, is no use
+    private fun isDeclaredName(identifier: SyntaxNode): Boolean {
+        val bindingPosition = generateSequence(identifier) { node -> node.parent.takeIf { it.type in PATTERNS } }.last()
+        val declaredName = bindingPosition.parent.getChildByFieldName(NAME_FIELD).orNull() ?: return false
+        return declaredName.startByte == bindingPosition.startByte && declaredName.endByte == bindingPosition.endByte
+    }
 
     // A lower-case JSX tag names an element of the platform, whatever the module binds under that name
     private fun isPlatformElementTag(node: SyntaxNode): Boolean =

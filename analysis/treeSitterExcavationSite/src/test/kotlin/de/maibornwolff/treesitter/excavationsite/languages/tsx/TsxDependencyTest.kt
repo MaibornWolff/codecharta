@@ -480,6 +480,6 @@ class TsxDependencyTest {
         val result = TreeSitterDependencies.analyze(code, Language.TSX)
 
         // Assert
-        assertThat(result.declarations.single { it.name == "Page" }.usedTypes.map { it.name }).containsExactlyInAnyOrder("Page", "UserCard")
+        assertThat(result.declarations.single { it.name == "Page" }.usedTypes.map { it.name }).containsExactly("UserCard")
     }
 }

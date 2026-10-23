@@ -32,12 +32,3 @@ missing leaf b.js#run -> a.js#helper
 missing file app.mjs -> svc.cjs
 missing leaf app.mjs#make -> svc.cjs#Svc
 ```
-
-## spec-script-global
-
-A name that no import binds is not looked up among the declarations of script files.
-
-```text
-missing file legacy/page.js -> legacy/helpers.js
-missing leaf legacy/page.js#render -> legacy/helpers.js#legacyHelper
-```
