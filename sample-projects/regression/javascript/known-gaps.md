@@ -32,3 +32,12 @@ missing leaf b.js#run -> a.js#helper
 missing file app.mjs -> svc.cjs
 missing leaf app.mjs#make -> svc.cjs#Svc
 ```
+
+## spec-commonjs-default-member
+
+A name `require` binds does not name the required module or its default export.
+
+```text
+missing file b.js -> svc.js
+missing leaf b.js#run -> svc.js#Svc
+```
