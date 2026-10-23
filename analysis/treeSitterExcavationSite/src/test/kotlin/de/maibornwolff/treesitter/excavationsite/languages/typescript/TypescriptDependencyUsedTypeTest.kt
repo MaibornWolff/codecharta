@@ -346,7 +346,7 @@ class TypescriptDependencyUsedTypeTest {
     @Nested
     inner class NamespaceImportUsedTypeExtraction {
         @Test
-        fun `should recognize lowercase namespace alias usages as usedType`() {
+        fun `should recognize lowercase namespace alias usages and the member they read as usedTypes`() {
             // Arrange
             val code = """
                 import * as ns from './utils'
@@ -360,7 +360,7 @@ class TypescriptDependencyUsedTypeTest {
 
             // Assert
             val usedTypeNames = result.declarations.first { it.name == "Bar" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("ns")
+            assertThat(usedTypeNames).containsExactlyInAnyOrder("ns", "method")
         }
 
         @Test
@@ -524,5 +524,21 @@ class TypescriptDependencyUsedTypeTest {
             // Assert
             assertThat(names).containsExactlyInAnyOrder("Centaur", "Helper")
         }
+    }
+
+    @Test
+    fun `should report a member read through a namespace import, not one of a named import`() {
+        // Arrange
+        val code = """
+            import * as models from './models/user'
+            import { defaults } from './defaults'
+            export function make(): unknown { return models.create() + defaults.size }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+        // Assert
+        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactlyInAnyOrder("models", "create", "defaults")
     }
 }

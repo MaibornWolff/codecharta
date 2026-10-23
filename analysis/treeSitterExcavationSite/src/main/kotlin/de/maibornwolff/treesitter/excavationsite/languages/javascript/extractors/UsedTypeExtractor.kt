@@ -48,8 +48,8 @@ internal object UsedTypeExtractor {
             .mapValues { (_, nodes) -> nodes.filterNot { isHiddenName(it, scopes) } }
 
         val typeIdentifiers = collectTypeIdentifiersFromNodes(buckets[TYPE_ANNOTATION].orEmpty(), scopes)
-        val constructorCalls = extractConstructorCalls(buckets, aliasMap, scopes)
-        val memberAccesses = extractMemberAccesses(buckets, aliasMap, scopes)
+        val constructorCalls = extractConstructorCalls(buckets, names.namespaceNames, scopes)
+        val memberAccesses = extractMemberAccesses(buckets, names.namespaceNames, scopes)
         val methodCalls = extractMethodCalls(buckets)
         val extensions = extractExtensions(buckets, scopes)
         val relevantIdentifiers = extractRelevantIdentifiers(buckets, aliasMap, localDeclarationNames)
@@ -88,7 +88,7 @@ internal object UsedTypeExtractor {
 
     private fun extractConstructorCalls(
         buckets: Map<String, List<SyntaxNode>>,
-        aliasMap: Map<String, String>,
+        namespaceNames: Set<String>,
         scopes: LocalScopes
     ): List<UsedType> = buckets[NEW_EXPRESSION].orEmpty().mapNotNull { node ->
         val constructor = node.children().firstOrNull { it.type == IDENTIFIER || it.type == TYPE_IDENTIFIER }
@@ -99,30 +99,29 @@ internal object UsedTypeExtractor {
             return@mapNotNull UsedType(name = name)
         }
         // namespace alias constructor: new ns.Class()
-        extractNsAliasMember(node.children().firstOrNull { it.type == MEMBER_EXPRESSION }, aliasMap, scopes)
+        extractNsAliasMember(node.children().firstOrNull { it.type == MEMBER_EXPRESSION }, namespaceNames, scopes)
     }
 
     private fun extractMemberAccesses(
         buckets: Map<String, List<SyntaxNode>>,
-        aliasMap: Map<String, String>,
+        namespaceNames: Set<String>,
         scopes: LocalScopes
     ): List<UsedType> = buckets[MEMBER_EXPRESSION].orEmpty().mapNotNull { node ->
         val root = findLeftmostIdentifier(node)?.takeUnless { scopes.hides(it) } ?: return@mapNotNull null
         val name = root.text.trim()
         if (name.firstOrNull()?.isUpperCase() == true) return@mapNotNull UsedType(name = name)
         // namespace alias member access: ns.Class where ns is the direct object identifier
-        extractNsAliasMember(node, aliasMap, scopes)
+        extractNsAliasMember(node, namespaceNames, scopes)
     }
 
-    private fun extractNsAliasMember(memberExpr: SyntaxNode?, aliasMap: Map<String, String>, scopes: LocalScopes): UsedType? {
+    // A member read through a namespace import, `ns.create`, is a use of what the module exports under that name
+    private fun extractNsAliasMember(memberExpr: SyntaxNode?, namespaceNames: Set<String>, scopes: LocalScopes): UsedType? {
         memberExpr ?: return null
         val directId = memberExpr.children().firstOrNull { it.type == IDENTIFIER }?.takeUnless { scopes.hides(it) } ?: return null
         val objName = directId.text.trim()
-        if (objName !in aliasMap) return null
+        if (objName !in namespaceNames) return null
         val prop = memberExpr.children().firstOrNull { it.type == PROPERTY_IDENTIFIER } ?: return null
-        val propName = prop.text.trim()
-        if (propName.firstOrNull()?.isUpperCase() != true) return null
-        return UsedType(name = propName)
+        return UsedType(name = prop.text.trim())
     }
 
     private fun extractMethodCalls(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =

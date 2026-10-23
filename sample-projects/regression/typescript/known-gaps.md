@@ -46,14 +46,6 @@ missing leaf app.ts#info -> types/globals.d.ts#Registry
 missing leaf app.ts#info -> types/globals.d.ts#VERSION
 ```
 
-## spec-namespace-import
-
-Through a namespace import only names starting upper case are reported.
-
-```text
-missing leaf app.ts#App -> models/user.ts#create
-```
-
 ## spec-namespace-member
 
 A namespace is one leaf without members and without uses; `Shapes.Circle` is a use of `Shapes`.
