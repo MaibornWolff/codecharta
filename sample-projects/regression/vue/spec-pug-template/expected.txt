@@ -1,0 +1,3 @@
+# typescript.md, Vue: a pug template is read for its tags, not for its comments
+file views/Home.vue -> views/Badge.vue
+leaf views/Home.vue#Home -> views/Badge.vue#Badge
