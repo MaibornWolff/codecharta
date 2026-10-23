@@ -40,13 +40,11 @@ internal class LocalScopes(private val declarationStart: Int, private val declar
             private const val TYPE_PARAMETERS_FIELD = "type_parameters"
             private const val NAME_FIELD = "name"
             private const val LEFT_FIELD = "left"
-            private const val PATTERN_FIELD = "pattern"
             private const val BODY_FIELD = "body"
             private const val ARROW_FUNCTION = "arrow_function"
             private const val MEMBER_EXPRESSION = "member_expression"
             private const val IMPORT_KEYWORD = "import"
             private const val THEN = "then"
-            private const val AWAIT_EXPRESSION = "await_expression"
             private const val FUNCTION_FIELD = "function"
             private const val OBJECT_FIELD = "object"
             private const val PROPERTY_FIELD = "property"
@@ -55,11 +53,6 @@ internal class LocalScopes(private val declarationStart: Int, private val declar
             private const val FOR_IN_STATEMENT = "for_in_statement"
             private const val CATCH_CLAUSE = "catch_clause"
             private const val TYPE_PARAMETER = "type_parameter"
-            private const val SHORTHAND_PATTERN = "shorthand_property_identifier_pattern"
-            private const val ASSIGNMENT_PATTERN = "assignment_pattern"
-            private const val REQUIRED_PARAMETER = "required_parameter"
-            private const val OPTIONAL_PARAMETER = "optional_parameter"
-            private const val REST_PATTERN = "rest_pattern"
             private val VALUE_AND_TYPE_DECLARATIONS = setOf(CLASS_DECLARATION, ABSTRACT_CLASS_DECLARATION, ENUM_DECLARATION)
             private val TYPE_DECLARATIONS = setOf(INTERFACE_DECLARATION, TYPE_ALIAS_DECLARATION)
             private val FUNCTION_DECLARATIONS = setOf(FUNCTION_DECLARATION, GENERATOR_FUNCTION_DECLARATION)
@@ -73,11 +66,11 @@ internal class LocalScopes(private val declarationStart: Int, private val declar
             private fun parameterNames(scope: SyntaxNode): List<String> {
                 if (isDynamicImportCallback(scope)) return emptyList()
                 val parameters = scope.getChildByFieldName(PARAMETERS_FIELD).orNull()
-                if (parameters != null) return parameters.namedChildren().flatMap { patternNames(it) }.toList()
+                if (parameters != null) return parameters.namedChildren().flatMap { BindingPatterns.boundNames(it) }.toList()
                 if (scope.type != ARROW_FUNCTION) return emptyList()
                 val single = scope.getChildByFieldName(PARAMETER_FIELD).orNull()
                     ?: scope.namedChildren().firstOrNull { it.type == IDENTIFIER && !isBodyOf(scope, it) }
-                return single?.let { patternNames(it) }.orEmpty()
+                return single?.let { BindingPatterns.boundNames(it) }.orEmpty()
             }
 
             // The parameters of `import('./m').then(m => …)` bind what module m exports, no local values
@@ -88,15 +81,6 @@ internal class LocalScopes(private val declarationStart: Int, private val declar
                 val receiver = callee.getChildByFieldName(OBJECT_FIELD).orNull()?.takeIf { it.type == CALL_EXPRESSION } ?: return false
                 val isThen = callee.getChildByFieldName(PROPERTY_FIELD).orNull()?.text == THEN
                 return isThen && receiver.getChildByFieldName(FUNCTION_FIELD).orNull()?.type == IMPORT_KEYWORD
-            }
-
-            // `const { A } = await import('./m')` and `const { A } = require('./m')` bind what module m exports
-            private fun bindsModule(declarator: SyntaxNode): Boolean {
-                val value = declarator.getChildByFieldName(VALUE_FIELD).orNull() ?: return false
-                val call = (if (value.type == AWAIT_EXPRESSION) value.namedChildren().firstOrNull() else value)
-                    ?.takeIf { it.type == CALL_EXPRESSION } ?: return false
-                val function = call.getChildByFieldName(FUNCTION_FIELD).orNull() ?: return false
-                return function.type == IMPORT_KEYWORD || (function.type == IDENTIFIER && function.text == REQUIRE)
             }
 
             private fun isBodyOf(scope: SyntaxNode, child: SyntaxNode): Boolean {
@@ -136,40 +120,25 @@ internal class LocalScopes(private val declarationStart: Int, private val declar
             }
 
             private fun loopAndCatchNames(scope: SyntaxNode): List<String> = when (scope.type) {
-                FOR_IN_STATEMENT -> scope.getChildByFieldName(LEFT_FIELD).orNull()?.let { patternNames(it) }.orEmpty()
+                FOR_IN_STATEMENT -> scope.getChildByFieldName(LEFT_FIELD).orNull()?.let { BindingPatterns.boundNames(it) }.orEmpty()
                 FOR_STATEMENT ->
                     scope
                         .namedChildren()
                         .filter { it.type == LEXICAL_DECLARATION || it.type == VARIABLE_DECLARATION }
                         .flatMap { declaratorNames(it) }
                         .toList()
-                CATCH_CLAUSE -> scope.getChildByFieldName(PARAMETER_FIELD).orNull()?.let { patternNames(it) }.orEmpty()
+                CATCH_CLAUSE -> scope.getChildByFieldName(PARAMETER_FIELD).orNull()?.let { BindingPatterns.boundNames(it) }.orEmpty()
                 else -> emptyList()
             }
 
             private fun declaratorNames(declaration: SyntaxNode): List<String> = declaration
                 .namedChildren()
-                .filter { it.type == VARIABLE_DECLARATOR && !bindsModule(it) }
-                .flatMap { declarator -> declarator.getChildByFieldName(NAME_FIELD).orNull()?.let { patternNames(it) }.orEmpty() }
-                .toList()
+                .filter { it.type == VARIABLE_DECLARATOR && !BindingPatterns.bindsModule(it) }
+                .flatMap { declarator ->
+                    declarator.getChildByFieldName(NAME_FIELD).orNull()?.let { BindingPatterns.boundNames(it) }.orEmpty()
+                }.toList()
 
             private fun nameOf(declaration: SyntaxNode): String? = declaration.getChildByFieldName(NAME_FIELD).orNull()?.text?.trim()
-
-            // The names a parameter or destructuring pattern binds
-            private fun patternNames(pattern: SyntaxNode): List<String> = when (pattern.type) {
-                IDENTIFIER, SHORTHAND_PATTERN -> listOf(pattern.text.trim())
-                REQUIRED_PARAMETER, OPTIONAL_PARAMETER ->
-                    pattern
-                        .getChildByFieldName(
-                            PATTERN_FIELD
-                        ).orNull()
-                        ?.let { patternNames(it) }
-                        .orEmpty()
-                PAIR_PATTERN -> pattern.getChildByFieldName(VALUE_FIELD).orNull()?.let { patternNames(it) }.orEmpty()
-                ASSIGNMENT_PATTERN -> pattern.getChildByFieldName(LEFT_FIELD).orNull()?.let { patternNames(it) }.orEmpty()
-                OBJECT_PATTERN, ARRAY_PATTERN, REST_PATTERN -> pattern.namedChildren().flatMap { patternNames(it) }.toList()
-                else -> emptyList()
-            }
         }
     }
 }
