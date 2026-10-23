@@ -37,6 +37,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     // The modules `export * from` names, whose named exports this module re-exports
     private val starSources = LinkedHashSet<File>()
     private val memberImports = fileInfo.analysisRoot?.let { MemberImports(it) }
+    private val qualifiedNames by lazy { QualifiedNames(physicalFilePath) }
 
     override fun tseLanguage(): Language = if (isTsx) Language.TSX else Language.TYPESCRIPT
 
@@ -50,7 +51,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     }
 
     override fun analyze(): FileReport {
-        val baseReport = FileReport(DefaultExports.withoutOwnNames(super.analyze().nodes))
+        val baseReport = FileReport(qualifiedNames.resolvedIn(DefaultExports.withoutOwnNames(super.analyze().nodes)))
         val analysisRoot = fileInfo.analysisRoot ?: return baseReport
         val ownNames = baseReport.nodes
             .filter { it.pathWithName.parts.lastOrNull() != WILDCARD_EXPORT_NAME }
@@ -77,6 +78,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     }
 
     override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> {
+        qualifiedNames.remember(declaration.usedTypes)
         val usedTypes = memberImports?.rewrite(declaration.usedTypes) ?: declaration.usedTypes
         return withEnclosingNamespacesWrittenInFull(declaration, usedTypes)
     }
