@@ -1,0 +1,3 @@
+# typescript.md, decision 10: a member read on a required module whose module.exports is a declaration uses that declaration
+file b.js -> svc.js
+leaf b.js#run -> svc.js#Svc
