@@ -165,7 +165,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Declarations, decision 3: top-level code is a script leaf | `spec-script-top-level` | ok |
 | Declarations, decision 8: `export { A } from`, a use through a barrel | `spec-reexport-named` | ok |
 | Declarations, decision 8: `export { A as B } from` | `spec-reexport-alias` | ok |
-| Declarations, decision 8: `export { default as B } from` | `spec-reexport-default` | gap |
+| Declarations, decision 8: `export { default as B } from` | `spec-reexport-default` | ok |
 | Declarations, decision 8: an imported name exported again | `spec-reexport-imported` | gap |
 | Declarations, decision 8: `export *` without default and unexported names | `spec-reexport-star` | gap |
 | Declarations, decision 8: an own declaration over `export *` | `spec-reexport-star-own-wins` | ok |

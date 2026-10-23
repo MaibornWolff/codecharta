@@ -316,6 +316,20 @@ class TypescriptDependencyImportTest {
         }
 
         @Test
+        fun `should report a re-export of a default export as a use of the default export of its module`() {
+            // Arrange
+            val code = "export { default as Button } from './button'"
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+            // Assert
+            val reexport = result.declarations.single()
+            assertThat(reexport.name).isEqualTo("Button")
+            assertThat(reexport.usedTypes.map { it.name to it.namespacePrefix }).containsExactly("DEFAULT_EXPORT" to listOf(".", "button"))
+        }
+
+        @Test
         fun `should extract a dynamic import as a module bound to a name of its own position`() {
             // Arrange
             val code = "const mod = import('./utils')"
