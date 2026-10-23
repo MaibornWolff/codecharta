@@ -704,4 +704,23 @@ class TypescriptDependencyDeclarationTest {
             assertThat(result.declarations.map { it.parentPath + it.name }).containsExactly(listOf("legacy-lib", "Api"))
         }
     }
+
+    @Test
+    fun `should extract every name a destructuring declaration binds, none it binds out of a module`() {
+        // Arrange
+        val code = """
+            export const { left, right: other, rest: [first] } = pair
+            const { Svc } = require('./svc')
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+        // Assert
+        assertThat(result.declarations.map { it.name to it.isFileScoped }).containsExactlyInAnyOrder(
+            "left" to false,
+            "other" to false,
+            "first" to false
+        )
+    }
 }

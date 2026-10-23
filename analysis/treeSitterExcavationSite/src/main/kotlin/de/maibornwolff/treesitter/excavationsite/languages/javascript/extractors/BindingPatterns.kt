@@ -15,6 +15,7 @@ internal object BindingPatterns {
     private const val PATTERN_FIELD = "pattern"
     private const val LEFT_FIELD = "left"
     private const val FUNCTION_FIELD = "function"
+    private const val NAME_FIELD = "name"
 
     /** The names a parameter or destructuring pattern binds. */
     fun boundNames(pattern: SyntaxNode): List<String> = when (pattern.type) {
@@ -24,6 +25,16 @@ internal object BindingPatterns {
         ASSIGNMENT_PATTERN -> boundNamesOfField(pattern, LEFT_FIELD)
         OBJECT_PATTERN, ARRAY_PATTERN, REST_PATTERN -> pattern.namedChildren().flatMap { boundNames(it) }.toList()
         else -> emptyList()
+    }
+
+    /**
+     * The names a variable declarator declares: its name, or each name its destructuring pattern binds; none for a
+     * pattern that binds what a module exports, as those names are imports.
+     */
+    fun declaredNames(declarator: SyntaxNode): List<String> {
+        val name = declarator.getChildByFieldName(NAME_FIELD).orNull() ?: return emptyList()
+        if (name.type == IDENTIFIER) return listOf(name.text.trim())
+        return if (bindsModule(declarator)) emptyList() else boundNames(name)
     }
 
     /** Whether a declarator binds what a module exports: `const { A } = await import('./m')` or `require('./m')`. */

@@ -3,7 +3,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractor
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportKind
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 
 /**
  * What a module binds that the use extraction needs: the local name of each import with the name it imports, the local
@@ -75,7 +74,7 @@ internal object DeclarationPrepass {
             return node
                 .children()
                 .filter { it.type == VARIABLE_DECLARATOR }
-                .mapNotNull { TreeTraversal.findFirstChildTextByType(it, IDENTIFIER)?.trim() }
+                .flatMap { BindingPatterns.declaredNames(it) }
                 .filter { it.isNotBlank() }
                 .toList()
         }
