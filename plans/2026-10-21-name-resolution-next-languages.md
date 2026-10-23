@@ -19,7 +19,9 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
   then, with the commit list, the checks and the regressions; he pushes.
-- **Rules from Christian:** ask before every modelling decision, with a drawn example; one commit per change, test
+- **Rules from Christian:** ask before every modelling decision, with a drawn example; whenever unsure about anything
+  else (notation, accepting new warnings, a shortcut, commit order), ask with the AskUserQuestion tool and a recommended
+  option instead of deciding alone; only the analysis gate runs on this branch (no visualization code changes); one commit per change, test
   first; structural changes in their own `refactor` commit before the behaviour change; a language's rules in its own
   folder; report every regression as "correct but regression" (the new output follows the spec) or "bad and
   regression" (fix it before the commit); commit only in an `&&` chain behind the green checks; diff every edit of a
@@ -182,10 +184,8 @@ Steps, one commit each:
 - **Gaps left (7 of 40):** vue `spec-auto-import-unique`,
   `spec-binding-over-auto-import`, `spec-components-option`, `spec-global-registration`, `spec-plain-script-export`,
   `spec-template-expression`; angular `spec-attribute-directive`.
-- **Next steps in order:** 20–24, then 19 (drop the heuristics: `TypescriptNameRules` still delegates to `DefaultNameRules`), then 25.
-  `spec-reexport-default` (`export { default as B } from`) needs the re-export's use to carry its module: the re-export
-  declaration's used type is `DEFAULT_EXPORT`, and `MemberImports` keys defaults by binding name, which a re-export has
-  none of; pair the declaration with its own import.
+- **Next steps in order:** the Vue plan below (steps 20–23), then 24 (Angular attribute directives), then 19 (drop the
+  heuristics: `TypescriptNameRules` still delegates to `DefaultNameRules`), then 25 (changelog, README, gh-pages).
 - **Step 9 as done:** a use through an imported binding is rewritten by `MemberImports` on the finished nodes (types,
   not TSE uses): first segment = binding, the rest a member path, shorter paths down to the declaration as fallbacks; a
   namespace import binds its module (`Target.moduleFile`), and `ModuleExports.moduleExportOf` walks `export * as`
