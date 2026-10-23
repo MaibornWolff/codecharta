@@ -58,7 +58,7 @@ internal class ExportedNames private constructor(private val names: Set<String>,
             return declaration
                 .children()
                 .filter { it.type == VARIABLE_DECLARATOR }
-                .mapNotNull { TreeTraversal.findFirstChildTextByType(it, IDENTIFIER)?.trim() }
+                .flatMap { BindingPatterns.declaredNames(it) }
                 .toList()
         }
 

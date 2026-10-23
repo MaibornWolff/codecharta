@@ -100,11 +100,3 @@ missing file polyfill.ts -> registry.ts
 missing leaf main.ts#main.script -> polyfill.ts#polyfill.script
 missing leaf polyfill.ts#polyfill.script -> registry.ts#Registry
 ```
-
-## spec-variable-declaration
-
-A name bound by destructuring is no declaration.
-
-```text
-missing leaf app.ts#start -> routes.ts#left
-```

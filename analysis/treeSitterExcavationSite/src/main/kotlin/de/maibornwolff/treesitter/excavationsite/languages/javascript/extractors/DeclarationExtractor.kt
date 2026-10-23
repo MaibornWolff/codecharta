@@ -3,7 +3,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractor
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
 private const val MODULE_DECLARATION = "module"
@@ -137,11 +136,8 @@ internal object DeclarationExtractor {
     ): List<Declaration> = node
         .children()
         .filter { it.type == VARIABLE_DECLARATOR }
-        .mapNotNull { declarator ->
-            val name = TreeTraversal.findFirstChildTextByType(declarator, IDENTIFIER)?.trim()
-            if (name.isNullOrBlank()) {
-                null
-            } else {
+        .flatMap { declarator ->
+            BindingPatterns.declaredNames(declarator).filter { it.isNotBlank() }.map { name ->
                 Declaration(
                     name = name,
                     type = DeclarationType.VARIABLE,
