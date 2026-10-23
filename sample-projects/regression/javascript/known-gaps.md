@@ -7,20 +7,18 @@ once a gap closes, and the closed lines are deleted here.
 
 ## spec-commonjs-default
 
-A required module bound to a name is a variable leaf of the requiring file, and a use of the name points there.
+A name `require` binds does not name the required module or its default export.
 
 ```text
-extra leaf b.js#make -> b.js#Service
 missing file b.js -> svc.js
 missing leaf b.js#make -> svc.js#Svc
 ```
 
 ## spec-commonjs-require-module
 
-A required module bound to a name is a variable leaf of the requiring file, and a use of the name points there.
+A name `require` binds does not name the required module or its default export.
 
 ```text
-extra leaf b.js#run -> b.js#a
 missing file b.js -> a.js
 missing leaf b.js#run -> a.js#Svc
 missing leaf b.js#run -> a.js#helper

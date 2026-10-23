@@ -744,4 +744,20 @@ class TypescriptDependencyDeclarationTest {
             "first" to false
         )
     }
+
+    @Test
+    fun `should extract no declaration for a name a require or a dynamic import binds to a module`() {
+        // Arrange
+        val code = """
+            const fs = require('fs')
+            const lazy = await import('./lazy')
+            export const ready = true
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+        // Assert
+        assertThat(result.declarations.map { it.name }).containsExactly("ready")
+    }
 }
