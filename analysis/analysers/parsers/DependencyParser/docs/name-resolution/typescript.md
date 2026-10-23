@@ -23,7 +23,8 @@ JavaScript file or a Vue component and the other way round, by the same rules.
   `module.exports = X` (and TypeScript `export = X`) is the default export.
 - Code at the top level outside every declaration (`bootstrap(AppModule)`, `app.use(router)`, a statement of a
   polyfill) is one declaration of the kind script, named after the file without its ending plus `.script`
-  (`main.script`), that uses what this code names; imports and exports are no such code (decision 3).
+  (`main.script`), that uses what this code names; imports and exports are no such code, except a side-effect import
+  (decision 3).
 - A re-export makes a declaration of the re-exporting file, of the kind re-export, named by the name it exports, that
   depends on what it re-exports (decision 8):
   - `export { A } from './m'`, `export { A as B } from './m'`, `export { default as B } from './m'`, and an imported
@@ -118,20 +119,22 @@ A lower-case JSX tag (`<div>`) is an element of the platform: no edge.
   module.
 - The component uses what its script blocks use, by the rules above, and what its template names: the components of
   its tags, and the names in its expressions (`{{ format(date) }}`, `:item="defaults"`) that the script binds.
-- A tag `T`, written `UserCard` or `user-card`, means:
-  1. a binding of `<script setup>` named `T`, written as is, in camel or in Pascal case;
-  2. an entry of the component's `components: { … }` option under that name;
-  3. the component itself, when `T` is its own name;
+- A tag `T`, written `UserCard` or `user-card`, means, in the order the Vue compiler and runtime look it up:
+  1. a Vue built-in (`component`, `transition`, `transition-group`, `keep-alive`, `teleport`, `suspense`, `slot`):
+     no edge;
+  2. a binding of `<script setup>` named `T`, written as is, in camel or in Pascal case;
+  3. an entry of the component's `components: { … }` option under that name;
   4. the component that a project `app.component('T', X)` registers globally under that name, Pascal or kebab case;
-  5. else the one Vue component of the project named `T` (auto-import); several: no edge (decision 6);
-  6. none: an HTML element, a Vue built-in (`component`, `transition`, `keep-alive`, `slot`) or a library component:
-     no edge.
+  5. the component itself, when `T` is its own name;
+  6. else the one Vue component of the project named `T` (auto-import); several: no edge (decision 6);
+  7. none: an HTML element or a library component: no edge.
 
 ## Angular templates
 
-- A template file (`.html`) is one declaration named after its file, the ending included (`user.component.html`);
-  the component that names it in `templateUrl` depends on it. An inline `template` is read like a template file, and
-  its uses are those of the component.
+- A template file (`.html`) is one declaration named after its file, the ending included and its dots written as
+  underscores (`user.component.html` is `user_component_html`); the component that names it in `templateUrl` depends
+  on it. An inline `template` is read like a template file, as a declaration `template` of the component's file that
+  the component depends on.
 - A template uses the components and directives whose selector matches one of its elements or attributes
   (`<app-badge>`, `<div appHighlight>`, `[appHighlight]="…"`), and the pipes it names (`| currency`). Such a name
   means:
