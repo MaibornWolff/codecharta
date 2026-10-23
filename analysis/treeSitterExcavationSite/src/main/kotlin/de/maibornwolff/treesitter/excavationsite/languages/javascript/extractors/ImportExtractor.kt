@@ -174,7 +174,7 @@ internal object ImportExtractor {
             val args = callNode.children().firstOrNull { it.type == ARGUMENTS }
                 ?: return@mapNotNull null
             val pathText = extractStringText(args) ?: return@mapNotNull null
-            ImportDeclaration(path = splitPath(pathText), isWildcard = false)
+            ImportDeclaration(path = splitPath(pathText), isWildcard = true, bindingName = DynamicImports.bindingNameOf(callNode))
         }
 
     private fun extractDestructuredCommonJs(objectPattern: SyntaxNode, basePath: List<String>): List<ImportDeclaration> = objectPattern

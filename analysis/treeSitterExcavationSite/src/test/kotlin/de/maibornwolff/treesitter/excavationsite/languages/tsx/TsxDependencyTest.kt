@@ -107,7 +107,7 @@ class TsxDependencyTest {
         }
 
         @Test
-        fun `should extract dynamic import`() {
+        fun `should extract a dynamic import as a module bound to a name of its own position`() {
             // Arrange
             val code = "const mod = import('./utils')"
 
@@ -115,9 +115,10 @@ class TsxDependencyTest {
             val result = TreeSitterDependencies.analyze(code, Language.TSX)
 
             // Assert
-            assertThat(result.imports).hasSize(1)
-            assertThat(result.imports[0].path).containsExactly(".", "utils")
-            assertThat(result.imports[0].isWildcard).isFalse()
+            val import = result.imports.single()
+            assertThat(import.path).containsExactly(".", "utils")
+            assertThat(import.isWildcard).isTrue()
+            assertThat(import.bindingName).isEqualTo("dynamic_import_12")
         }
     }
 
