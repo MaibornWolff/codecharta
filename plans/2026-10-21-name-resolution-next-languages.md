@@ -171,16 +171,26 @@ Steps, one commit each:
 18. [x] CommonJS: `require` binds the module, `module.exports` is the default export
 19. [ ] resolve a name only through the binding the compiler sees (the heuristics go)
 20. [x] Vue: a default import of a `.vue` file names its component
-21. [ ] Vue: tags by binding, `components`, global registration, the one component
+21. [x] Vue: tags by binding, `components`, global registration, the one component
 22. [x] Vue: template expressions are uses, an import alone is none
 23. [x] Vue: named exports of a plain `<script>` (closed by step 22)
 24. [ ] Angular: attribute directives
 25. [ ] changelog, README, gh-pages, plan
 
-### Resume Vue here (2026-10-23, after steps 20, 22 and 23)
+### Resume Vue here (2026-10-23, Vue done: steps 20 to 23)
 
-- **Branch** `fix/dependency-name-resolution-vue`; **last build** `ccsh-vue9` (head), the next chain is
-  `chain.sh vue9 vue10`. Checkpoint probes worse than the release: the nine of "Resume TypeScript here", no new one.
+- **Branch** `fix/dependency-name-resolution-vue`, waiting for Christian's review and push; **last build**
+  `ccsh-vue17` (head), the next chain is `chain.sh vue17 vue18`. Checkpoint probes worse than the release: the nine of
+  "Resume TypeScript here", no new one; `mixed/r1-tsvue`, `r2-vue1`, `r3-p3-vue` are better.
+- **Step 21 as done:** TSE drops Vue's built-in tags and marks every other tag `COMPONENT_TAG`; the API
+  `TreeSitterDependencies.vueComponentRegistrations` (Christian chose it over a text scan) reads `.component('Name', X)`
+  calls and a plain script's `components` option. `ComponentTags` looks a tag up in the spec's order: binding (with
+  `<script setup>`, as written or camel), `components` option, `GlobalComponents` (registrations, through the
+  registering file's imports), self, `VueComponents` (the one `.vue` file of that name); otherwise no edge. The
+  project scans read `FileInfo.analysedFiles` (shared, approved: the run's files after excludes; empty = every file
+  below the root). Decision 13: `defineAsyncComponent(() => import('./X.vue'))` is a use of `X`'s default export
+  (`AsyncComponents` in the TSE JS extractors). `typescript/tsconfig` moved to `common/tsconfig` to break the gate's
+  `common <-> typescript` cycle (Christian).
 - **Decisions of this branch** (spec `typescript.md`): 11, a plain `<script>` is the module's top level (unexported
   declarations and top-level code are leaves, as in a TS module), `<script setup>` part of the component; 12, template
   names are looked up as the compiler does: with `<script setup>` in its and the plain script's bindings, `v-for` and
@@ -195,9 +205,8 @@ Steps, one commit each:
   on TSE's order): merges the component nodes (template, plain default export, the declaration `export default X`
   names), adds the setup uses without setup-own names, unmarks free names the plain script binds, writes plain-script
   names in full.
-- **Gaps left (3):** vue `spec-auto-import-unique`, `spec-global-registration`; angular `spec-attribute-directive`.
-- **Next:** step 21 (tags: setup binding as written/camel/Pascal, `components` option, `app.component`, self, the one
-  component; tags still resolve by the old heuristics, e.g. ambiguity and the own folder), then 24, 19, 25 as below.
+- **Gaps left (1):** angular `spec-attribute-directive`.
+- **Next:** 24 (Angular attribute directives), 19 (drop the heuristics), 25 (changelog, README, gh-pages) as below.
 
 ### Resume TypeScript here (2026-10-23, after step 18 and spec-reexport-default)
 
