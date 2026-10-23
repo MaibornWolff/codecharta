@@ -12,9 +12,9 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 ## Resume here (for a fresh agent)
 
-- **State:** Java, Kotlin, C# and Go are done; Python is in progress on branch
-  `fix/dependency-name-resolution-python`, cut from `fix/dependency-name-resolution-go`. See the section "Python"
-  below for where it stands.
+- **State:** Java, Kotlin, C#, Go and Python are done. Branch `fix/dependency-name-resolution-python` (cut from
+  `fix/dependency-name-resolution-go`) holds the Python commits; Christian pushes it and reviews it on GitHub. Next:
+  ask Christian which language comes next (AskUserQuestion), or pick one when he leaves it to you.
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -26,8 +26,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
   `known-gaps.md` against HEAD before committing.
 - **Tools** (`.claude/name-resolution-tools/`, git-ignored): `ccsh-baseline` (the release build), `cp-probes` (the
   197 checkpoint probes) with `cp-compare.py`, `edgediff.py`, `lines.py`, and two scripts that take build tags; a
-  build tag is a copy of `analysis/build/install/codecharta-analysis` in `ccsh-<tag>`, and `ccsh-go10` is the head
-  of the Go branch, the comparison build for the first commit of the next language:
+  build tag is a copy of `analysis/build/install/codecharta-analysis` in `ccsh-<tag>`, and `ccsh-py12` is the head
+  of the Python branch, the comparison build for the first commit of the next language:
   - `accept.sh <prev> <new>`: edge diffs on samples, `analysis/`, `visualization/app`; the probes against their
     expectations; the checkpoint probes against the release; the gate on both parts.
   - `xcheck.sh <prev> <new>`: the whole output of both builds on every sample, probe, checkpoint probe, `analysis/`
@@ -84,8 +84,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 ## Order and state
 
-- Done: Java, Kotlin (see the plan above), C#, Go; in progress: Python. Next, by Christian's choice when asked:
-  TypeScript and JavaScript (with Vue and Angular templates), C and C++, PHP, Rust, Delphi, SQL.
+- Done: Java, Kotlin (see the plan above), C#, Go, Python. Next, by Christian's choice when asked: TypeScript and
+  JavaScript (with Vue and Angular templates), C and C++, PHP, Rust, Delphi, SQL.
 - Material: the checkpoint branch `fix/nearest-file-for-shared-logical-path` holds an earlier, unreviewed attempt and
   its reviewer probes; use them for ideas and as the regression net, not as code to copy.
 
@@ -108,37 +108,25 @@ release by decision: `go/r3-g1` (`LocalType -> closure.go#util`, a function-loca
 mapping and `GoNameRules` had to go into one commit, and the external test package before the copy rule: either alone
 drew wrong edges.
 
-## Python (in progress, 2026-10-23)
+## Python (done, 2026-10-23)
 
-Spec `docs/name-resolution/python.md` (decisions 1–4): module paths through import roots (analysis root, the folder
-above each top-level package, the importing file's folder; nearest first), suffix fallback of two segments; `__init__`
-re-exports stay leaves of their own; of several module-level bindings the one Python sees wins (last of the module,
-or last before the statement for bases, decorators, defaults, class bodies); a nested class is a leaf of its own.
-Christian: "do it like the interpreter does it, else like the other languages" (2026-10-23). 38 probes under
-`sample-projects/regression/python/`, each checked in CPython 3.14, 21 with gaps in `python/known-gaps.md`. Shared
-change approved by Christian: a fallback list on TSE `UsedType` and parser `Type` (the names a use means when the
-first names nothing, for wildcard imports). Implementation, one commit per item:
-
-1. `refactor`: `PythonNameRules` next to the Python analyzer, still the default rules (xcheck: 0 differences).
-2. TSE: `UsedType.fallbacks`, set by no extractor yet.
-3. Parser: `Type.fallbacks`, tried in order when a name resolves to nothing (xcheck: 0 differences).
-4. A name written behind an imported module (`am.Model`, `tempo.Speed`) means exactly that module's name.
-5. TSE: stop reporting names that are no uses (the declared name, parameters, keyword arguments, attribute names).
-6. TSE: hide the names the enclosing function binds.
-7. Module paths below the import roots, then the suffix fallback (`PythonModules`); after 4 and 5, as the roots
-   alone let the bare name inside `am.Model` win over the alias (`r5-py-twice-*`).
-8. A class nested in a class is a leaf of its own.
-9. A re-export under an alias is a leaf of its `__init__.py`.
-10. TSE and rules: a name means the binding Python sees (order, definition time, class scope, wildcards, function
-   imports); one commit, as the format of a use changes on both sides.
-11. Decision 5 (asked after 10): bindings in different branches of one `if` or `try` are alternatives, a use points
-    at each; spec, probes, then the implementation.
-12. `__all__` of a wildcard-imported module.
-13. CHANGELOG, README and `gh-pages/.../dependency.md`, the plan.
+Spec `docs/name-resolution/python.md` (decisions 1–5), 40 probes under `sample-projects/regression/python/`, each
+checked in CPython 3.14, no gap left; all on branch `fix/dependency-name-resolution-python`, waiting for Christian's
+push and review. Christian: "do it like the interpreter does it, else like the other languages". The extractor finds
+the binding Python sees for every name (`LocalScopes`, `ModuleBindings`, `ScopeBindings` with branches, `PythonUses`)
+and reports a use as module prefix (`.` per leading dot, last `*` for a wildcard import) plus dotted name, with
+`fallbacks` for wildcard imports; the analyzer writes the paths it can have (`ModuleCandidates` over the import roots
+of `PythonModules`, `WildcardExports` reading `__all__`), and `PythonNameRules` takes the first that is a declaration.
+Shared change, approved by Christian: `UsedType.fallbacks` (TSE) and `Type.fallbacks` (parser, tried by
+`NodeResolution`). Checkpoint probes worse than the release by decision: `python/r1-pyroot` (the file's folder and
+the suffix fallback are roots), `r3-p4` (package before module), `r5-nested-class-shadow` (a nested class is a leaf of
+its own; `Outer.Node` is no use of `Outer`). Order lessons: the import roots had to wait until a name behind a module
+alias resolved through it and attribute names stopped being plain names, or `am.Model` lost to the bare `Model`; a
+decision asked mid-way (5, alternatives) went in as spec, probes, then the implementation.
 
 ## Steps
 
 - [x] Ask Christian which language comes next: C# (2026-10-22)
 - [x] Next language: Go (left to Claude by Christian, 2026-10-22), done 2026-10-22
-- [x] Next language: Python (left to Claude by Christian, 2026-10-23)
+- [x] Next language: Python (left to Claude by Christian, 2026-10-23), done 2026-10-23
 - [ ] For each language: spec, probes, implementation commits, acceptance
