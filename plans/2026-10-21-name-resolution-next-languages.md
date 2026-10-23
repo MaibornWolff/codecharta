@@ -13,8 +13,9 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 ## Resume here (for a fresh agent)
 
 - **State:** Java, Kotlin, C#, Go and Python are done. TypeScript, JavaScript, Vue and Angular templates are in
-  progress on branch `fix/dependency-name-resolution-typescript` (cut from the pushed Python branch, not pushed yet):
-  resume with the section "TypeScript, JavaScript, Vue and Angular templates" below, at "Resume TypeScript here".
+  progress: the TypeScript part is pushed on `fix/dependency-name-resolution-typescript`; the Vue part goes on on
+  branch `fix/dependency-name-resolution-vue` (cut from it, not pushed yet): resume with the section "TypeScript,
+  JavaScript, Vue and Angular templates" below, at "Resume Vue here".
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -169,12 +170,34 @@ Steps, one commit each:
 17. [x] globals of script files and `declare global`
 18. [x] CommonJS: `require` binds the module, `module.exports` is the default export
 19. [ ] resolve a name only through the binding the compiler sees (the heuristics go)
-20. [ ] Vue: a default import of a `.vue` file names its component
+20. [x] Vue: a default import of a `.vue` file names its component
 21. [ ] Vue: tags by binding, `components`, global registration, the one component
-22. [ ] Vue: template expressions are uses, an import alone is none
-23. [ ] Vue: named exports of a plain `<script>`
+22. [x] Vue: template expressions are uses, an import alone is none
+23. [x] Vue: named exports of a plain `<script>` (closed by step 22)
 24. [ ] Angular: attribute directives
 25. [ ] changelog, README, gh-pages, plan
+
+### Resume Vue here (2026-10-23, after steps 20, 22 and 23)
+
+- **Branch** `fix/dependency-name-resolution-vue`; **last build** `ccsh-vue9` (head), the next chain is
+  `chain.sh vue9 vue10`. Checkpoint probes worse than the release: the nine of "Resume TypeScript here", no new one.
+- **Decisions of this branch** (spec `typescript.md`): 11, a plain `<script>` is the module's top level (unexported
+  declarations and top-level code are leaves, as in a TS module), `<script setup>` part of the component; 12, template
+  names are looked up as the compiler does: with `<script setup>` in its and the plain script's bindings, `v-for` and
+  slot names local; without `<script setup>` instance members, no edge. Also: a pug template is read for its tags
+  (Christian), its expressions not (Not supported); a shorthand property `{ format }` is a use (TS/JS fix).
+- **How it is built:** TSE `ScriptBlockExtractor` gives `<script setup>` the component (`DEFAULT_EXPORT`) as owner and
+  appends `TemplateExpressions` (the template as script code: expressions, handlers as function bodies, `v-for`/slot
+  names as arrow parameters); `DependenciesFacade` hands every embedded source's imports to the file and a file-owned
+  source's declarations to the file (only Vue has such sources; Christian chose this over a Vue-only API).
+  `ComponentExtractor` reads tags (HTML, or `PugTemplate`). `VueAnalyzer` extends the now open `TypescriptAnalyzer`
+  and overrides its `declaredNodes()` step (Christian chose this over a hook in `BaseLanguageAnalyzer` and over relying
+  on TSE's order): merges the component nodes (template, plain default export, the declaration `export default X`
+  names), adds the setup uses without setup-own names, unmarks free names the plain script binds, writes plain-script
+  names in full.
+- **Gaps left (3):** vue `spec-auto-import-unique`, `spec-global-registration`; angular `spec-attribute-directive`.
+- **Next:** step 21 (tags: setup binding as written/camel/Pascal, `components` option, `app.component`, self, the one
+  component; tags still resolve by the old heuristics, e.g. ambiguity and the own folder), then 24, 19, 25 as below.
 
 ### Resume TypeScript here (2026-10-23, after step 18 and spec-reexport-default)
 
