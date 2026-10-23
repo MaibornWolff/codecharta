@@ -73,4 +73,36 @@ class ModuleExportsTest {
         assertThat(exports.nameOf(service, "Service")).isEqualTo("Impl")
         assertThat(exports.nameOf(service, "Plain")).isEqualTo("Plain")
     }
+
+    @Test
+    fun `should re-export through export star every name a source exports by name, none two sources offer`(
+        @TempDir root: File
+    ) {
+        // Arrange
+        val first = root.withFile("lib/a.ts", "export class Model {}\nexport class OnlyA {}\nexport default class Base {}\nclass Hidden {}")
+        val second = root.withFile("lib/b.ts", "export class Model {}\nexport * from './c'")
+        root.withFile("lib/c.ts", "export class FromC {}")
+
+        // Act
+        val exports = ModuleExports.of(root).starExports(listOf(first, second), setOf("Own"))
+
+        // Assert
+        assertThat(exports).containsExactlyInAnyOrderEntriesOf(mapOf("OnlyA" to first, "FromC" to second))
+    }
+
+    @Test
+    fun `should read the exports of a module below an analysis root given as a relative path`(
+        @TempDir root: File
+    ) {
+        // Arrange
+        val barrel = root.withFile("lib/index.ts", "export * from './model'")
+        root.withFile("lib/model.ts", "export class Model {}")
+        val relativeRoot = root.relativeTo(File("").absoluteFile)
+
+        // Act
+        val exports = ModuleExports.of(relativeRoot).starExports(listOf(barrel.absoluteFile), emptySet())
+
+        // Assert
+        assertThat(exports.keys).containsExactly("Model")
+    }
 }
