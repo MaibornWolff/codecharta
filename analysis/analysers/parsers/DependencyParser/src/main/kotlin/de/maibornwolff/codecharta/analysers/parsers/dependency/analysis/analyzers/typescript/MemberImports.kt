@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.No
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
+import de.maibornwolff.treesitter.excavationsite.api.ImportKind
 import java.io.File
 
 /**
@@ -14,22 +15,28 @@ import java.io.File
  * module path plus the imported name.
  */
 internal class MemberImports(private val analysisRoot: File) {
-    private val targetByBinding = HashMap<String, Path>()
+    private val targetByBinding = HashMap<String, Target>()
 
     /** The declaration a member import of [moduleFile] means, null where it is the module path plus the imported name. */
     fun targetOf(import: ImportDeclaration, moduleFile: File, module: Path): Path? {
+        if (isNamespaceImport(import)) {
+            import.bindingName?.let { targetByBinding[it] = Target(module, isModule = true) }
+            return null
+        }
         if (!ImportedModules.namesMember(import)) return null
         val importedName = import.path.lastOrNull() ?: return null
         if (importedName == TSE_DEFAULT_EXPORT_NAME) {
             val target = defaultOf(moduleFile, module) ?: return null
-            import.bindingName?.let { targetByBinding[it] = target }
+            import.bindingName?.let { targetByBinding[it] = Target(target, isModule = false) }
             return target
         }
         val ownName = ModuleExports.of(analysisRoot).nameOf(moduleFile, importedName)
         if (ownName == importedName) return null
         // The extractor writes a use of a renamed import under the imported name, `Model` for `import { Model as Base }`
-        return (module + ownName).also { targetByBinding[importedName] = it }
+        return (module + ownName).also { targetByBinding[importedName] = Target(it, isModule = false) }
     }
+
+    private fun isNamespaceImport(import: ImportDeclaration): Boolean = import.isWildcard && import.kind == ImportKind.STANDARD
 
     /** The nodes with each use of an imported binding written as the full path of what it names. */
     fun rewrite(nodes: List<Node>): List<Node> {
@@ -37,19 +44,26 @@ internal class MemberImports(private val analysisRoot: File) {
         return nodes.map { node -> node.copy(usedTypes = node.usedTypes.mapTo(LinkedHashSet()) { rewrite(it) }) }
     }
 
-    // `Geo.Circle` behind `import Geo` means the member `Circle` of what `Geo` names, else the longest prefix down to it
+    // `Geo.Circle` behind `import Geo` means the member `Circle` of what `Geo` names, else the longest prefix down to a
+    // declaration: `Geo` itself, or the export `ns.Shapes` behind `import * as ns`, as a module is no declaration
     private fun rewrite(type: Type): Type {
         val genericTypes = type.genericTypes.map { rewrite(it) }
         val segments = type.name.split(SEPARATOR)
         val target = targetByBinding[segments.first()] ?: return type.copy(genericTypes = genericTypes)
-        val path = target + Path(segments.drop(1))
-        val prefixes = (path.parts.size downTo target.parts.size).map { Path(path.parts.take(it)).withDots() }
+        val path = target.path + Path(segments.drop(1))
+        if (path.parts.size < target.shortestDeclarationPath) return type.copy(genericTypes = genericTypes)
+        val prefixes = (path.parts.size downTo target.shortestDeclarationPath).map { Path(path.parts.take(it)).withDots() }
         return type.copy(name = prefixes.first(), genericTypes = genericTypes, fallbacks = prefixes.drop(1).map { Type.simple(it) })
     }
 
     private fun defaultOf(moduleFile: File, module: Path): Path? {
         if (moduleFile.name.endsWith(VUE_ENDING)) return module
         return ModuleExports.of(analysisRoot).defaultNameOf(moduleFile)?.let { module + it }
+    }
+
+    private class Target(val path: Path, isModule: Boolean) {
+        // A module is no declaration, so only a name below it is one
+        val shortestDeclarationPath = path.parts.size + if (isModule) 1 else 0
     }
 
     companion object {

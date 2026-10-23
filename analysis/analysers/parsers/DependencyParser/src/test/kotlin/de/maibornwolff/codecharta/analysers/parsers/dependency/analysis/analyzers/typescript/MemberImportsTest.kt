@@ -70,4 +70,21 @@ class MemberImportsTest {
         assertThat(use.name).isEqualTo("Other.Geo")
         assertThat(use.fallbacks).isEmpty()
     }
+
+    @Test
+    fun `should write a name behind a namespace import as the path of its member, no shorter one than the module's export`() {
+        // Arrange
+        val lib = File(analysisRoot, "lib.ts").apply { writeText("export namespace Shapes { export class Circle {} }") }
+        val memberImports = MemberImports(analysisRoot)
+        val import = ImportDeclaration(path = listOf(".", "lib"), isWildcard = true, bindingName = "ns")
+        memberImports.targetOf(import, lib, Path(listOf("models", "lib")))
+
+        // Act
+        val nodes = memberImports.rewrite(listOf(node("ns.Shapes.Circle", "ns")))
+
+        // Assert
+        val uses = nodes.single().usedTypes.associateBy { it.name }
+        assertThat(uses.keys).containsExactlyInAnyOrder("models.lib.Shapes.Circle", "ns")
+        assertThat(uses.getValue("models.lib.Shapes.Circle").fallbacks.map { it.name }).containsExactly("models.lib.Shapes")
+    }
 }
