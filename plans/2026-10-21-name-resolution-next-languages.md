@@ -131,7 +131,8 @@ first names nothing, for wildcard imports). Implementation, one commit per item:
 9. A re-export under an alias is a leaf of its `__init__.py`.
 10. TSE and rules: a name means the binding Python sees (order, definition time, class scope, wildcards, function
    imports); one commit, as the format of a use changes on both sides.
-11. CHANGELOG, README and `gh-pages/.../dependency.md`, the plan.
+11. `__all__` of a wildcard-imported module.
+12. CHANGELOG, README and `gh-pages/.../dependency.md`, the plan.
 
 ## Steps
 

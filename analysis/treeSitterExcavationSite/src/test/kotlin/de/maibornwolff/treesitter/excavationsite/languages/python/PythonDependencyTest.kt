@@ -282,7 +282,7 @@ class PythonDependencyTest {
             val usedTypes = usedTypesOf(code, "Order")
 
             // Assert
-            assertThat(usedTypes.map { it.name }).containsExactly("Entity", "Rate", "Money", "self")
+            assertThat(usedTypes.map { it.name }).containsExactly("Entity", "Rate", "Money")
         }
 
         @Test
@@ -369,7 +369,7 @@ class PythonDependencyTest {
         }
 
         @Test
-        fun `should extract the subject and the class of a class pattern, not its keywords`() {
+        fun `should extract the class of a class pattern, not its keywords`() {
             // Arrange
             val code = """
                 def describe(shape):
@@ -382,7 +382,132 @@ class PythonDependencyTest {
             val usedTypes = usedTypesOf(code, "describe")
 
             // Assert
-            assertThat(usedTypes.map { it.name }).containsExactly("shape", "Point")
+            assertThat(usedTypes.map { it.name }).containsExactly("Point")
+        }
+    }
+
+    @Nested
+    inner class NamesOfTheEnclosingFunction {
+        @Test
+        fun `should not extract a parameter used in the body`() {
+            // Arrange
+            val code = """
+                def build(Model, *parts, **options):
+                    return Model(parts, options)
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "build")
+
+            // Assert
+            assertThat(usedTypes).isEmpty()
+        }
+
+        @Test
+        fun `should not extract a name the function binds anywhere in its body`() {
+            // Arrange
+            val code = """
+                def rebuild(items):
+                    first = Model
+                    Model = object
+                    for index, item in enumerate(items):
+                        pass
+                    with open() as handle:
+                        pass
+                    try:
+                        pass
+                    except Error as error:
+                        pass
+                    if (count := len(items)):
+                        pass
+                    def helper():
+                        return Model, index, item, handle, error, count
+                    return first
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "rebuild")
+
+            // Assert
+            assertThat(usedTypes.map { it.name }).containsExactly("object", "enumerate", "open", "Error", "len")
+        }
+
+        @Test
+        fun `should extract a name a global statement hands on to the module`() {
+            // Arrange
+            val code = """
+                def reset():
+                    global Registry
+                    Registry = Registry()
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "reset")
+
+            // Assert
+            assertThat(usedTypes.map { it.name }).containsExactly("Registry")
+        }
+
+        @Test
+        fun `should not extract the variable of a comprehension or the parameter of a lambda`() {
+            // Arrange
+            val code = """
+                def collect(items):
+                    keys = [Key(item) for item in items]
+                    return sorted(keys, key=lambda entry: entry.name)
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "collect")
+
+            // Assert
+            assertThat(usedTypes.map { it.name }).containsExactly("Key", "sorted")
+        }
+
+        @Test
+        fun `should not extract an attribute behind a name the function binds`() {
+            // Arrange
+            val code = """
+                def make(models):
+                    return models.Model()
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "make")
+
+            // Assert
+            assertThat(usedTypes).isEmpty()
+        }
+
+        @Test
+        fun `should extract a name an import inside the function binds`() {
+            // Arrange
+            val code = """
+                def make():
+                    from shop.models import Model
+                    return Model()
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "make")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(UsedType("Model"))
+        }
+
+        @Test
+        fun `should extract a name of a parameter's annotation or default value, which the scope around evaluates`() {
+            // Arrange
+            val code = """
+                def make(Model: Model = Model()):
+                    return None
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "make")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(UsedType("Model"))
         }
     }
 }

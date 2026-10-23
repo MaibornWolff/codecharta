@@ -139,9 +139,8 @@ class TestClass():
         )
 
         val usedTypes = report.nodes.first().usedTypes
-        assertEquals(3, usedTypes.size)
+        assertEquals(2, usedTypes.size)
         assertThat(usedTypes).containsExactlyInAnyOrder(
-            Type.simple("creature"),
             Type.simple("Creature"),
             Type.simple("self")
         )

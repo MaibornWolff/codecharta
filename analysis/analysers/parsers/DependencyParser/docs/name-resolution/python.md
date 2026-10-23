@@ -85,7 +85,7 @@ the rule yet; `sample-projects/regression/python/known-gaps.md` says how it devi
 | Declarations: the file path is the logical path | `spec-module-path` | ok |
 | Declarations: a module-level variable | `spec-module-variable` | ok |
 | Declarations, decision 4: a nested class is a leaf of its own | `spec-nested-class` | gap |
-| Declarations and 1: a class declared in a function | `spec-local-class` | gap |
+| Declarations and 1: a class declared in a function | `spec-local-class` | ok |
 | Declarations, decision 2: re-export leaf of `__init__.py` | `spec-reexport-init` | ok |
 | Declarations, decision 2: a re-export under an alias | `spec-reexport-alias` | gap |
 | Import paths 1: the analysis root | `spec-module-path` | ok |
@@ -106,7 +106,7 @@ the rule yet; `sample-projects/regression/python/known-gaps.md` says how it devi
 | Binding: a wildcard skips names starting with `_` | `spec-wildcard-public-only` | gap |
 | Binding: a wildcard follows `__all__` | `spec-wildcard-all` | gap |
 | Binding: an import alone draws no edge | `spec-unused-import` | ok |
-| 1. a parameter or variable of the function | `spec-function-local-binding` | gap |
+| 1. a parameter or variable of the function | `spec-function-local-binding` | ok |
 | 1. an import inside a function | `spec-function-local-import` | gap |
 | 1. a class body and its methods | `spec-class-scope` | gap |
 | 2, decision 3: a definition after an import | `spec-definition-after-import` | gap |

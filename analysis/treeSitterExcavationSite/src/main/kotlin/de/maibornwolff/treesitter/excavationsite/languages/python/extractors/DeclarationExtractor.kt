@@ -14,7 +14,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
  *
  * Python declares no types to tell a used type from any other name, so a class or function uses every identifier
  * below it that [UseSites] calls a use, and every attribute access `a.b.C` as the name `C` with the namespace prefix
- * `[a, b]`.
+ * `[a, b]`, but none that [FunctionScopes] finds bound by a function or comprehension around it.
  */
 internal object DeclarationExtractor {
     private const val MODULE = "module"
@@ -28,6 +28,7 @@ internal object DeclarationExtractor {
     private const val DEFINITION_FIELD = "definition"
     private const val NAME_FIELD = "name"
     private const val LEFT_FIELD = "left"
+    private const val OBJECT_FIELD = "object"
     private const val ATTRIBUTE_SEPARATOR = "."
     private val DEFINITION_TYPES = setOf(CLASS_DEFINITION, FUNCTION_DEFINITION)
 
@@ -55,11 +56,19 @@ internal object DeclarationExtractor {
     }
 
     private fun usedNames(definition: SyntaxNode): Set<UsedType> {
+        val scopes = FunctionScopes()
         val (identifiers, attributes) = TreeTraversal
             .findAllDescendantsOfType(definition, IDENTIFIER, ATTRIBUTE)
             .partition { it.type == IDENTIFIER }
-        return identifiers.filter { UseSites.isUse(it) }.mapTo(LinkedHashSet()) { UsedType(it.text) } +
-            attributes.map { toQualifiedName(it.text) }
+        return identifiers.filter { UseSites.isUse(it) && !scopes.isLocal(it) }.mapTo(LinkedHashSet()) { UsedType(it.text) } +
+            attributes.filterNot { headOf(it)?.let(scopes::isLocal) == true }.map { toQualifiedName(it.text) }
+    }
+
+    // The name an attribute chain starts with, null when it starts with a call or another expression
+    private fun headOf(attribute: SyntaxNode): SyntaxNode? {
+        var objectNode = attribute.getChildByFieldName(OBJECT_FIELD).orNull()
+        while (objectNode?.type == ATTRIBUTE) objectNode = objectNode.getChildByFieldName(OBJECT_FIELD).orNull()
+        return objectNode?.takeIf { it.type == IDENTIFIER }
     }
 
     private fun toQualifiedName(attribute: String): UsedType {

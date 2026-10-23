@@ -60,30 +60,12 @@ missing file app/facade.py -> app/dto/creature.py
 missing leaf app/facade.py#Facade -> app/dto/creature.py#Creature
 ```
 
-## spec-function-local-binding
-
-The extractor reports the parameters and variables of a function as uses.
-
-```text
-extra leaf app/use.py#build -> app/models.py#Model
-extra leaf app/use.py#rebuild -> app/models.py#Model
-```
-
 ## spec-function-local-import
 
 An import inside a function binds its name for every declaration of the file.
 
 ```text
 extra leaf app/use.py#second -> app/models.py#Model
-```
-
-## spec-local-class
-
-A class declared in a function does not hide the module's `Temp`.
-
-```text
-extra file app/factory.py -> app/temp.py
-extra leaf app/factory.py#make -> app/temp.py#Temp
 ```
 
 ## spec-nearest-root
