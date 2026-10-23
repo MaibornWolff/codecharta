@@ -21,8 +21,6 @@ internal object UsedTypeExtractor {
     private const val SATISFIES_EXPRESSION = "satisfies_expression"
     private const val TYPE_ARGUMENTS = "type_arguments"
     private const val NESTED_TYPE_IDENTIFIER = "nested_type_identifier"
-    private const val QUALIFIER_SEPARATOR = "."
-    private const val OBJECT_FIELD = "object"
     private val QUALIFIER_PARENTS = setOf(NESTED_TYPE_IDENTIFIER, "nested_identifier")
     private val JSX_TAG_ELEMENTS = setOf(JSX_OPENING_ELEMENT, JSX_SELF_CLOSING_ELEMENT, "jsx_closing_element")
 
@@ -111,7 +109,7 @@ internal object UsedTypeExtractor {
             return@mapNotNull UsedType(name = name)
         }
         // namespace alias constructor: new ns.Class()
-        extractNsAliasMember(node.children().firstOrNull { it.type == MEMBER_EXPRESSION }, namespaceNames, scopes)
+        NamespaceMembers.useOf(node.children().firstOrNull { it.type == MEMBER_EXPRESSION }, namespaceNames, scopes)
     }
 
     private fun extractMemberAccesses(
@@ -123,28 +121,8 @@ internal object UsedTypeExtractor {
         val name = root.text.trim()
         if (name.firstOrNull()?.isUpperCase() == true) return@mapNotNull UsedType(name = name)
         // namespace alias member access: ns.Class where ns is the direct object identifier
-        extractNsAliasMember(node, namespaceNames, scopes)
+        NamespaceMembers.useOf(node, namespaceNames, scopes)
     }
-
-    // A member chain read through a namespace import, `ns.Shapes.Circle`, is one name: what the module exports under
-    // `Shapes`, and its member `Circle`
-    private fun extractNsAliasMember(memberExpr: SyntaxNode?, namespaceNames: Set<String>, scopes: LocalScopes): UsedType? {
-        memberExpr ?: return null
-        val directId = memberExpr.children().firstOrNull { it.type == IDENTIFIER }?.takeUnless { scopes.hides(it) } ?: return null
-        val objName = directId.text.trim()
-        if (objName !in namespaceNames) return null
-        val members = memberChainFrom(memberExpr)
-        if (members.isEmpty()) return null
-        return UsedType(name = (listOf(objName) + members).joinToString(QUALIFIER_SEPARATOR))
-    }
-
-    // The names `ns.a.b` reads after `ns`: the member expression that reads `a`, and each one around it that reads on
-    private fun memberChainFrom(memberExpr: SyntaxNode): List<String> = generateSequence(memberExpr) { member ->
-        member.parent.takeIf { it.type == MEMBER_EXPRESSION && it.getChildByFieldName(OBJECT_FIELD).endByte == member.endByte }
-    }.map { member -> member.children().firstOrNull { it.type == PROPERTY_IDENTIFIER }?.text?.trim() }
-        .takeWhile { it != null }
-        .filterNotNull()
-        .toList()
 
     private fun extractMethodCalls(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[CALL_EXPRESSION].orEmpty().mapNotNull { callNode ->
