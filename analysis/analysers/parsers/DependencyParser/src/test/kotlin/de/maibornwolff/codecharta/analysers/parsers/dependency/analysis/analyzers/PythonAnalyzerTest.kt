@@ -139,10 +139,8 @@ class TestClass():
         )
 
         val usedTypes = report.nodes.first().usedTypes
-        assertEquals(5, usedTypes.size)
+        assertEquals(3, usedTypes.size)
         assertThat(usedTypes).containsExactlyInAnyOrder(
-            Type.simple("TestClass"),
-            Type.simple("__init__"),
             Type.simple("creature"),
             Type.simple("Creature"),
             Type.simple("self")
@@ -226,14 +224,8 @@ class TestClass():
         )
 
         val usedTypes = report.nodes.first().usedTypes
-        assertEquals(5, usedTypes.size)
-        assertThat(usedTypes).containsExactlyInAnyOrder(
-            Type.simple("TestClass"),
-            Type.simple("__init__"),
-            Type.simple("creature_service"),
-            Type.simple("Creature_Service"),
-            Type.simple("self")
-        )
+        assertEquals(1, usedTypes.size)
+        assertThat(usedTypes).containsExactly(Type.simple("Creature_Service"))
     }
 
     @Test
@@ -254,13 +246,7 @@ class TestClass():
         // Assert
         val dependencies = report.nodes.first().dependencies
         assertEquals(0, dependencies.size)
-        val usedTypes = report.nodes.first().usedTypes
-        assertEquals(3, usedTypes.size)
-        assertThat(usedTypes).containsExactlyInAnyOrder(
-            Type.simple("TestClass"),
-            Type.simple("__init__"),
-            Type.simple("self")
-        )
+        assertThat(report.nodes.first().usedTypes).isEmpty()
     }
 
     @Test
@@ -286,15 +272,9 @@ def doSomething():
         )
 
         val usedTypes = report.nodes.first().usedTypes
-        assertEquals(8, usedTypes.size)
+        assertEquals(2, usedTypes.size)
         assertThat(usedTypes).containsExactlyInAnyOrder(
-            Type.simple("doSomething"),
             Type.simple("de"),
-            Type.simple("sots"),
-            Type.simple("cellarsandcentaurs"),
-            Type.simple("domain"),
-            Type.simple("models"),
-            Type.simple("Creature"),
             Type.simple("de.sots.cellarsandcentaurs.domain.models.Creature").copy(
                 fallbacks = listOf(Type.simple("de.sots.cellarsandcentaurs.domain.models.__init__.Creature"))
             )
@@ -324,11 +304,9 @@ def doSomething():
         )
 
         val usedTypes = report.nodes.first().usedTypes
-        assertEquals(4, usedTypes.size)
+        assertEquals(2, usedTypes.size)
         assertThat(usedTypes).containsExactlyInAnyOrder(
-            Type.simple("doSomething"),
             Type.simple("md"),
-            Type.simple("Creature"),
             Type.simple("de.sots.cellarsandcentaurs.domain.models.Creature").copy(
                 fallbacks = listOf(Type.simple("de.sots.cellarsandcentaurs.domain.models.__init__.Creature"))
             )

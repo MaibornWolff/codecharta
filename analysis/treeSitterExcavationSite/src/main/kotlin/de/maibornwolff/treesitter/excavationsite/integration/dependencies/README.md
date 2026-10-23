@@ -305,7 +305,7 @@ A different concatenation order with the same types produces identical dependenc
 | **C#** | constructors, methods, casts, genericParams, genericConstraints, inherited, variables, objectCreations, memberAccesses, attributes, isTypeChecks | `CsharpAnalyzer.kt` |
 | **C++** | processor list order: typeDecl, inheritance, methods, typeDef, alias, generic, define | `BodyProcessor.kt` |
 | **Go** | for a function: parameter types, result types, methods called through a selector, functions called directly, package-qualified types; then for every declaration all type identifiers and qualified types in source order. The used types of a method are appended to its receiver type | `GoAnalyzer.kt` |
-| **Python** | all identifiers in source order, then all attribute accesses in source order | `PythonAnalyzer.kt` |
+| **Python** | the identifiers that are uses (no declared name, parameter, keyword, attribute behind a dot or import name) in source order, then all attribute accesses in source order | `PythonAnalyzer.kt` |
 | **JavaScript** | Same as TypeScript (shared `UsedTypeExtractor`): typeIdentifiers, constructorCalls, memberAccesses, methodCalls, extensions, relevantIdentifiers, constraintTypes, typeAliasRhsTypes, jsxComponents. DC legacy was imports-only; TSE adds full used-type extraction. | `JavascriptAnalyzer.kt` |
 | **Vue** | template components in source order; the script imports are imports, which the adapter appends as used types | `VueAnalyzer.kt` |
 | **Angular template** | elements and pipes in source order | N/A — TSE-native, no DC legacy |

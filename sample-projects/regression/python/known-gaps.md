@@ -7,25 +7,12 @@ a gap closes, and the closed lines are deleted here.
 
 ## spec-annotation-lazy
 
-An explicit import wins over a declaration of the own module whatever the order, and the name a class declares counts
-as a use of that name.
+An explicit import wins over a declaration of the own module whatever the order.
 
 ```text
 missing leaf app/tree.py#Tree -> app/tree.py#Node
 extra file app/tree.py -> app/lib.py
-extra leaf app/tree.py#Node -> app/lib.py#Node
 extra leaf app/tree.py#Tree -> app/lib.py#Node
-```
-
-## spec-attribute-on-value
-
-The last name of an attribute is also reported as a simple name, and the import heuristics find `save` and `Node`
-through the imported module.
-
-```text
-extra file app/use.py -> app/store.py
-extra leaf app/use.py#Use -> app/store.py#Node
-extra leaf app/use.py#Use -> app/store.py#save
 ```
 
 ## spec-class-scope
@@ -36,34 +23,23 @@ A nested class is no declaration, so the class body's own `Inner` finds nothing.
 missing leaf app/outer.py#Outer -> app/outer.py#Inner
 ```
 
-## spec-decorator-definition-time
-
-The name a function declares counts as a use of that name.
-
-```text
-extra leaf app/handlers.py#register -> app/lib.py#register
-```
-
 ## spec-definition-after-import
 
-An explicit import wins over a declaration of the own module whatever the order, and the name a class declares counts
-as a use of that name.
+An explicit import wins over a declaration of the own module whatever the order.
 
 ```text
 missing leaf app/tree.py#grow -> app/tree.py#Node
 extra file app/tree.py -> app/other.py
-extra leaf app/tree.py#Node -> app/other.py#Node
 extra leaf app/tree.py#grow -> app/other.py#Node
 ```
 
 ## spec-definition-time
 
 An explicit import wins over a declaration of the own module whatever the order, so the body's `Node` misses the own
-class, and the name a class declares counts as a use of that name.
+class.
 
 ```text
 missing leaf app/tree.py#Tree -> app/tree.py#Node
-extra leaf app/tree.py#Node -> app/lib.py#Node
 ```
 
 ## spec-file-folder-root
@@ -99,14 +75,6 @@ An import inside a function binds its name for every declaration of the file.
 
 ```text
 extra leaf app/use.py#second -> app/models.py#Model
-```
-
-## spec-import-after-definition
-
-The name a class declares counts as a use of that name.
-
-```text
-extra leaf app/tree.py#Node -> app/other.py#Node
 ```
 
 ## spec-local-class

@@ -110,15 +110,15 @@ the rule yet; `sample-projects/regression/python/known-gaps.md` says how it devi
 | 1. an import inside a function | `spec-function-local-import` | gap |
 | 1. a class body and its methods | `spec-class-scope` | gap |
 | 2, decision 3: a definition after an import | `spec-definition-after-import` | gap |
-| 2, decision 3: an import after a definition | `spec-import-after-definition` | gap |
+| 2, decision 3: an import after a definition | `spec-import-after-definition` | ok |
 | 2, decision 3: two wildcard imports, the later wins | `spec-wildcard-last-wins` | gap |
 | 2, decision 3: a base class at definition time | `spec-definition-time` | gap |
-| 2, decision 3: a decorator at definition time | `spec-decorator-definition-time` | gap |
+| 2, decision 3: a decorator at definition time | `spec-decorator-definition-time` | ok |
 | 2, decision 3: a lazy annotation | `spec-annotation-lazy` | gap |
 | 3. builtin | `spec-builtin` | ok |
 | 2 and 3: a module binding over a builtin | `spec-module-shadows-builtin` | ok |
 | Attribute through a class | `spec-class-attribute` | ok |
-| Attribute on a value | `spec-attribute-on-value` | gap |
+| Attribute on a value | `spec-attribute-on-value` | ok |
 | Shared rule 1, name scope | `spec-name-scope` | ok |
 | Shared rule 4, self | `spec-self` | ok |
 

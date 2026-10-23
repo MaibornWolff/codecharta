@@ -270,7 +270,7 @@ class PythonDependencyTest {
     @Nested
     inner class UsedNames {
         @Test
-        fun `should extract every identifier of a definition in source order, its own name included`() {
+        fun `should extract the identifiers of a definition that are uses, in source order`() {
             // Arrange
             val code = """
                 class Order(Entity):
@@ -282,7 +282,7 @@ class PythonDependencyTest {
             val usedTypes = usedTypesOf(code, "Order")
 
             // Assert
-            assertThat(usedTypes.map { it.name }).containsExactly("Order", "Entity", "total", "self", "tax", "Rate", "Money")
+            assertThat(usedTypes.map { it.name }).containsExactly("Entity", "Rate", "Money", "self")
         }
 
         @Test
@@ -298,11 +298,11 @@ class PythonDependencyTest {
             val usedTypes = usedTypesOf(code, "Order")
 
             // Assert
-            assertThat(usedTypes).containsExactly(UsedType("register"), UsedType("Order"))
+            assertThat(usedTypes).containsExactly(UsedType("register"))
         }
 
         @Test
-        fun `should extract an attribute access as its last name with the rest as namespace prefix`() {
+        fun `should extract an attribute access as its last name with the rest as namespace prefix, and its first name`() {
             // Arrange
             val code = """
                 def load():
@@ -314,13 +314,75 @@ class PythonDependencyTest {
 
             // Assert
             assertThat(usedTypes).containsExactly(
-                UsedType("load"),
                 UsedType("shop"),
-                UsedType("orders"),
-                UsedType("Order"),
                 UsedType("Order", namespacePrefix = listOf("shop", "orders")),
                 UsedType("orders", namespacePrefix = listOf("shop"))
             )
+        }
+
+        @Test
+        fun `should not extract the names of parameters, but their annotations and default values`() {
+            // Arrange
+            val code = """
+                def load(first, second: Rate, third=LIMIT, fourth: int = DEFAULT, *rest, **options):
+                    return None
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "load")
+
+            // Assert
+            assertThat(usedTypes.map { it.name }).containsExactly("Rate", "LIMIT", "int", "DEFAULT")
+        }
+
+        @Test
+        fun `should not extract the keyword of a keyword argument, but its value`() {
+            // Arrange
+            val code = """
+                class Order(Base, metaclass=Meta):
+                    pass
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "Order")
+
+            // Assert
+            assertThat(usedTypes.map { it.name }).containsExactly("Base", "Meta")
+        }
+
+        @Test
+        fun `should not extract the names of an import or a global statement inside a definition`() {
+            // Arrange
+            val code = """
+                def load():
+                    global counter
+                    import shop.orders as orders
+                    from shop.invoices import Invoice
+                    return None
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "load")
+
+            // Assert
+            assertThat(usedTypes).isEmpty()
+        }
+
+        @Test
+        fun `should extract the subject and the class of a class pattern, not its keywords`() {
+            // Arrange
+            val code = """
+                def describe(shape):
+                    match shape:
+                        case Point(x=0):
+                            return None
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "describe")
+
+            // Assert
+            assertThat(usedTypes.map { it.name }).containsExactly("shape", "Point")
         }
     }
 }

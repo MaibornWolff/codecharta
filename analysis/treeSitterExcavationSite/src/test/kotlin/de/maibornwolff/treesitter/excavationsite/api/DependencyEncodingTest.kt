@@ -56,7 +56,7 @@ class DependencyEncodingTest {
 
         // Assert
         assertThat(result.declarations.map { it.name }).containsExactly("AfterTheRange", "LABEL")
-        assertThat(result.declarations.first().usedTypes.map { it.name }).containsExactly("AfterTheRange", "RangeBase")
+        assertThat(result.declarations.first().usedTypes.map { it.name }).containsExactly("RangeBase")
     }
 
     @Test

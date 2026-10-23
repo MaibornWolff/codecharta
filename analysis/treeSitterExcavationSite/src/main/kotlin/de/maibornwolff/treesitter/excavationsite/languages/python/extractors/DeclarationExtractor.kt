@@ -13,7 +13,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
  * functions, then the decorated ones, then the variables.
  *
  * Python declares no types to tell a used type from any other name, so a class or function uses every identifier
- * below it, and every attribute access `a.b.C` as the name `C` with the namespace prefix `[a, b]`.
+ * below it that [UseSites] calls a use, and every attribute access `a.b.C` as the name `C` with the namespace prefix
+ * `[a, b]`.
  */
 internal object DeclarationExtractor {
     private const val MODULE = "module"
@@ -57,7 +58,8 @@ internal object DeclarationExtractor {
         val (identifiers, attributes) = TreeTraversal
             .findAllDescendantsOfType(definition, IDENTIFIER, ATTRIBUTE)
             .partition { it.type == IDENTIFIER }
-        return identifiers.mapTo(LinkedHashSet()) { UsedType(it.text) } + attributes.map { toQualifiedName(it.text) }
+        return identifiers.filter { UseSites.isUse(it) }.mapTo(LinkedHashSet()) { UsedType(it.text) } +
+            attributes.map { toQualifiedName(it.text) }
     }
 
     private fun toQualifiedName(attribute: String): UsedType {
