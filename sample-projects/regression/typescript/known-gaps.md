@@ -46,25 +46,13 @@ missing leaf app.ts#info -> types/globals.d.ts#Registry
 missing leaf app.ts#info -> types/globals.d.ts#VERSION
 ```
 
-## spec-namespace-member
-
-`Shapes.Circle` in a type is reported as a use of `Shapes` and of `Circle`.
-
-```text
-extra leaf draw.ts#draw -> geo.ts#Shapes
-```
-
 ## spec-qualified-chain
 
-`export * as ns` is read like `export *`, so the chain ends at re-export leaves of `lib.ts`.
+`export * as ns` is read like `export *`, so `lib.ts` gets a re-export leaf for every name of the module.
 
 ```text
-extra file app.ts -> lib.ts
 extra file lib.ts -> shapes.ts
-extra leaf app.ts#draw -> lib.ts#Circle
 extra leaf lib.ts#Circle -> shapes.ts#Circle
-missing file app.ts -> shapes.ts
-missing leaf app.ts#draw -> shapes.ts#Circle
 ```
 
 ## spec-reexport-default
