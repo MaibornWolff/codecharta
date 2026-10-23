@@ -15,7 +15,6 @@ import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.EmbeddedDeclarations
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
-import de.maibornwolff.treesitter.excavationsite.api.ImportKind
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
@@ -57,7 +56,7 @@ class VueAnalyzer(fileInfo: FileInfo) : TypescriptAnalyzer(fileInfo) {
         val componentName = declarationExportedAsDefault(nodes)
         val (components, others) = nodes.partition { it.pathWithName == physicalFilePath || isOwn(it) && it.name() == componentName }
         val plainNames = others.filter { isOwn(it) }.mapTo(HashSet()) { it.name() }
-        val scriptNames = plainNames + setOfNotNull(componentName) + fileImports.mapNotNull { bindingOf(it) }
+        val scriptNames = plainNames + setOfNotNull(componentName) + fileImports.mapNotNull { it.boundName() }
         val usedTypes = (components.flatMap { it.usedTypes } + setupUses(scriptNames) + tagUses(scriptNames))
             .map { ownNameInFull(it, plainNames, componentName) }
             .filter { it.name != physicalFilePath.withDots() }
@@ -101,6 +100,7 @@ class VueAnalyzer(fileInfo: FileInfo) : TypescriptAnalyzer(fileInfo) {
             ownName = physicalFilePath.parts.last(),
             templateBindings = if (hasScriptSetup) scriptNames + setupNames else null,
             localRegistrations = TreeSitterDependencies.vueComponentRegistrations(fileInfo.content, Language.VUE).filterNot { it.isGlobal },
+            globalComponents = fileInfo.analysisRoot?.let { GlobalComponents.of(it, fileInfo.analysedFiles) },
             projectComponents = fileInfo.analysisRoot?.let { VueComponents.of(it, fileInfo.analysedFiles) }
         )
         return tags.mapNotNull { componentTags.nameOf(it) }.filter { firstSegmentOf(it) !in setupNames }.map { Type.simple(it) }
@@ -115,12 +115,6 @@ class VueAnalyzer(fileInfo: FileInfo) : TypescriptAnalyzer(fileInfo) {
         componentName -> type.copy(name = physicalFilePath.withDots())
         in plainNames -> type.copy(name = (physicalFilePath + type.name).withDots())
         else -> type
-    }
-
-    private fun bindingOf(import: ImportDeclaration): String? = when {
-        import.bindingName != null -> import.bindingName
-        import.kind == ImportKind.MEMBER && !import.isWildcard -> import.path.lastOrNull()
-        else -> null
     }
 
     private fun UsedType.isFree() = namespacePrefix == listOf(TSE_GLOBAL_SEGMENT)
