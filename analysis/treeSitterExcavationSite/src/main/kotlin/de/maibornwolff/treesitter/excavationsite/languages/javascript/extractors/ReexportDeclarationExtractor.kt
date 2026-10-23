@@ -8,7 +8,6 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 private const val WILDCARD_REEXPORT = "*"
 private const val PLAIN_SPECIFIER_SIZE = 1
 private const val ALIASED_SPECIFIER_SIZE = 2
-private const val PATH_SEPARATOR = "/"
 
 internal object ReexportDeclarationExtractor {
     // `export * as shapes from` binds a module, which is no declaration
@@ -35,7 +34,7 @@ internal object ReexportDeclarationExtractor {
         ?.children()
         ?.firstOrNull { it.type == STRING_FRAGMENT }
         ?.text
-        ?.split(PATH_SEPARATOR)
+        ?.split(SPECIFIER_SEPARATOR)
         .orEmpty()
 
     private fun reexportFromSpecifier(specifier: SyntaxNode, modulePath: List<String>): Declaration? {

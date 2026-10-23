@@ -7,9 +7,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 
 internal object ImportExtractor {
     private const val IMPORT_KEYWORD = "import"
-    private const val PATH_SEPARATOR = "/"
 
-    private fun splitPath(pathText: String): List<String> = pathText.split(PATH_SEPARATOR)
+    private fun splitPath(pathText: String): List<String> = pathText.split(SPECIFIER_SEPARATOR)
 
     fun extract(rootNode: SyntaxNode): List<ImportDeclaration> {
         val es6Imports = extractEs6Imports(rootNode)
