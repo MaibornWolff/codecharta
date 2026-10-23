@@ -14,7 +14,6 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
  */
 internal object TopLevelCode {
     private const val EXPRESSION_STATEMENT = "expression_statement"
-    private const val PATH_SEPARATOR = "/"
     private const val FUNCTION_FIELD = "function"
     private const val ARGUMENTS_FIELD = "arguments"
     private val NO_CODE = setOf(IMPORT_STATEMENT, EXPORT_STATEMENT, AMBIENT_DECLARATION, "comment", "empty_statement", "hash_bang_line")
@@ -28,7 +27,7 @@ internal object TopLevelCode {
 
     private fun usesOf(statement: SyntaxNode, names: ModuleNames): Set<UsedType> {
         val specifier = moduleRunBy(statement) ?: return UsedTypeExtractor.extract(statement, names)
-        return setOf(UsedType(name = MODULE_SCRIPT, namespacePrefix = specifier.split(PATH_SEPARATOR)))
+        return setOf(UsedType(name = MODULE_SCRIPT, namespacePrefix = specifier.split(SPECIFIER_SEPARATOR)))
     }
 
     private fun isCode(statement: SyntaxNode): Boolean = statement.type !in NO_CODE &&
