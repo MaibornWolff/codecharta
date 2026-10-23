@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_DEFAULT_EXPORT_NAME
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.withoutFileSuffix
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.defaultImportPath
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ImportedModules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
@@ -26,6 +27,20 @@ class JavascriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     }
 
     override fun convertImport(import: ImportDeclaration): Set<Dependency> {
+        val analysisRoot = fileInfo.analysisRoot
+        val moduleFile = ImportedModules.fileOf(import, fileInfo)
+        if (analysisRoot != null && moduleFile != null) {
+            val module = ImportedModules.logicalPathOf(moduleFile, analysisRoot)
+            val importedName = if (ImportedModules.namesMember(
+                    import
+                )
+            ) {
+                listOf(localExportName(import.defaultImportPath().last()))
+            } else {
+                emptyList()
+            }
+            return setOf(Dependency(path = Path(module.parts + importedName), isWildcard = import.isWildcard))
+        }
         val path = resolveImportPath(import.defaultImportPath())
         val resolvedPath = if (path.isEmpty()) path else path.dropLast(1) + localExportName(path.last())
         return setOf(Dependency(path = Path(resolvedPath), isWildcard = import.isWildcard))

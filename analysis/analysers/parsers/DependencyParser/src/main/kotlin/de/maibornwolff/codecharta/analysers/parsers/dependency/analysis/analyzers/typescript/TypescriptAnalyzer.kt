@@ -37,6 +37,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     // A Path escapes the dots of a file name, which is not reversible, so the segments a wildcard import
     // resolved to are kept as written for the lookup on disk (`./user.service` must find `user.service.ts`).
     private val unescapedSegmentsByPath = HashMap<Path, List<String>>()
+    private val sourceFilesByPath = HashMap<Path, File>()
 
     override fun tseLanguage(): Language = if (isTsx) Language.TSX else Language.TYPESCRIPT
 
@@ -98,6 +99,16 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     }
 
     override fun convertImport(import: ImportDeclaration): Set<Dependency> {
+        val analysisRoot = fileInfo.analysisRoot ?: return dependenciesByWrittenPath(import)
+        val moduleFile = ImportedModules.fileOf(import, fileInfo) ?: return dependenciesByWrittenPath(import)
+        val module = ImportedModules.logicalPathOf(moduleFile, analysisRoot)
+        if (import.isWildcard) sourceFilesByPath[module] = moduleFile
+        val importedName = if (ImportedModules.namesMember(import)) listOf(import.defaultImportPath().last()) else emptyList()
+        return setOf(Dependency(path = Path(module.parts + importedName), isWildcard = import.isWildcard))
+    }
+
+    // A module the specifier names no project file of keeps the path as written, for the library or file it may mean
+    private fun dependenciesByWrittenPath(import: ImportDeclaration): Set<Dependency> {
         val resolvedPath = resolveImportPath(import.defaultImportPath())
         val primary = Dependency(path = Path(resolvedPath), isWildcard = import.isWildcard)
         if (import.isWildcard) unescapedSegmentsByPath[primary.path] = resolvedPath
@@ -112,10 +123,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         val wildcardDeps = wildcardNode.dependencies.filter { it.isWildcard }
         val sourceFiles = wildcardDeps
             .mapNotNull {
-                resolveSourceFile(
-                    unescapedSegmentsByPath[it.path] ?: it.path.parts,
-                    analysisRoot
-                )
+                sourceFilesByPath[it.path] ?: resolveSourceFile(unescapedSegmentsByPath[it.path] ?: it.path.parts, analysisRoot)
             }.toSet()
         if (sourceFiles.isEmpty()) return listOf(wildcardNode)
         return sourceFiles.flatMap { sourceFile ->
