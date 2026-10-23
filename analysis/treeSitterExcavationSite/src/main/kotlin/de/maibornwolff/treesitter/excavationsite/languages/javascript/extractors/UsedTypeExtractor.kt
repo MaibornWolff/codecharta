@@ -43,18 +43,17 @@ internal object UsedTypeExtractor {
 
     fun extract(declaration: SyntaxNode, names: ModuleNames): Set<UsedType> {
         val aliasMap = names.aliasMap
-        val localDeclarationNames = names.localDeclarationNames
         val scopes = LocalScopes(declaration.startByte, declaration.endByte)
         val buckets = TreeTraversal
             .findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
             .mapValues { (_, nodes) -> nodes.filterNot { isHiddenName(it, scopes) } }
 
         val typeIdentifiers = collectTypeIdentifiersFromNodes(buckets[TYPE_ANNOTATION].orEmpty(), scopes)
-        val constructorCalls = extractConstructorCalls(buckets, names.namespaceNames, scopes)
-        val memberAccesses = extractMemberAccesses(buckets, names.namespaceNames, scopes)
+        val constructorCalls = extractConstructorCalls(buckets, names, scopes)
+        val memberAccesses = extractMemberAccesses(buckets, names, scopes)
         val methodCalls = extractMethodCalls(buckets)
         val extensions = extractExtensions(buckets, scopes)
-        val relevantIdentifiers = extractRelevantIdentifiers(buckets, aliasMap, localDeclarationNames)
+        val relevantIdentifiers = extractRelevantIdentifiers(buckets, names)
 
         val constraintTypes = collectTypeIdentifiersFromNodes(buckets[CONSTRAINT].orEmpty(), scopes)
         val typeAssertions = collectTypeIdentifiersFromNodes(
@@ -96,33 +95,28 @@ internal object UsedTypeExtractor {
 
     private fun isQualifierOfAType(identifier: SyntaxNode): Boolean = identifier.parent.type in QUALIFIER_PARENTS
 
-    private fun extractConstructorCalls(
-        buckets: Map<String, List<SyntaxNode>>,
-        namespaceNames: Set<String>,
-        scopes: LocalScopes
-    ): List<UsedType> = buckets[NEW_EXPRESSION].orEmpty().mapNotNull { node ->
-        val constructor = node.children().firstOrNull { it.type == IDENTIFIER || it.type == TYPE_IDENTIFIER }
-        if (constructor != null) {
-            if (scopes.hides(constructor)) return@mapNotNull null
-            val name = constructor.text.trim()
-            if (name.firstOrNull()?.isUpperCase() != true) return@mapNotNull null
-            return@mapNotNull UsedType(name = name)
+    private fun extractConstructorCalls(buckets: Map<String, List<SyntaxNode>>, names: ModuleNames, scopes: LocalScopes): List<UsedType> =
+        buckets[NEW_EXPRESSION].orEmpty().mapNotNull { node ->
+            val constructor = node.children().firstOrNull { it.type == IDENTIFIER || it.type == TYPE_IDENTIFIER }
+            if (constructor != null) {
+                if (scopes.hides(constructor)) return@mapNotNull null
+                names.dynamicImports.exportOf(constructor)?.let { return@mapNotNull UsedType(name = it) }
+                val name = constructor.text.trim()
+                if (name.firstOrNull()?.isUpperCase() != true) return@mapNotNull null
+                return@mapNotNull UsedType(name = name)
+            }
+            // namespace alias constructor: new ns.Class()
+            NamespaceMembers.useOf(node.children().firstOrNull { it.type == MEMBER_EXPRESSION }, names, scopes)
         }
-        // namespace alias constructor: new ns.Class()
-        NamespaceMembers.useOf(node.children().firstOrNull { it.type == MEMBER_EXPRESSION }, namespaceNames, scopes)
-    }
 
-    private fun extractMemberAccesses(
-        buckets: Map<String, List<SyntaxNode>>,
-        namespaceNames: Set<String>,
-        scopes: LocalScopes
-    ): List<UsedType> = buckets[MEMBER_EXPRESSION].orEmpty().mapNotNull { node ->
-        val root = findLeftmostIdentifier(node)?.takeUnless { scopes.hides(it) } ?: return@mapNotNull null
-        val name = root.text.trim()
-        if (name.firstOrNull()?.isUpperCase() == true) return@mapNotNull UsedType(name = name)
-        // namespace alias member access: ns.Class where ns is the direct object identifier
-        NamespaceMembers.useOf(node, namespaceNames, scopes)
-    }
+    private fun extractMemberAccesses(buckets: Map<String, List<SyntaxNode>>, names: ModuleNames, scopes: LocalScopes): List<UsedType> =
+        buckets[MEMBER_EXPRESSION].orEmpty().mapNotNull { node ->
+            val root = findLeftmostIdentifier(node)
+            if (root != null && scopes.hides(root)) return@mapNotNull null
+            val isUpperCaseRoot = root != null && root.text.firstOrNull()?.isUpperCase() == true
+            if (isUpperCaseRoot && names.dynamicImports.exportOf(root) == null) return@mapNotNull UsedType(name = root.text.trim())
+            NamespaceMembers.useOf(node, names, scopes)
+        }
 
     private fun extractMethodCalls(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[CALL_EXPRESSION].orEmpty().mapNotNull { callNode ->
@@ -147,16 +141,16 @@ internal object UsedTypeExtractor {
 
     // JS uses `identifier` nodes for class names (unlike TS which uses `type_identifier`),
     // so PascalCase class names are captured here via the uppercase check.
-    private fun extractRelevantIdentifiers(
-        buckets: Map<String, List<SyntaxNode>>,
-        aliasMap: Map<String, String>,
-        localDeclarationNames: Set<String>
-    ): List<UsedType> = buckets[IDENTIFIER].orEmpty().mapNotNull { node ->
-        val name = node.text.trim()
-        if (isPlatformElementTag(node) || isQualifierOfAType(node)) return@mapNotNull null
-        if (name.firstOrNull()?.isUpperCase() != true && name !in aliasMap && name !in localDeclarationNames) return@mapNotNull null
-        UsedType(name = name)
-    }
+    private fun extractRelevantIdentifiers(buckets: Map<String, List<SyntaxNode>>, names: ModuleNames): List<UsedType> =
+        buckets[IDENTIFIER].orEmpty().mapNotNull { node ->
+            val name = node.text.trim()
+            if (isPlatformElementTag(node) || isQualifierOfAType(node)) return@mapNotNull null
+            names.dynamicImports.exportOf(node)?.let { return@mapNotNull UsedType(name = it) }
+            if (names.dynamicImports.moduleOf(node) != null) return@mapNotNull null
+            val isModuleName = name in names.aliasMap || name in names.localDeclarationNames
+            if (name.firstOrNull()?.isUpperCase() != true && !isModuleName) return@mapNotNull null
+            UsedType(name = name)
+        }
 
     // A lower-case JSX tag names an element of the platform, whatever the module binds under that name
     private fun isPlatformElementTag(node: SyntaxNode): Boolean =

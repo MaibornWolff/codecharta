@@ -508,7 +508,7 @@ class TypescriptDependencyUsedTypeTest {
         }
 
         @Test
-        fun `should keep a name that a block binds out of a dynamic import or a require`() {
+        fun `should keep a name that a block binds out of a dynamic import or a require, the import's through its module`() {
             // Arrange
             val code = """
                 export async function load() {
@@ -522,7 +522,8 @@ class TypescriptDependencyUsedTypeTest {
             val names = usedNames(code, "load")
 
             // Assert
-            assertThat(names).containsExactlyInAnyOrder("Centaur", "Helper")
+            val dynamicImport = "dynamic_import_" + code.indexOf("import('./centaur')")
+            assertThat(names).containsExactlyInAnyOrder("$dynamicImport.Centaur", "Helper")
         }
     }
 
