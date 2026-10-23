@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.BaseLanguageAnalyzer
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_AMBIENT_MODULE_SEGMENT
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_DEFAULT_EXPORT_NAME
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.WILDCARD_EXPORT_NAME
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.withoutFileSuffix
@@ -43,10 +42,9 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
 
     override fun buildPathWithName(packagePath: List<String>, declaration: Declaration): Path {
         if (declaration.type == DeclarationType.SCRIPT) return ScriptLeaf.pathIn(physicalFilePath)
-        if (declaration.parentPath.firstOrNull() == TSE_AMBIENT_MODULE_SEGMENT) {
-            return Path(declaration.parentPath.drop(1)) + declaration.name
-        }
-        if (declaration.parentPath.isNotEmpty()) return physicalFilePath + Path(declaration.parentPath) + declaration.name
+        if (DeclarationScopes.isAmbient(declaration.parentPath)) return Path(declaration.parentPath.drop(1)) + declaration.name
+        val namespaces = DeclarationScopes.namespacesOf(declaration.parentPath)
+        if (namespaces.isNotEmpty()) return physicalFilePath + Path(namespaces) + declaration.name
         if (declaration.name == TSE_DEFAULT_EXPORT_NAME) return physicalFilePath + DefaultExports.LEAF_NAME
         return physicalFilePath + declaration.name
     }
@@ -86,7 +84,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
 
     // A member of a namespace that names a namespace around it means that namespace of the own file
     private fun withEnclosingNamespacesWrittenInFull(declaration: Declaration, usedTypes: Set<UsedType>): Set<UsedType> {
-        val namespacePath = declaration.parentPath.takeUnless { it.firstOrNull() == TSE_AMBIENT_MODULE_SEGMENT }.orEmpty()
+        val namespacePath = DeclarationScopes.namespacesOf(declaration.parentPath)
         if (namespacePath.isEmpty()) return usedTypes
         return usedTypes.mapTo(LinkedHashSet()) { usedType ->
             val depth = namespacePath.lastIndexOf(usedType.name)
