@@ -28,16 +28,16 @@ internal object BindingPatterns {
     }
 
     /**
-     * The names a variable declarator declares: its name, or each name its destructuring pattern binds; none for a
-     * pattern that binds what a module exports, as those names are imports.
+     * The names a variable declarator declares: its name, or each name its destructuring pattern binds; none where it
+     * binds a module or what a module exports, as those names are imports.
      */
     fun declaredNames(declarator: SyntaxNode): List<String> {
         val name = declarator.getChildByFieldName(NAME_FIELD).orNull() ?: return emptyList()
-        if (name.type == IDENTIFIER) return listOf(name.text.trim())
-        return if (bindsModule(declarator)) emptyList() else boundNames(name)
+        if (bindsModule(declarator)) return emptyList()
+        return if (name.type == IDENTIFIER) listOf(name.text.trim()) else boundNames(name)
     }
 
-    /** Whether a declarator binds what a module exports: `const { A } = await import('./m')` or `require('./m')`. */
+    /** Whether a declarator binds a module or what it exports: `const m = require('./m')`, `const { A } = await import('./m')`. */
     fun bindsModule(declarator: SyntaxNode): Boolean {
         val value = declarator.getChildByFieldName(VALUE_FIELD).orNull() ?: return false
         val call = (if (value.type == AWAIT_EXPRESSION) value.namedChildren().firstOrNull() else value)
