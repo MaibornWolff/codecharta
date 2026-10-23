@@ -22,20 +22,8 @@ internal class ModuleBindings(module: SyntaxNode) {
         val visible = bindings.filter { usePosition == null || it.position <= usePosition }
         val lastBindings = visible.lastWithAlternatives(name)
         val latestPosition = lastBindings.firstOrNull()?.position ?: -1
-        val wildcards = if (name.startsWith(PRIVATE_PREFIX)) {
-            emptyList()
-        } else {
-            visible.filter {
-                it.name == null &&
-                    it.position > latestPosition
-            }
-        }
-        val wildcardBindings = wildcards.asReversed().map { it.binding }
+        val wildcardBindings = visible.filter { it.name == null && it.position > latestPosition }.asReversed().map { it.binding }
         if (lastBindings.isEmpty()) return listOf(wildcardBindings).filter { it.isNotEmpty() }
         return lastBindings.map { wildcardBindings + it.binding }
-    }
-
-    companion object {
-        private const val PRIVATE_PREFIX = "_"
     }
 }

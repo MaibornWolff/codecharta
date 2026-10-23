@@ -5,7 +5,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 /**
  * What a Python name means where it is used, by "A simple name" of `docs/name-resolution/python.md`. A use of the name
  * followed by attribute names becomes a [UsedType]: the module the name is looked up in as namespace prefix (none for
- * the own module, one `.` segment per leading dot for a relative one), the name and the attributes behind it as name.
+ * the own module, one `.` segment per leading dot for a relative one, a last `*` segment for a wildcard import), the
+ * name and the attributes behind it as name.
  */
 internal sealed interface Binding {
     /** The use of the name [head] followed by the attribute names [attributes]; null for one that names no declaration. */
@@ -34,10 +35,12 @@ internal sealed interface Binding {
 
     /** The public names of the module [module], which `from module import *` binds; whether it binds a name only that module tells. */
     data class Wildcard(val module: List<String>) : Binding {
-        override fun useOf(head: String, attributes: List<String>) = UsedType(dotted(listOf(head) + attributes), namespacePrefix = module)
+        override fun useOf(head: String, attributes: List<String>) =
+            UsedType(dotted(listOf(head) + attributes), namespacePrefix = module + WILDCARD_SEGMENT)
     }
 }
 
 private const val SEPARATOR = "."
+private const val WILDCARD_SEGMENT = "*"
 
 private fun dotted(segments: List<String>): String = segments.joinToString(SEPARATOR)

@@ -109,7 +109,7 @@ the rule yet; `sample-projects/regression/python/known-gaps.md` says how it devi
 | Binding: `from m import N as A` | `spec-from-import-alias` | ok |
 | Binding: `from m import *` | `spec-wildcard-import` | ok |
 | Binding: a wildcard skips names starting with `_` | `spec-wildcard-public-only` | ok |
-| Binding: a wildcard follows `__all__` | `spec-wildcard-all` | gap |
+| Binding: a wildcard follows `__all__` | `spec-wildcard-all` | ok |
 | Binding: an import alone draws no edge | `spec-unused-import` | ok |
 | 1. a parameter or variable of the function | `spec-function-local-binding` | ok |
 | 1. an import inside a function | `spec-function-local-import` | ok |

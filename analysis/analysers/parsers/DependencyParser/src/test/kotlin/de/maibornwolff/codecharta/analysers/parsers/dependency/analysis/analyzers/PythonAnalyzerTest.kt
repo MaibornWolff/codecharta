@@ -245,6 +245,29 @@ def grow():
     }
 
     @Test
+    fun `should make a use through a wildcard import only the names the module exports`(
+        @TempDir root: File
+    ) {
+        // Arrange
+        listOf("app/__init__.py" to "", "app/models.py" to "__all__ = [\"Model\"]\n").forEach { (path, content) ->
+            root.resolve(path).also { file -> file.parentFile.mkdirs() }.writeText(content)
+        }
+        val pythonCode = """
+from app.models import *
+
+def build():
+    return Model(), Other()
+        """
+        val physicalPath = File("app/user.py").path
+
+        // Act
+        val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode, root)).analyze()
+
+        // Assert
+        assertThat(report.nodes.single().usedTypes).containsExactly(Type.simple("app.models.Model"))
+    }
+
+    @Test
     fun `should make no use of an import alone`() {
         // Arrange
         val pythonCode = """

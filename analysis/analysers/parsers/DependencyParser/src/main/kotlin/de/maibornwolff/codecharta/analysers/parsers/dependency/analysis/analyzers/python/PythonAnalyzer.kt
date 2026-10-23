@@ -17,13 +17,14 @@ import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
 
 /**
- * The declarations of a Python file. The extractor reports a use as the module its name is looked up in and the name
- * with the attribute names behind it; the analyzer writes it as the paths it can have below the analysis root, the
+ * The declarations of a Python file. The extractor reports a use as the module its name is looked up in, a last `*`
+ * segment for a wildcard import, and the name with the attribute names behind it; the analyzer writes it as the paths it can have below the analysis root, the
  * likeliest first, of which [PythonNameRules] takes the first that is a declaration.
  */
 class PythonAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     private val modulePath by lazy { fileInfo.physicalPathAsPath().withoutFileSuffix(PYTHON_SUFFIX).parts }
     private val modules = fileInfo.analysisRoot?.let { PythonModules.of(it) }
+    private val wildcardExports = fileInfo.analysisRoot?.let { WildcardExports.of(it) }
 
     override fun analyze(): FileReport {
         val result = TreeSitterDependencies.analyze(fileInfo.content, Language.PYTHON)
@@ -49,9 +50,15 @@ class PythonAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     private fun pathsOf(use: UsedType, candidates: ModuleCandidates): List<List<String>> {
         val chain = use.name.split(SEGMENT_SEPARATOR)
         if (use.namespacePrefix.isEmpty()) return ModuleCandidates.deepestFirst(modulePath, chain)
-        val module = ModuleReference.of(use.namespacePrefix, modulePath) ?: return emptyList()
-        return candidates.namesIn(module, chain)
+        val isWildcard = use.namespacePrefix.last() == WILDCARD_SEGMENT
+        val module =
+            ModuleReference.of(if (isWildcard) use.namespacePrefix.dropLast(1) else use.namespacePrefix, modulePath) ?: return emptyList()
+        if (!isWildcard) return candidates.namesIn(module, chain)
+        return candidates.of(module).filter { exports(it, chain.first()) }.flatMap { ModuleCandidates.deepestFirst(it, chain) }
     }
+
+    private fun exports(module: List<String>, name: String): Boolean =
+        wildcardExports?.exports(module, name) ?: WildcardExports.isPublic(name)
 
     // The first of the paths that is a declaration
     private fun typeOf(paths: List<List<String>>): Type? {
@@ -72,5 +79,6 @@ class PythonAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     companion object {
         private const val PYTHON_SUFFIX = "py"
         private const val SEGMENT_SEPARATOR = "."
+        private const val WILDCARD_SEGMENT = "*"
     }
 }

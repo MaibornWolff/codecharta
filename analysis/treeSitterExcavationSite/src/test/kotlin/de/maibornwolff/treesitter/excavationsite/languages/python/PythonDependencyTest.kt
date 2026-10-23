@@ -647,7 +647,7 @@ class PythonDependencyTest {
         }
 
         @Test
-        fun `should report the latest wildcard import first and the earlier one as fallback, but no private name`() {
+        fun `should report the latest wildcard import first and the earlier one as fallback, behind a wildcard segment`() {
             // Arrange
             val code = """
                 from app.first import *
@@ -662,7 +662,8 @@ class PythonDependencyTest {
 
             // Assert
             assertThat(usedTypes).containsExactly(
-                use("Node", "app", "second").copy(fallbacks = listOf(use("Node", "app", "first")))
+                use("Node", "app", "second", "*").copy(fallbacks = listOf(use("Node", "app", "first", "*"))),
+                use("_hidden", "app", "second", "*").copy(fallbacks = listOf(use("_hidden", "app", "first", "*")))
             )
         }
 
@@ -682,7 +683,7 @@ class PythonDependencyTest {
 
             // Assert
             assertThat(usedTypes).containsExactly(
-                use("Node", "app", "extra").copy(fallbacks = listOf(use("Node", "app", "models")))
+                use("Node", "app", "extra", "*").copy(fallbacks = listOf(use("Node", "app", "models")))
             )
         }
     }
