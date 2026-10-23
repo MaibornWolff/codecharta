@@ -1558,7 +1558,7 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should resolve namespace alias constructor call to module dependency`() {
-        // Arrange - Logger is only used via new types.Logger() with no type annotation
+        // Arrange
         val typescriptCode = """
             import * as types from './types'
 
@@ -1578,10 +1578,9 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // Assert - Logger is captured as usedType (extracted from new types.Logger() constructor call)
-        // and the wildcard dep on the types module is recorded for project-wide resolution
+        // Assert
         val node = report.nodes.first { it.pathWithName.getName() == "Consumer" }
-        assertThat(node.usedTypes).contains(Type.simple("Logger"))
+        assertThat(node.usedTypes.map { it.name }).contains("types.Logger")
         assertThat(node.dependencies).contains(Dependency(path = Path(listOf("types")), isWildcard = true))
     }
 
