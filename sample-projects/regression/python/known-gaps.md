@@ -13,3 +13,20 @@ A wildcard import ignores `__all__`.
 extra leaf app/user.py#build -> app/models.py#Other
 ```
 
+## spec-alternative-if
+
+Of the bindings in the branches of one `if` statement, the last one in source order wins.
+
+```text
+missing file app/shell.py -> app/windows.py
+missing leaf app/shell.py#Shell -> app/windows.py#Console
+```
+
+## spec-alternative-try
+
+Of the bindings in the branches of one `try` statement, the last one in source order wins.
+
+```text
+missing file app/encounter.py -> app/dice.py
+missing leaf app/encounter.py#surprise -> app/dice.py#roll
+```
