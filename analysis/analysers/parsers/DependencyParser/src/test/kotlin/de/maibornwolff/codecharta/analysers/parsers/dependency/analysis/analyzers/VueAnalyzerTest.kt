@@ -486,4 +486,77 @@ class VueAnalyzerTest {
         // Assert
         assertThat(node.dependencies.map { it.path }).contains(Path(listOf("application", "index", "Facade")))
     }
+
+    @Test
+    fun `should count an import only where the script setup block or the template uses it`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange
+        File(analysisRoot, "fmt.ts").writeText("export function format() {}\nexport const defaults = {}\nexport function unused() {}")
+        File(analysisRoot, "components").mkdirs()
+        val vueCode = """
+            <template>
+              <span :title="defaults.size">{{ format(date) }}</span>
+            </template>
+
+            <script setup lang="ts">
+            import { defaults, format, unused } from '../fmt'
+
+            const date = new Date()
+            </script>
+        """.trimIndent()
+        val fileInfo = FileInfo(SupportedLanguage.VUE, "components/Item.vue", vueCode, analysisRoot = analysisRoot)
+
+        // Act
+        val node = VueAnalyzer(fileInfo).analyze().nodes.single()
+
+        // Assert
+        assertThat(node.usedTypes.map { it.name }).containsExactlyInAnyOrder("defaults", "format", "Date")
+    }
+
+    @Test
+    fun `should let a script setup block see what the plain script block binds`() {
+        // Arrange
+        val vueCode = """
+            <script lang="ts">
+            import { format } from './fmt'
+            export interface Props { size: number }
+            </script>
+
+            <script setup lang="ts">
+            defineProps<Props>()
+            const label = format('x')
+            </script>
+        """.trimIndent()
+        val fileInfo = FileInfo(SupportedLanguage.VUE, "src/Comp.vue", vueCode)
+
+        // Act
+        val nodes = VueAnalyzer(fileInfo).analyze().nodes
+
+        // Assert
+        val component = nodes.single { it.pathWithName == Path(listOf("src", "Comp")) }
+        assertThat(component.usedTypes.map { it.name }).containsExactlyInAnyOrder("src.Comp.Props", "format")
+        assertThat(nodes.map { it.pathWithName.withDots() }).containsExactlyInAnyOrder("src.Comp", "src.Comp.Props")
+    }
+
+    @Test
+    fun `should make the declaration a plain script exports as default the component itself`() {
+        // Arrange
+        val vueCode = """
+            <script lang="ts">
+            import { B } from './b'
+            export default class Comp { b?: B }
+            </script>
+            <template><div/></template>
+        """.trimIndent()
+        val fileInfo = FileInfo(SupportedLanguage.VUE, "src/Comp.vue", vueCode)
+
+        // Act
+        val nodes = VueAnalyzer(fileInfo).analyze().nodes
+
+        // Assert
+        val component = nodes.single()
+        assertThat(component.pathWithName).isEqualTo(Path(listOf("src", "Comp")))
+        assertThat(component.usedTypes.map { it.name }).containsExactly("B")
+    }
 }
