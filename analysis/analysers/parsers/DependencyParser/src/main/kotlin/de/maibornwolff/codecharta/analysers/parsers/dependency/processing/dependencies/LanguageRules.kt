@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.java.JavaNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.python.PythonNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlCopyRules
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.TypescriptNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.CopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.DefaultNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NameRules
@@ -22,6 +23,7 @@ internal object LanguageRules {
         SupportedLanguage.JAVA, SupportedLanguage.KOTLIN -> JavaNameRules
         SupportedLanguage.GO -> GoNameRules
         SupportedLanguage.PYTHON -> PythonNameRules
+        SupportedLanguage.TYPESCRIPT, SupportedLanguage.JAVASCRIPT, SupportedLanguage.VUE -> TypescriptNameRules
         else -> DefaultNameRules
     }
 
