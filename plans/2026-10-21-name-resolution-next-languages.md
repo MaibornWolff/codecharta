@@ -161,7 +161,7 @@ Steps, one commit each:
 11. [x] a lower-case JSX tag is no name; every name through a namespace import is one
 12. [x] a name bound by destructuring is a declaration
 13. [x] what a namespace exports is a leaf of its own
-14. [ ] top-level code is a script leaf
+14. [x] top-level code is a script leaf
 15. [ ] a side-effect import or unbound `require` uses the script leaf
 16. [ ] a name read from a dynamic import's result
 17. [ ] globals of script files and `declare global`
@@ -174,18 +174,17 @@ Steps, one commit each:
 24. [ ] Angular: attribute directives
 25. [ ] changelog, README, gh-pages, plan
 
-### Resume TypeScript here (2026-10-23, after step 9)
+### Resume TypeScript here (2026-10-23, after step 14)
 
-- **Last build** `ccsh-ts28` (head of the branch); the next chain is `chain.sh ts28 ts29`. Checkpoint probes worse than
+- **Last build** `ccsh-ts32` (head of the branch); the next chain is `chain.sh ts32 ts33`. Checkpoint probes worse than
   the release: the eight known by decision (Java, C#, Go, Python) plus `typescript/r3-p3-ts`, worse by decision 7 (it
   draws `Circle -> Shapes.Circle` where the checkpoint expects the namespace as one leaf, `Circle -> Shapes`).
-- **Gaps left (19 of 39):** typescript `spec-declare-global`, `spec-dynamic-import`, `spec-global-alternatives`,
-  `spec-global-script`, `spec-reexport-default`,
-  `spec-script-top-level`, `spec-side-effect-import`; javascript `spec-commonjs-default`, `spec-commonjs-require-module`,
+- **Gaps left (18 of 39, several only partly open):** typescript `spec-declare-global`, `spec-dynamic-import`,
+  `spec-global-alternatives`, `spec-global-script`, `spec-reexport-default`, `spec-side-effect-import`; javascript `spec-commonjs-default`, `spec-commonjs-require-module`,
   `spec-esm-import-commonjs`, `spec-require-side-effect`, `spec-script-global`; vue `spec-auto-import-unique`,
   `spec-binding-over-auto-import`, `spec-components-option`, `spec-global-registration`, `spec-plain-script-export`,
   `spec-template-expression`; angular `spec-attribute-directive`.
-- **Next steps in order:** 14–18,
+- **Next steps in order:** 15–18 (part of 18 is done: a name `require` or `await import` binds is no declaration),
   then 20–24, then 19 (drop the heuristics: `TypescriptNameRules` still delegates to `DefaultNameRules`), then 25.
   `spec-reexport-default` (`export { default as B } from`) needs the re-export's use to carry its module: the re-export
   declaration's used type is `DEFAULT_EXPORT`, and `MemberImports` keys defaults by binding name, which a re-export has
@@ -194,6 +193,11 @@ Steps, one commit each:
   not TSE uses): first segment = binding, the rest a member path, shorter paths down to the declaration as fallbacks; a
   namespace import binds its module (`Target.moduleFile`), and `ModuleExports.moduleExportOf` walks `export * as`
   (no `*` declaration, `bindingName` on the import). The extractor reports `ns.a.b` as written, a value chain whole.
+- **Step 14 as done:** `TopLevelCode` (TSE) makes one `SCRIPT` declaration of the statements outside every
+  declaration, import, export, directive and CommonJS export; `ScriptLeaf` (analyzer) names it `<file>.script`, which
+  the map writes `<file>_script` (probes use that form, the spec page says so). Christian to confirm: that notation,
+  and two new visualization gate warnings (upward dependencies of the e2e tests of scenarios and explorerTreeLevel on
+  other features' page objects), real edges the script leaves make visible.
 - **Where things are:** extractor `treeSitterExcavationSite/.../languages/javascript/extractors/`: `ExportedNames`
   (file scope), `LocalScopes` + `BindingPatterns` (step 10, values and types apart; dynamic-import callbacks and
   `await import`/`require` destructuring are module bindings, no locals), `ModuleNames` in `DeclarationPrepass`
