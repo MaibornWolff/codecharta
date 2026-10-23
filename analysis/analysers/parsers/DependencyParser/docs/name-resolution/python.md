@@ -52,8 +52,9 @@ Looked up in this order (LEGB); the first scope that binds `N` wins:
 
 1. The enclosing function, then each function around it: a parameter, an assignment, a `for`, `with` or `except`
    target, a nested `def` or `class`, an import. An import there means what it imports; any other binding draws no
-   edge. A class body is no enclosing scope of the methods in it: inside a method, a nested class of the own class is
-   only reachable as `Outer.Inner` or `self.Inner`.
+   edge. A use written directly in a class body first sees what that body binds before it, such as a nested class.
+   A class body is no enclosing scope of the methods in it: inside a method, a nested class of the own class is only
+   reachable as `Outer.Inner` or `self.Inner`.
 2. The module: its top-level classes, functions, variables and imports. Of several bindings of `N` the last one in
    source order wins (decision 3):
    - a use in a function body runs when the function is called, after the module has run: the last binding of the
@@ -69,8 +70,8 @@ Looked up in this order (LEGB); the first scope that binds `N` wins:
 
 - If `p` is bound to a module (by `import`, or `from a import b` where `b` is a submodule), `p.N` is the name `N` of
   that module, by the rules of `from m import N`; a longer chain `a.b.c.N` walks down the submodules.
-- If `p` is a class of the project, `p.N` is its nested class `N` if it declares one; any other attribute of the class
-  (a method, a class variable) is a use of the class itself.
+- If `p` is a class of the project, `p.N` is its nested class `N` if it declares one, and the class `p` is then no
+  dependency of its own; any other attribute of the class (a method, a class variable) is a use of the class itself.
 - Otherwise `p` is a value (`self`, a parameter, a variable, a call result), and `p.N` is an attribute of its type,
   which the parser does not infer: no edge, also where `N` is the name of a project declaration.
 
@@ -78,6 +79,7 @@ Looked up in this order (LEGB); the first scope that binds `N` wins:
 
 Each rule is tested by a probe under `sample-projects/regression/python/`. "Gap" means the parser does not follow
 the rule yet; `sample-projects/regression/python/known-gaps.md` says how it deviates.
+
 
 ## Not supported
 
