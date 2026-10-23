@@ -71,7 +71,7 @@ internal object DeclarationExtractor {
             ?.trim()
             ?: return emptyList()
         if (moduleName.contains("*")) return emptyList()
-        val parentPath = moduleName.split("/")
+        val parentPath = listOf(AMBIENT_MODULE) + moduleName.split("/")
         val body = moduleNode.children().firstOrNull { it.type == STATEMENT_BLOCK } ?: return emptyList()
         return body
             .children()

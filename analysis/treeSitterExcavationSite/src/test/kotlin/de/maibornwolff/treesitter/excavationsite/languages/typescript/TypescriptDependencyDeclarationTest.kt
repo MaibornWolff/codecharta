@@ -517,7 +517,7 @@ class TypescriptDependencyDeclarationTest {
             assertThat(result.declarations).hasSize(1)
             assertThat(result.declarations[0].name).isEqualTo("myFunction")
             assertThat(result.declarations[0].type).isEqualTo(DeclarationType.FUNCTION)
-            assertThat(result.declarations[0].parentPath).containsExactly("MyModule")
+            assertThat(result.declarations[0].parentPath).containsExactly("AMBIENT_MODULE", "MyModule")
         }
 
         @Test
@@ -536,7 +536,7 @@ class TypescriptDependencyDeclarationTest {
             assertThat(result.declarations).hasSize(1)
             assertThat(result.declarations[0].name).isEqualTo("MyClass")
             assertThat(result.declarations[0].type).isEqualTo(DeclarationType.CLASS)
-            assertThat(result.declarations[0].parentPath).containsExactly("MyModule")
+            assertThat(result.declarations[0].parentPath).containsExactly("AMBIENT_MODULE", "MyModule")
         }
 
         @Test
@@ -577,7 +577,7 @@ class TypescriptDependencyDeclarationTest {
 
             // Assert
             assertThat(result.declarations).hasSize(1)
-            assertThat(result.declarations[0].parentPath).containsExactly("@scope", "pkg")
+            assertThat(result.declarations[0].parentPath).containsExactly("AMBIENT_MODULE", "@scope", "pkg")
         }
     }
 
@@ -701,7 +701,7 @@ class TypescriptDependencyDeclarationTest {
             val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
 
             // Assert
-            assertThat(result.declarations.map { it.parentPath + it.name }).containsExactly(listOf("legacy-lib", "Api"))
+            assertThat(result.declarations.map { it.parentPath + it.name }).containsExactly(listOf("AMBIENT_MODULE", "legacy-lib", "Api"))
         }
     }
 

@@ -13,6 +13,9 @@ import de.maibornwolff.treesitter.excavationsite.api.UsedType
 // The sentinel name TSE assigns to default export declarations (e.g. `export default ...`)
 const val TSE_DEFAULT_EXPORT_NAME = "DEFAULT_EXPORT"
 
+// The first parent path segment TSE gives a declaration of `declare module 'name'`, whose path is the module name
+const val TSE_AMBIENT_MODULE_SEGMENT = "AMBIENT_MODULE"
+
 // The sentinel name TSE assigns to wildcard re-export declarations (e.g. `export * from '...'`)
 const val WILDCARD_EXPORT_NAME = "*"
 

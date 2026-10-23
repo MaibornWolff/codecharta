@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.BaseLanguageAnalyzer
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_AMBIENT_MODULE_SEGMENT
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_DEFAULT_EXPORT_NAME
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.WILDCARD_EXPORT_NAME
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.withoutFileSuffix
@@ -40,9 +41,10 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     override fun tseLanguage(): Language = if (isTsx) Language.TSX else Language.TYPESCRIPT
 
     override fun buildPathWithName(packagePath: List<String>, declaration: Declaration): Path {
-        if (declaration.parentPath.isNotEmpty()) {
-            return Path(declaration.parentPath) + declaration.name
+        if (declaration.parentPath.firstOrNull() == TSE_AMBIENT_MODULE_SEGMENT) {
+            return Path(declaration.parentPath.drop(1)) + declaration.name
         }
+        if (declaration.parentPath.isNotEmpty()) return physicalFilePath + Path(declaration.parentPath) + declaration.name
         if (declaration.name == TSE_DEFAULT_EXPORT_NAME) return physicalFilePath + DefaultExports.LEAF_NAME
         return physicalFilePath + declaration.name
     }
