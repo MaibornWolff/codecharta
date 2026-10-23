@@ -62,7 +62,12 @@ Looked up in this order (LEGB); the first scope that binds `N` wins:
    - a use in a base class, a decorator, a default value or a class body runs when its `class` or `def` statement
      runs: the last binding before that statement;
    - an annotation is evaluated lazily (Python 3.14, and earlier with `from __future__ import annotations`), so it
-     sees the last binding of the whole module.
+     sees the last binding of the whole module;
+   - bindings in different branches of one `if` or `try` statement are alternatives, of which only the run decides
+     (`try: from fast import X`, `except ImportError: from slow import X`): a use that sees one of them points at
+     each of them (decision 5).
+
+   The same holds for the bindings of a function or class body.
 3. A builtin (`print`, `len`, `object`, `Exception`, …): no edge.
 4. None of these: no edge.
 
@@ -115,6 +120,8 @@ the rule yet; `sample-projects/regression/python/known-gaps.md` says how it devi
 | 2, decision 3: a base class at definition time | `spec-definition-time` | ok |
 | 2, decision 3: a decorator at definition time | `spec-decorator-definition-time` | ok |
 | 2, decision 3: a lazy annotation | `spec-annotation-lazy` | ok |
+| 2, decision 5: alternatives in `try` and `except` | `spec-alternative-try` | gap |
+| 2, decision 5: alternatives in `if` and `else`, hidden by a later binding | `spec-alternative-if` | gap |
 | 3. builtin | `spec-builtin` | ok |
 | 2 and 3: a module binding over a builtin | `spec-module-shadows-builtin` | ok |
 | Attribute through a class | `spec-class-attribute` | ok |
@@ -126,8 +133,6 @@ the rule yet; `sample-projects/regression/python/known-gaps.md` says how it devi
 
 - The import roots come from the `__init__.py` files of the analysed folder: `sys.path` changes at run time, `.pth`
   files, `PYTHONPATH` and the package folders of `pyproject.toml`, `setup.cfg` or `setup.py` are not read.
-- A binding in a branch of `if` or `try` counts like any other in source order, so of `try: from fast import X` and
-  `except ImportError: from slow import X` the second wins; which one runs is only known at run time.
 - `global` and `nonlocal` statements, `del`, and an `__all__` that is computed rather than written as a list.
 - A name imported onward from a module other than a package's `__init__.py` (`from app.models import datetime`).
 - `importlib.import_module`, `__import__` and names in strings (`"Creature"` as a forward reference): extraction
@@ -144,3 +149,5 @@ the rule yet; `sample-projects/regression/python/known-gaps.md` says how it devi
    that runs later, the last before the statement for a base class, decorator, default value or class body (decided
    2026-10-23).
 4. A class nested in a class is a leaf of its own, `module.Outer.Inner`, as a Java member type (decided 2026-10-23).
+5. Bindings in different branches of one `if` or `try` statement are alternatives, and a use points at each of them,
+   as a Go name points at every build-tag variant (decided 2026-10-23).
