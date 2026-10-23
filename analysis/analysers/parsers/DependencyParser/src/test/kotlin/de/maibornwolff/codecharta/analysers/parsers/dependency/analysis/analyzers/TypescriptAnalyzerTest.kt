@@ -841,7 +841,7 @@ class TypescriptAnalyzerTest {
     }
 
     @Test
-    fun `should add default export of a file as separate node`() {
+    fun `should make the default export of a name the file does not declare a node default`() {
         // Arrange
         val typescriptCode = """
             export default MyDefaultExport;      
@@ -857,15 +857,23 @@ class TypescriptAnalyzerTest {
         ).analyze()
 
         // Assert
-        val node = report.nodes[0]
-        assertThat(node.dependencies).containsExactly(
-            Dependency(
-                Path(listOf("MyDirectory", "MyClass")),
-                isWildcard = true
-            )
-        )
-        assertThat(node.pathWithName).isEqualTo(Path(listOf("MyDirectory", "MyClass", "MyDirectory_MyClass_DEFAULT_EXPORT")))
+        val node = report.nodes.single()
+        assertThat(node.pathWithName).isEqualTo(Path(listOf("MyDirectory", "MyClass", "default")))
         assertThat(node.usedTypes).containsExactly(Type.simple("MyDefaultExport"))
+    }
+
+    @Test
+    fun `should make no node of its own for the default export of a declaration of the file`() {
+        // Arrange
+        val typescriptCode = """
+            export default class Base {}
+        """.trimIndent()
+
+        // Act
+        val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "MyDirectory/Base.ts", typescriptCode)).analyze()
+
+        // Assert
+        assertThat(report.nodes.map { it.pathWithName }).containsExactly(Path(listOf("MyDirectory", "Base", "Base")))
     }
 
     @Test

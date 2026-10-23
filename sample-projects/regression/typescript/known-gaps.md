@@ -16,23 +16,20 @@ missing leaf app.ts#isDebug -> setup.ts#Settings
 
 ## spec-default-anonymous
 
-An anonymous default export is a re-export leaf `<file>_DEFAULT_EXPORT`, which a default import does not find.
+A default import does not find the default export of its module.
 
 ```text
-missing file config.ts -> port.ts
 missing file user.ts -> anon.ts
 missing file user.ts -> config.ts
-missing leaf config.ts#default -> port.ts#Port
 missing leaf user.ts#start -> anon.ts#default
 missing leaf user.ts#start -> config.ts#default
 ```
 
 ## spec-default-identifier
 
-`export default name` is a re-export leaf `<file>_DEFAULT_EXPORT` of its own, and a default import does not find the declaration behind it.
+A default import does not find the declaration `export default name` names.
 
 ```text
-extra leaf settings.ts#settings_DEFAULT_EXPORT -> settings.ts#settings
 missing file user.ts -> settings.ts
 missing leaf user.ts#debug -> settings.ts#settings
 ```

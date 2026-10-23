@@ -246,8 +246,8 @@ class JavascriptDependencyTest {
         }
 
         @Test
-        fun `should resolve DEFAULT_EXPORT type from locally declared identifier`() {
-            // Arrange — declare-then-export-default: DEFAULT_EXPORT should inherit the declared type
+        fun `should make export default of a declared identifier a DEFAULT_EXPORT re-export of that name`() {
+            // Arrange
             val code = """
                 const buildFunction = () => { return "hello"; };
                 export default buildFunction;
@@ -260,45 +260,43 @@ class JavascriptDependencyTest {
             val byName = result.declarations.associateBy { it.name }
             assertThat(byName.keys).containsExactlyInAnyOrder("buildFunction", "DEFAULT_EXPORT")
             assertThat(byName["buildFunction"]?.type).isEqualTo(DeclarationType.VARIABLE)
-            assertThat(byName["DEFAULT_EXPORT"]?.type).isEqualTo(DeclarationType.VARIABLE)
+            assertThat(byName["DEFAULT_EXPORT"]?.type).isEqualTo(DeclarationType.REEXPORT)
             assertThat(byName["DEFAULT_EXPORT"]?.usedTypes?.map { it.name }).containsExactlyInAnyOrder("buildFunction")
         }
 
-        // JS intentionally produces both the named declaration AND a DEFAULT_EXPORT copy (same DeclarationType)
-        // for `export default function/class Foo` — matching DC main's legacy JS analyzer behavior.
-        // TypeScript does NOT add the DEFAULT_EXPORT copy; see JavascriptDependencyMapping.extractJsDeclarations.
         @Test
-        fun `should add DEFAULT_EXPORT node alongside original for export default function`() {
+        fun `should make an inline export default function a DEFAULT_EXPORT re-export of the function`() {
             // Arrange
             val code = "export default function IssueList(props) {}"
 
             // Act
             val result = TreeSitterDependencies.analyze(code, Language.JAVASCRIPT)
 
-            // Assert — both the named function AND a DEFAULT_EXPORT node (DC main produces both)
+            // Assert
             val byName = result.declarations.associateBy { it.name }
             assertThat(byName.keys).containsExactlyInAnyOrder("IssueList", "DEFAULT_EXPORT")
             assertThat(byName["IssueList"]?.type).isEqualTo(DeclarationType.FUNCTION)
-            assertThat(byName["DEFAULT_EXPORT"]?.type).isEqualTo(DeclarationType.FUNCTION)
+            assertThat(byName["DEFAULT_EXPORT"]?.type).isEqualTo(DeclarationType.REEXPORT)
+            assertThat(byName["DEFAULT_EXPORT"]?.usedTypes?.map { it.name }).containsExactly("IssueList")
         }
 
         @Test
-        fun `should add DEFAULT_EXPORT node alongside original for export default class`() {
+        fun `should make an inline export default class a DEFAULT_EXPORT re-export of the class`() {
             // Arrange
             val code = "export default class Charts extends Component {}"
 
             // Act
             val result = TreeSitterDependencies.analyze(code, Language.JAVASCRIPT)
 
-            // Assert — both the named class AND a DEFAULT_EXPORT node
+            // Assert
             val byName = result.declarations.associateBy { it.name }
             assertThat(byName.keys).containsExactlyInAnyOrder("Charts", "DEFAULT_EXPORT")
             assertThat(byName["Charts"]?.type).isEqualTo(DeclarationType.CLASS)
-            assertThat(byName["DEFAULT_EXPORT"]?.type).isEqualTo(DeclarationType.CLASS)
+            assertThat(byName["DEFAULT_EXPORT"]?.type).isEqualTo(DeclarationType.REEXPORT)
         }
 
         @Test
-        fun `should add DEFAULT_EXPORT REEXPORT for anonymous export default class`() {
+        fun `should make an anonymous export default class a DEFAULT_EXPORT class`() {
             // Arrange
             val code = "export default class {}"
 
@@ -308,12 +306,12 @@ class JavascriptDependencyTest {
             // Assert
             assertThat(result.declarations).hasSize(1)
             assertThat(result.declarations[0].name).isEqualTo("DEFAULT_EXPORT")
-            assertThat(result.declarations[0].type).isEqualTo(DeclarationType.REEXPORT)
+            assertThat(result.declarations[0].type).isEqualTo(DeclarationType.CLASS)
             assertThat(result.declarations[0].usedTypes).isEmpty()
         }
 
         @Test
-        fun `should add DEFAULT_EXPORT REEXPORT for anonymous export default function`() {
+        fun `should make an anonymous export default function a DEFAULT_EXPORT function`() {
             // Arrange
             val code = "export default function() {}"
 
@@ -323,7 +321,7 @@ class JavascriptDependencyTest {
             // Assert
             assertThat(result.declarations).hasSize(1)
             assertThat(result.declarations[0].name).isEqualTo("DEFAULT_EXPORT")
-            assertThat(result.declarations[0].type).isEqualTo(DeclarationType.REEXPORT)
+            assertThat(result.declarations[0].type).isEqualTo(DeclarationType.FUNCTION)
             assertThat(result.declarations[0].usedTypes).isEmpty()
         }
 
@@ -418,7 +416,7 @@ class JavascriptDependencyTest {
         }
 
         @Test
-        fun `should produce DEFAULT_EXPORT node for export default call expression`() {
+        fun `should make export default of a call expression a DEFAULT_EXPORT variable`() {
             // Arrange
             val code = "export default defineConfig({})"
 
@@ -428,7 +426,7 @@ class JavascriptDependencyTest {
             // Assert
             assertThat(result.declarations).hasSize(1)
             assertThat(result.declarations[0].name).isEqualTo("DEFAULT_EXPORT")
-            assertThat(result.declarations[0].type).isEqualTo(DeclarationType.REEXPORT)
+            assertThat(result.declarations[0].type).isEqualTo(DeclarationType.VARIABLE)
         }
 
         @Test

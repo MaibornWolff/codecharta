@@ -205,8 +205,8 @@ class TypescriptDependencyDeclarationTest {
         }
 
         @Test
-        fun `should resolve DEFAULT_EXPORT type from locally declared identifier`() {
-            // Arrange — declare-then-export-default: DEFAULT_EXPORT should inherit the declared type
+        fun `should make export default of a declared identifier a DEFAULT_EXPORT re-export of that name`() {
+            // Arrange
             val code = "const events = { EventEmitter }\nexport default events"
 
             // Act
@@ -216,14 +216,14 @@ class TypescriptDependencyDeclarationTest {
             val byName = result.declarations.associateBy { it.name }
             assertThat(byName.keys).containsExactlyInAnyOrder("events", "DEFAULT_EXPORT")
             assertThat(byName["events"]?.type).isEqualTo(DeclarationType.VARIABLE)
-            assertThat(byName["DEFAULT_EXPORT"]?.type).isEqualTo(DeclarationType.VARIABLE)
+            assertThat(byName["DEFAULT_EXPORT"]?.type).isEqualTo(DeclarationType.REEXPORT)
             assertThat(byName["DEFAULT_EXPORT"]?.usedTypes?.map { it.name }).containsExactlyInAnyOrder("events")
         }
 
         @Test
-        fun `should produce DEFAULT_EXPORT REEXPORT for export default call expression`() {
+        fun `should make export default of a call expression a DEFAULT_EXPORT variable that uses what it names`() {
             // Arrange
-            val code = "export default defineConfig({})"
+            val code = "export default defineConfig({ plugin: Plugin })"
 
             // Act
             val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
@@ -231,12 +231,12 @@ class TypescriptDependencyDeclarationTest {
             // Assert
             assertThat(result.declarations).hasSize(1)
             assertThat(result.declarations[0].name).isEqualTo("DEFAULT_EXPORT")
-            assertThat(result.declarations[0].type).isEqualTo(DeclarationType.REEXPORT)
-            assertThat(result.declarations[0].usedTypes).isEmpty()
+            assertThat(result.declarations[0].type).isEqualTo(DeclarationType.VARIABLE)
+            assertThat(result.declarations[0].usedTypes.map { it.name }).containsExactly("Plugin")
         }
 
         @Test
-        fun `should produce DEFAULT_EXPORT REEXPORT for export default object literal`() {
+        fun `should make export default of an object literal a DEFAULT_EXPORT variable`() {
             // Arrange
             val code = "export default { performance }"
 
@@ -246,12 +246,12 @@ class TypescriptDependencyDeclarationTest {
             // Assert
             assertThat(result.declarations).hasSize(1)
             assertThat(result.declarations[0].name).isEqualTo("DEFAULT_EXPORT")
-            assertThat(result.declarations[0].type).isEqualTo(DeclarationType.REEXPORT)
+            assertThat(result.declarations[0].type).isEqualTo(DeclarationType.VARIABLE)
             assertThat(result.declarations[0].usedTypes).isEmpty()
         }
 
         @Test
-        fun `should not produce DEFAULT_EXPORT REEXPORT for inline export default class`() {
+        fun `should make an inline export default class a DEFAULT_EXPORT re-export of the class`() {
             // Arrange
             val code = "export default class Foo {}"
 
@@ -259,13 +259,14 @@ class TypescriptDependencyDeclarationTest {
             val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
 
             // Assert
-            val names = result.declarations.map { it.name }
-            assertThat(names).doesNotContain("DEFAULT_EXPORT")
-            assertThat(names).containsExactlyInAnyOrder("Foo")
+            val defaultExport = result.declarations.single { it.name == "DEFAULT_EXPORT" }
+            assertThat(result.declarations.map { it.name }).containsExactlyInAnyOrder("Foo", "DEFAULT_EXPORT")
+            assertThat(defaultExport.type).isEqualTo(DeclarationType.REEXPORT)
+            assertThat(defaultExport.usedTypes.map { it.name }).containsExactly("Foo")
         }
 
         @Test
-        fun `should not produce DEFAULT_EXPORT REEXPORT for inline export default function`() {
+        fun `should make an inline export default function a DEFAULT_EXPORT re-export of the function`() {
             // Arrange
             val code = "export default function foo() {}"
 
@@ -273,9 +274,9 @@ class TypescriptDependencyDeclarationTest {
             val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
 
             // Assert
-            val names = result.declarations.map { it.name }
-            assertThat(names).doesNotContain("DEFAULT_EXPORT")
-            assertThat(names).containsExactlyInAnyOrder("foo")
+            val defaultExport = result.declarations.single { it.name == "DEFAULT_EXPORT" }
+            assertThat(result.declarations.map { it.name }).containsExactlyInAnyOrder("foo", "DEFAULT_EXPORT")
+            assertThat(defaultExport.usedTypes.map { it.name }).containsExactly("foo")
         }
 
         @Test
@@ -325,8 +326,8 @@ class TypescriptDependencyDeclarationTest {
         }
 
         @Test
-        fun `should resolve DEFAULT_EXPORT type from locally declared abstract class`() {
-            // Arrange — declare-then-export-default: DEFAULT_EXPORT should inherit CLASS from Base
+        fun `should make export default of a declared abstract class a DEFAULT_EXPORT re-export of it`() {
+            // Arrange
             val code = "abstract class Base {}\nexport default Base"
 
             // Act
@@ -335,7 +336,7 @@ class TypescriptDependencyDeclarationTest {
             // Assert
             val byName = result.declarations.associateBy { it.name }
             assertThat(byName.keys).containsExactlyInAnyOrder("Base", "DEFAULT_EXPORT")
-            assertThat(byName["DEFAULT_EXPORT"]?.type).isEqualTo(DeclarationType.CLASS)
+            assertThat(byName["DEFAULT_EXPORT"]?.type).isEqualTo(DeclarationType.REEXPORT)
             assertThat(byName["DEFAULT_EXPORT"]?.usedTypes?.map { it.name }).containsExactlyInAnyOrder("Base")
         }
 
