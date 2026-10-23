@@ -98,7 +98,7 @@ internal object DeclarationExtractor {
         parentPath: List<String> = emptyList(),
         aliasMap: Map<String, String>,
         localDeclarationNames: Set<String>
-    ): List<Declaration> = if (hasSource(node)) {
+    ): List<Declaration> = if (hasSource(node) || hasExportClause(node)) {
         ReexportDeclarationExtractor.extract(node)
     } else {
         extractDecoratedDeclarations(node, parentPath, aliasMap, localDeclarationNames)

@@ -382,20 +382,22 @@ class JavascriptDependencyTest {
         }
 
         @Test
-        fun `should extract declaration defined separately from export clause`() {
-            // Arrange — declare-then-export pattern; collectExportReferencedLocalNames picks up buildFunction
+        fun `should extract a declaration and its export from an export clause as a re-export of it`() {
+            // Arrange
             val code = """
                 const buildFunction = () => "hello"
-                export { buildFunction }
+                export { buildFunction as build }
             """.trimIndent()
 
             // Act
             val result = TreeSitterDependencies.analyze(code, Language.JAVASCRIPT)
 
             // Assert
-            val byName = result.declarations.associateBy { it.name }
-            assertThat(byName).containsKey("buildFunction")
-            assertThat(byName["buildFunction"]?.type).isEqualTo(DeclarationType.VARIABLE)
+            assertThat(result.declarations.map { it.name to it.type }).containsExactlyInAnyOrder(
+                "buildFunction" to DeclarationType.VARIABLE,
+                "build" to DeclarationType.REEXPORT
+            )
+            assertThat(result.declarations.single { it.name == "build" }.usedTypes.map { it.name }).containsExactly("buildFunction")
         }
 
         @Test
