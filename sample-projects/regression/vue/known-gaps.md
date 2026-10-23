@@ -4,12 +4,3 @@ The probes of this folder whose output deviates from their `expected.txt` today,
 `analysis/analysers/parsers/DependencyParser/docs/name-resolution/typescript.md`. In each block, `missing <line>` is
 an expected line the parser does not draw yet and `extra <line>` a wrong line it draws; `ProbeRegressionTest` fails
 once a gap closes, and the closed lines are deleted here.
-
-## spec-global-registration
-
-A global registration is not read.
-
-```text
-missing file views/Panel.vue -> components/CreatureBadge.vue
-missing leaf views/Panel.vue#Panel -> components/CreatureBadge.vue#CreatureBadge
-```

@@ -17,26 +17,18 @@ internal class VueComponents private constructor(private val pathsByName: Map<St
 
     companion object {
         private const val VUE_ENDING = "vue"
-        private const val HIDDEN_PREFIX = "."
-        private const val NODE_MODULES = "node_modules"
         private val componentsByRun = ConcurrentHashMap<Pair<String, Set<String>>, VueComponents>()
 
         fun of(analysisRoot: File, analysedFiles: Set<String>): VueComponents =
             componentsByRun.computeIfAbsent(analysisRoot.absolutePath to analysedFiles) { read(analysisRoot, analysedFiles) }
 
         private fun read(analysisRoot: File, analysedFiles: Set<String>): VueComponents {
-            val pathsByName = analysedFiles
-                .ifEmpty { filesBelow(analysisRoot) }
+            val pathsByName = ProjectFiles
+                .pathsOf(analysisRoot, analysedFiles)
                 .filter { it.endsWith(".$VUE_ENDING") }
                 .map { Path(splitNameToParts(it)).withoutFileSuffix(VUE_ENDING) }
                 .groupBy { VueNames.pascalCaseOf(it.parts.last()) }
             return VueComponents(pathsByName)
         }
-
-        private fun filesBelow(analysisRoot: File): Set<String> = analysisRoot
-            .walkTopDown()
-            .onEnter { folder -> folder == analysisRoot || !(folder.name.startsWith(HIDDEN_PREFIX) || folder.name == NODE_MODULES) }
-            .filter { it.isFile }
-            .mapTo(HashSet()) { it.relativeTo(analysisRoot).path }
     }
 }

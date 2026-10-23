@@ -640,4 +640,28 @@ class VueAnalyzerTest {
         // Assert
         assertThat(uses).isEmpty()
     }
+
+    @Test
+    fun `should look a tag up among the components the project registers globally, before the one of its name`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange
+        vueFiles(analysisRoot, "components/CreatureBadge.vue", "components/other/CreatureBadge.vue", "components/Lonely.vue")
+        File(analysisRoot, "main.ts").writeText(
+            """
+            import { createApp } from 'vue'
+            import Badge from './components/CreatureBadge.vue'
+            import Lonely from './components/Lonely.vue'
+            const app = createApp({})
+            app.component('creature-badge', Badge)
+            app.component('Solo', Lonely)
+            """.trimIndent()
+        )
+
+        // Act
+        val uses = usesOf(analysisRoot, "views/Panel.vue", "<template><CreatureBadge /><solo /></template>")
+
+        // Assert
+        assertThat(uses).containsExactlyInAnyOrder("components.CreatureBadge", "components.Lonely")
+    }
 }
