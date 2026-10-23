@@ -609,4 +609,57 @@ class TypescriptDependencyDeclarationTest {
             assertThat(result.declarations).isEmpty()
         }
     }
+
+    @Nested
+    inner class ExportedDeclarations {
+        @Test
+        fun `should make a top-level declaration of a module file-scoped when the module does not export it`() {
+            // Arrange
+            val code = """
+                class Hidden {}
+                export class Shown {}
+                export const visible = 1, alsoVisible = 2
+                const local = 3
+                function listed() {}
+                function renamed() {}
+                export { listed, renamed as other }
+                const fallback = 4
+                export default fallback
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+            // Assert
+            val isFileScopedByName = result.declarations.associate { it.name to it.isFileScoped }
+            assertThat(isFileScopedByName).containsAllEntriesOf(
+                mapOf(
+                    "Hidden" to true,
+                    "Shown" to false,
+                    "visible" to false,
+                    "alsoVisible" to false,
+                    "local" to true,
+                    "listed" to false,
+                    "renamed" to false,
+                    "fallback" to false
+                )
+            )
+        }
+
+        @Test
+        fun `should make no declaration of a script file-scoped`() {
+            // Arrange
+            val code = """
+                interface Registry {}
+                function legacyHelper() {}
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+            // Assert
+            val isFileScopedByName = result.declarations.associate { it.name to it.isFileScoped }
+            assertThat(isFileScopedByName).containsExactlyInAnyOrderEntriesOf(mapOf("Registry" to false, "legacyHelper" to false))
+        }
+    }
 }

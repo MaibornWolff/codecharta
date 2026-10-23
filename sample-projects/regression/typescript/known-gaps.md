@@ -178,11 +178,10 @@ missing leaf use.ts#Use -> lib/index.ts#A
 
 ## spec-reexport-star
 
-`export *` re-exports every declaration of the module, also its default export and what it does not export.
+`export *` re-exports the default export of the module too.
 
 ```text
 extra leaf models/index.ts#Base -> models/model.ts#Base
-extra leaf models/index.ts#Hidden -> models/model.ts#Hidden
 ```
 
 ## spec-reexport-star-ambiguous

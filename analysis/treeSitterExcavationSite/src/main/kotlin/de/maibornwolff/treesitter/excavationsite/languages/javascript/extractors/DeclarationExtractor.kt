@@ -38,6 +38,7 @@ internal object DeclarationExtractor {
                 }
             }.filter { it.name.isNotBlank() }
             .toList()
+            .withExportVisibility(ExportedNames.of(rootNode))
         return when (val shape = DefaultExportClassifier.classify(rootNode)) {
             is DefaultExport.Reexport -> {
                 val resolvedType = declarations.firstOrNull { it.name == shape.name }?.type
@@ -48,6 +49,12 @@ internal object DeclarationExtractor {
                 declarations + Declaration(DEFAULT_EXPORT, DeclarationType.REEXPORT, emptySet())
             is DefaultExport.Named, DefaultExport.None -> declarations
         }
+    }
+
+    // A top-level declaration that its module does not export only its own file can name
+    private fun List<Declaration>.withExportVisibility(exported: ExportedNames): List<Declaration> = map { declaration ->
+        val isTopLevel = declaration.parentPath.isEmpty() && declaration.type != DeclarationType.REEXPORT
+        if (isTopLevel) declaration.copy(isFileScoped = exported.isFileScoped(declaration.name)) else declaration
     }
 
     private fun extractFromAmbientDeclaration(
