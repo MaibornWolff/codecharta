@@ -208,11 +208,11 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Shared rule 4, self | `spec-self` | ok |
 | JavaScript, binding: `const x = require` | `javascript/spec-commonjs-require-module` | gap |
 | JavaScript, binding: `const { A, B: C } = require` | `javascript/spec-commonjs-destructure` | ok |
-| JavaScript, declarations: `module.exports = X` | `javascript/spec-commonjs-default` | gap |
-| JavaScript, decision 10: a member of a required `module.exports = X` | `javascript/spec-commonjs-default-member` | gap |
+| JavaScript, declarations: `module.exports = X` | `javascript/spec-commonjs-default` | ok |
+| JavaScript, decision 10: a member of a required `module.exports = X` | `javascript/spec-commonjs-default-member` | ok |
 | JavaScript, binding: `exports.A =` | `javascript/spec-commonjs-exports-property` | ok |
 | JavaScript, decision 2: a named default export | `javascript/spec-js-default-named` | gap |
-| JavaScript, binding: a default import of a CommonJS module | `javascript/spec-esm-import-commonjs` | gap |
+| JavaScript, binding: a default import of a CommonJS module | `javascript/spec-esm-import-commonjs` | ok |
 | JavaScript, 3: a script file is global | `javascript/spec-script-global` | ok |
 | JavaScript, decision 3: a `require` not bound | `javascript/spec-require-side-effect` | ok |
 | Vue: the component is named after its file | `vue/spec-component-file-name` | gap |
