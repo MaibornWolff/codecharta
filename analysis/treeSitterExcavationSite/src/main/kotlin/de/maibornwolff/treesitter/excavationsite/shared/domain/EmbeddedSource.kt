@@ -2,8 +2,9 @@ package de.maibornwolff.treesitter.excavationsite.shared.domain
 
 /**
  * Source in another language inside a file, such as a script block of a Vue component or the inline template of an
- * Angular component. The imports of a source that belongs to the file become imports of the file, what it declares is
- * dropped; what a source that belongs to a declaration declares becomes [DependencyResult.embedded].
+ * Angular component. The imports of every source become imports of the file, as a compiler hoists them; what a source
+ * that belongs to the file declares is dropped, what a source that belongs to a declaration declares becomes
+ * [DependencyResult.embedded].
  *
  * @property owner the name of the declaration the source belongs to, null for a source that belongs to the file
  */
