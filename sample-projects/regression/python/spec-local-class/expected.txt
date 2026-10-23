@@ -1,0 +1,3 @@
+# python.md, declarations and 1: a class declared in a function is no target and hides a module name
+file app/user.py -> app/factory.py
+leaf app/user.py#User -> app/factory.py#make

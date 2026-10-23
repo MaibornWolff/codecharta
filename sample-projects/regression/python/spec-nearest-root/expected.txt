@@ -1,0 +1,7 @@
+# python.md, import roots 1: of several roots that hold the module, the nearest to the importing file
+file app/z.py -> app/models.py
+file svc/app/x.py -> svc/app/models.py
+file svc/runner.py -> svc/app/models.py
+leaf app/z.py#Z -> app/models.py#Model
+leaf svc/app/x.py#X -> svc/app/models.py#Model
+leaf svc/runner.py#Runner -> svc/app/models.py#Model

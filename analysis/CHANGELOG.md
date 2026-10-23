@@ -30,6 +30,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   local modules, tells `model.Creature` from `dto.Creature`, keeps a `_test` package apart from the package it tests,
   and no longer links a method called on a variable to a type of the same name.
 
+- **Imports in Python**: `dependencyparser` finds a Python module below the folder that holds its package, such as
+  `src/`, and links a name to what Python itself binds it to there, so it follows aliases, relative and wildcard imports
+  with their `__all__`, nested classes and both branches of `try` and `except ImportError`, and no longer links a
+  parameter, a local variable or a method called on a variable to a class of the same name.
+
 - **Using directives in C#**: `dependencyparser` looks a C# name up in each enclosing namespace before the using
   directives written around it, so a class of the namespace wins over a using at the top of the file, a name two
   using directives both import links to neither, and `Settings.Config` inside `namespace Shop` means

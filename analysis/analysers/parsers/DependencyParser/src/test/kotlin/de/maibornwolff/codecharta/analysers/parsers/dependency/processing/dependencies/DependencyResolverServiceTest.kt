@@ -383,6 +383,43 @@ class DependencyResolverServiceTest {
         assertThat(onlyPlainTargets).containsExactly("Shop.Audited")
     }
 
+    @Test
+    fun `should resolve a use to its first fallback that names a declaration when its own name names none`() {
+        // Arrange
+        val node = Type("app.second.Node", TypeOfUsage.USAGE, emptyList(), fallbacks = listOf(Type.simple("app.first.Node")))
+        val nodes = listOf(pythonFunction(listOf("app", "tree", "grow"), setOf(node)), pythonFunction(listOf("app", "first", "Node")))
+
+        // Act
+        val targets = internalTargetsOf("grow", nodes)
+
+        // Assert
+        assertThat(targets).containsExactly("app.first.Node")
+    }
+
+    @Test
+    fun `should resolve a use to its own name when that names a declaration, whatever its fallbacks name`() {
+        // Arrange
+        val node = Type("app.second.Node", TypeOfUsage.USAGE, emptyList(), fallbacks = listOf(Type.simple("app.first.Node")))
+        val nodes = listOf(
+            pythonFunction(listOf("app", "tree", "grow"), setOf(node)),
+            pythonFunction(listOf("app", "first", "Node")),
+            pythonFunction(listOf("app", "second", "Node"))
+        )
+
+        // Act
+        val targets = internalTargetsOf("grow", nodes)
+
+        // Assert
+        assertThat(targets).containsExactly("app.second.Node")
+    }
+
+    private fun pythonFunction(pathWithName: List<String>, usedTypes: Set<Type> = emptySet()) = Node.build(
+        pathWithName = Path(pathWithName),
+        physicalPath = pathWithName.dropLast(1).joinToString("/") + ".py",
+        language = SupportedLanguage.PYTHON,
+        usedTypes = usedTypes
+    )
+
     private fun csharpClass(name: String, usedTypes: Set<Type> = emptySet(), baseTypes: List<String> = emptyList()) = Node.build(
         pathWithName = Path(listOf("Shop", name)),
         physicalPath = "$name.cs",

@@ -159,6 +159,14 @@ finds the folder its import path ends with in at least two segments. A name writ
 `model.Creature`, means the declaration of that package; a method called on a variable draws no edge, as the parser
 does not infer the variable's type.
 
+Python finds an imported module where the interpreter would: below the analysed folder, the folder above each
+top-level package (a folder with `__init__.py`, such as `src/`) and the folder of the importing file, the nearest to the
+importing file first; a module path none of them holds finds the module it ends with in at least two segments. A name
+means what Python binds it to where it is used: a declaration of the own module, an import, also one inside a function
+or one in each branch of `try` and `except ImportError`, or a name a wildcard import brings in, as the module's
+`__all__` lists it. A class nested in a class is a leaf of its own; a parameter, a local variable, a builtin or a
+method called on a variable draws no edge.
+
 SQL has no imports: a table, view, synonym, package or routine is found by its name, whatever file creates it and
 in whatever dialect. A name with a schema (`dbo.orders`) finds the object of that schema, or else one created
 without a schema; a name without one finds the object of the same schema first, then one created without a schema,

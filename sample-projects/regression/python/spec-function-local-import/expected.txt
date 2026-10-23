@@ -1,0 +1,3 @@
+# python.md, 1: an import inside a function binds only there
+file app/use.py -> app/models.py
+leaf app/use.py#first -> app/models.py#Model

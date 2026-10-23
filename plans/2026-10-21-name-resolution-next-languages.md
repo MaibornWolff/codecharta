@@ -12,8 +12,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 ## Resume here (for a fresh agent)
 
-- **State:** Java, Kotlin, C# and Go are done. Branch `fix/dependency-name-resolution-go` (cut from
-  `fix/dependency-name-resolution-csharp`) holds the Go commits; Christian pushes it and reviews it on GitHub. Next:
+- **State:** Java, Kotlin, C#, Go and Python are done. Branch `fix/dependency-name-resolution-python` (cut from
+  `fix/dependency-name-resolution-go`) holds the Python commits; Christian pushes it and reviews it on GitHub. Next:
   ask Christian which language comes next (AskUserQuestion), or pick one when he leaves it to you.
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
@@ -26,8 +26,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
   `known-gaps.md` against HEAD before committing.
 - **Tools** (`.claude/name-resolution-tools/`, git-ignored): `ccsh-baseline` (the release build), `cp-probes` (the
   197 checkpoint probes) with `cp-compare.py`, `edgediff.py`, `lines.py`, and two scripts that take build tags; a
-  build tag is a copy of `analysis/build/install/codecharta-analysis` in `ccsh-<tag>`, and `ccsh-go10` is the head
-  of the Go branch, the comparison build for the first commit of the next language:
+  build tag is a copy of `analysis/build/install/codecharta-analysis` in `ccsh-<tag>`, and `ccsh-py12` is the head
+  of the Python branch, the comparison build for the first commit of the next language:
   - `accept.sh <prev> <new>`: edge diffs on samples, `analysis/`, `visualization/app`; the probes against their
     expectations; the checkpoint probes against the release; the gate on both parts.
   - `xcheck.sh <prev> <new>`: the whole output of both builds on every sample, probe, checkpoint probe, `analysis/`
@@ -84,8 +84,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 ## Order and state
 
-- Done: Java, Kotlin (see the plan above), C#, Go. Next, by Christian's choice when asked: TypeScript and JavaScript
-  (with Vue and Angular templates), Python, C and C++, PHP, Rust, Delphi, SQL.
+- Done: Java, Kotlin (see the plan above), C#, Go, Python. Next, by Christian's choice when asked: TypeScript and
+  JavaScript (with Vue and Angular templates), C and C++, PHP, Rust, Delphi, SQL.
 - Material: the checkpoint branch `fix/nearest-file-for-shared-logical-path` holds an earlier, unreviewed attempt and
   its reviewer probes; use them for ideas and as the regression net, not as code to copy.
 
@@ -108,8 +108,25 @@ release by decision: `go/r3-g1` (`LocalType -> closure.go#util`, a function-loca
 mapping and `GoNameRules` had to go into one commit, and the external test package before the copy rule: either alone
 drew wrong edges.
 
+## Python (done, 2026-10-23)
+
+Spec `docs/name-resolution/python.md` (decisions 1–5), 40 probes under `sample-projects/regression/python/`, each
+checked in CPython 3.14, no gap left; all on branch `fix/dependency-name-resolution-python`, waiting for Christian's
+push and review. Christian: "do it like the interpreter does it, else like the other languages". The extractor finds
+the binding Python sees for every name (`LocalScopes`, `ModuleBindings`, `ScopeBindings` with branches, `PythonUses`)
+and reports a use as module prefix (`.` per leading dot, last `*` for a wildcard import) plus dotted name, with
+`fallbacks` for wildcard imports; the analyzer writes the paths it can have (`ModuleCandidates` over the import roots
+of `PythonModules`, `WildcardExports` reading `__all__`), and `PythonNameRules` takes the first that is a declaration.
+Shared change, approved by Christian: `UsedType.fallbacks` (TSE) and `Type.fallbacks` (parser, tried by
+`NodeResolution`). Checkpoint probes worse than the release by decision: `python/r1-pyroot` (the file's folder and
+the suffix fallback are roots), `r3-p4` (package before module), `r5-nested-class-shadow` (a nested class is a leaf of
+its own; `Outer.Node` is no use of `Outer`). Order lessons: the import roots had to wait until a name behind a module
+alias resolved through it and attribute names stopped being plain names, or `am.Model` lost to the bare `Model`; a
+decision asked mid-way (5, alternatives) went in as spec, probes, then the implementation.
+
 ## Steps
 
 - [x] Ask Christian which language comes next: C# (2026-10-22)
 - [x] Next language: Go (left to Claude by Christian, 2026-10-22), done 2026-10-22
+- [x] Next language: Python (left to Claude by Christian, 2026-10-23), done 2026-10-23
 - [ ] For each language: spec, probes, implementation commits, acceptance

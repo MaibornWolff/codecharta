@@ -1,0 +1,5 @@
+# python.md, 2, decision 5: bindings in try and except are alternatives
+file app/encounter.py -> app/dice.py
+file app/encounter.py -> app/fallback.py
+leaf app/encounter.py#surprise -> app/dice.py#roll
+leaf app/encounter.py#surprise -> app/fallback.py#roll

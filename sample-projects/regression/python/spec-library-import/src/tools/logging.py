@@ -1,0 +1,2 @@
+def getLogger():
+    return None
