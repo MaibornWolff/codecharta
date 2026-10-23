@@ -39,7 +39,9 @@ internal object UsedTypeExtractor {
         TYPE_ARGUMENTS
     )
 
-    fun extract(declaration: SyntaxNode, aliasMap: Map<String, String>, localDeclarationNames: Set<String>): Set<UsedType> {
+    fun extract(declaration: SyntaxNode, names: ModuleNames): Set<UsedType> {
+        val aliasMap = names.aliasMap
+        val localDeclarationNames = names.localDeclarationNames
         val scopes = LocalScopes(declaration.startByte, declaration.endByte)
         val buckets = TreeTraversal
             .findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)

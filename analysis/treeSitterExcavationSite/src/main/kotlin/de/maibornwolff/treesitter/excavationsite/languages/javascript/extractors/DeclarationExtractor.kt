@@ -12,40 +12,36 @@ private const val STATEMENT_BLOCK = "statement_block"
 internal object DeclarationExtractor {
     fun extract(rootNode: SyntaxNode): List<Declaration> {
         val imports = ImportExtractor.extract(rootNode)
-        val aliasMap = DeclarationPrepass.buildAliasMap(imports)
-        val localDeclarationNames = DeclarationPrepass.extractLocalDeclarationNames(rootNode)
+        val names = DeclarationPrepass.moduleNamesOf(rootNode, imports)
         val declarations = rootNode
             .children()
             .flatMap { child ->
                 when (child.type) {
                     EXPORT_STATEMENT -> extractFromExportStatement(
                         child,
-                        aliasMap = aliasMap,
-                        localDeclarationNames = localDeclarationNames
+                        names = names
                     )
                     AMBIENT_DECLARATION -> extractFromAmbientDeclaration(
                         child,
-                        aliasMap = aliasMap,
-                        localDeclarationNames = localDeclarationNames
+                        names = names
                     ) +
                         declarationsOf(
                             child
-                        ).flatMap { extractFromNode(it, aliasMap = aliasMap, localDeclarationNames = localDeclarationNames) }
+                        ).flatMap { extractFromNode(it, names = names) }
                     in DECLARATION_NODE_TYPES -> extractFromNode(
                         child,
-                        aliasMap = aliasMap,
-                        localDeclarationNames = localDeclarationNames
+                        names = names
                     )
                     else -> emptyList()
                 }
             }.filter { it.name.isNotBlank() }
             .toList()
             .withExportVisibility(ExportedNames.of(rootNode))
-        return declarations + listOfNotNull(defaultExportOf(rootNode, aliasMap, localDeclarationNames))
+        return declarations + listOfNotNull(defaultExportOf(rootNode, names))
     }
 
     // A default export that names a declaration is a re-export of that name; an anonymous one a declaration of its own
-    private fun defaultExportOf(rootNode: SyntaxNode, aliasMap: Map<String, String>, localDeclarationNames: Set<String>): Declaration? =
+    private fun defaultExportOf(rootNode: SyntaxNode, names: ModuleNames): Declaration? =
         when (val shape = DefaultExportClassifier.classify(rootNode)) {
             is DefaultExport.Named -> Declaration(DEFAULT_EXPORT, DeclarationType.REEXPORT, setOf(UsedType(shape.name)))
             is DefaultExport.Reexport -> Declaration(DEFAULT_EXPORT, DeclarationType.REEXPORT, setOf(UsedType(shape.name)))
@@ -53,7 +49,7 @@ internal object DeclarationExtractor {
                 val usedTypes = DefaultExportClassifier
                     .anonymousValue(
                         rootNode
-                    )?.let { UsedTypeExtractor.extract(it, aliasMap, localDeclarationNames) }
+                    )?.let { UsedTypeExtractor.extract(it, names) }
                 Declaration(DEFAULT_EXPORT, shape.type, usedTypes.orEmpty())
             }
             DefaultExport.None -> null
@@ -65,11 +61,7 @@ internal object DeclarationExtractor {
         if (isTopLevel) declaration.copy(isFileScoped = exported.isFileScoped(declaration.name)) else declaration
     }
 
-    private fun extractFromAmbientDeclaration(
-        node: SyntaxNode,
-        aliasMap: Map<String, String>,
-        localDeclarationNames: Set<String>
-    ): List<Declaration> {
+    private fun extractFromAmbientDeclaration(node: SyntaxNode, names: ModuleNames): List<Declaration> {
         val moduleNode = node.children().firstOrNull { it.type == MODULE_DECLARATION } ?: return emptyList()
         val moduleName = moduleNode
             .children()
@@ -86,8 +78,8 @@ internal object DeclarationExtractor {
             .children()
             .flatMap { child ->
                 when (child.type) {
-                    EXPORT_STATEMENT -> extractFromExportStatement(child, parentPath, aliasMap, localDeclarationNames)
-                    else -> declarationsOf(child).flatMap { extractFromNode(it, parentPath, aliasMap, localDeclarationNames) }
+                    EXPORT_STATEMENT -> extractFromExportStatement(child, parentPath, names)
+                    else -> declarationsOf(child).flatMap { extractFromNode(it, parentPath, names) }
                 }
             }.filter { it.name.isNotBlank() }
             .toList()
@@ -96,64 +88,52 @@ internal object DeclarationExtractor {
     private fun extractFromExportStatement(
         node: SyntaxNode,
         parentPath: List<String> = emptyList(),
-        aliasMap: Map<String, String>,
-        localDeclarationNames: Set<String>
+        names: ModuleNames
     ): List<Declaration> = if (hasSource(node) || hasExportClause(node)) {
         ReexportDeclarationExtractor.extract(node)
     } else {
-        extractDecoratedDeclarations(node, parentPath, aliasMap, localDeclarationNames)
+        extractDecoratedDeclarations(node, parentPath, names)
     }
 
     // The decorators of an exported class are children of the export statement, not of the class declaration
-    private fun extractDecoratedDeclarations(
-        node: SyntaxNode,
-        parentPath: List<String>,
-        aliasMap: Map<String, String>,
-        localDeclarationNames: Set<String>
-    ): List<Declaration> {
+    private fun extractDecoratedDeclarations(node: SyntaxNode, parentPath: List<String>, names: ModuleNames): List<Declaration> {
         val decorators = node.children().filter { it.type == DECORATOR }.toList()
         val decoratorUsedTypes = decorators
-            .flatMap { UsedTypeExtractor.extract(it, aliasMap, localDeclarationNames).toList() }
+            .flatMap { UsedTypeExtractor.extract(it, names).toList() }
             .toSet()
         val angular = AngularDecoratorExtractor.extract(decorators.asSequence())
         return node
             .children()
             .flatMap { declarationsOf(it) }
-            .flatMap { extractFromNode(it, parentPath, aliasMap, localDeclarationNames) }
+            .flatMap { extractFromNode(it, parentPath, names) }
             .map { decl -> decl.copy(usedTypes = decl.usedTypes + decoratorUsedTypes, angular = decl.angular ?: angular) }
             .toList()
     }
 
-    private fun extractFromNode(
-        node: SyntaxNode,
-        parentPath: List<String> = emptyList(),
-        aliasMap: Map<String, String>,
-        localDeclarationNames: Set<String>
-    ): List<Declaration> = when (node.type) {
-        LEXICAL_DECLARATION, VARIABLE_DECLARATION -> extractVariableDeclarations(
-            node,
-            parentPath,
-            aliasMap,
-            localDeclarationNames
-        )
-        INTERNAL_MODULE -> {
-            val name = extractDeclarationName(node)
-            listOf(Declaration(name = name, type = DeclarationType.UNKNOWN, usedTypes = emptySet(), parentPath = parentPath))
+    private fun extractFromNode(node: SyntaxNode, parentPath: List<String> = emptyList(), names: ModuleNames): List<Declaration> =
+        when (node.type) {
+            LEXICAL_DECLARATION, VARIABLE_DECLARATION -> extractVariableDeclarations(
+                node,
+                parentPath,
+                names
+            )
+            INTERNAL_MODULE -> {
+                val name = extractDeclarationName(node)
+                listOf(Declaration(name = name, type = DeclarationType.UNKNOWN, usedTypes = emptySet(), parentPath = parentPath))
+            }
+            else -> {
+                val name = extractDeclarationName(node)
+                val type = declarationType(node.type)
+                val usedTypes = UsedTypeExtractor.extract(node, names.without(name))
+                val angular = AngularDecoratorExtractor.extract(node.children().filter { it.type == DECORATOR })
+                listOf(Declaration(name = name, type = type, usedTypes = usedTypes, parentPath = parentPath, angular = angular))
+            }
         }
-        else -> {
-            val name = extractDeclarationName(node)
-            val type = declarationType(node.type)
-            val usedTypes = UsedTypeExtractor.extract(node, aliasMap, localDeclarationNames - name)
-            val angular = AngularDecoratorExtractor.extract(node.children().filter { it.type == DECORATOR })
-            listOf(Declaration(name = name, type = type, usedTypes = usedTypes, parentPath = parentPath, angular = angular))
-        }
-    }
 
     private fun extractVariableDeclarations(
         node: SyntaxNode,
         parentPath: List<String> = emptyList(),
-        aliasMap: Map<String, String>,
-        localDeclarationNames: Set<String>
+        names: ModuleNames
     ): List<Declaration> = node
         .children()
         .filter { it.type == VARIABLE_DECLARATOR }
@@ -165,7 +145,7 @@ internal object DeclarationExtractor {
                 Declaration(
                     name = name,
                     type = DeclarationType.VARIABLE,
-                    usedTypes = UsedTypeExtractor.extract(declarator, aliasMap, localDeclarationNames - name),
+                    usedTypes = UsedTypeExtractor.extract(declarator, names.without(name)),
                     parentPath = parentPath
                 )
             }

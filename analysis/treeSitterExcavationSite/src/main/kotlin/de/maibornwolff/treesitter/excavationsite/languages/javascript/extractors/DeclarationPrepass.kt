@@ -1,10 +1,30 @@
 package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportDeclaration
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportKind
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 
+/**
+ * What a module binds that the use extraction needs: the local name of each import with the name it imports, the local
+ * names of its namespace imports, and the names of its own top-level declarations.
+ */
+internal data class ModuleNames(
+    val aliasMap: Map<String, String>,
+    val namespaceNames: Set<String>,
+    val localDeclarationNames: Set<String>
+) {
+    /** The names a declaration sees, without its own, which names the declaration itself rather than a use. */
+    fun without(ownName: String): ModuleNames = copy(localDeclarationNames = localDeclarationNames - ownName)
+}
+
 internal object DeclarationPrepass {
+    internal fun moduleNamesOf(rootNode: SyntaxNode, imports: List<ImportDeclaration>): ModuleNames = ModuleNames(
+        aliasMap = buildAliasMap(imports),
+        namespaceNames = imports.filter { it.isWildcard && it.kind == ImportKind.STANDARD }.mapNotNullTo(HashSet()) { it.bindingName },
+        localDeclarationNames = extractLocalDeclarationNames(rootNode)
+    )
+
     internal fun buildAliasMap(imports: List<ImportDeclaration>): Map<String, String> = imports
         .mapNotNull { import ->
             val localName = import.bindingName ?: return@mapNotNull null
