@@ -42,15 +42,6 @@ class.
 missing leaf app/tree.py#Tree -> app/tree.py#Node
 ```
 
-## spec-file-folder-root
-
-A module path is looked up from the analysis root only, not from the importing file's folder.
-
-```text
-missing file scripts/run.py -> scripts/helper.py
-missing leaf scripts/run.py#Run -> scripts/helper.py#Helper
-```
-
 ## spec-from-import-alias
 
 A name imported under an alias is looked up by the name it imports, which the other import of `Creature` takes.
@@ -68,21 +59,6 @@ An import inside a function binds its name for every declaration of the file.
 extra leaf app/use.py#second -> app/models.py#Model
 ```
 
-## spec-nearest-root
-
-A module path is looked up from the analysis root only, so `app.models` means the top-level `app` from everywhere.
-
-```text
-missing file svc/app/x.py -> svc/app/models.py
-missing file svc/runner.py -> svc/app/models.py
-missing leaf svc/app/x.py#X -> svc/app/models.py#Model
-missing leaf svc/runner.py#Runner -> svc/app/models.py#Model
-extra file svc/app/x.py -> app/models.py
-extra file svc/runner.py -> app/models.py
-extra leaf svc/app/x.py#X -> app/models.py#Model
-extra leaf svc/runner.py#Runner -> app/models.py#Model
-```
-
 ## spec-nested-class
 
 A nested class is no declaration: its uses count for the class around it, and `Order.Line` is a use of `Order`.
@@ -94,28 +70,6 @@ extra leaf shop/invoice.py#Invoice -> shop/order.py#Order
 extra leaf shop/order.py#Order -> shop/product.py#Product
 ```
 
-## spec-package-over-module
-
-Of the module `app/models.py` and the package `app/models/__init__.py`, the module comes first.
-
-```text
-missing file app/x.py -> app/models/__init__.py
-missing leaf app/x.py#X -> app/models/__init__.py#Model
-extra file app/x.py -> app/models.py
-extra leaf app/x.py#X -> app/models.py#Model
-```
-
-## spec-package-root
-
-A module path is looked up from the analysis root only, not from the folder above a top-level package.
-
-```text
-missing file proj/src/app/main.py -> proj/src/app/core.py
-missing file proj/tests/test_main.py -> proj/src/app/main.py
-missing leaf proj/src/app/main.py#Main -> proj/src/app/core.py#Foo
-missing leaf proj/tests/test_main.py#test_main -> proj/src/app/main.py#Main
-```
-
 ## spec-reexport-alias
 
 An `__init__.py` that imports a name under an alias makes no re-export leaf of it.
@@ -125,15 +79,6 @@ missing file app/user.py -> pkg/__init__.py
 missing file pkg/__init__.py -> pkg/mod.py
 missing leaf app/user.py#User -> pkg/__init__.py#Bar
 missing leaf pkg/__init__.py#Bar -> pkg/mod.py#Foo
-```
-
-## spec-suffix-fallback
-
-A module path is looked up from the analysis root only, without the fallback to the module it ends with.
-
-```text
-missing file svc/app/main.py -> svc/app/core.py
-missing leaf svc/app/main.py#Main -> svc/app/core.py#Foo
 ```
 
 ## spec-wildcard-all

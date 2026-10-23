@@ -8,70 +8,90 @@ import de.maibornwolff.treesitter.excavationsite.api.ImportKind
 /**
  * The imports of one Python file, resolved against the module path of that file.
  *
- * A name imported from a module can be defined in the module file or in the `__init__.py` of a package of that
- * name, so every such import is a dependency on both.
+ * A module path means the modules [PythonModules] finds for it. Without them, or for a module they do not hold, a name
+ * imported from it can be defined in the module file or in the `__init__.py` of a package of that name, so such an
+ * import is a dependency on both.
  *
- * @property memberDependencies the names imported with `from module import name`
+ * @property memberDependencies the names imported with `from module import name`, or the submodules of that name
  * @property wildcardDependencies the modules imported with `from module import *`
- * @property aliasedMembers alias to the path of the name it stands for, for `from module import name as alias`
- * @property boundMembers the name each `from module import name [as alias]` binds to the path of the name it stands for
- * @property modules the dotted names imported with `import module`
- * @property aliasedModules alias to the path of the module it stands for, for `import module as alias`
+ * @property reexportedNames the names imported with `from module import name`, which an `__init__.py` re-exports
+ * @property aliasedMembers alias to the name it stands for, for `from module import name as alias`
  */
-class PythonImports private constructor(
+internal class PythonImports private constructor(
     val memberDependencies: List<Dependency>,
     val wildcardDependencies: List<Dependency>,
-    val aliasedMembers: Map<String, List<String>>,
-    val boundMembers: Map<String, List<String>>,
-    val modules: Set<String>,
-    val aliasedModules: Map<String, List<String>>
+    val reexportedNames: List<String>,
+    val aliasedMembers: Map<String, ImportedName>,
+    private val importedModules: Map<String, ModuleReference>,
+    private val importedNames: Map<String, ModuleReference>,
+    private val candidates: ModuleCandidates
 ) {
+    /** The module an import statement binds to a name: `import a.b` binds `a.b`, `import a.b as m` binds `m`. */
+    fun moduleImportedAs(dottedName: String): ModuleReference? = importedModules[dottedName]
+
+    /** The module a name may stand for: the module an import statement binds, else the submodule `from a import b` binds. */
+    fun moduleBoundTo(dottedName: String): ModuleReference? = importedModules[dottedName] ?: importedNames[dottedName]
+
+    /** The paths the name [name] of the module [module] can have, the likeliest first. */
+    fun pathsIn(module: ModuleReference, name: List<String>): List<List<String>> = candidates.of(module).map { it + name }
+
+    /** The dependencies on the name [name] of the module [module], or on its submodule of that name. */
+    fun dependenciesOn(module: ModuleReference, name: List<String>): List<Dependency> =
+        pathsIn(module, name).map { Dependency(Path(it)) } + candidates.found(module.submodule(name)).map { Dependency(Path(it)) }
+
     companion object {
-        const val PACKAGE_FILE = "__init__"
+        private const val SEGMENT_SEPARATOR = "."
+
+        fun of(imports: List<ImportDeclaration>, modulePath: List<String>, modules: PythonModules?): PythonImports {
+            val (memberImports, moduleImports) = imports.partition { it.kind == ImportKind.MEMBER }
+            val (wildcards, members) = memberImports.mapNotNull { MemberImport.of(it, modulePath) }.partition { it.isWildcard }
+            val candidates = ModuleCandidates(modules, modulePath.dropLast(1))
+            val plainMembers = members.filter { it.alias == null }
+            return PythonImports(
+                memberDependencies = plainMembers.flatMap { member ->
+                    candidates.of(member.module).map { Dependency(Path(it + member.name)) } +
+                        candidates.found(member.module.submodule(member.name)).map { Dependency(Path(it)) }
+                },
+                wildcardDependencies = wildcards.flatMap { wildcard -> candidates.of(wildcard.module).map { Dependency.asWildcard(it) } },
+                reexportedNames = plainMembers.map { it.name.last() },
+                aliasedMembers = members
+                    .mapNotNull { member ->
+                        member.alias?.let { it to ImportedName(member.module, member.name) }
+                    }.toMap(),
+                importedModules = moduleImports.associate { import ->
+                    (import.bindingName ?: import.path.joinToString(SEGMENT_SEPARATOR)) to ModuleReference(import.path)
+                },
+                importedNames = members.associate { (it.alias ?: it.name.joinToString(SEGMENT_SEPARATOR)) to it.module.submodule(it.name) },
+                candidates = candidates
+            )
+        }
+    }
+}
+
+/** The name [name] of the module [module]. */
+internal data class ImportedName(val module: ModuleReference, val name: List<String>)
+
+private class MemberImport(val module: ModuleReference, val name: List<String>, val alias: String?, val isWildcard: Boolean) {
+    companion object {
         private const val RELATIVE_LEVEL = "."
         private const val SEGMENT_SEPARATOR = "."
 
-        fun of(imports: List<ImportDeclaration>, modulePath: List<String>): PythonImports {
-            val (memberImports, moduleImports) = imports.partition { it.kind == ImportKind.MEMBER }
-            val resolvedMemberImports = memberImports.mapNotNull { import ->
-                resolveAgainst(modulePath, import.path)?.let { import.copy(path = it) }
-            }
-            val (wildcards, members) = resolvedMemberImports.partition { it.isWildcard }
-            return PythonImports(
-                memberDependencies = members.filter { it.bindingName == null }.flatMap { inModuleOrPackage(moduleOf(it), nameOf(it)) },
-                wildcardDependencies = wildcards.flatMap { wildcardOnModuleOrPackage(it.path) },
-                aliasedMembers = pathsByAlias(members) { moduleOf(it) + nameOf(it) },
-                boundMembers = members.associate { (it.bindingName ?: it.path.last()) to moduleOf(it) + nameOf(it) },
-                modules = moduleImports.filter { it.bindingName == null }.map { it.path.joinToString(SEGMENT_SEPARATOR) }.toSet(),
-                aliasedModules = pathsByAlias(moduleImports) { it.path }
-            )
+        fun of(import: ImportDeclaration, modulePath: List<String>): MemberImport? {
+            val modulePart = if (import.isWildcard) import.path else import.path.dropLast(1)
+            val module = moduleOf(modulePart, modulePath) ?: return null
+            // The extractor leaves the imported name one segment, whatever dots it holds
+            val name = if (import.isWildcard) emptyList() else import.path.last().split(SEGMENT_SEPARATOR)
+            return MemberImport(module, name, import.bindingName, import.isWildcard)
         }
-
-        fun inModuleOrPackage(module: List<String>, name: List<String>): List<Dependency> =
-            pathsInModuleOrPackage(module, name).map { Dependency(Path(it)) }
-
-        fun pathsInModuleOrPackage(module: List<String>, name: List<String>): List<List<String>> =
-            listOf(module + name, module + PACKAGE_FILE + name)
-
-        private fun wildcardOnModuleOrPackage(module: List<String>): List<Dependency> =
-            listOf(Dependency.asWildcard(module), Dependency.asWildcard(module + PACKAGE_FILE))
-
-        private fun pathsByAlias(imports: List<ImportDeclaration>, pathOf: (ImportDeclaration) -> List<String>): Map<String, List<String>> =
-            imports.mapNotNull { import -> import.bindingName?.let { alias -> alias to pathOf(import) } }.toMap()
-
-        private fun moduleOf(memberImport: ImportDeclaration): List<String> = memberImport.path.dropLast(1)
-
-        // The extractor leaves the imported name one segment, whatever dots it holds
-        private fun nameOf(memberImport: ImportDeclaration): List<String> = memberImport.path.last().split(SEGMENT_SEPARATOR)
 
         // One leading dot is the package of the file, every further one its parent. An import that reaches the
         // root of the analysed tree or beyond is dropped
-        private fun resolveAgainst(modulePath: List<String>, importPath: List<String>): List<String>? {
+        private fun moduleOf(importPath: List<String>, modulePath: List<String>): ModuleReference? {
             val levels = importPath.takeWhile { it == RELATIVE_LEVEL }.size
-            if (levels == 0) return importPath
+            if (levels == 0) return ModuleReference(importPath)
             val packagePath = modulePath.dropLast(levels)
             if (packagePath.isEmpty()) return null
-            return packagePath + importPath.drop(levels)
+            return ModuleReference(packagePath + importPath.drop(levels), isRelative = true)
         }
     }
 }

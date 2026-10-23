@@ -89,12 +89,12 @@ the rule yet; `sample-projects/regression/python/known-gaps.md` says how it devi
 | Declarations, decision 2: re-export leaf of `__init__.py` | `spec-reexport-init` | ok |
 | Declarations, decision 2: a re-export under an alias | `spec-reexport-alias` | gap |
 | Import paths 1: the analysis root | `spec-module-path` | ok |
-| Import paths 1: the folder above a top-level package | `spec-package-root` | gap |
-| Import paths 1: the nearest of several roots | `spec-nearest-root` | gap |
+| Import paths 1: the folder above a top-level package | `spec-package-root` | ok |
+| Import paths 1: the nearest of several roots | `spec-nearest-root` | ok |
 | Import paths 1: a namespace package | `spec-namespace-package` | ok |
-| Import paths 1: the folder of the importing file | `spec-file-folder-root` | gap |
-| Import paths 1: a package before a module | `spec-package-over-module` | gap |
-| Import paths 2: suffix of two segments | `spec-suffix-fallback` | gap |
+| Import paths 1: the folder of the importing file | `spec-file-folder-root` | ok |
+| Import paths 1: a package before a module | `spec-package-over-module` | ok |
+| Import paths 2: suffix of two segments | `spec-suffix-fallback` | ok |
 | Import paths 2: one segment is no suffix | `spec-suffix-two-segments` | ok |
 | Import paths 3: library or standard module | `spec-library-import` | ok |
 | Import paths: a relative module path | `spec-relative-import` | ok |
