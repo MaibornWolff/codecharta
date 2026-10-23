@@ -28,8 +28,10 @@ internal class MemberImports(private val analysisRoot: File) {
         if (!ImportedModules.namesMember(import)) return null
         val importedName = import.path.lastOrNull() ?: return null
         if (importedName == TSE_DEFAULT_EXPORT_NAME) {
-            val target = defaultOf(moduleFile, module) ?: return null
-            import.bindingName?.let { targetByBinding[it] = Target(target, moduleFile = null) }
+            val target = defaultOf(moduleFile, module)
+            // Without a default declaration the binding stands for the module, as `module.exports = { A, … }` (decision 10)
+            val binding = if (target != null) Target(target, moduleFile = null) else moduleTarget(moduleFile)
+            import.bindingName?.let { targetByBinding[it] = binding }
             return target
         }
         val ownName = exports.nameOf(moduleFile, importedName)
