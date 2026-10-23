@@ -113,24 +113,6 @@ missing file ui/index.ts -> ui/button.ts
 missing leaf ui/index.ts#Button -> ui/button.ts#Button
 ```
 
-## spec-reexport-star
-
-`export *` re-exports the default export of the module too.
-
-```text
-extra leaf models/index.ts#Base -> models/model.ts#Base
-```
-
-## spec-reexport-star-ambiguous
-
-`export *` re-exports a name that two of them offer.
-
-```text
-extra file lib/index.ts -> lib/b.ts
-extra leaf lib/index.ts#Model -> lib/a.ts#Model
-extra leaf lib/index.ts#Model -> lib/b.ts#Model
-```
-
 ## spec-script-top-level
 
 Top-level code outside every declaration is no declaration, so what it names draws nothing.

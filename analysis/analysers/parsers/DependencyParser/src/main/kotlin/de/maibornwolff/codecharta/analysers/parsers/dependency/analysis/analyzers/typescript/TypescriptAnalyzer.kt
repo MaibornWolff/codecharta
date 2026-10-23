@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.BaseLanguageAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_DEFAULT_EXPORT_NAME
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.WILDCARD_EXPORT_NAME
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.toRelativePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.withoutFileSuffix
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.defaultImportPath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toType
@@ -21,8 +20,8 @@ import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.EmbeddedDeclarations
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
+import de.maibornwolff.treesitter.excavationsite.api.ImportKind
 import de.maibornwolff.treesitter.excavationsite.api.Language
-import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
 import java.io.File
 
@@ -31,13 +30,11 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
 
     // The extension is taken from the file as spelled, so `.mts`, `.cts` and `Foo.TSX` strip cleanly.
     private val extension = fileInfo.physicalPath.substringAfterLast('.', "").lowercase()
-    private val isTsx = extension == TSX_EXTENSION
+    private val isTsx = extension == "tsx"
     private val physicalFilePath by lazy { fileInfo.physicalPathAsPath().withoutFileSuffix(extension) }
 
-    // A Path escapes the dots of a file name, which is not reversible, so the segments a wildcard import
-    // resolved to are kept as written for the lookup on disk (`./user.service` must find `user.service.ts`).
-    private val unescapedSegmentsByPath = HashMap<Path, List<String>>()
-    private val sourceFilesByPath = HashMap<Path, File>()
+    // The modules `export * from` names, whose named exports this module re-exports
+    private val starSources = LinkedHashSet<File>()
     private val memberImports = fileInfo.analysisRoot?.let { MemberImports(it) }
 
     override fun tseLanguage(): Language = if (isTsx) Language.TSX else Language.TYPESCRIPT
@@ -59,7 +56,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
             .toSet()
         val nodes = baseReport.nodes.flatMap { node ->
             if (node.pathWithName.parts.lastOrNull() == WILDCARD_EXPORT_NAME) {
-                expandWildcardReexport(node, physicalFilePath, analysisRoot, ownNames)
+                expandStarExports(node, analysisRoot, ownNames)
             } else {
                 listOf(node)
             }
@@ -98,7 +95,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         val analysisRoot = fileInfo.analysisRoot ?: return dependenciesByWrittenPath(import)
         val moduleFile = ImportedModules.fileOf(import, fileInfo) ?: return dependenciesByWrittenPath(import)
         val module = ImportedModules.logicalPathOf(moduleFile, analysisRoot)
-        if (import.isWildcard) sourceFilesByPath[module] = moduleFile
+        if (import.isWildcard && import.kind == ImportKind.REEXPORT) starSources.add(moduleFile)
         memberImports?.targetOf(import, moduleFile, module)?.let { return setOf(Dependency(path = it)) }
         val importedName = if (ImportedModules.namesMember(import)) listOf(import.defaultImportPath().last()) else emptyList()
         return setOf(Dependency(path = Path(module.parts + importedName), isWildcard = import.isWildcard))
@@ -108,47 +105,25 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     private fun dependenciesByWrittenPath(import: ImportDeclaration): Set<Dependency> {
         val resolvedPath = resolveImportPath(import.defaultImportPath())
         val primary = Dependency(path = Path(resolvedPath), isWildcard = import.isWildcard)
-        if (import.isWildcard) unescapedSegmentsByPath[primary.path] = resolvedPath
         val index = buildIndexDependency(resolvedPath, import.isWildcard)
         return if (index != null) setOf(primary, index) else setOf(primary)
     }
 
-    // Nodes here are synthetic — constructed from a secondary TSE parse of the source file,
-    // not mapped from the current file's declarations. TseMappings extension functions are
-    // not used because there is no ImportDeclaration/UsedType/DeclarationType to map from.
-    private fun expandWildcardReexport(wildcardNode: Node, currentFilePath: Path, analysisRoot: File, ownNames: Set<String>): List<Node> {
-        val wildcardDeps = wildcardNode.dependencies.filter { it.isWildcard }
-        val sourceFiles = wildcardDeps
-            .mapNotNull {
-                sourceFilesByPath[it.path] ?: resolveSourceFile(unescapedSegmentsByPath[it.path] ?: it.path.parts, analysisRoot)
-            }.toSet()
-        if (sourceFiles.isEmpty()) return listOf(wildcardNode)
-        return sourceFiles.flatMap { sourceFile ->
-            val sourceRelPath = toRelativePath(sourceFile, analysisRoot, stripExtension = true).parts
-            val srcLanguage = if (sourceFile.name.endsWith(".$TSX_EXTENSION", ignoreCase = true)) Language.TSX else Language.TYPESCRIPT
-            val sourceTseResult = TreeSitterDependencies.analyze(sourceFile.readText(), srcLanguage)
-            sourceTseResult.declarations
-                .filter { decl -> decl.name !in ownNames }
-                .map { decl ->
-                    Node(
-                        pathWithName = currentFilePath + decl.name,
-                        physicalPath = wildcardNode.physicalPath,
-                        language = language,
-                        nodeType = NodeType.REEXPORT,
-                        dependencies = setOf(Dependency(path = Path(sourceRelPath + decl.name))),
-                        usedTypes = setOf(Type.simple(decl.name))
-                    )
-                }
+    // One re-export leaf per name `export *` re-exports, pointing at the declaration that name means in its module
+    private fun expandStarExports(wildcardNode: Node, analysisRoot: File, ownNames: Set<String>): List<Node> {
+        if (starSources.isEmpty()) return listOf(wildcardNode)
+        val exports = ModuleExports.of(analysisRoot)
+        return exports.starExports(starSources.toList(), ownNames).map { (name, source) ->
+            val target = ImportedModules.logicalPathOf(source, analysisRoot) + exports.nameOf(source, name)
+            Node(
+                pathWithName = physicalFilePath + name,
+                physicalPath = wildcardNode.physicalPath,
+                language = language,
+                nodeType = NodeType.REEXPORT,
+                dependencies = setOf(Dependency(path = target)),
+                usedTypes = setOf(Type.simple(target.withDots()))
+            )
         }
-    }
-
-    private fun resolveSourceFile(pathParts: List<String>, analysisRoot: File): File? {
-        val pathStr = pathParts.joinToString("/")
-        for (suffix in SOURCE_FILE_SUFFIXES) {
-            val file = File(analysisRoot, "$pathStr$suffix")
-            if (file.exists()) return file
-        }
-        return null
     }
 
     private fun buildIndexDependency(resolvedPath: List<String>, isWildcard: Boolean): Dependency? {
@@ -158,10 +133,5 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         if (isWildcard) return Dependency(Path(resolvedPath + "index"), isWildcard = true)
         if (resolvedPath.size < 2) return null
         return Dependency(Path(resolvedPath.dropLast(1) + listOf("index") + resolvedPath.takeLast(1)))
-    }
-
-    companion object {
-        private const val TSX_EXTENSION = "tsx"
-        private val SOURCE_FILE_SUFFIXES = listOf(".ts", ".tsx", ".mts", ".cts", "/index.ts", "/index.tsx", "/index.mts", "/index.cts")
     }
 }
