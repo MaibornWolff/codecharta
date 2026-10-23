@@ -9,7 +9,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 /**
  * Every script block of a component that is not empty; a component may pair a plain `<script>` with a
  * `<script setup>`. A plain `<script>` belongs to the file, as the module's top level; a `<script setup>` belongs to
- * the component, [DEFAULT_EXPORT], as the compiler moves it into the component's `setup()`. The language is TypeScript or TSX for `lang="ts"` and `lang="tsx"`, otherwise JavaScript, also
+ * the component, [DEFAULT_EXPORT], as the compiler moves it into the component's `setup()`, followed by the
+ * [TemplateExpressions], which the compiler puts there too. The language is TypeScript or TSX for `lang="ts"` and `lang="tsx"`, otherwise JavaScript, also
  * for an unquoted `lang=ts`.
  */
 internal object ScriptBlockExtractor {
@@ -29,6 +30,15 @@ internal object ScriptBlockExtractor {
         .findAllDescendantsOfType(rootNode, SCRIPT_ELEMENT)
         .map { script -> EmbeddedSource(content = contentOf(script), language = languageOf(script), owner = ownerOf(script)) }
         .filter { it.content.isNotEmpty() }
+        .map { source ->
+            if (source.owner ==
+                null
+            ) {
+                source
+            } else {
+                source.copy(content = source.content + "\n" + TemplateExpressions.programOf(rootNode))
+            }
+        }
 
     private fun contentOf(script: SyntaxNode): String = TreeTraversal.findFirstChildTextByType(script, RAW_TEXT).orEmpty().trim()
 

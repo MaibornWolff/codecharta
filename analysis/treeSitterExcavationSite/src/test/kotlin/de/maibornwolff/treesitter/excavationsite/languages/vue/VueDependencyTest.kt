@@ -1,5 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.vue
 
+import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
@@ -220,6 +221,73 @@ class VueDependencyTest {
 
             // Assert
             assertThat(result.imports).isEmpty()
+        }
+    }
+
+    @Nested
+    inner class TemplateExpressions {
+        private fun namesUsedBy(declarations: List<Declaration>): List<String> = declarations.flatMap { it.usedTypes }.map { it.name }
+
+        @Test
+        fun `should hand the names of the template's expressions to the script setup block, a v-for name local`() {
+            // Arrange
+            val code = """
+                <script setup lang="ts">
+                import { format, item, defaults } from './fmt'
+                const items = ['a']
+                </script>
+                <template>
+                  <span :title="defaults.size">{{ format('x') }}</span>
+                  <li v-for="(item, index) in items" @click="format(item)">{{ item + index }}</li>
+                </template>
+            """.trimIndent()
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            val usedNames = namesUsedBy(result.embedded.single().declarations)
+            assertThat(usedNames).containsExactlyInAnyOrder("format", "items", "defaults")
+        }
+
+        @Test
+        fun `should keep the names a slot binds inside the element that binds them`() {
+            // Arrange
+            val code = """
+                <script setup>
+                import { row, label } from './table'
+                </script>
+                <template>
+                  <Grid v-slot="{ row }">{{ row }}</Grid>
+                  <Grid #cell="cell">{{ label(cell) }}</Grid>
+                </template>
+            """.trimIndent()
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            val usedNames = namesUsedBy(result.embedded.single().declarations)
+            assertThat(usedNames).containsExactlyInAnyOrder("label")
+        }
+
+        @Test
+        fun `should hand no template name to a component without a script setup block`() {
+            // Arrange
+            val code = """
+                <script>
+                import { format } from './fmt'
+                export default {}
+                </script>
+                <template>{{ format(1) }}</template>
+            """.trimIndent()
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.embedded).isEmpty()
+            assertThat(namesUsedBy(result.declarations)).doesNotContain("format")
         }
     }
 }
