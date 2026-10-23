@@ -1,0 +1,4 @@
+# typescript.md, A simple name: a shorthand property `{ format }` reads the name `format`; one a local binds is no use
+file card.ts -> fmt.ts
+leaf card.ts#card -> fmt.ts#format
+leaf card.ts#card -> fmt.ts#size

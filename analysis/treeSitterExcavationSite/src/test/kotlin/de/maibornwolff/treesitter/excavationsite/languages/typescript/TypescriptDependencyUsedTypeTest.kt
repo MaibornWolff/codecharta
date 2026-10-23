@@ -565,4 +565,25 @@ class TypescriptDependencyUsedTypeTest {
             "lib.shapes.Square"
         )
     }
+
+    @Test
+    fun `should report a shorthand property as a use of the name it reads, not a destructured one`() {
+        // Arrange
+        val code = """
+            import { format, size } from './fmt'
+            export const card = {
+                methods: { format },
+                data() {
+                    const { label } = this.props
+                    return { size, label }
+                }
+            }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+        // Assert
+        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactlyInAnyOrder("format", "size")
+    }
 }
