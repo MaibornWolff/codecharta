@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.tsconfig
+package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.tsconfig
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.model.DirectImport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path

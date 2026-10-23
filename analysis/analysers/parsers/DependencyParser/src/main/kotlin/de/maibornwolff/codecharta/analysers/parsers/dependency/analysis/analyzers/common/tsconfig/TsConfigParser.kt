@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.tsconfig
+package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.tsconfig
 
 import com.google.gson.Gson
 import com.google.gson.JsonParser
