@@ -188,7 +188,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Binding: `import type` | `spec-import-type` | ok |
 | Binding: `import * as ns` | `spec-namespace-import` | gap |
 | Binding: an import alone draws no edge | `spec-unused-import` | ok |
-| Binding, decision 3: a side-effect import | `spec-side-effect-import` | gap |
+| Binding, decision 3: a side-effect import | `spec-side-effect-import` | ok |
 | Binding, decision 4: a dynamic import read by name | `spec-dynamic-import` | gap |
 | Binding, decision 4: a dynamic import not read | `spec-dynamic-import-unread` | ok |
 | 1. a local class | `spec-local-declaration` | gap |
@@ -211,7 +211,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | JavaScript, decision 2: a named default export | `javascript/spec-js-default-named` | gap |
 | JavaScript, binding: a default import of a CommonJS module | `javascript/spec-esm-import-commonjs` | gap |
 | JavaScript, 3: a script file is global | `javascript/spec-script-global` | gap |
-| JavaScript, decision 3: a `require` not bound | `javascript/spec-require-side-effect` | gap |
+| JavaScript, decision 3: a `require` not bound | `javascript/spec-require-side-effect` | ok |
 | Vue: the component is named after its file | `vue/spec-component-file-name` | gap |
 | Vue tag 2: a binding of `<script setup>` | `vue/spec-script-setup-tag` | ok |
 | Vue tags 3 and 4: `components` before a global registration | `vue/spec-components-option` | gap |

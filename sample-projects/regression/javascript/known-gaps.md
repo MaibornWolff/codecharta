@@ -33,15 +33,6 @@ missing file app.mjs -> svc.cjs
 missing leaf app.mjs#make -> svc.cjs#Svc
 ```
 
-## spec-require-side-effect
-
-A `require` whose result is not bound draws nothing.
-
-```text
-missing file main.js -> setup.js
-missing leaf main.js#main_script -> setup.js#setup_script
-```
-
 ## spec-script-global
 
 A name that no import binds is not looked up among the declarations of script files.
