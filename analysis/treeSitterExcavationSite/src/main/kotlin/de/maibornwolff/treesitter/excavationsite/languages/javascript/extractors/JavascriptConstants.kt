@@ -9,6 +9,9 @@ internal const val AMBIENT_MODULE = "AMBIENT_MODULE"
 internal const val MODULE_SCRIPT = "MODULE_SCRIPT"
 internal const val GLOBAL_SCOPE = "GLOBAL"
 
+// A module specifier is reported as its segments, `'../ui/Card'` as `..`, `ui`, `Card`
+internal const val SPECIFIER_SEPARATOR = "/"
+
 internal fun normalizeDefaultKeyword(name: String): String = if (name == DEFAULT_KEYWORD) DEFAULT_EXPORT else name
 
 // Shared tree-sitter node-type constants used across JS/TS/TSX extractors
