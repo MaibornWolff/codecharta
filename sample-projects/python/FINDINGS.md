@@ -194,6 +194,8 @@ Rounds 1 and 2, re-read from the fresh output:
 - Upward edges: `armor_class.py -> creature_util.py` and `creature.py -> application/__init__.py`, as expected. None new.
 - Leaf kinds: `class` for every class including the `Enum` subclasses and the ABCs; `function` for module-level functions (53 leaves from `encounter_edge_cases.py`, `traced`, `roll_d20`); `unknown` for the `__init__.py` re-export leaves; `variable` for module-level assignments (`logger` x3, `__all__` x3, `T`, `MAX_HIT_POINTS`, `USE_NATURAL_ARMOR`, `speed_module`, `Brawler`). Nested classes, nested functions and methods are not leaves (`Ambush.Trap`, `initiative_of`). A decorator naming a function of the same file gives an intra-file leaf edge (`decorated -> elif_chain`). Too coarse rather than wrong: Python has no `enum` / `interface` syntax.
 - Native vs. resolved: Python has modules, packages, absolute and relative imports, but no compile-time types. CodeCharta resolves the names used inside a class or function against the imports of the file. `PythonAnalyzer.toNode` returns a `variable` declaration with empty dependencies and used types, which matches the missing `TypeVar(..., bound=Fightable)` edge; a `type` statement produces no declaration.
+- Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/python.md`): listed
+  per probe in `regression/python/known-gaps.md`.
 - `src/` layout (variant `output/variants/dependency-src-layout.cc.json`, the same sources copied under `src/`): 43 file edges instead of 70, and no edge carries `isCyclic` or `isPointingUpwards`.
 
 ## Domain language parser

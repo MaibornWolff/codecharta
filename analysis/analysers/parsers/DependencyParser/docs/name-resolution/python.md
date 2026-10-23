@@ -80,6 +80,47 @@ Looked up in this order (LEGB); the first scope that binds `N` wins:
 Each rule is tested by a probe under `sample-projects/regression/python/`. "Gap" means the parser does not follow
 the rule yet; `sample-projects/regression/python/known-gaps.md` says how it deviates.
 
+| Rule | Probe | Today |
+| --- | --- | --- |
+| Declarations: the file path is the logical path | `spec-module-path` | ok |
+| Declarations: a module-level variable | `spec-module-variable` | ok |
+| Declarations, decision 4: a nested class is a leaf of its own | `spec-nested-class` | gap |
+| Declarations and 1: a class declared in a function | `spec-local-class` | gap |
+| Declarations, decision 2: re-export leaf of `__init__.py` | `spec-reexport-init` | ok |
+| Declarations, decision 2: a re-export under an alias | `spec-reexport-alias` | gap |
+| Import paths 1: the analysis root | `spec-module-path` | ok |
+| Import paths 1: the folder above a top-level package | `spec-package-root` | gap |
+| Import paths 1: the nearest of several roots | `spec-nearest-root` | gap |
+| Import paths 1: a namespace package | `spec-namespace-package` | ok |
+| Import paths 1: the folder of the importing file | `spec-file-folder-root` | gap |
+| Import paths 1: a package before a module | `spec-package-over-module` | gap |
+| Import paths 2: suffix of two segments | `spec-suffix-fallback` | gap |
+| Import paths 2: one segment is no suffix | `spec-suffix-two-segments` | ok |
+| Import paths 3: library or standard module | `spec-library-import` | ok |
+| Import paths: a relative module path | `spec-relative-import` | ok |
+| Binding: `import a.b.c` | `spec-import-dotted` | ok |
+| Binding: `import a.b.c as m` | `spec-import-module-alias` | ok |
+| Binding: `from m import N`, N a submodule | `spec-from-import-submodule` | ok |
+| Binding: `from m import N as A` | `spec-from-import-alias` | gap |
+| Binding: `from m import *` | `spec-wildcard-import` | ok |
+| Binding: a wildcard skips names starting with `_` | `spec-wildcard-public-only` | gap |
+| Binding: a wildcard follows `__all__` | `spec-wildcard-all` | gap |
+| Binding: an import alone draws no edge | `spec-unused-import` | ok |
+| 1. a parameter or variable of the function | `spec-function-local-binding` | gap |
+| 1. an import inside a function | `spec-function-local-import` | gap |
+| 1. a class body and its methods | `spec-class-scope` | gap |
+| 2, decision 3: a definition after an import | `spec-definition-after-import` | gap |
+| 2, decision 3: an import after a definition | `spec-import-after-definition` | gap |
+| 2, decision 3: two wildcard imports, the later wins | `spec-wildcard-last-wins` | gap |
+| 2, decision 3: a base class at definition time | `spec-definition-time` | gap |
+| 2, decision 3: a decorator at definition time | `spec-decorator-definition-time` | gap |
+| 2, decision 3: a lazy annotation | `spec-annotation-lazy` | gap |
+| 3. builtin | `spec-builtin` | ok |
+| 2 and 3: a module binding over a builtin | `spec-module-shadows-builtin` | ok |
+| Attribute through a class | `spec-class-attribute` | ok |
+| Attribute on a value | `spec-attribute-on-value` | gap |
+| Shared rule 1, name scope | `spec-name-scope` | ok |
+| Shared rule 4, self | `spec-self` | ok |
 
 ## Not supported
 

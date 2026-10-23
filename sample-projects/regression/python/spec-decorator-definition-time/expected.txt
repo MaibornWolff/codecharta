@@ -1,0 +1,3 @@
+# python.md, 2, decision 3: a decorator sees the binding before its statement
+file app/handlers.py -> app/lib.py
+leaf app/handlers.py#handle -> app/lib.py#register

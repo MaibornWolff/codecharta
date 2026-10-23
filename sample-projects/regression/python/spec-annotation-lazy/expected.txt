@@ -1,0 +1,2 @@
+# python.md, 2, decision 3: an annotation is evaluated lazily and sees the last binding
+leaf app/tree.py#Tree -> app/tree.py#Node

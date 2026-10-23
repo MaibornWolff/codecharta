@@ -1,0 +1,1 @@
+# python.md, 3: a builtin draws no edge, also where a project module declares the name

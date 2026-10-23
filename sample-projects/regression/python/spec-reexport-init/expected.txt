@@ -1,0 +1,5 @@
+# python.md, declarations, decision 2: a name an __init__.py imports is a re-export leaf
+file app/user.py -> pkg/__init__.py
+file pkg/__init__.py -> pkg/mod.py
+leaf app/user.py#User -> pkg/__init__.py#Foo
+leaf pkg/__init__.py#Foo -> pkg/mod.py#Foo

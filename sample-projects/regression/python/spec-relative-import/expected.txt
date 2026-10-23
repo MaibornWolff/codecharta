@@ -1,0 +1,5 @@
+# python.md, import paths: a relative module path starts at the package of the importing file
+file app/models/user.py -> app/core/base.py
+file app/models/user.py -> app/models/helper.py
+leaf app/models/user.py#User -> app/core/base.py#Base
+leaf app/models/user.py#User -> app/models/helper.py#Helper

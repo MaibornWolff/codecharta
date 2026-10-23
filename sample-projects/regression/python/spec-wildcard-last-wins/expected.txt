@@ -1,0 +1,3 @@
+# python.md, 2, decision 3: of two wildcard imports that bind N, the later one
+file app/tree.py -> app/second.py
+leaf app/tree.py#grow -> app/second.py#Node

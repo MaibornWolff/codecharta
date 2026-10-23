@@ -1,0 +1,4 @@
+# python.md, 2, decision 3: a base class sees the binding before its statement, a body the last one
+file app/tree.py -> app/lib.py
+leaf app/tree.py#Tree -> app/lib.py#Node
+leaf app/tree.py#Tree -> app/tree.py#Node

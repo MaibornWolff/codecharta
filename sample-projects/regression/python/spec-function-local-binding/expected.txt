@@ -1,0 +1,3 @@
+# python.md, 1: a parameter or variable of the enclosing function hides a module name
+file app/use.py -> app/models.py
+leaf app/use.py#uses -> app/models.py#Model

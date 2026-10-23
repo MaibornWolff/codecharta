@@ -1,0 +1,3 @@
+# python.md, declarations: the file path is the logical path; import roots 1: the analysis root
+file app/service.py -> app/models/user.py
+leaf app/service.py#Service -> app/models/user.py#User
