@@ -16,6 +16,10 @@ const val TSE_DEFAULT_EXPORT_NAME = "DEFAULT_EXPORT"
 // The first parent path segment TSE gives a declaration of `declare module 'name'`, whose path is the module name
 const val TSE_AMBIENT_MODULE_SEGMENT = "AMBIENT_MODULE"
 
+// The first parent path segment TSE gives a global JavaScript or TypeScript declaration, and the prefix of a use of a
+// name no module binding binds, which may mean one
+const val TSE_GLOBAL_SEGMENT = "GLOBAL"
+
 // The sentinel name of a use TSE reports for a JavaScript or TypeScript side-effect import, its specifier as the prefix
 const val TSE_MODULE_SCRIPT_NAME = "MODULE_SCRIPT"
 
