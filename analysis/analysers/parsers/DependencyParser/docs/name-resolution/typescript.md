@@ -116,9 +116,10 @@ A lower-case JSX tag (`<div>`) is an element of the platform: no edge.
 ## Vue components
 
 - A `.vue` file is one module whose default export is the component: a declaration named after the file without
-  `.vue` (`Button.vue` is `Button`), as Vue names a component after its file. What its `<script setup>` declares
-  belongs to the component; what a plain `<script>` exports by name is a declaration of its own, as in a TypeScript
-  module.
+  `.vue` (`Button.vue` is `Button`), as Vue names a component after its file. What its `<script setup>` declares and
+  runs belongs to the component, as the compiler moves it into the component's `setup()`. A plain `<script>` is the
+  module's top level, as in a TypeScript module: what it exports by name and a declaration it does not export are
+  declarations of their own, its code outside every declaration is the script declaration (decision 11).
 - The component uses what its script blocks use, by the rules above, and what its template names: the components of
   its tags, and the names in its expressions (`{{ format(date) }}`, `:item="defaults"`) that the script binds.
 - A tag `T`, written `UserCard` or `user-card`, means, in the order the Vue compiler and runtime look it up:
@@ -224,6 +225,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Vue tags 2 and 6: a binding decides between namesakes | `vue/spec-binding-over-auto-import` | gap |
 | Vue: names in template expressions | `vue/spec-template-expression` | gap |
 | Vue: a named export of a plain `<script>` | `vue/spec-plain-script-export` | gap |
+| Vue, decision 11: a plain `<script>` is the module's top level | `vue/spec-plain-script-module-level` | gap |
 | Vue tag 1: a built-in before a project component | `vue/spec-builtin-tag` | ok |
 | Vue tag 5: the component itself | `vue/spec-self-reference` | ok |
 | Angular: `templateUrl` and an element selector | `angular/spec-template-url` | ok |
@@ -272,3 +274,6 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 10. A name `require` binds stands for the module's `module.exports`, as at runtime: with `module.exports = Svc`,
     `x.create` is a member of `Svc` and a use of it, as `Color.Red` is a use of the enum `Color`; with
     `module.exports = { A, … }` or `exports.A = …`, `x.A` is the export `A` (decided 2026-10-23).
+11. A plain `<script>` of a `.vue` file is the module's top level and `<script setup>` part of the component, as the
+    Vue compiler compiles them: an unexported declaration of a plain `<script>` is a declaration of its own, its
+    top-level code the script declaration, as in a TypeScript module (decided 2026-10-23).
