@@ -38,6 +38,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     // resolved to are kept as written for the lookup on disk (`./user.service` must find `user.service.ts`).
     private val unescapedSegmentsByPath = HashMap<Path, List<String>>()
     private val sourceFilesByPath = HashMap<Path, File>()
+    private val defaultImports = fileInfo.analysisRoot?.let { DefaultImports(it) }
 
     override fun tseLanguage(): Language = if (isTsx) Language.TSX else Language.TYPESCRIPT
 
@@ -76,6 +77,9 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         return imports.filter { it.path.isNotEmpty() && it.path.last() in reexportNames }
     }
 
+    override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> =
+        defaultImports?.rewrite(declaration.usedTypes) ?: declaration.usedTypes
+
     override fun nodesOf(declaration: Declaration, node: Node, embedded: List<EmbeddedDeclarations>): List<Node> {
         val angular = declaration.angular ?: return listOf(node)
         val inlineTemplates = embedded.filter { it.language == Language.ANGULAR }
@@ -95,6 +99,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         val moduleFile = ImportedModules.fileOf(import, fileInfo) ?: return dependenciesByWrittenPath(import)
         val module = ImportedModules.logicalPathOf(moduleFile, analysisRoot)
         if (import.isWildcard) sourceFilesByPath[module] = moduleFile
+        defaultImports?.targetOf(import, moduleFile, module)?.let { return setOf(Dependency(path = it)) }
         val importedName = if (ImportedModules.namesMember(import)) listOf(import.defaultImportPath().last()) else emptyList()
         return setOf(Dependency(path = Path(module.parts + importedName), isWildcard = import.isWildcard))
     }
