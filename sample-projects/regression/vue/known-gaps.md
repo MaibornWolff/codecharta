@@ -25,24 +25,19 @@ missing leaf views/Home.vue#Home -> b/Badge.vue#Badge
 
 ## spec-components-option
 
-A default import of a `.vue` file does not name its component, and top-level code is no declaration.
+A tag is not looked up in the `components` option.
 
 ```text
-missing file main.ts -> components/other/CreatureCard.vue
 missing file views/CreatureList.vue -> components/CreatureCard.vue
-missing leaf main.ts#main.script -> components/other/CreatureCard.vue#CreatureCard
-missing leaf main.ts#main.script -> main.ts#app
 missing leaf views/CreatureList.vue#CreatureList -> components/CreatureCard.vue#CreatureCard
 ```
 
 ## spec-global-registration
 
-A global registration is not read, and top-level code is no declaration.
+A global registration is not read.
 
 ```text
-missing file main.ts -> components/CreatureBadge.vue
 missing file views/Panel.vue -> components/CreatureBadge.vue
-missing leaf main.ts#main.script -> components/CreatureBadge.vue#CreatureBadge
 missing leaf views/Panel.vue#Panel -> components/CreatureBadge.vue#CreatureBadge
 ```
 

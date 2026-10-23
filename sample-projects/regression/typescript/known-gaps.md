@@ -55,22 +55,11 @@ missing file ui/index.ts -> ui/button.ts
 missing leaf ui/index.ts#Button -> ui/button.ts#Button
 ```
 
-## spec-script-top-level
-
-Top-level code outside every declaration is no declaration, so what it names draws nothing.
-
-```text
-missing file main.ts -> app.ts
-missing leaf main.ts#main.script -> app.ts#AppModule
-```
-
 ## spec-side-effect-import
 
-Top-level code outside every declaration is no declaration, and a side-effect import draws nothing.
+A side-effect import draws nothing.
 
 ```text
 missing file main.ts -> polyfill.ts
-missing file polyfill.ts -> registry.ts
-missing leaf main.ts#main.script -> polyfill.ts#polyfill.script
-missing leaf polyfill.ts#polyfill.script -> registry.ts#Registry
+missing leaf main.ts#main_script -> polyfill.ts#polyfill_script
 ```
