@@ -5,15 +5,6 @@ The probes of this folder whose output deviates from their `expected.txt` today,
 an expected line the parser does not draw yet and `extra <line>` a wrong line it draws; `ProbeRegressionTest` fails
 once a gap closes, and the closed lines are deleted here.
 
-## spec-auto-import-unique
-
-A tag finds a component only in the own folder.
-
-```text
-missing file views/Home.vue -> components/Badge.vue
-missing leaf views/Home.vue#Home -> components/Badge.vue#Badge
-```
-
 ## spec-global-registration
 
 A global registration is not read.
