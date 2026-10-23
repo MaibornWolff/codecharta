@@ -42,6 +42,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     override fun tseLanguage(): Language = if (isTsx) Language.TSX else Language.TYPESCRIPT
 
     override fun buildPathWithName(packagePath: List<String>, declaration: Declaration): Path {
+        if (declaration.type == DeclarationType.SCRIPT) return ScriptLeaf.pathIn(physicalFilePath)
         if (declaration.parentPath.firstOrNull() == TSE_AMBIENT_MODULE_SEGMENT) {
             return Path(declaration.parentPath.drop(1)) + declaration.name
         }
