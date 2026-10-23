@@ -9,8 +9,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
 /**
  * A Vue file is one component, the default export of the file. It uses the components its first template names in
- * a tag: every tag that is not one of [HTML_ELEMENTS], converted to Pascal case; a template in pug through its
- * [PugTemplate] tags.
+ * a tag: every tag that is neither one of [HTML_ELEMENTS] nor one of Vue's [BUILT_IN_COMPONENTS], converted to Pascal
+ * case and marked [COMPONENT_TAG]; a template in pug through its [PugTemplate] tags.
  */
 internal object ComponentExtractor {
     private const val TEMPLATE_ELEMENT = "template_element"
@@ -25,6 +25,7 @@ internal object ComponentExtractor {
     private const val LANGUAGE_ATTRIBUTE = "lang"
     private const val PUG = "pug"
     private const val KEBAB_SEPARATOR = '-'
+    private const val COMPONENT_TAG = "COMPONENT_TAG"
 
     private val HTML_ELEMENTS = setOf(
         "div", "span", "p", "a", "img", "ul", "li", "ol", "table", "tr", "td", "th", "form", "input", "button", "select",
@@ -33,6 +34,9 @@ internal object ComponentExtractor {
         "audio", "canvas", "svg", "path", "template"
     )
 
+    // In lower case without the kebab separator, so `keep-alive` and `KeepAlive` are one
+    private val BUILT_IN_COMPONENTS = setOf("component", "transition", "transitiongroup", "keepalive", "teleport", "suspense", "slot")
+
     fun extract(rootNode: SyntaxNode): List<Declaration> {
         val template = TreeTraversal.findAllDescendantsOfType(rootNode, TEMPLATE_ELEMENT).firstOrNull()
         val usedComponents = template?.let { componentNamesIn(it) }.orEmpty()
@@ -40,19 +44,19 @@ internal object ComponentExtractor {
     }
 
     private fun componentNamesIn(template: SyntaxNode): Set<UsedType> = tagNamesIn(template)
-        .filter { tagName -> tagName.lowercase() !in HTML_ELEMENTS }
-        .mapTo(LinkedHashSet()) { tagName -> UsedType(toPascalCase(tagName)) }
+        .filter { tagName -> tagName.lowercase() !in HTML_ELEMENTS && !isBuiltIn(tagName) }
+        .mapTo(LinkedHashSet()) { tagName -> UsedType(toPascalCase(tagName), namespacePrefix = listOf(COMPONENT_TAG)) }
+
+    private fun isBuiltIn(tagName: String): Boolean = tagName.lowercase().replace(KEBAB_SEPARATOR.toString(), "") in BUILT_IN_COMPONENTS
 
     private fun tagNamesIn(template: SyntaxNode): List<String> {
-        if (languageOf(template) ==
-            PUG
-        ) {
-            return PugTemplate.tagNamesOf(TreeTraversal.findAllChildrenTextByType(template, TEXT).joinToString(""))
-        }
+        if (languageOf(template) == PUG) return PugTemplate.tagNamesOf(textOf(template))
         return TreeTraversal
             .findAllDescendantsOfType(template, START_TAG, SELF_CLOSING_TAG)
             .mapNotNull { tag -> TreeTraversal.findFirstChildTextByType(tag, TAG_NAME) }
     }
+
+    private fun textOf(template: SyntaxNode): String = TreeTraversal.findAllChildrenTextByType(template, TEXT).joinToString("")
 
     private fun languageOf(template: SyntaxNode): String? {
         val startTag = template.children().firstOrNull { it.type == START_TAG } ?: return null
