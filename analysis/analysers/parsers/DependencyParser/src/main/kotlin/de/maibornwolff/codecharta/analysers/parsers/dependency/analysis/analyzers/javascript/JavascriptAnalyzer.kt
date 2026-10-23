@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.withoutFileSuffix
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.defaultImportPath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.DefaultExports
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.GlobalUses
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ImportedModules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.MemberImports
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ModuleScriptUses
@@ -35,7 +36,7 @@ class JavascriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     }
 
     override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> =
-        ModuleScriptUses.of(declaration.usedTypes, fileInfo)
+        GlobalUses.of(ModuleScriptUses.of(declaration.usedTypes, fileInfo), fileInfo.analysisRoot)
 
     override fun analyze(): FileReport {
         val declaredNodes = super.analyze().nodes.let { memberImports?.rewrite(it) ?: it }
