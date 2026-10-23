@@ -40,3 +40,14 @@ Every import of a script block counts as a use.
 ```text
 extra leaf components/Item.vue#Item -> fmt.ts#unused
 ```
+
+## spec-plain-script-module-level
+
+The declarations and the top-level code of a plain script block are no declarations; every import counts as a use of
+the component.
+
+```text
+missing leaf components/Panel.vue#Panel -> components/Panel.vue#size
+missing leaf components/Panel.vue#Panel_script -> registry.ts#register
+extra leaf components/Panel.vue#Panel -> registry.ts#register
+```
