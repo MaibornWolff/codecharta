@@ -48,7 +48,7 @@ jobs:
       # Gradle has to run on the JDK it compiles with: the Kotlin compiler reads that JDK's class image inside
       # Gradle's own JVM, which fails across versions for a JDK with CRaC support such as Zulu
       - name: Setup the JDK to build with
-        uses: actions/setup-java@v5.2.0
+        uses: actions/setup-java@v5.7.0
         with:
           distribution: 'temurin'
           java-version: 25
@@ -60,7 +60,7 @@ jobs:
         run: ./gradlew installDist
 
       - name: Setup the oldest supported Java
-        uses: actions/setup-java@v5.2.0
+        uses: actions/setup-java@v5.7.0
         with:
           distribution: 'temurin'
           java-version: 22
