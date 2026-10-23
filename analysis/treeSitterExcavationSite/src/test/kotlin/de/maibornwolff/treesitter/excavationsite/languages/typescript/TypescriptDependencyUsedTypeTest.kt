@@ -541,4 +541,27 @@ class TypescriptDependencyUsedTypeTest {
         // Assert
         assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactlyInAnyOrder("models", "create", "defaults")
     }
+
+    @Test
+    fun `should report a qualified type as one name, through a namespace import as the member path`() {
+        // Arrange
+        val code = """
+            import * as lib from './lib'
+            import { Shapes } from './geo'
+            export class Draw implements lib.Drawable {
+                circle?: Shapes.Circle
+                shape?: lib.shapes.Square
+            }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+        // Assert
+        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactlyInAnyOrder(
+            "Drawable",
+            "Shapes.Circle",
+            "shapes.Square"
+        )
+    }
 }

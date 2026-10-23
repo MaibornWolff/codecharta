@@ -20,6 +20,9 @@ internal object UsedTypeExtractor {
     private const val AS_EXPRESSION = "as_expression"
     private const val SATISFIES_EXPRESSION = "satisfies_expression"
     private const val TYPE_ARGUMENTS = "type_arguments"
+    private const val NESTED_TYPE_IDENTIFIER = "nested_type_identifier"
+    private const val QUALIFIER_SEPARATOR = "."
+    private val QUALIFIER_PARENTS = setOf(NESTED_TYPE_IDENTIFIER, "nested_identifier")
     private val JSX_TAG_ELEMENTS = setOf(JSX_OPENING_ELEMENT, JSX_SELF_CLOSING_ELEMENT, "jsx_closing_element")
 
     private val ALL_NODE_TYPES = setOf(
@@ -47,23 +50,24 @@ internal object UsedTypeExtractor {
             .findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
             .mapValues { (_, nodes) -> nodes.filterNot { isHiddenName(it, scopes) } }
 
-        val typeIdentifiers = collectTypeIdentifiersFromNodes(buckets[TYPE_ANNOTATION].orEmpty(), scopes)
+        val typeIdentifiers = collectTypeIdentifiersFromNodes(buckets[TYPE_ANNOTATION].orEmpty(), scopes, names.namespaceNames)
         val constructorCalls = extractConstructorCalls(buckets, names.namespaceNames, scopes)
         val memberAccesses = extractMemberAccesses(buckets, names.namespaceNames, scopes)
         val methodCalls = extractMethodCalls(buckets)
-        val extensions = extractExtensions(buckets, scopes)
+        val extensions = extractExtensions(buckets, scopes, names.namespaceNames)
         val relevantIdentifiers = extractRelevantIdentifiers(buckets, aliasMap, localDeclarationNames)
 
-        val constraintTypes = collectTypeIdentifiersFromNodes(buckets[CONSTRAINT].orEmpty(), scopes)
+        val constraintTypes = collectTypeIdentifiersFromNodes(buckets[CONSTRAINT].orEmpty(), scopes, names.namespaceNames)
         val typeAssertions = collectTypeIdentifiersFromNodes(
             buckets[AS_EXPRESSION].orEmpty() + buckets[SATISFIES_EXPRESSION].orEmpty(),
-            scopes
+            scopes,
+            names.namespaceNames
         )
-        val genericTypeArgs = collectTypeIdentifiersFromNodes(buckets[TYPE_ARGUMENTS].orEmpty(), scopes)
+        val genericTypeArgs = collectTypeIdentifiersFromNodes(buckets[TYPE_ARGUMENTS].orEmpty(), scopes, names.namespaceNames)
         val typeAliasRhsTypes = if (declaration.type ==
             TYPE_ALIAS_DECLARATION
         ) {
-            extractTypeAliasRhsTypes(declaration, scopes)
+            extractTypeAliasRhsTypes(declaration, scopes, names.namespaceNames)
         } else {
             emptyList()
         }
@@ -81,10 +85,22 @@ internal object UsedTypeExtractor {
     private fun isHiddenName(node: SyntaxNode, scopes: LocalScopes): Boolean =
         (node.type == IDENTIFIER || node.type == TYPE_IDENTIFIER) && scopes.hides(node)
 
-    private fun collectTypeIdentifiersFromNodes(nodes: List<SyntaxNode>, scopes: LocalScopes): List<UsedType> = nodes
-        .flatMap { TreeTraversal.findAllDescendantsOfType(it, TYPE_IDENTIFIER) }
-        .filterNot { scopes.hides(it) }
-        .map { UsedType(name = it.text.trim()) }
+    private fun collectTypeIdentifiersFromNodes(nodes: List<SyntaxNode>, scopes: LocalScopes, namespaceNames: Set<String>): List<UsedType> =
+        nodes
+            .flatMap { TreeTraversal.findAllDescendantsOfType(it, TYPE_IDENTIFIER) }
+            .filterNot { scopes.hides(it) }
+            .map { typeUseOf(it, namespaceNames) }
+
+    // `Shapes.Circle` is one qualified name; through a namespace import `ns.Model` names the member `Model` of its module
+    private fun typeUseOf(typeIdentifier: SyntaxNode, namespaceNames: Set<String>): UsedType {
+        val qualified =
+            typeIdentifier.parent.takeIf { it.type == NESTED_TYPE_IDENTIFIER } ?: return UsedType(name = typeIdentifier.text.trim())
+        val segments = qualified.text.filterNot { it.isWhitespace() }.split(QUALIFIER_SEPARATOR)
+        val name = if (segments.first() in namespaceNames) segments.drop(1) else segments
+        return UsedType(name = name.joinToString(QUALIFIER_SEPARATOR))
+    }
+
+    private fun isQualifierOfAType(identifier: SyntaxNode): Boolean = identifier.parent.type in QUALIFIER_PARENTS
 
     private fun extractConstructorCalls(
         buckets: Map<String, List<SyntaxNode>>,
@@ -135,13 +151,17 @@ internal object UsedTypeExtractor {
             UsedType(name = name)
         }
 
-    private fun extractExtensions(buckets: Map<String, List<SyntaxNode>>, scopes: LocalScopes): List<UsedType> {
+    private fun extractExtensions(
+        buckets: Map<String, List<SyntaxNode>>,
+        scopes: LocalScopes,
+        namespaceNames: Set<String>
+    ): List<UsedType> {
         val clauseNodes = buckets[EXTENDS_CLAUSE].orEmpty() + buckets[EXTENDS_TYPE_CLAUSE].orEmpty() + buckets[IMPLEMENTS_CLAUSE].orEmpty()
         return clauseNodes.flatMap { clauseNode ->
             TreeTraversal
                 .findAllDescendantsOfType(clauseNode, TYPE_IDENTIFIER, IDENTIFIER)
-                .filterNot { scopes.hides(it) }
-                .map { UsedType(name = it.text.trim()) }
+                .filterNot { scopes.hides(it) || (it.type == IDENTIFIER && isQualifierOfAType(it)) }
+                .map { if (it.type == TYPE_IDENTIFIER) typeUseOf(it, namespaceNames) else UsedType(name = it.text.trim()) }
         }
     }
 
@@ -153,7 +173,7 @@ internal object UsedTypeExtractor {
         localDeclarationNames: Set<String>
     ): List<UsedType> = buckets[IDENTIFIER].orEmpty().mapNotNull { node ->
         val name = node.text.trim()
-        if (isPlatformElementTag(node)) return@mapNotNull null
+        if (isPlatformElementTag(node) || isQualifierOfAType(node)) return@mapNotNull null
         if (name.firstOrNull()?.isUpperCase() != true && name !in aliasMap && name !in localDeclarationNames) return@mapNotNull null
         UsedType(name = name)
     }
@@ -182,14 +202,14 @@ internal object UsedTypeExtractor {
         }
     }
 
-    private fun extractTypeAliasRhsTypes(declaration: SyntaxNode, scopes: LocalScopes): List<UsedType> {
+    private fun extractTypeAliasRhsTypes(declaration: SyntaxNode, scopes: LocalScopes, namespaceNames: Set<String>): List<UsedType> {
         val children = declaration.children().toList()
         val nameNodeIndex = children.indexOfFirst { it.type == TYPE_IDENTIFIER }
         return children
             .filterIndexed { index, _ -> index != nameNodeIndex }
             .flatMap { TreeTraversal.findAllDescendantsOfType(it, TYPE_IDENTIFIER) }
             .filterNot { scopes.hides(it) }
-            .map { UsedType(name = it.text.trim()) }
+            .map { typeUseOf(it, namespaceNames) }
     }
 
     private fun findLeftmostIdentifier(node: SyntaxNode): SyntaxNode? {
