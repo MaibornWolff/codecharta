@@ -17,8 +17,9 @@ enum class ImportKind {
     REEXPORT,
 
     /**
-     * A name imported out of a module (Python `from module import name`): the last path segment is that name, for a
-     * wildcard there is none. A relative module starts with one `.` segment per leading dot.
+     * A name imported out of a module (Python `from module import name`, JavaScript `import { name } from 'module'`):
+     * the last path segment is that name, for a wildcard there is none. A relative Python module starts with one `.`
+     * segment per leading dot.
      */
     MEMBER
 }
