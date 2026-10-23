@@ -12,9 +12,9 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 ## Resume here (for a fresh agent)
 
-- **State:** Java, Kotlin, C#, Go and Python are done. Branch `fix/dependency-name-resolution-python` (cut from
-  `fix/dependency-name-resolution-go`) holds the Python commits; Christian pushes it and reviews it on GitHub. Next:
-  ask Christian which language comes next (AskUserQuestion), or pick one when he leaves it to you.
+- **State:** Java, Kotlin, C#, Go and Python are done. TypeScript, JavaScript, Vue and Angular templates are in
+  progress on branch `fix/dependency-name-resolution-typescript` (cut from the pushed Python branch, not pushed yet):
+  resume with the section "TypeScript, JavaScript, Vue and Angular templates" below, at "Resume TypeScript here".
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -32,6 +32,14 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
     expectations; the checkpoint probes against the release; the gate on both parts.
   - `xcheck.sh <prev> <new>`: the whole output of both builds on every sample, probe, checkpoint probe, `analysis/`
     and `visualization/app`; for a refactor it must say 0 differences, otherwise only the language's files may differ.
+- **Faster tools (2026-10-23, asked for by Christian):** `xlang/compare.py` and `cp-compare.py` run 12 at a time and
+  cache: a build's normalized output per input under `cache/ccsh-<tag>/` (keyed by the input's files, sizes and
+  mtimes; `chain.sh` clears the new tag's cache), the release baseline's probe lines in `cache/cp-baseline.json`.
+  `chain.sh` runs `integrationTest` beside the comparisons and fails at the end if it failed; `accept.sh` prints
+  `FAILED FILE <part>: …` for a file the new build could not analyse, which no gate or test catches. A chain takes about
+  3 minutes. Helpers in `scratch/`: `rmgap.py <known-gaps.md> <probe>...` deletes gap sections, `probecheck.sh <tag>
+  <probe dir>...` diffs probes against `expected.txt`, `dump.sh <grammar:path>...` prints tree-sitter trees (needs the
+  untracked `ScratchTreeDumpTest.kt` in TSE `src/test/.../shared/infrastructure/ffm/`, never commit it).
 - **One commit, the chain** (`chain.sh <prev> <new>` in the tools folder runs all of it): `cd analysis &&
   ./gradlew ktlintCheck test && ./gradlew distTar installDist && ./gradlew integrationTest`, copy the build to
   `ccsh-<tag>`, `npm run format:check`, `accept.sh`, `xcheck.sh`, then commit. A run with `--bypass-gitignore` also reads `build/` copies of test resources; edges between such copies are
@@ -140,19 +148,19 @@ shared by JavaScript and Vue) resolves the specifier to a file (`ModuleFiles`), 
 
 Steps, one commit each:
 
-1. [ ] refactor: TypeScript, JavaScript and Vue get name rules of their own, the default ones for now
-2. [ ] a top-level declaration that a module does not export is file-scoped
-3. [ ] a module specifier means the file the compiler finds (endings, `.js` for `.ts`, `package.json`, `index`)
-4. [ ] a bare specifier means the workspace package of that name
-5. [ ] default exports: a named one under its own name, an anonymous one `default`, a default import finds it
-6. [ ] `export { A as B }` without `from` names the own declaration
-7. [ ] an imported name exported again is a re-export
-8. [ ] `export *` without the default export, unexported and ambiguous names
+1. [x] refactor: TypeScript, JavaScript and Vue get name rules of their own, the default ones for now
+2. [x] a top-level declaration that a module does not export is file-scoped
+3. [x] a module specifier means the file the compiler finds (endings, `.js` for `.ts`, `package.json`, `index`)
+4. [x] a bare specifier means the workspace package of that name
+5. [x] default exports: a named one under its own name, an anonymous one `default`, a default import finds it
+6. [x] `export { A as B }` without `from` names the own declaration
+7. [x] an imported name exported again is a re-export
+8. [x] `export *` without the default export, unexported and ambiguous names
 9. [ ] `export * as ns` is a module, a chain through it walks on
-10. [ ] names a function, block, class or type parameter binds hide the module's
-11. [ ] a lower-case JSX tag is no name; every name through a namespace import is one
-12. [ ] a name bound by destructuring is a declaration
-13. [ ] what a namespace exports is a leaf of its own
+10. [x] names a function, block, class or type parameter binds hide the module's
+11. [x] a lower-case JSX tag is no name; every name through a namespace import is one
+12. [x] a name bound by destructuring is a declaration
+13. [x] what a namespace exports is a leaf of its own
 14. [ ] top-level code is a script leaf
 15. [ ] a side-effect import or unbound `require` uses the script leaf
 16. [ ] a name read from a dynamic import's result
@@ -165,6 +173,39 @@ Steps, one commit each:
 23. [ ] Vue: named exports of a plain `<script>`
 24. [ ] Angular: attribute directives
 25. [ ] changelog, README, gh-pages, plan
+
+### Resume TypeScript here (2026-10-23, after step 13)
+
+- **Last build** `ccsh-ts22` (head of the branch); the next chain is `chain.sh ts22 ts23`. Checkpoint probes worse than
+  the release: the eight known by decision (Java, C#, Go, Python) plus `typescript/r3-p3-ts`, worse by decision 7 (it
+  draws `Circle -> Shapes.Circle` where the checkpoint expects the namespace as one leaf, `Circle -> Shapes`).
+- **Gaps left (20 of 39):** typescript `spec-declare-global`, `spec-dynamic-import`, `spec-global-alternatives`,
+  `spec-global-script`, `spec-qualified-chain` (only the `export * as` leaves), `spec-reexport-default`,
+  `spec-script-top-level`, `spec-side-effect-import`; javascript `spec-commonjs-default`, `spec-commonjs-require-module`,
+  `spec-esm-import-commonjs`, `spec-require-side-effect`, `spec-script-global`; vue `spec-auto-import-unique`,
+  `spec-binding-over-auto-import`, `spec-components-option`, `spec-global-registration`, `spec-plain-script-export`,
+  `spec-template-expression`; angular `spec-attribute-directive`.
+- **Next steps in order:** 9 (`export * as ns`: TSE sets `bindingName` on the wildcard re-export from its
+  `namespace_export`, the analyzer makes no star leaves for it and `ModuleExports` treats it as a module), then 14–18,
+  then 20–24, then 19 (drop the heuristics: `TypescriptNameRules` still delegates to `DefaultNameRules`), then 25.
+  `spec-reexport-default` (`export { default as B } from`) needs the re-export's use to carry its module: the re-export
+  declaration's used type is `DEFAULT_EXPORT`, and `MemberImports` keys defaults by binding name, which a re-export has
+  none of; pair the declaration with its own import.
+- **Where things are:** extractor `treeSitterExcavationSite/.../languages/javascript/extractors/`: `ExportedNames`
+  (file scope), `LocalScopes` + `BindingPatterns` (step 10, values and types apart; dynamic-import callbacks and
+  `await import`/`require` destructuring are module bindings, no locals), `ModuleNames` in `DeclarationPrepass`
+  (aliases, namespace import names, own names), `NamespaceDeclarations`, `DefaultExportClassifier`; markers
+  `DEFAULT_EXPORT`, `AMBIENT_MODULE` (first parent segment of a `declare module` member; any other parent path lies
+  below the file), import kinds `MEMBER`/`REEXPORT`. Analyzer `analyzers/typescript/`: `ModuleFiles`, `ImportedModules`
+  (specifier to file, logical path), `WorkspacePackages`, `PackageJson`, `ModuleExports` (default name, own name of an
+  export, named exports, `export *` with ambiguity), `MemberImports` (rewrites uses of default and renamed imports to
+  full paths), `DefaultExports` (drops re-export nodes that name an own declaration), `QualifiedNames` (dotted names get
+  their prefixes as `Type.fallbacks`, own-file ones a full path), star expansion in `TypescriptAnalyzer`.
+- **Lessons:** read the whole-output diff of every chain, not only the edge counts: a file that throws drops all its
+  edges (`relativeTo` on a relative analysis root did, now caught by `FAILED FILE`). An extractor change that removes
+  a heuristic can unmask another (lower-case members of every import counted as namespace members; split the step and
+  add the missing distinction first). Commit messages: commitlint warns on a body line that starts like a footer
+  (`Edges: …` after a blank line), harmless.
 
 ## Steps
 
