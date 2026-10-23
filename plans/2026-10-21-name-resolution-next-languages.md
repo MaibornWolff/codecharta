@@ -124,9 +124,52 @@ its own; `Outer.Node` is no use of `Outer`). Order lessons: the import roots had
 alias resolved through it and attribute names stopped being plain names, or `am.Model` lost to the bare `Model`; a
 decision asked mid-way (5, alternatives) went in as spec, probes, then the implementation.
 
+## TypeScript, JavaScript, Vue and Angular templates (in progress, 2026-10-23)
+
+Branch `fix/dependency-name-resolution-typescript`, cut from the pushed Python branch; comparison build of the first
+commit `ccsh-py12`, then `ccsh-ts<n>`. Christian chose all four at once and decisions 2 to 6 of
+`docs/name-resolution/typescript.md`; 7 to 9 follow Java, Python and Go. 78 probes under
+`sample-projects/regression/{typescript,javascript,vue,angular}/`, 39 gaps at the start. Every TypeScript probe compiles
+in tsc 6.0.3 (`visualization/node_modules/.bin/tsc`, moduleResolution bundler).
+
+Target design, as Python: the extractor finds the binding of every name (scopes in TSE `languages/javascript`) and
+reports a use as its module specifier plus the exported name and the members behind it; the analyzer (`typescript/`,
+shared by JavaScript and Vue) resolves the specifier to a file (`ModuleFiles`), the name to what that module exports
+(`ModuleExports`, read per file and cached per analysis root, as Python's `WildcardExports`) or to a global
+(`GlobalDeclarations`), and writes the exact path; the name rules then take a path only as written.
+
+Steps, one commit each:
+
+1. [ ] refactor: TypeScript, JavaScript and Vue get name rules of their own, the default ones for now
+2. [ ] a top-level declaration that a module does not export is file-scoped
+3. [ ] a module specifier means the file the compiler finds (endings, `.js` for `.ts`, `package.json`, `index`)
+4. [ ] a bare specifier means the workspace package of that name
+5. [ ] default exports: a named one under its own name, an anonymous one `default`, a default import finds it
+6. [ ] `export { A as B }` without `from` names the own declaration
+7. [ ] an imported name exported again is a re-export
+8. [ ] `export *` without the default export, unexported and ambiguous names
+9. [ ] `export * as ns` is a module, a chain through it walks on
+10. [ ] names a function, block, class or type parameter binds hide the module's
+11. [ ] a lower-case JSX tag is no name; every name through a namespace import is one
+12. [ ] a name bound by destructuring is a declaration
+13. [ ] what a namespace exports is a leaf of its own
+14. [ ] top-level code is a script leaf
+15. [ ] a side-effect import or unbound `require` uses the script leaf
+16. [ ] a name read from a dynamic import's result
+17. [ ] globals of script files and `declare global`
+18. [ ] CommonJS: `require` binds the module, `module.exports` is the default export
+19. [ ] resolve a name only through the binding the compiler sees (the heuristics go)
+20. [ ] Vue: a default import of a `.vue` file names its component
+21. [ ] Vue: tags by binding, `components`, global registration, the one component
+22. [ ] Vue: template expressions are uses, an import alone is none
+23. [ ] Vue: named exports of a plain `<script>`
+24. [ ] Angular: attribute directives
+25. [ ] changelog, README, gh-pages, plan
+
 ## Steps
 
 - [x] Ask Christian which language comes next: C# (2026-10-22)
 - [x] Next language: Go (left to Claude by Christian, 2026-10-22), done 2026-10-22
 - [x] Next language: Python (left to Claude by Christian, 2026-10-23), done 2026-10-23
+- [ ] Next language: TypeScript, JavaScript, Vue and Angular templates (left to Claude by Christian, 2026-10-23)
 - [ ] For each language: spec, probes, implementation commits, acceptance
