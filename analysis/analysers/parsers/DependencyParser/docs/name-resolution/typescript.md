@@ -189,7 +189,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Binding: `import * as ns` | `spec-namespace-import` | gap |
 | Binding: an import alone draws no edge | `spec-unused-import` | ok |
 | Binding, decision 3: a side-effect import | `spec-side-effect-import` | ok |
-| Binding, decision 4: a dynamic import read by name | `spec-dynamic-import` | gap |
+| Binding, decision 4: a dynamic import read by name | `spec-dynamic-import` | ok |
 | Binding, decision 4: a dynamic import not read | `spec-dynamic-import-unread` | ok |
 | 1. a local class | `spec-local-declaration` | gap |
 | 1. a parameter | `spec-parameter-shadows-import` | gap |

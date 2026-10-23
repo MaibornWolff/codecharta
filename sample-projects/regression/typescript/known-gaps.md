@@ -14,17 +14,6 @@ missing file app.ts -> setup.ts
 missing leaf app.ts#isDebug -> setup.ts#Settings
 ```
 
-## spec-dynamic-import
-
-The result of a dynamic import binds nothing: a name read from it is found only where it stands alone (`({ ReportComponent }) => ReportComponent`).
-
-```text
-missing file routes.ts -> admin.ts
-missing file routes.ts -> stats.ts
-missing leaf routes.ts#loadStats -> stats.ts#Stats
-missing leaf routes.ts#routes -> admin.ts#AdminComponent
-```
-
 ## spec-global-alternatives
 
 A name that no import binds is not looked up among the declarations of script files.

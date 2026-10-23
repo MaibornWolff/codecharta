@@ -6,12 +6,13 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
 /**
  * What a module binds that the use extraction needs: the local name of each import with the name it imports, the local
- * names of its namespace imports, and the names of its own top-level declarations.
+ * names of its namespace imports, the names of its own top-level declarations, and what its dynamic imports bind.
  */
 internal data class ModuleNames(
     val aliasMap: Map<String, String>,
     val namespaceNames: Set<String>,
-    val localDeclarationNames: Set<String>
+    val localDeclarationNames: Set<String>,
+    val dynamicImports: DynamicImportBindings
 ) {
     /** The names a declaration sees, without its own, which names the declaration itself rather than a use. */
     fun without(ownName: String): ModuleNames = copy(localDeclarationNames = localDeclarationNames - ownName)
@@ -21,7 +22,8 @@ internal object DeclarationPrepass {
     internal fun moduleNamesOf(rootNode: SyntaxNode, imports: List<ImportDeclaration>): ModuleNames = ModuleNames(
         aliasMap = buildAliasMap(imports),
         namespaceNames = imports.filter { it.isWildcard && it.kind == ImportKind.STANDARD }.mapNotNullTo(HashSet()) { it.bindingName },
-        localDeclarationNames = extractLocalDeclarationNames(rootNode)
+        localDeclarationNames = extractLocalDeclarationNames(rootNode),
+        dynamicImports = DynamicImportBindings.of(rootNode)
     )
 
     internal fun buildAliasMap(imports: List<ImportDeclaration>): Map<String, String> = imports
