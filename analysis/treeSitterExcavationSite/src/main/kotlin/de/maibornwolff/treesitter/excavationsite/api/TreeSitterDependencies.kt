@@ -4,6 +4,7 @@ import de.maibornwolff.treesitter.excavationsite.integration.dependencies.Depend
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.JavascriptDependencyMapping
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ComponentRegistration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DependencyResult
 
 object TreeSitterDependencies {
@@ -23,6 +24,13 @@ object TreeSitterDependencies {
         grammarLibrary = LanguageRegistry.getGrammarLibrary(Language.JAVASCRIPT),
         extractAliases = JavascriptDependencyMapping.extractBundlerAliases
     )
+
+    /**
+     * The Vue components a source registers: the `.component('Name', X)` calls of a JavaScript or TypeScript source,
+     * and for a Vue component also the `components` option of its plain script, each script block read in its language.
+     */
+    fun vueComponentRegistrations(content: String, language: Language): List<ComponentRegistration> =
+        DependenciesFacade.componentRegistrations(content, language)
 
     fun isDependencyAnalysisSupported(language: Language): Boolean {
         val definition = LanguageRegistry.getLanguageDefinition(language)

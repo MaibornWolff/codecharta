@@ -1,10 +1,13 @@
 package de.maibornwolff.treesitter.excavationsite.languages.vue
 
 import de.maibornwolff.treesitter.excavationsite.languages.vue.extractors.ComponentExtractor
+import de.maibornwolff.treesitter.excavationsite.languages.vue.extractors.ComponentRegistrationExtractor
 import de.maibornwolff.treesitter.excavationsite.languages.vue.extractors.ScriptBlockExtractor
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ComponentRegistration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.EmbeddedSourceMapping
 import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDependencyMapping
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
 object VueDependencyMapping {
     private const val VUE_GRAMMAR = "vue"
@@ -19,4 +22,7 @@ object VueDependencyMapping {
         embeddedSources = EmbeddedSourceMapping(marker = SCRIPT_START, extract = ScriptBlockExtractor::extract),
         grammarOfWholeFile = GrammarLibrary(VUE_GRAMMAR)
     )
+
+    /** The components a JavaScript or TypeScript syntax tree registers, globally or in a `components` option. */
+    val extractComponentRegistrations: (SyntaxNode) -> List<ComponentRegistration> = ComponentRegistrationExtractor::extract
 }
