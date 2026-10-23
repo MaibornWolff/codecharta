@@ -54,14 +54,6 @@ A lower-case JSX tag is reported as a name.
 extra leaf page.tsx#Page -> card.tsx#card
 ```
 
-## spec-local-declaration
-
-A class declared in a function does not hide the import of the same name.
-
-```text
-extra leaf use.ts#local -> model.ts#Model
-```
-
 ## spec-namespace-import
 
 Through a namespace import only names starting upper case are reported.
@@ -81,14 +73,6 @@ missing leaf draw.ts#draw -> geo.ts#Circle
 missing leaf geo.ts#Circle -> point.ts#Point
 missing leaf geo.ts#Shapes -> point.ts#Point
 missing leaf geo.ts#unit -> geo.ts#Shapes
-```
-
-## spec-parameter-shadows-import
-
-A parameter does not hide the import of the same name.
-
-```text
-extra leaf use.ts#shadowed -> model.ts#Model
 ```
 
 ## spec-qualified-chain
@@ -131,14 +115,6 @@ missing file main.ts -> polyfill.ts
 missing file polyfill.ts -> registry.ts
 missing leaf main.ts#main.script -> polyfill.ts#polyfill.script
 missing leaf polyfill.ts#polyfill.script -> registry.ts#Registry
-```
-
-## spec-type-parameter
-
-A type parameter does not hide the import of the same name.
-
-```text
-extra leaf box.ts#Box -> model.ts#Model
 ```
 
 ## spec-variable-declaration

@@ -39,28 +39,32 @@ internal object UsedTypeExtractor {
     )
 
     fun extract(declaration: SyntaxNode, aliasMap: Map<String, String>, localDeclarationNames: Set<String>): Set<UsedType> {
-        val buckets = TreeTraversal.findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
+        val scopes = LocalScopes(declaration.startByte, declaration.endByte)
+        val buckets = TreeTraversal
+            .findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
+            .mapValues { (_, nodes) -> nodes.filterNot { isHiddenName(it, scopes) } }
 
-        val typeIdentifiers = collectTypeIdentifiersFromNodes(buckets[TYPE_ANNOTATION].orEmpty())
-        val constructorCalls = extractConstructorCalls(buckets, aliasMap)
-        val memberAccesses = extractMemberAccesses(buckets, aliasMap)
+        val typeIdentifiers = collectTypeIdentifiersFromNodes(buckets[TYPE_ANNOTATION].orEmpty(), scopes)
+        val constructorCalls = extractConstructorCalls(buckets, aliasMap, scopes)
+        val memberAccesses = extractMemberAccesses(buckets, aliasMap, scopes)
         val methodCalls = extractMethodCalls(buckets)
-        val extensions = extractExtensions(buckets)
+        val extensions = extractExtensions(buckets, scopes)
         val relevantIdentifiers = extractRelevantIdentifiers(buckets, aliasMap, localDeclarationNames)
 
-        val constraintTypes = collectTypeIdentifiersFromNodes(buckets[CONSTRAINT].orEmpty())
+        val constraintTypes = collectTypeIdentifiersFromNodes(buckets[CONSTRAINT].orEmpty(), scopes)
         val typeAssertions = collectTypeIdentifiersFromNodes(
-            buckets[AS_EXPRESSION].orEmpty() + buckets[SATISFIES_EXPRESSION].orEmpty()
+            buckets[AS_EXPRESSION].orEmpty() + buckets[SATISFIES_EXPRESSION].orEmpty(),
+            scopes
         )
-        val genericTypeArgs = collectTypeIdentifiersFromNodes(buckets[TYPE_ARGUMENTS].orEmpty())
+        val genericTypeArgs = collectTypeIdentifiersFromNodes(buckets[TYPE_ARGUMENTS].orEmpty(), scopes)
         val typeAliasRhsTypes = if (declaration.type ==
             TYPE_ALIAS_DECLARATION
         ) {
-            extractTypeAliasRhsTypes(declaration)
+            extractTypeAliasRhsTypes(declaration, scopes)
         } else {
             emptyList()
         }
-        val jsxComponents = extractJsxComponents(buckets)
+        val jsxComponents = extractJsxComponents(buckets, scopes)
 
         return listOf(
             typeIdentifiers, constructorCalls, memberAccesses, methodCalls, extensions,
@@ -70,34 +74,46 @@ internal object UsedTypeExtractor {
             .toSet()
     }
 
-    private fun collectTypeIdentifiersFromNodes(nodes: List<SyntaxNode>): List<UsedType> = nodes
+    // A name a local binding hides is no use; a node that is no name, such as a call or an annotation, is checked by its names
+    private fun isHiddenName(node: SyntaxNode, scopes: LocalScopes): Boolean =
+        (node.type == IDENTIFIER || node.type == TYPE_IDENTIFIER) && scopes.hides(node)
+
+    private fun collectTypeIdentifiersFromNodes(nodes: List<SyntaxNode>, scopes: LocalScopes): List<UsedType> = nodes
         .flatMap { TreeTraversal.findAllDescendantsOfType(it, TYPE_IDENTIFIER) }
+        .filterNot { scopes.hides(it) }
         .map { UsedType(name = it.text.trim()) }
 
-    private fun extractConstructorCalls(buckets: Map<String, List<SyntaxNode>>, aliasMap: Map<String, String>): List<UsedType> =
-        buckets[NEW_EXPRESSION].orEmpty().mapNotNull { node ->
-            val constructor = node.children().firstOrNull { it.type == IDENTIFIER || it.type == TYPE_IDENTIFIER }
-            if (constructor != null) {
-                val name = constructor.text.trim()
-                if (name.firstOrNull()?.isUpperCase() != true) return@mapNotNull null
-                return@mapNotNull UsedType(name = name)
-            }
-            // namespace alias constructor: new ns.Class()
-            extractNsAliasMember(node.children().firstOrNull { it.type == MEMBER_EXPRESSION }, aliasMap)
+    private fun extractConstructorCalls(
+        buckets: Map<String, List<SyntaxNode>>,
+        aliasMap: Map<String, String>,
+        scopes: LocalScopes
+    ): List<UsedType> = buckets[NEW_EXPRESSION].orEmpty().mapNotNull { node ->
+        val constructor = node.children().firstOrNull { it.type == IDENTIFIER || it.type == TYPE_IDENTIFIER }
+        if (constructor != null) {
+            if (scopes.hides(constructor)) return@mapNotNull null
+            val name = constructor.text.trim()
+            if (name.firstOrNull()?.isUpperCase() != true) return@mapNotNull null
+            return@mapNotNull UsedType(name = name)
         }
+        // namespace alias constructor: new ns.Class()
+        extractNsAliasMember(node.children().firstOrNull { it.type == MEMBER_EXPRESSION }, aliasMap, scopes)
+    }
 
-    private fun extractMemberAccesses(buckets: Map<String, List<SyntaxNode>>, aliasMap: Map<String, String>): List<UsedType> =
-        buckets[MEMBER_EXPRESSION].orEmpty().mapNotNull { node ->
-            val root = findLeftmostIdentifier(node) ?: return@mapNotNull null
-            val name = root.text.trim()
-            if (name.firstOrNull()?.isUpperCase() == true) return@mapNotNull UsedType(name = name)
-            // namespace alias member access: ns.Class where ns is the direct object identifier
-            extractNsAliasMember(node, aliasMap)
-        }
+    private fun extractMemberAccesses(
+        buckets: Map<String, List<SyntaxNode>>,
+        aliasMap: Map<String, String>,
+        scopes: LocalScopes
+    ): List<UsedType> = buckets[MEMBER_EXPRESSION].orEmpty().mapNotNull { node ->
+        val root = findLeftmostIdentifier(node)?.takeUnless { scopes.hides(it) } ?: return@mapNotNull null
+        val name = root.text.trim()
+        if (name.firstOrNull()?.isUpperCase() == true) return@mapNotNull UsedType(name = name)
+        // namespace alias member access: ns.Class where ns is the direct object identifier
+        extractNsAliasMember(node, aliasMap, scopes)
+    }
 
-    private fun extractNsAliasMember(memberExpr: SyntaxNode?, aliasMap: Map<String, String>): UsedType? {
+    private fun extractNsAliasMember(memberExpr: SyntaxNode?, aliasMap: Map<String, String>, scopes: LocalScopes): UsedType? {
         memberExpr ?: return null
-        val directId = memberExpr.children().firstOrNull { it.type == IDENTIFIER } ?: return null
+        val directId = memberExpr.children().firstOrNull { it.type == IDENTIFIER }?.takeUnless { scopes.hides(it) } ?: return null
         val objName = directId.text.trim()
         if (objName !in aliasMap) return null
         val prop = memberExpr.children().firstOrNull { it.type == PROPERTY_IDENTIFIER } ?: return null
@@ -117,11 +133,12 @@ internal object UsedTypeExtractor {
             UsedType(name = name)
         }
 
-    private fun extractExtensions(buckets: Map<String, List<SyntaxNode>>): List<UsedType> {
+    private fun extractExtensions(buckets: Map<String, List<SyntaxNode>>, scopes: LocalScopes): List<UsedType> {
         val clauseNodes = buckets[EXTENDS_CLAUSE].orEmpty() + buckets[EXTENDS_TYPE_CLAUSE].orEmpty() + buckets[IMPLEMENTS_CLAUSE].orEmpty()
         return clauseNodes.flatMap { clauseNode ->
             TreeTraversal
                 .findAllDescendantsOfType(clauseNode, TYPE_IDENTIFIER, IDENTIFIER)
+                .filterNot { scopes.hides(it) }
                 .map { UsedType(name = it.text.trim()) }
         }
     }
@@ -138,7 +155,7 @@ internal object UsedTypeExtractor {
         UsedType(name = name)
     }
 
-    private fun extractJsxComponents(buckets: Map<String, List<SyntaxNode>>): List<UsedType> {
+    private fun extractJsxComponents(buckets: Map<String, List<SyntaxNode>>, scopes: LocalScopes): List<UsedType> {
         val jsxNodes = buckets[JSX_OPENING_ELEMENT].orEmpty() + buckets[JSX_SELF_CLOSING_ELEMENT].orEmpty()
         return jsxNodes.mapNotNull { node ->
             val tagNode = node.children().firstOrNull {
@@ -147,24 +164,24 @@ internal object UsedTypeExtractor {
                     it.type == JSX_MEMBER_EXPRESSION ||
                     it.type == MEMBER_EXPRESSION
             } ?: return@mapNotNull null
-            val name = when (tagNode.type) {
-                JSX_MEMBER_EXPRESSION, MEMBER_EXPRESSION -> {
-                    val root = findLeftmostIdentifier(tagNode) ?: return@mapNotNull null
-                    root.text.trim()
-                }
-                else -> tagNode.text.trim()
+            val nameNode = when (tagNode.type) {
+                JSX_MEMBER_EXPRESSION, MEMBER_EXPRESSION -> findLeftmostIdentifier(tagNode) ?: return@mapNotNull null
+                else -> tagNode
             }
+            if (scopes.hides(nameNode)) return@mapNotNull null
+            val name = nameNode.text.trim()
             if (name.firstOrNull()?.isUpperCase() != true) return@mapNotNull null
             UsedType(name = name)
         }
     }
 
-    private fun extractTypeAliasRhsTypes(declaration: SyntaxNode): List<UsedType> {
+    private fun extractTypeAliasRhsTypes(declaration: SyntaxNode, scopes: LocalScopes): List<UsedType> {
         val children = declaration.children().toList()
         val nameNodeIndex = children.indexOfFirst { it.type == TYPE_IDENTIFIER }
         return children
             .filterIndexed { index, _ -> index != nameNodeIndex }
             .flatMap { TreeTraversal.findAllDescendantsOfType(it, TYPE_IDENTIFIER) }
+            .filterNot { scopes.hides(it) }
             .map { UsedType(name = it.text.trim()) }
     }
 
