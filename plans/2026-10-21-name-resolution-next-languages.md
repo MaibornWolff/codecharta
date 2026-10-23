@@ -12,9 +12,9 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 ## Resume here (for a fresh agent)
 
-- **State:** Java, Kotlin, C# and Go are done. Branch `fix/dependency-name-resolution-go` (cut from
-  `fix/dependency-name-resolution-csharp`) holds the Go commits; Christian pushes it and reviews it on GitHub. Next:
-  ask Christian which language comes next (AskUserQuestion), or pick one when he leaves it to you.
+- **State:** Java, Kotlin, C# and Go are done; Python is in progress on branch
+  `fix/dependency-name-resolution-python`, cut from `fix/dependency-name-resolution-go`. See the section "Python"
+  below for where it stands.
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -84,8 +84,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 ## Order and state
 
-- Done: Java, Kotlin (see the plan above), C#, Go. Next, by Christian's choice when asked: TypeScript and JavaScript
-  (with Vue and Angular templates), Python, C and C++, PHP, Rust, Delphi, SQL.
+- Done: Java, Kotlin (see the plan above), C#, Go; in progress: Python. Next, by Christian's choice when asked:
+  TypeScript and JavaScript (with Vue and Angular templates), C and C++, PHP, Rust, Delphi, SQL.
 - Material: the checkpoint branch `fix/nearest-file-for-shared-logical-path` holds an earlier, unreviewed attempt and
   its reviewer probes; use them for ideas and as the regression net, not as code to copy.
 
@@ -108,8 +108,18 @@ release by decision: `go/r3-g1` (`LocalType -> closure.go#util`, a function-loca
 mapping and `GoNameRules` had to go into one commit, and the external test package before the copy rule: either alone
 drew wrong edges.
 
+## Python (in progress, 2026-10-23)
+
+Spec `docs/name-resolution/python.md` (decisions 1–4): module paths through import roots (analysis root, the folder
+above each top-level package, the importing file's folder; nearest first), suffix fallback of two segments; `__init__`
+re-exports stay leaves of their own; of several module-level bindings the one Python sees wins (last of the module,
+or last before the statement for bases, decorators, defaults, class bodies); a nested class is a leaf of its own.
+Christian: "do it like the interpreter does it, else like the other languages" (2026-10-23). Next: probes under
+`sample-projects/regression/python/`, then the implementation commits.
+
 ## Steps
 
 - [x] Ask Christian which language comes next: C# (2026-10-22)
 - [x] Next language: Go (left to Claude by Christian, 2026-10-22), done 2026-10-22
+- [x] Next language: Python (left to Claude by Christian, 2026-10-23)
 - [ ] For each language: spec, probes, implementation commits, acceptance
