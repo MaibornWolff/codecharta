@@ -1,0 +1,3 @@
+# typescript.md, Vue, decision 12: a name a v-for binds is local to its element and hides the script's binding
+file components/List.vue -> fmt.ts
+leaf components/List.vue#List -> fmt.ts#format
