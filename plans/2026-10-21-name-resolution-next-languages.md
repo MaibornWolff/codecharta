@@ -29,7 +29,7 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
   build tag is a copy of `analysis/build/install/codecharta-analysis` in `ccsh-<tag>`, and `ccsh-py12` is the head
   of the Python branch, the comparison build for the first commit of the next language:
   - `accept.sh <prev> <new>`: edge diffs on samples, `analysis/`, `visualization/app`; the probes against their
-    expectations; the checkpoint probes against the release; the gate on both parts.
+    expectations; the checkpoint probes against the release; the gate on analysis.
   - `xcheck.sh <prev> <new>`: the whole output of both builds on every sample, probe, checkpoint probe, `analysis/`
     and `visualization/app`; for a refactor it must say 0 differences, otherwise only the language's files may differ.
 - **Faster tools (2026-10-23, asked for by Christian):** `xlang/compare.py` and `cp-compare.py` run 12 at a time and
@@ -65,8 +65,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 - `./gradlew ktlintCheck test`, then `./gradlew distTar installDist` **as a command of its own** (a failing test
   stops Gradle before `installDist`, and a stale `ccsh` falsifies every measurement), `./gradlew integrationTest`,
-  `npm run format:check`, `ccsh gate analysis --quiet` and `ccsh gate visualization --quiet` (the latter in a clean
-  worktree) with 0 errors and no new warnings.
+  `npm run format:check`, `ccsh gate analysis --quiet` with 0 errors and no new warnings (no visualization gate: the
+  branch changes no visualization code, Christian 2026-10-23; the edge diff on `visualization/app` stays).
 - `python3 sample-projects/tools/compare_dependency_builds.py <ccsh>`: 0 differing.
 - Edge diff against the previous commit's build on `sample-projects` (`-e regression`), `analysis/` and
   `visualization/app`, file edges and leaf edges; explain every change in the commit message. Edges of files the
@@ -194,9 +194,8 @@ Steps, one commit each:
   (no `*` declaration, `bindingName` on the import). The extractor reports `ns.a.b` as written, a value chain whole.
 - **Step 14 as done:** `TopLevelCode` (TSE) makes one `SCRIPT` declaration of the statements outside every
   declaration, import, export, directive and CommonJS export; `ScriptLeaf` (analyzer) names it `<file>.script`, which
-  the map writes `<file>_script` (probes use that form, the spec page says so). Christian to confirm: that notation,
-  and two new visualization gate warnings (upward dependencies of the e2e tests of scenarios and explorerTreeLevel on
-  other features' page objects), real edges the script leaves make visible.
+  the map writes `<file>_script` (probes use that form, the spec page says so; confirmed by Christian: the leaf is the
+  anchor that top-level code and side-effect imports draw edges from and to).
 - **Steps 15–16 as done:** a side-effect import or bare `require('./m')` is reported (`TopLevelCode`) as a use named
   `MODULE_SCRIPT` with the specifier as `namespacePrefix`; `ModuleScriptUses` (analyzer) writes it as the module's
   script leaf. A dynamic import is a namespace import bound to `dynamic_import_<offset>` (`DynamicImports`);
@@ -206,7 +205,7 @@ Steps, one commit each:
   `GLOBAL` parent-path segment (`DeclarationScopes` in the analyzer drops it), and a use of a name no module binding
   binds with `namespacePrefix = [GLOBAL]`; free lower-case names are reported now, a declaration's own name and the
   names its patterns bind are not. `GlobalDeclarations` reads the globals once per root (files without
-  `import`/`export`/`exports`/`require` text or with `declare global`), `GlobalUses` writes a marked use as each global
+  `import`/`export`/`exports`/`require` text or with `declare global`; this text prefilter confirmed by Christian), `GlobalUses` writes a marked use as each global
   of its name, else keeps an upper-case one as written and drops a lower-case one.
 - **Follow-up for step 19:** a member chain through an upper-case namespace import (`Gen.createTreemapNodes`) still
   reports the namespace only; reporting the chain made `React.Component` (a library) fall to the heuristics and hit
