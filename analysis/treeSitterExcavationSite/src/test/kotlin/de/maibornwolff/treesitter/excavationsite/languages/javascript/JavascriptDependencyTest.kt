@@ -677,4 +677,47 @@ class JavascriptDependencyTest {
             assertThat(TreeSitterDependencies.isDependencyAnalysisSupported(Language.JAVASCRIPT)).isTrue()
         }
     }
+
+    @Nested
+    inner class ExportedDeclarations {
+        @Test
+        fun `should make a top-level declaration file-scoped when no CommonJS export names it`() {
+            // Arrange
+            val code = """
+                class Svc {}
+                function helper() {}
+                function twice() {}
+                function single() {}
+                function hidden() {}
+                module.exports = { Svc, help: helper }
+                exports.twice = twice
+                module.exports.single = single
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.JAVASCRIPT)
+
+            // Assert
+            val isFileScopedByName = result.declarations.associate { it.name to it.isFileScoped }
+            assertThat(isFileScopedByName).containsAllEntriesOf(
+                mapOf("Svc" to false, "helper" to false, "twice" to false, "single" to false, "hidden" to true)
+            )
+        }
+
+        @Test
+        fun `should make the declaration module exports names not file-scoped`() {
+            // Arrange
+            val code = """
+                const dep = require('./dep')
+                class Svc {}
+                module.exports = Svc
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.JAVASCRIPT)
+
+            // Assert
+            assertThat(result.declarations.single { it.name == "Svc" }.isFileScoped).isFalse()
+        }
+    }
 }
