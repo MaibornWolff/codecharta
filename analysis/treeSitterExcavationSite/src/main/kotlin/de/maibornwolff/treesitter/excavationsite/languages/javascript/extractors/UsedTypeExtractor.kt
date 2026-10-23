@@ -22,6 +22,7 @@ internal object UsedTypeExtractor {
     private const val TYPE_ARGUMENTS = "type_arguments"
     private const val NESTED_TYPE_IDENTIFIER = "nested_type_identifier"
     private const val QUALIFIER_SEPARATOR = "."
+    private const val OBJECT_FIELD = "object"
     private val QUALIFIER_PARENTS = setOf(NESTED_TYPE_IDENTIFIER, "nested_identifier")
     private val JSX_TAG_ELEMENTS = setOf(JSX_OPENING_ELEMENT, JSX_SELF_CLOSING_ELEMENT, "jsx_closing_element")
 
@@ -50,24 +51,23 @@ internal object UsedTypeExtractor {
             .findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
             .mapValues { (_, nodes) -> nodes.filterNot { isHiddenName(it, scopes) } }
 
-        val typeIdentifiers = collectTypeIdentifiersFromNodes(buckets[TYPE_ANNOTATION].orEmpty(), scopes, names.namespaceNames)
+        val typeIdentifiers = collectTypeIdentifiersFromNodes(buckets[TYPE_ANNOTATION].orEmpty(), scopes)
         val constructorCalls = extractConstructorCalls(buckets, names.namespaceNames, scopes)
         val memberAccesses = extractMemberAccesses(buckets, names.namespaceNames, scopes)
         val methodCalls = extractMethodCalls(buckets)
-        val extensions = extractExtensions(buckets, scopes, names.namespaceNames)
+        val extensions = extractExtensions(buckets, scopes)
         val relevantIdentifiers = extractRelevantIdentifiers(buckets, aliasMap, localDeclarationNames)
 
-        val constraintTypes = collectTypeIdentifiersFromNodes(buckets[CONSTRAINT].orEmpty(), scopes, names.namespaceNames)
+        val constraintTypes = collectTypeIdentifiersFromNodes(buckets[CONSTRAINT].orEmpty(), scopes)
         val typeAssertions = collectTypeIdentifiersFromNodes(
             buckets[AS_EXPRESSION].orEmpty() + buckets[SATISFIES_EXPRESSION].orEmpty(),
-            scopes,
-            names.namespaceNames
+            scopes
         )
-        val genericTypeArgs = collectTypeIdentifiersFromNodes(buckets[TYPE_ARGUMENTS].orEmpty(), scopes, names.namespaceNames)
+        val genericTypeArgs = collectTypeIdentifiersFromNodes(buckets[TYPE_ARGUMENTS].orEmpty(), scopes)
         val typeAliasRhsTypes = if (declaration.type ==
             TYPE_ALIAS_DECLARATION
         ) {
-            extractTypeAliasRhsTypes(declaration, scopes, names.namespaceNames)
+            extractTypeAliasRhsTypes(declaration, scopes)
         } else {
             emptyList()
         }
@@ -85,19 +85,15 @@ internal object UsedTypeExtractor {
     private fun isHiddenName(node: SyntaxNode, scopes: LocalScopes): Boolean =
         (node.type == IDENTIFIER || node.type == TYPE_IDENTIFIER) && scopes.hides(node)
 
-    private fun collectTypeIdentifiersFromNodes(nodes: List<SyntaxNode>, scopes: LocalScopes, namespaceNames: Set<String>): List<UsedType> =
-        nodes
-            .flatMap { TreeTraversal.findAllDescendantsOfType(it, TYPE_IDENTIFIER) }
-            .filterNot { scopes.hides(it) }
-            .map { typeUseOf(it, namespaceNames) }
+    private fun collectTypeIdentifiersFromNodes(nodes: List<SyntaxNode>, scopes: LocalScopes): List<UsedType> = nodes
+        .flatMap { TreeTraversal.findAllDescendantsOfType(it, TYPE_IDENTIFIER) }
+        .filterNot { scopes.hides(it) }
+        .map { typeUseOf(it) }
 
-    // `Shapes.Circle` is one qualified name; through a namespace import `ns.Model` names the member `Model` of its module
-    private fun typeUseOf(typeIdentifier: SyntaxNode, namespaceNames: Set<String>): UsedType {
-        val qualified =
-            typeIdentifier.parent.takeIf { it.type == NESTED_TYPE_IDENTIFIER } ?: return UsedType(name = typeIdentifier.text.trim())
-        val segments = qualified.text.filterNot { it.isWhitespace() }.split(QUALIFIER_SEPARATOR)
-        val name = if (segments.first() in namespaceNames) segments.drop(1) else segments
-        return UsedType(name = name.joinToString(QUALIFIER_SEPARATOR))
+    // `Shapes.Circle` and `ns.Model` through a namespace import are one qualified name each
+    private fun typeUseOf(typeIdentifier: SyntaxNode): UsedType {
+        val qualified = typeIdentifier.parent.takeIf { it.type == NESTED_TYPE_IDENTIFIER } ?: typeIdentifier
+        return UsedType(name = qualified.text.filterNot { it.isWhitespace() })
     }
 
     private fun isQualifierOfAType(identifier: SyntaxNode): Boolean = identifier.parent.type in QUALIFIER_PARENTS
@@ -130,15 +126,25 @@ internal object UsedTypeExtractor {
         extractNsAliasMember(node, namespaceNames, scopes)
     }
 
-    // A member read through a namespace import, `ns.create`, is a use of what the module exports under that name
+    // A member chain read through a namespace import, `ns.Shapes.Circle`, is one name: what the module exports under
+    // `Shapes`, and its member `Circle`
     private fun extractNsAliasMember(memberExpr: SyntaxNode?, namespaceNames: Set<String>, scopes: LocalScopes): UsedType? {
         memberExpr ?: return null
         val directId = memberExpr.children().firstOrNull { it.type == IDENTIFIER }?.takeUnless { scopes.hides(it) } ?: return null
         val objName = directId.text.trim()
         if (objName !in namespaceNames) return null
-        val prop = memberExpr.children().firstOrNull { it.type == PROPERTY_IDENTIFIER } ?: return null
-        return UsedType(name = prop.text.trim())
+        val members = memberChainFrom(memberExpr)
+        if (members.isEmpty()) return null
+        return UsedType(name = (listOf(objName) + members).joinToString(QUALIFIER_SEPARATOR))
     }
+
+    // The names `ns.a.b` reads after `ns`: the member expression that reads `a`, and each one around it that reads on
+    private fun memberChainFrom(memberExpr: SyntaxNode): List<String> = generateSequence(memberExpr) { member ->
+        member.parent.takeIf { it.type == MEMBER_EXPRESSION && it.getChildByFieldName(OBJECT_FIELD).endByte == member.endByte }
+    }.map { member -> member.children().firstOrNull { it.type == PROPERTY_IDENTIFIER }?.text?.trim() }
+        .takeWhile { it != null }
+        .filterNotNull()
+        .toList()
 
     private fun extractMethodCalls(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[CALL_EXPRESSION].orEmpty().mapNotNull { callNode ->
@@ -151,17 +157,13 @@ internal object UsedTypeExtractor {
             UsedType(name = name)
         }
 
-    private fun extractExtensions(
-        buckets: Map<String, List<SyntaxNode>>,
-        scopes: LocalScopes,
-        namespaceNames: Set<String>
-    ): List<UsedType> {
+    private fun extractExtensions(buckets: Map<String, List<SyntaxNode>>, scopes: LocalScopes): List<UsedType> {
         val clauseNodes = buckets[EXTENDS_CLAUSE].orEmpty() + buckets[EXTENDS_TYPE_CLAUSE].orEmpty() + buckets[IMPLEMENTS_CLAUSE].orEmpty()
         return clauseNodes.flatMap { clauseNode ->
             TreeTraversal
                 .findAllDescendantsOfType(clauseNode, TYPE_IDENTIFIER, IDENTIFIER)
                 .filterNot { scopes.hides(it) || (it.type == IDENTIFIER && isQualifierOfAType(it)) }
-                .map { if (it.type == TYPE_IDENTIFIER) typeUseOf(it, namespaceNames) else UsedType(name = it.text.trim()) }
+                .map { if (it.type == TYPE_IDENTIFIER) typeUseOf(it) else UsedType(name = it.text.trim()) }
         }
     }
 
@@ -202,14 +204,14 @@ internal object UsedTypeExtractor {
         }
     }
 
-    private fun extractTypeAliasRhsTypes(declaration: SyntaxNode, scopes: LocalScopes, namespaceNames: Set<String>): List<UsedType> {
+    private fun extractTypeAliasRhsTypes(declaration: SyntaxNode, scopes: LocalScopes): List<UsedType> {
         val children = declaration.children().toList()
         val nameNodeIndex = children.indexOfFirst { it.type == TYPE_IDENTIFIER }
         return children
             .filterIndexed { index, _ -> index != nameNodeIndex }
             .flatMap { TreeTraversal.findAllDescendantsOfType(it, TYPE_IDENTIFIER) }
             .filterNot { scopes.hides(it) }
-            .map { typeUseOf(it, namespaceNames) }
+            .map { typeUseOf(it) }
     }
 
     private fun findLeftmostIdentifier(node: SyntaxNode): SyntaxNode? {

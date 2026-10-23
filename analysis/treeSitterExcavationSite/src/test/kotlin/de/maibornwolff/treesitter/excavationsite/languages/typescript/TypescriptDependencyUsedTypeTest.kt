@@ -360,11 +360,11 @@ class TypescriptDependencyUsedTypeTest {
 
             // Assert
             val usedTypeNames = result.declarations.first { it.name == "Bar" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("ns", "method")
+            assertThat(usedTypeNames).containsExactlyInAnyOrder("ns", "ns.method")
         }
 
         @Test
-        fun `should extract class name from namespace alias constructor call`() {
+        fun `should report a constructor called through a namespace import with the namespace`() {
             // Arrange
             val code = """
                 import * as types from './types'
@@ -378,11 +378,11 @@ class TypescriptDependencyUsedTypeTest {
 
             // Assert
             val usedTypeNames = result.declarations.first { it.name == "Consumer" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("types", "Logger")
+            assertThat(usedTypeNames).containsExactlyInAnyOrder("types", "types.Logger")
         }
 
         @Test
-        fun `should extract class name from namespace alias member access`() {
+        fun `should report a member chain read through a namespace import as one name`() {
             // Arrange
             val code = """
                 import * as types from './types'
@@ -396,7 +396,7 @@ class TypescriptDependencyUsedTypeTest {
 
             // Assert
             val usedTypeNames = result.declarations.first { it.name == "Consumer" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("types", "Animal")
+            assertThat(usedTypeNames).containsExactlyInAnyOrder("types", "types.Animal.create")
         }
     }
 
@@ -539,11 +539,11 @@ class TypescriptDependencyUsedTypeTest {
         val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
 
         // Assert
-        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactlyInAnyOrder("models", "create", "defaults")
+        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactlyInAnyOrder("models", "models.create", "defaults")
     }
 
     @Test
-    fun `should report a qualified type as one name, through a namespace import as the member path`() {
+    fun `should report a qualified type as one name, also through a namespace import`() {
         // Arrange
         val code = """
             import * as lib from './lib'
@@ -559,9 +559,9 @@ class TypescriptDependencyUsedTypeTest {
 
         // Assert
         assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactlyInAnyOrder(
-            "Drawable",
+            "lib.Drawable",
             "Shapes.Circle",
-            "shapes.Square"
+            "lib.shapes.Square"
         )
     }
 }
