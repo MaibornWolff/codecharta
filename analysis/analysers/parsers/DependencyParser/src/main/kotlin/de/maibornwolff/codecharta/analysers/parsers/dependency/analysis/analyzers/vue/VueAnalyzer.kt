@@ -23,7 +23,8 @@ class VueAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
 
     override fun analyze(): FileReport {
         val result = TreeSitterDependencies.analyze(fileInfo.content, Language.VUE)
-        val templateComponents = result.declarations.single().usedTypes.map { it.name }
+        // The component the template declares comes first, before what a plain script block declares
+        val templateComponents = result.declarations.first().usedTypes.map { it.name }
         val scriptDependencies = result.imports.map { import -> moduleImports.dependencyOf(import) ?: dependencyByWrittenPath(import) }
         val templateDependencies = templateComponents.map { Dependency(path = Path.fromStringWithDots(it)) }
         val componentNode = Node(

@@ -24,8 +24,10 @@ object DependenciesFacade {
         val embeddedSources = mapping.embeddedSources ?: definition.embeddedSources
         val collected = DependencyCollector(grammar, mapping, embeddedSources).collectDependencies(processedContent)
         val analyzedSources = collected.embeddedSources.map { it to analyze(it.content, it.language) }
+        val ofTheFile = analyzedSources.filter { (source, _) -> source.owner == null }
         return collected.ofFile.copy(
             imports = collected.ofFile.imports + analyzedSources.flatMap { (_, result) -> result.imports },
+            declarations = collected.ofFile.declarations + ofTheFile.flatMap { (_, result) -> result.declarations },
             embedded = analyzedSources.mapNotNull { (source, result) ->
                 source.owner?.let { owner -> EmbeddedDeclarations(owner, source.language, result.declarations) }
             }
