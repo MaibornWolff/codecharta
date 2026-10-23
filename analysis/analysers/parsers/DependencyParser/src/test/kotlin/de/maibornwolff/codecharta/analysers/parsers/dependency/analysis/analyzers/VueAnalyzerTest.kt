@@ -3,9 +3,12 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.vue.VueAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
+import java.io.File
 
 class VueAnalyzerTest {
     @Test
@@ -435,5 +438,52 @@ class VueAnalyzerTest {
         val dependencyPaths = result.nodes.single().dependencies.map { it.path.withDots() }
         assertThat(dependencyPaths).anyMatch { it.startsWith("src.components.Foo") }
         assertThat(dependencyPaths).anyMatch { it.startsWith("src.components.Bar") }
+    }
+
+    @Test
+    fun `should let a default import of a Vue file name its component, and a use of the binding name it in full`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange
+        File(analysisRoot, "b").mkdirs()
+        File(analysisRoot, "b/Badge.vue").writeText("<template><span>b</span></template>")
+        val vueCode = """
+            <template>
+              <Badge />
+            </template>
+
+            <script setup lang="ts">
+            import Badge from '../b/Badge.vue'
+            </script>
+        """.trimIndent()
+        val fileInfo = FileInfo(SupportedLanguage.VUE, "views/Home.vue", vueCode, analysisRoot = analysisRoot)
+
+        // Act
+        val node = VueAnalyzer(fileInfo).analyze().nodes.single()
+
+        // Assert
+        assertThat(node.dependencies.map { it.path }).contains(Path(listOf("b", "Badge")))
+        assertThat(node.usedTypes.map { it.name }).containsExactly("b.Badge")
+    }
+
+    @Test
+    fun `should resolve a named import of a script block to the module file the compiler finds`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange
+        File(analysisRoot, "application").mkdirs()
+        File(analysisRoot, "application/index.ts").writeText("export { Facade } from './Facade'")
+        val vueCode = """
+            <script setup lang="ts">
+            import { Facade } from '../application'
+            </script>
+        """.trimIndent()
+        val fileInfo = FileInfo(SupportedLanguage.VUE, "ui/Stable.vue", vueCode, analysisRoot = analysisRoot)
+
+        // Act
+        val node = VueAnalyzer(fileInfo).analyze().nodes.single()
+
+        // Assert
+        assertThat(node.dependencies.map { it.path }).contains(Path(listOf("application", "index", "Facade")))
     }
 }
