@@ -28,8 +28,13 @@ class PythonAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     }
 
     // A package file that imports a name makes it importable from the package itself
-    private fun namesReexportedByPackage(imports: PythonImports): List<Node> = imports.reexportedNames.map { name ->
-        node(listOf(name), NodeType.UNKNOWN, imports.memberDependencies.toSet(), setOf(Type.simple(name)))
+    private fun namesReexportedByPackage(imports: PythonImports): List<Node> = imports.reexports.map { (name, imported) ->
+        node(
+            listOf(name),
+            NodeType.UNKNOWN,
+            imports.memberDependencies.toSet(),
+            setOf(exactType(imports.pathsIn(imported.module, imported.name)))
+        )
     }
 
     private fun toNode(declaration: Declaration, imports: PythonImports): Node {
@@ -47,8 +52,13 @@ class PythonAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     // A name behind a module an import binds means exactly that module's name, or its package's
     private fun typeBehindImportedModule(qualifiedName: UsedType, imports: PythonImports): Type? {
         val module = imports.moduleBoundTo(qualifiedName.namespacePrefix.joinToString(SEGMENT_SEPARATOR)) ?: return null
-        val paths = imports.pathsIn(module, listOf(qualifiedName.name)).map { it.joinToString(SEGMENT_SEPARATOR) }
-        return Type.simple(paths.first()).copy(fallbacks = paths.drop(1).map { Type.simple(it) })
+        return exactType(imports.pathsIn(module, listOf(qualifiedName.name)))
+    }
+
+    // The first of the paths that is a declaration
+    private fun exactType(paths: List<List<String>>): Type {
+        val dottedPaths = paths.map { it.joinToString(SEGMENT_SEPARATOR) }
+        return Type.simple(dottedPaths.first()).copy(fallbacks = dottedPaths.drop(1).map { Type.simple(it) })
     }
 
     private fun dependenciesOnImportedModule(qualifiedName: UsedType, imports: PythonImports): List<Dependency> {

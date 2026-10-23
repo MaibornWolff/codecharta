@@ -87,7 +87,7 @@ the rule yet; `sample-projects/regression/python/known-gaps.md` says how it devi
 | Declarations, decision 4: a nested class is a leaf of its own | `spec-nested-class` | gap |
 | Declarations and 1: a class declared in a function | `spec-local-class` | ok |
 | Declarations, decision 2: re-export leaf of `__init__.py` | `spec-reexport-init` | ok |
-| Declarations, decision 2: a re-export under an alias | `spec-reexport-alias` | gap |
+| Declarations, decision 2: a re-export under an alias | `spec-reexport-alias` | ok |
 | Import paths 1: the analysis root | `spec-module-path` | ok |
 | Import paths 1: the folder above a top-level package | `spec-package-root` | ok |
 | Import paths 1: the nearest of several roots | `spec-nearest-root` | ok |

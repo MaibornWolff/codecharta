@@ -67,17 +67,6 @@ The `Order` of `Order.Line` still counts as a use of its own, besides the nested
 extra leaf shop/invoice.py#Invoice -> shop/order.py#Order
 ```
 
-## spec-reexport-alias
-
-An `__init__.py` that imports a name under an alias makes no re-export leaf of it.
-
-```text
-missing file app/user.py -> pkg/__init__.py
-missing file pkg/__init__.py -> pkg/mod.py
-missing leaf app/user.py#User -> pkg/__init__.py#Bar
-missing leaf pkg/__init__.py#Bar -> pkg/mod.py#Foo
-```
-
 ## spec-wildcard-all
 
 A wildcard import ignores `__all__`.

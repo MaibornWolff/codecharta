@@ -114,6 +114,25 @@ from de.sots.cellarsandcentaurs.domain.models.speed import Speed
     }
 
     @Test
+    fun `should make a name an __init__ imports under an alias a re-export named by the alias, using what it imports`() {
+        // Arrange
+        val pythonCode = """
+from .mod import Foo as Bar
+        """
+        val physicalPath = File("pkg/__init__.py").path
+
+        // Act
+        val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
+
+        // Assert
+        val reexport = report.nodes.single()
+        assertThat(reexport.pathWithName).isEqualTo(Path(listOf("pkg", "__init__", "Bar")))
+        assertThat(reexport.usedTypes).containsExactly(
+            Type.simple("pkg.mod.Foo").copy(fallbacks = listOf(Type.simple("pkg.mod.__init__.Foo")))
+        )
+    }
+
+    @Test
     fun `should parse from imports and add them to the node's dependencies and add used types`() {
         // Arrange
         val pythonCode = """

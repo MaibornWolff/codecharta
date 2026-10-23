@@ -14,13 +14,14 @@ import de.maibornwolff.treesitter.excavationsite.api.ImportKind
  *
  * @property memberDependencies the names imported with `from module import name`, or the submodules of that name
  * @property wildcardDependencies the modules imported with `from module import *`
- * @property reexportedNames the names imported with `from module import name`, which an `__init__.py` re-exports
+ * @property reexports the name each `from module import name [as alias]` binds to what it imports, which an
+ *   `__init__.py` re-exports
  * @property aliasedMembers alias to the name it stands for, for `from module import name as alias`
  */
 internal class PythonImports private constructor(
     val memberDependencies: List<Dependency>,
     val wildcardDependencies: List<Dependency>,
-    val reexportedNames: List<String>,
+    val reexports: Map<String, ImportedName>,
     val aliasedMembers: Map<String, ImportedName>,
     private val importedModules: Map<String, ModuleReference>,
     private val importedNames: Map<String, ModuleReference>,
@@ -53,7 +54,7 @@ internal class PythonImports private constructor(
                         candidates.found(member.module.submodule(member.name)).map { Dependency(Path(it)) }
                 },
                 wildcardDependencies = wildcards.flatMap { wildcard -> candidates.of(wildcard.module).map { Dependency.asWildcard(it) } },
-                reexportedNames = plainMembers.map { it.name.last() },
+                reexports = members.associate { (it.alias ?: it.name.last()) to ImportedName(it.module, it.name) },
                 aliasedMembers = members
                     .mapNotNull { member ->
                         member.alias?.let { it to ImportedName(member.module, member.name) }
