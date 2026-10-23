@@ -1,9 +1,10 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_DEFAULT_EXPORT_NAME
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
-import de.maibornwolff.treesitter.excavationsite.api.UsedType
 import java.io.File
 
 /**
@@ -30,12 +31,16 @@ internal class MemberImports(private val analysisRoot: File) {
         return (module + ownName).also { targetByBinding[importedName] = it }
     }
 
-    fun rewrite(usedTypes: Set<UsedType>): Set<UsedType> = usedTypes.mapTo(LinkedHashSet()) { rewrite(it) }
+    /** The nodes with each use of an imported binding written as the full path of what it names. */
+    fun rewrite(nodes: List<Node>): List<Node> {
+        if (targetByBinding.isEmpty()) return nodes
+        return nodes.map { node -> node.copy(usedTypes = node.usedTypes.mapTo(LinkedHashSet()) { rewrite(it) }) }
+    }
 
-    private fun rewrite(usedType: UsedType): UsedType {
-        val target = targetByBinding[usedType.name]
-        val genericTypes = usedType.genericTypes.map { rewrite(it) }
-        return usedType.copy(name = target?.withDots() ?: usedType.name, genericTypes = genericTypes)
+    private fun rewrite(type: Type): Type {
+        val target = targetByBinding[type.name]
+        val genericTypes = type.genericTypes.map { rewrite(it) }
+        return type.copy(name = target?.withDots() ?: type.name, genericTypes = genericTypes)
     }
 
     private fun defaultOf(moduleFile: File, module: Path): Path? {

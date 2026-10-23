@@ -14,7 +14,6 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Pa
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
-import de.maibornwolff.treesitter.excavationsite.api.UsedType
 
 // Unlike TypescriptAnalyzer, JavascriptAnalyzer does not expand wildcard re-exports
 // (`export * from './module'`) into one node per re-exported name. A JS wildcard re-export is
@@ -29,10 +28,10 @@ class JavascriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         return fileInfo.physicalPathAsPath().withoutFileSuffix(extension) + localExportName(declaration.name)
     }
 
-    override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> =
-        memberImports?.rewrite(declaration.usedTypes) ?: declaration.usedTypes
-
-    override fun analyze(): FileReport = FileReport(DefaultExports.withoutOwnNames(super.analyze().nodes))
+    override fun analyze(): FileReport {
+        val declaredNodes = super.analyze().nodes.let { memberImports?.rewrite(it) ?: it }
+        return FileReport(DefaultExports.withoutOwnNames(declaredNodes))
+    }
 
     override fun convertImport(import: ImportDeclaration): Set<Dependency> {
         val analysisRoot = fileInfo.analysisRoot
