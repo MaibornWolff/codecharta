@@ -15,28 +15,37 @@ import java.io.File
  * module path plus the imported name.
  */
 internal class MemberImports(private val analysisRoot: File) {
+    private val exports = ModuleExports.of(analysisRoot)
     private val targetByBinding = HashMap<String, Target>()
 
     /** The declaration a member import of [moduleFile] means, null where it is the module path plus the imported name. */
     fun targetOf(import: ImportDeclaration, moduleFile: File, module: Path): Path? {
-        if (isNamespaceImport(import)) {
-            import.bindingName?.let { targetByBinding[it] = Target(module, isModule = true) }
+        val boundModule = boundModuleOf(import, moduleFile)
+        if (boundModule != null) {
+            import.bindingName?.let { targetByBinding[it] = moduleTarget(boundModule) }
             return null
         }
         if (!ImportedModules.namesMember(import)) return null
         val importedName = import.path.lastOrNull() ?: return null
         if (importedName == TSE_DEFAULT_EXPORT_NAME) {
             val target = defaultOf(moduleFile, module) ?: return null
-            import.bindingName?.let { targetByBinding[it] = Target(target, isModule = false) }
+            import.bindingName?.let { targetByBinding[it] = Target(target, moduleFile = null) }
             return target
         }
-        val ownName = ModuleExports.of(analysisRoot).nameOf(moduleFile, importedName)
+        val ownName = exports.nameOf(moduleFile, importedName)
         if (ownName == importedName) return null
         // The extractor writes a use of a renamed import under the imported name, `Model` for `import { Model as Base }`
-        return (module + ownName).also { targetByBinding[importedName] = Target(it, isModule = false) }
+        return (module + ownName).also { targetByBinding[importedName] = Target(it, moduleFile = null) }
     }
 
-    private fun isNamespaceImport(import: ImportDeclaration): Boolean = import.isWildcard && import.kind == ImportKind.STANDARD
+    // `import * as ns` binds the module itself, `import { shapes }` the module it exports by `export * as shapes`
+    private fun boundModuleOf(import: ImportDeclaration, moduleFile: File): File? {
+        if (import.isWildcard && import.kind == ImportKind.STANDARD) return moduleFile
+        if (import.isWildcard || import.kind != ImportKind.MEMBER) return null
+        return import.path.lastOrNull()?.let { exports.moduleExportOf(moduleFile, it) }
+    }
+
+    private fun moduleTarget(moduleFile: File) = Target(ImportedModules.logicalPathOf(moduleFile, analysisRoot), moduleFile)
 
     /** The nodes with each use of an imported binding written as the full path of what it names. */
     fun rewrite(nodes: List<Node>): List<Node> {
@@ -49,21 +58,30 @@ internal class MemberImports(private val analysisRoot: File) {
     private fun rewrite(type: Type): Type {
         val genericTypes = type.genericTypes.map { rewrite(it) }
         val segments = type.name.split(SEPARATOR)
-        val target = targetByBinding[segments.first()] ?: return type.copy(genericTypes = genericTypes)
-        val path = target.path + Path(segments.drop(1))
+        val binding = targetByBinding[segments.first()] ?: return type.copy(genericTypes = genericTypes)
+        val (target, members) = throughModuleExports(binding, segments.drop(1))
+        val path = target.path + Path(members)
         if (path.parts.size < target.shortestDeclarationPath) return type.copy(genericTypes = genericTypes)
         val prefixes = (path.parts.size downTo target.shortestDeclarationPath).map { Path(path.parts.take(it)).withDots() }
         return type.copy(name = prefixes.first(), genericTypes = genericTypes, fallbacks = prefixes.drop(1).map { Type.simple(it) })
     }
 
-    private fun defaultOf(moduleFile: File, module: Path): Path? {
-        if (moduleFile.name.endsWith(VUE_ENDING)) return module
-        return ModuleExports.of(analysisRoot).defaultNameOf(moduleFile)?.let { module + it }
+    // `ns.shapes.Circle` behind `export * as shapes` walks on into that module: its member `Circle`
+    private tailrec fun throughModuleExports(target: Target, members: List<String>): Pair<Target, List<String>> {
+        val exportedModule = members.firstOrNull()?.let { name -> target.moduleFile?.let { exports.moduleExportOf(it, name) } }
+            ?: return target to members
+        return throughModuleExports(moduleTarget(exportedModule), members.drop(1))
     }
 
-    private class Target(val path: Path, isModule: Boolean) {
+    private fun defaultOf(moduleFile: File, module: Path): Path? {
+        if (moduleFile.name.endsWith(VUE_ENDING)) return module
+        return exports.defaultNameOf(moduleFile)?.let { module + it }
+    }
+
+    /** What a binding names: a declaration, or the module [moduleFile] when it binds a module. */
+    private class Target(val path: Path, val moduleFile: File?) {
         // A module is no declaration, so only a name below it is one
-        val shortestDeclarationPath = path.parts.size + if (isModule) 1 else 0
+        val shortestDeclarationPath = path.parts.size + if (moduleFile != null) 1 else 0
     }
 
     companion object {

@@ -105,4 +105,23 @@ class ModuleExportsTest {
         // Assert
         assertThat(exports.keys).containsExactly("Model")
     }
+
+    @Test
+    fun `should export the module export star as names, also through export star, and none of its names one by one`(
+        @TempDir root: File
+    ) {
+        // Arrange
+        val shapes = root.withFile("shapes.ts", "export class Circle {}")
+        val lib = root.withFile("lib.ts", "export * as figures from './shapes'")
+        val barrel = root.withFile("index.ts", "export * from './lib'")
+
+        // Act
+        val exports = ModuleExports.of(root)
+
+        // Assert
+        assertThat(exports.moduleExportOf(lib, "figures")?.canonicalFile).isEqualTo(shapes.canonicalFile)
+        assertThat(exports.moduleExportOf(barrel, "figures")?.canonicalFile).isEqualTo(shapes.canonicalFile)
+        assertThat(exports.moduleExportOf(lib, "Circle")).isNull()
+        assertThat(exports.starExports(listOf(lib), emptySet())).isEmpty()
+    }
 }
