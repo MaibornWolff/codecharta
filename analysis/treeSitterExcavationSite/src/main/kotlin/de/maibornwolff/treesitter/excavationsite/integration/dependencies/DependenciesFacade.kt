@@ -1,7 +1,9 @@
 package de.maibornwolff.treesitter.excavationsite.integration.dependencies
 
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
+import de.maibornwolff.treesitter.excavationsite.languages.vue.VueDependencyMapping
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ComponentRegistration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DependencyResult
 import de.maibornwolff.treesitter.excavationsite.shared.domain.EmbeddedDeclarations
 import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
@@ -32,6 +34,17 @@ object DependenciesFacade {
                 source.owner?.let { owner -> EmbeddedDeclarations(owner, source.language, result.declarations) }
             }
         )
+    }
+
+    /** The Vue components a source registers, those of the script blocks of a source that embeds them included. */
+    fun componentRegistrations(content: String, language: Language): List<ComponentRegistration> {
+        val mapping = LanguageRegistry.getLanguageDefinition(language).dependencyMapping
+        val grammar = NativeTreeSitter.grammar(mapping?.grammarOfWholeFile ?: LanguageRegistry.getGrammarLibrary(language))
+        return FfmSyntaxTree.parse(content, grammar).use { tree ->
+            val sources = mapping?.embeddedSources?.let { tree.readReleasingReachedNodes(it.extract) }.orEmpty()
+            tree.readReleasingReachedNodes(VueDependencyMapping.extractComponentRegistrations) +
+                sources.flatMap { componentRegistrations(it.content, it.language) }
+        }
     }
 
     fun bundlerAliases(
