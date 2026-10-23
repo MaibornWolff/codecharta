@@ -37,10 +37,14 @@ internal class MemberImports(private val analysisRoot: File) {
         return nodes.map { node -> node.copy(usedTypes = node.usedTypes.mapTo(LinkedHashSet()) { rewrite(it) }) }
     }
 
+    // `Geo.Circle` behind `import Geo` means the member `Circle` of what `Geo` names, else the longest prefix down to it
     private fun rewrite(type: Type): Type {
-        val target = targetByBinding[type.name]
         val genericTypes = type.genericTypes.map { rewrite(it) }
-        return type.copy(name = target?.withDots() ?: type.name, genericTypes = genericTypes)
+        val segments = type.name.split(SEPARATOR)
+        val target = targetByBinding[segments.first()] ?: return type.copy(genericTypes = genericTypes)
+        val path = target + Path(segments.drop(1))
+        val prefixes = (path.parts.size downTo target.parts.size).map { Path(path.parts.take(it)).withDots() }
+        return type.copy(name = prefixes.first(), genericTypes = genericTypes, fallbacks = prefixes.drop(1).map { Type.simple(it) })
     }
 
     private fun defaultOf(moduleFile: File, module: Path): Path? {
@@ -50,5 +54,6 @@ internal class MemberImports(private val analysisRoot: File) {
 
     companion object {
         private const val VUE_ENDING = ".vue"
+        private const val SEPARATOR = "."
     }
 }
