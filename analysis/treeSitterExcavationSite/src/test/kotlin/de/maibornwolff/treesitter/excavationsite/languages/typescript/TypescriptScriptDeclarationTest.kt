@@ -48,4 +48,25 @@ class TypescriptScriptDeclarationTest {
         // Assert
         assertThat(result.declarations).noneMatch { it.type == DeclarationType.SCRIPT }
     }
+
+    @Test
+    fun `should report a side-effect import and a require whose result is not bound as uses of the module's script`() {
+        // Arrange
+        val code = """
+            import './polyfill'
+            import { AppModule } from './app'
+            require('../setup')
+            export const ready = true
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+        // Assert
+        val script = result.declarations.single { it.type == DeclarationType.SCRIPT }
+        assertThat(script.usedTypes.map { it.name to it.namespacePrefix }).containsExactlyInAnyOrder(
+            "MODULE_SCRIPT" to listOf(".", "polyfill"),
+            "MODULE_SCRIPT" to listOf("..", "setup")
+        )
+    }
 }

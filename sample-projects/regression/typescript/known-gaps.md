@@ -54,12 +54,3 @@ missing leaf app.ts#info -> types/globals.d.ts#VERSION
 missing file ui/index.ts -> ui/button.ts
 missing leaf ui/index.ts#Button -> ui/button.ts#Button
 ```
-
-## spec-side-effect-import
-
-A side-effect import draws nothing.
-
-```text
-missing file main.ts -> polyfill.ts
-missing leaf main.ts#main_script -> polyfill.ts#polyfill_script
-```
