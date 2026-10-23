@@ -662,4 +662,45 @@ class TypescriptDependencyDeclarationTest {
             assertThat(isFileScopedByName).containsExactlyInAnyOrderEntriesOf(mapOf("Registry" to false, "legacyHelper" to false))
         }
     }
+
+    @Nested
+    inner class DeclareStatements {
+        @Test
+        fun `should extract what a declare statement declares`() {
+            // Arrange
+            val code = """
+                export declare class Chart {
+                    draw(): void
+                }
+                export declare function render(): void
+                declare const VERSION: string
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+            // Assert
+            val typeByName = result.declarations.associate { it.name to it.type }
+            assertThat(typeByName).containsExactlyInAnyOrderEntriesOf(
+                mapOf("Chart" to DeclarationType.CLASS, "render" to DeclarationType.FUNCTION, "VERSION" to DeclarationType.VARIABLE)
+            )
+            assertThat(result.declarations.single { it.name == "VERSION" }.isFileScoped).isTrue()
+        }
+
+        @Test
+        fun `should extract what a declare statement in a declared module declares`() {
+            // Arrange
+            val code = """
+                declare module 'legacy-lib' {
+                    declare class Api {}
+                }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+            // Assert
+            assertThat(result.declarations.map { it.parentPath + it.name }).containsExactly(listOf("legacy-lib", "Api"))
+        }
+    }
 }

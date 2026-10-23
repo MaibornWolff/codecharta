@@ -40,7 +40,7 @@ internal class ExportedNames private constructor(private val names: Set<String>,
             if (hasSource(exportStatement)) return emptyList()
             val clause = exportStatement.children().firstOrNull { it.type == EXPORT_CLAUSE }
             if (clause != null) return localNamesOf(clause)
-            val declarations = exportStatement.children().filter { it.type in DECLARATION_NODE_TYPES }.toList()
+            val declarations = exportStatement.children().flatMap { declarationsOf(it) }.toList()
             if (declarations.isNotEmpty()) return declarations.flatMap { declaredNames(it) }
             return exportStatement.children().filter { it.type == IDENTIFIER }.map { it.text.trim() }.toList()
         }
