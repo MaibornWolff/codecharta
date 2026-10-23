@@ -20,7 +20,6 @@ import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.EmbeddedDeclarations
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
-import de.maibornwolff.treesitter.excavationsite.api.ImportKind
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
 import java.io.File
@@ -33,9 +32,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     private val isTsx = extension == "tsx"
     private val physicalFilePath by lazy { fileInfo.physicalPathAsPath().withoutFileSuffix(extension) }
 
-    // The modules `export * from` names, whose named exports this module re-exports
-    private val starSources = LinkedHashSet<File>()
-    private val memberImports = fileInfo.analysisRoot?.let { MemberImports(it) }
+    private val moduleImports = ModuleImports(fileInfo)
     private val qualifiedNames by lazy { QualifiedNames(physicalFilePath) }
 
     override fun tseLanguage(): Language = if (isTsx) Language.TSX else Language.TYPESCRIPT
@@ -50,7 +47,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     }
 
     override fun analyze(): FileReport {
-        val declaredNodes = super.analyze().nodes.let { memberImports?.rewrite(it) ?: it }
+        val declaredNodes = moduleImports.rewrite(super.analyze().nodes)
         val baseReport = FileReport(qualifiedNames.resolvedIn(DefaultExports.withoutOwnNames(declaredNodes)))
         val analysisRoot = fileInfo.analysisRoot ?: return baseReport
         val ownNames = baseReport.nodes
@@ -110,19 +107,8 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         templateFilePath(it, fileInfo.physicalPath)
     }
 
-    override fun convertImport(import: ImportDeclaration): Set<Dependency> {
-        val analysisRoot = fileInfo.analysisRoot ?: return dependenciesByWrittenPath(import)
-        val moduleFile = ImportedModules.fileOf(import, fileInfo) ?: return dependenciesByWrittenPath(import)
-        val module = ImportedModules.logicalPathOf(moduleFile, analysisRoot)
-        if (isStarReexport(import)) starSources.add(moduleFile)
-        memberImports?.targetOf(import, moduleFile, module)?.let { return setOf(Dependency(path = it)) }
-        val importedName = if (ImportedModules.namesMember(import)) listOf(import.defaultImportPath().last()) else emptyList()
-        return setOf(Dependency(path = Path(module.parts + importedName), isWildcard = import.isWildcard))
-    }
-
-    // `export * from` re-exports the names of the module, `export * as ns from` binds the module as one name
-    private fun isStarReexport(import: ImportDeclaration): Boolean =
-        import.isWildcard && import.kind == ImportKind.REEXPORT && import.bindingName == null
+    override fun convertImport(import: ImportDeclaration): Set<Dependency> =
+        moduleImports.dependencyOf(import)?.let { setOf(it) } ?: dependenciesByWrittenPath(import)
 
     // A module the specifier names no project file of keeps the path as written, for the library or file it may mean
     private fun dependenciesByWrittenPath(import: ImportDeclaration): Set<Dependency> {
@@ -134,9 +120,9 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
 
     // One re-export leaf per name `export *` re-exports, pointing at the declaration that name means in its module
     private fun expandStarExports(wildcardNode: Node, analysisRoot: File, ownNames: Set<String>): List<Node> {
-        if (starSources.isEmpty()) return listOf(wildcardNode)
+        if (moduleImports.starSources.isEmpty()) return listOf(wildcardNode)
         val exports = ModuleExports.of(analysisRoot)
-        return exports.starExports(starSources.toList(), ownNames).map { (name, source) ->
+        return exports.starExports(moduleImports.starSources.toList(), ownNames).map { (name, source) ->
             val target = ImportedModules.logicalPathOf(source, analysisRoot) + exports.nameOf(source, name)
             Node(
                 pathWithName = physicalFilePath + name,
