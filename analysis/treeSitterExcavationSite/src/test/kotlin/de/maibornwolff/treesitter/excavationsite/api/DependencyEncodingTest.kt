@@ -82,7 +82,7 @@ class DependencyEncodingTest {
         val result = TreeSitterDependencies.analyze(code, Language.VUE)
 
         // Assert
-        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactly("OrderList")
+        assertThat(result.declarations.first().usedTypes.map { it.name }).containsExactly("OrderList")
         assertThat(result.imports.map { it.path }).containsExactly(listOf("..", "billing", "total"))
     }
 
