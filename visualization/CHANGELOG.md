@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.9.1] - 2026-10-23
+
 ### Changed
 
 - **Label defaults**: labels start a quarter larger and show their metric value along with the node name, also after resetting the label settings.
