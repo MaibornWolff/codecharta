@@ -35,15 +35,6 @@ missing file app.mjs -> svc.cjs
 missing leaf app.mjs#make -> svc.cjs#Svc
 ```
 
-## spec-js-default-named
-
-A default import does not find the default export of its module.
-
-```text
-missing file b.js -> use.js
-missing leaf b.js#make -> use.js#Use
-```
-
 ## spec-require-side-effect
 
 Top-level code outside every declaration is no declaration, and a `require` whose result is not bound draws nothing.

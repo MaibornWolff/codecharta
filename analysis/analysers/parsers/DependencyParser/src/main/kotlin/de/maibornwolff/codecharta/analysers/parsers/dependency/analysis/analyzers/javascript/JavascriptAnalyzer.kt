@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.withoutFileSuffix
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.defaultImportPath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.DefaultExports
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.DefaultImports
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ImportedModules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
@@ -13,6 +14,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Pa
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
+import de.maibornwolff.treesitter.excavationsite.api.UsedType
 
 // Unlike TypescriptAnalyzer, JavascriptAnalyzer does not expand wildcard re-exports
 // (`export * from './module'`) into one node per re-exported name. A JS wildcard re-export is
@@ -20,11 +22,15 @@ import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
 // established JavaScript behavior (see the `should handle ES6 wildcard re-exports` test).
 class JavascriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     override val language = SupportedLanguage.JAVASCRIPT
+    private val defaultImports = fileInfo.analysisRoot?.let { DefaultImports(it) }
 
     override fun buildPathWithName(packagePath: List<String>, declaration: Declaration): Path {
         val extension = fileInfo.physicalPath.substringAfterLast('.', "").lowercase()
         return fileInfo.physicalPathAsPath().withoutFileSuffix(extension) + localExportName(declaration.name)
     }
+
+    override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> =
+        defaultImports?.rewrite(declaration.usedTypes) ?: declaration.usedTypes
 
     override fun analyze(): FileReport = FileReport(DefaultExports.withoutOwnNames(super.analyze().nodes))
 
@@ -33,6 +39,7 @@ class JavascriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         val moduleFile = ImportedModules.fileOf(import, fileInfo)
         if (analysisRoot != null && moduleFile != null) {
             val module = ImportedModules.logicalPathOf(moduleFile, analysisRoot)
+            defaultImports?.targetOf(import, moduleFile, module)?.let { return setOf(Dependency(path = it)) }
             val importedName = if (ImportedModules.namesMember(
                     import
                 )

@@ -23,15 +23,6 @@ missing file views/Home.vue -> b/Badge.vue
 missing leaf views/Home.vue#Home -> b/Badge.vue#Badge
 ```
 
-## spec-component-file-name
-
-A default import of a `.vue` file does not name its component.
-
-```text
-missing file main.ts -> components/Button.vue
-missing leaf main.ts#root -> components/Button.vue#Button
-```
-
 ## spec-components-option
 
 A default import of a `.vue` file does not name its component, and top-level code is no declaration.

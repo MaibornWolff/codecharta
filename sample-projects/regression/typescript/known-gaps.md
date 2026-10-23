@@ -14,35 +14,6 @@ missing file app.ts -> setup.ts
 missing leaf app.ts#isDebug -> setup.ts#Settings
 ```
 
-## spec-default-anonymous
-
-A default import does not find the default export of its module.
-
-```text
-missing file user.ts -> anon.ts
-missing file user.ts -> config.ts
-missing leaf user.ts#start -> anon.ts#default
-missing leaf user.ts#start -> config.ts#default
-```
-
-## spec-default-identifier
-
-A default import does not find the declaration `export default name` names.
-
-```text
-missing file user.ts -> settings.ts
-missing leaf user.ts#debug -> settings.ts#settings
-```
-
-## spec-default-named
-
-A default import binds no name: the local name `B` finds nothing.
-
-```text
-missing file user.ts -> base.ts
-missing leaf user.ts#User -> base.ts#Base
-```
-
 ## spec-dynamic-import
 
 The result of a dynamic import binds nothing: a name read from it is found only where it stands alone (`({ ReportComponent }) => ReportComponent`).
