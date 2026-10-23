@@ -114,8 +114,23 @@ Spec `docs/name-resolution/python.md` (decisions 1–4): module paths through im
 above each top-level package, the importing file's folder; nearest first), suffix fallback of two segments; `__init__`
 re-exports stay leaves of their own; of several module-level bindings the one Python sees wins (last of the module,
 or last before the statement for bases, decorators, defaults, class bodies); a nested class is a leaf of its own.
-Christian: "do it like the interpreter does it, else like the other languages" (2026-10-23). Next: probes under
-`sample-projects/regression/python/`, then the implementation commits.
+Christian: "do it like the interpreter does it, else like the other languages" (2026-10-23). 38 probes under
+`sample-projects/regression/python/`, each checked in CPython 3.14, 21 with gaps in `python/known-gaps.md`. Shared
+change approved by Christian: a fallback list on TSE `UsedType` and parser `Type` (the names a use means when the
+first names nothing, for wildcard imports). Implementation, one commit per item:
+
+1. `refactor`: `PythonNameRules` next to the Python analyzer, still the default rules (xcheck: 0 differences).
+2. TSE: `UsedType.fallbacks`, set by no extractor yet.
+3. Parser: `Type.fallbacks`, tried in order when a name resolves to nothing (xcheck: 0 differences).
+4. Module paths below the import roots, then the suffix fallback (`PythonModules`).
+5. TSE: stop reporting names that are no uses (the declared name, parameters, keyword arguments, attribute names).
+6. TSE: hide the names the enclosing function binds.
+7. A class nested in a class is a leaf of its own.
+8. A re-export under an alias is a leaf of its `__init__.py`.
+9. TSE and rules: a name means the binding Python sees (order, definition time, class scope, wildcards, function
+   imports); one commit, as the format of a use changes on both sides.
+10. `__all__` of a wildcard-imported module.
+11. CHANGELOG, README and `gh-pages/.../dependency.md`, the plan.
 
 ## Steps
 
