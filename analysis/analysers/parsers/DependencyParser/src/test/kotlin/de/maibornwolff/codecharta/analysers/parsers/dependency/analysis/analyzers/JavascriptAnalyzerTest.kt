@@ -498,7 +498,6 @@ class JavascriptAnalyzerTest {
     }
 
     @Test
-    @Disabled("Anonymous default exports not yet supported by TSE dependency analysis")
     fun `should handle default export of anonymous class`() {
         // Arrange
         val javascriptCode = """
@@ -523,7 +522,6 @@ class JavascriptAnalyzerTest {
     }
 
     @Test
-    @Disabled("Anonymous default exports not yet supported by TSE dependency analysis")
     fun `should handle default export of anonymous function`() {
         // Arrange
         val javascriptCode = """
@@ -548,7 +546,7 @@ class JavascriptAnalyzerTest {
     }
 
     @Test
-    fun `should handle default export of declared identifier`() {
+    fun `should make no node of its own for the default export of a declared identifier`() {
         // Arrange
         val javascriptCode = """
             const buildFunction = () => {
@@ -571,8 +569,7 @@ class JavascriptAnalyzerTest {
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactly(
-                tuple(NodeType.VARIABLE, Path(listOf("module", "buildFunction"))),
-                tuple(NodeType.VARIABLE, Path(listOf("module", "default")))
+                tuple(NodeType.VARIABLE, Path(listOf("module", "buildFunction")))
             )
     }
 

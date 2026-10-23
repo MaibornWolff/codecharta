@@ -37,10 +37,9 @@ missing leaf app.mjs#make -> svc.cjs#Svc
 
 ## spec-js-default-named
 
-A named default export of JavaScript is a second leaf `default`, and a default import finds neither.
+A default import does not find the default export of its module.
 
 ```text
-extra leaf use.js#default -> use.js#Use
 missing file b.js -> use.js
 missing leaf b.js#make -> use.js#Use
 ```

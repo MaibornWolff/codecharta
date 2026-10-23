@@ -45,15 +45,12 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         if (declaration.parentPath.isNotEmpty()) {
             return Path(declaration.parentPath) + declaration.name
         }
-        if (declaration.name == TSE_DEFAULT_EXPORT_NAME) {
-            val qualifiedName = physicalFilePath.parts.joinToString("_") + "_$TSE_DEFAULT_EXPORT_NAME"
-            return physicalFilePath + qualifiedName
-        }
+        if (declaration.name == TSE_DEFAULT_EXPORT_NAME) return physicalFilePath + DefaultExports.LEAF_NAME
         return physicalFilePath + declaration.name
     }
 
     override fun analyze(): FileReport {
-        val baseReport = super.analyze()
+        val baseReport = FileReport(DefaultExports.withoutOwnNames(super.analyze().nodes))
         val analysisRoot = fileInfo.analysisRoot ?: return baseReport
         val ownNames = baseReport.nodes
             .filter { it.pathWithName.parts.lastOrNull() != WILDCARD_EXPORT_NAME }
@@ -91,11 +88,6 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
 
     private fun templateFilePathOf(angular: AngularDeclaration): Path? = angular.templateUrl?.let {
         templateFilePath(it, fileInfo.physicalPath)
-    }
-
-    override fun extraDependencies(declaration: Declaration): Set<Dependency> {
-        if (declaration.name != TSE_DEFAULT_EXPORT_NAME) return emptySet()
-        return setOf(Dependency(path = physicalFilePath, isWildcard = true))
     }
 
     override fun convertImport(import: ImportDeclaration): Set<Dependency> {

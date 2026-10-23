@@ -4,15 +4,15 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_DEFAULT_EXPORT_NAME
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.withoutFileSuffix
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.defaultImportPath
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.DefaultExports
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ImportedModules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
-
-private const val JS_DEFAULT_EXPORT = "default"
 
 // Unlike TypescriptAnalyzer, JavascriptAnalyzer does not expand wildcard re-exports
 // (`export * from './module'`) into one node per re-exported name. A JS wildcard re-export is
@@ -25,6 +25,8 @@ class JavascriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         val extension = fileInfo.physicalPath.substringAfterLast('.', "").lowercase()
         return fileInfo.physicalPathAsPath().withoutFileSuffix(extension) + localExportName(declaration.name)
     }
+
+    override fun analyze(): FileReport = FileReport(DefaultExports.withoutOwnNames(super.analyze().nodes))
 
     override fun convertImport(import: ImportDeclaration): Set<Dependency> {
         val analysisRoot = fileInfo.analysisRoot
@@ -48,5 +50,5 @@ class JavascriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
 
     // TSE marks the default export/import with a sentinel name; JavaScript represents the default
     // binding as `default` in both node paths and dependency paths.
-    private fun localExportName(tseName: String): String = if (tseName == TSE_DEFAULT_EXPORT_NAME) JS_DEFAULT_EXPORT else tseName
+    private fun localExportName(tseName: String): String = if (tseName == TSE_DEFAULT_EXPORT_NAME) DefaultExports.LEAF_NAME else tseName
 }

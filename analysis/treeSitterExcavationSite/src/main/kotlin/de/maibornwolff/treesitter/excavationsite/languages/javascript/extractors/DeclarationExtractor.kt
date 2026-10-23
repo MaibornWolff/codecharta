@@ -41,17 +41,23 @@ internal object DeclarationExtractor {
             }.filter { it.name.isNotBlank() }
             .toList()
             .withExportVisibility(ExportedNames.of(rootNode))
-        return when (val shape = DefaultExportClassifier.classify(rootNode)) {
-            is DefaultExport.Reexport -> {
-                val resolvedType = declarations.firstOrNull { it.name == shape.name }?.type
-                    ?: DeclarationType.REEXPORT
-                declarations + Declaration(DEFAULT_EXPORT, resolvedType, setOf(UsedType(shape.name)))
-            }
-            is DefaultExport.Anonymous, DefaultExport.Value ->
-                declarations + Declaration(DEFAULT_EXPORT, DeclarationType.REEXPORT, emptySet())
-            is DefaultExport.Named, DefaultExport.None -> declarations
-        }
+        return declarations + listOfNotNull(defaultExportOf(rootNode, aliasMap, localDeclarationNames))
     }
+
+    // A default export that names a declaration is a re-export of that name; an anonymous one a declaration of its own
+    private fun defaultExportOf(rootNode: SyntaxNode, aliasMap: Map<String, String>, localDeclarationNames: Set<String>): Declaration? =
+        when (val shape = DefaultExportClassifier.classify(rootNode)) {
+            is DefaultExport.Named -> Declaration(DEFAULT_EXPORT, DeclarationType.REEXPORT, setOf(UsedType(shape.name)))
+            is DefaultExport.Reexport -> Declaration(DEFAULT_EXPORT, DeclarationType.REEXPORT, setOf(UsedType(shape.name)))
+            is DefaultExport.Anonymous -> {
+                val usedTypes = DefaultExportClassifier
+                    .anonymousValue(
+                        rootNode
+                    )?.let { UsedTypeExtractor.extract(it, aliasMap, localDeclarationNames) }
+                Declaration(DEFAULT_EXPORT, shape.type, usedTypes.orEmpty())
+            }
+            DefaultExport.None -> null
+        }
 
     // A top-level declaration that its module does not export only its own file can name
     private fun List<Declaration>.withExportVisibility(exported: ExportedNames): List<Declaration> = map { declaration ->
