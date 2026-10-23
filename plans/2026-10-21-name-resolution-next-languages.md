@@ -164,7 +164,7 @@ Steps, one commit each:
 14. [x] top-level code is a script leaf
 15. [x] a side-effect import or unbound `require` uses the script leaf
 16. [x] a name read from a dynamic import's result
-17. [ ] globals of script files and `declare global`
+17. [x] globals of script files and `declare global`
 18. [ ] CommonJS: `require` binds the module, `module.exports` is the default export
 19. [ ] resolve a name only through the binding the compiler sees (the heuristics go)
 20. [ ] Vue: a default import of a `.vue` file names its component
@@ -174,17 +174,16 @@ Steps, one commit each:
 24. [ ] Angular: attribute directives
 25. [ ] changelog, README, gh-pages, plan
 
-### Resume TypeScript here (2026-10-23, after step 16)
+### Resume TypeScript here (2026-10-23, after step 17)
 
-- **Last build** `ccsh-ts37` (head of the branch); the next chain is `chain.sh ts37 ts38`. Checkpoint probes worse than
+- **Last build** `ccsh-ts43` (head of the branch); the next chain is `chain.sh ts43 ts44`. Checkpoint probes worse than
   the release: the eight known by decision (Java, C#, Go, Python) plus `typescript/r3-p3-ts`, worse by decision 7 (it
   draws `Circle -> Shapes.Circle` where the checkpoint expects the namespace as one leaf, `Circle -> Shapes`).
-- **Gaps left (15 of 39, several only partly open):** typescript `spec-declare-global`, `spec-global-alternatives`,
-  `spec-global-script`, `spec-reexport-default`; javascript `spec-commonjs-default`, `spec-commonjs-require-module`,
-  `spec-esm-import-commonjs`, `spec-script-global`; vue `spec-auto-import-unique`,
+- **Gaps left (11 of 39, several only partly open):** typescript `spec-reexport-default`; javascript `spec-commonjs-default`, `spec-commonjs-require-module`,
+  `spec-esm-import-commonjs`; vue `spec-auto-import-unique`,
   `spec-binding-over-auto-import`, `spec-components-option`, `spec-global-registration`, `spec-plain-script-export`,
   `spec-template-expression`; angular `spec-attribute-directive`.
-- **Next steps in order:** 17–18 (part of 18 is done: a name `require` or `await import` binds is no declaration),
+- **Next steps in order:** 18 (part of it is done: a name `require` or `await import` binds is no declaration),
   then 20–24, then 19 (drop the heuristics: `TypescriptNameRules` still delegates to `DefaultNameRules`), then 25.
   `spec-reexport-default` (`export { default as B } from`) needs the re-export's use to carry its module: the re-export
   declaration's used type is `DEFAULT_EXPORT`, and `MemberImports` keys defaults by binding name, which a re-export has
@@ -203,6 +202,12 @@ Steps, one commit each:
   script leaf. A dynamic import is a namespace import bound to `dynamic_import_<offset>` (`DynamicImports`);
   `DynamicImportBindings` finds what its result binds (callback parameter, awaited declarator, destructuring) and
   `NamespaceMembers` writes reads through it, so `MemberImports` resolves them as namespace-import names.
+- **Step 17 as done:** TSE marks a global declaration (script-file top level, `declare global`) with a leading
+  `GLOBAL` parent-path segment (`DeclarationScopes` in the analyzer drops it), and a use of a name no module binding
+  binds with `namespacePrefix = [GLOBAL]`; free lower-case names are reported now, a declaration's own name and the
+  names its patterns bind are not. `GlobalDeclarations` reads the globals once per root (files without
+  `import`/`export`/`exports`/`require` text or with `declare global`), `GlobalUses` writes a marked use as each global
+  of its name, else keeps an upper-case one as written and drops a lower-case one.
 - **Follow-up for step 19:** a member chain through an upper-case namespace import (`Gen.createTreemapNodes`) still
   reports the namespace only; reporting the chain made `React.Component` (a library) fall to the heuristics and hit
   the file's own `Component`. A use through a library namespace should draw nothing first.
