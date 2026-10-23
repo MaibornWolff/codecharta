@@ -29,11 +29,11 @@ class PythonAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
 
     // A package file that imports a name makes it importable from the package itself
     private fun namesReexportedByPackage(imports: PythonImports): List<Node> = imports.reexportedNames.map { name ->
-        node(name, NodeType.UNKNOWN, imports.memberDependencies.toSet(), setOf(Type.simple(name)))
+        node(listOf(name), NodeType.UNKNOWN, imports.memberDependencies.toSet(), setOf(Type.simple(name)))
     }
 
     private fun toNode(declaration: Declaration, imports: PythonImports): Node {
-        if (declaration.type == DeclarationType.VARIABLE) return node(declaration.name, NodeType.VARIABLE, emptySet(), emptySet())
+        if (declaration.type == DeclarationType.VARIABLE) return node(listOf(declaration.name), NodeType.VARIABLE, emptySet(), emptySet())
         val (qualifiedNames, plainNames) = declaration.usedTypes.partition { it.namespacePrefix.isNotEmpty() }
         val aliasedMembersInUse = plainNames.mapNotNull { imports.aliasedMembers[it.name] }
         val dependencies = imports.memberDependencies + imports.wildcardDependencies +
@@ -41,7 +41,7 @@ class PythonAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
             qualifiedNames.flatMap { dependenciesOnImportedModule(it, imports) }
         val usedTypes = plainNames.map { Type.simple(imports.aliasedMembers[it.name]?.name?.last() ?: it.name) } +
             qualifiedNames.mapNotNull { typeBehindImportedModule(it, imports) }
-        return node(declaration.name, declaration.type.toNodeType(), dependencies.toSet(), usedTypes.toSet())
+        return node(declaration.parentPath + declaration.name, declaration.type.toNodeType(), dependencies.toSet(), usedTypes.toSet())
     }
 
     // A name behind a module an import binds means exactly that module's name, or its package's
@@ -56,8 +56,8 @@ class PythonAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         return imports.pathsIn(module, listOf(qualifiedName.name)).map { Dependency(Path(it)) }
     }
 
-    private fun node(name: String, nodeType: NodeType, dependencies: Set<Dependency>, usedTypes: Set<Type>) = Node(
-        pathWithName = Path(modulePath + name),
+    private fun node(nameBelowModule: List<String>, nodeType: NodeType, dependencies: Set<Dependency>, usedTypes: Set<Type>) = Node(
+        pathWithName = Path(modulePath + nameBelowModule),
         physicalPath = fileInfo.physicalPath,
         language = fileInfo.language,
         nodeType = nodeType,

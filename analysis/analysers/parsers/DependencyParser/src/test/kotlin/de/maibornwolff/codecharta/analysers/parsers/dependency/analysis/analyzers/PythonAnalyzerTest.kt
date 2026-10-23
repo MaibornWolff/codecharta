@@ -351,4 +351,24 @@ def make():
             Type.simple("app.model.speed.Speed").copy(fallbacks = listOf(Type.simple("app.model.speed.__init__.Speed")))
         )
     }
+
+    @Test
+    fun `should give a class nested in a class the path of the outer class plus its name`() {
+        // Arrange
+        val pythonCode = """
+class Order:
+    class Line:
+        pass
+        """
+        val physicalPath = File("shop/order.py").path
+
+        // Act
+        val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
+
+        // Assert
+        assertThat(report.nodes.map { it.pathWithName }).containsExactly(
+            Path(listOf("shop", "order", "Order")),
+            Path(listOf("shop", "order", "Order", "Line"))
+        )
+    }
 }

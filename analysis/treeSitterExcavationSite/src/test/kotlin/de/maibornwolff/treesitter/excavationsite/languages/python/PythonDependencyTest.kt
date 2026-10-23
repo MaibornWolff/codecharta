@@ -221,6 +221,74 @@ class PythonDependencyTest {
         }
 
         @Test
+        fun `should extract a class nested in a class as a declaration of its own below the outer class`() {
+            // Arrange
+            val code = """
+                class Order:
+                    class Line:
+                        def __init__(self, product: Product):
+                            pass
+
+                    def total(self) -> Money:
+                        pass
+            """.trimIndent()
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.declarations).extracting({ it.name }, { it.parentPath }, { it.type }).containsExactly(
+                tuple("Order", emptyList<String>(), DeclarationType.CLASS),
+                tuple("Line", listOf("Order"), DeclarationType.CLASS)
+            )
+            assertThat(result.declarations.map { declaration -> declaration.usedTypes.map { it.name } }).containsExactly(
+                listOf("Money"),
+                listOf("Product")
+            )
+        }
+
+        @Test
+        fun `should extract a decorated nested class and a class nested in it with the classes around them as parent path`() {
+            // Arrange
+            val code = """
+                class Shop:
+                    @dataclass
+                    class Order:
+                        class Line:
+                            pass
+            """.trimIndent()
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.declarations).extracting({ it.name }, { it.parentPath }).containsExactly(
+                tuple("Shop", emptyList<String>()),
+                tuple("Order", listOf("Shop")),
+                tuple("Line", listOf("Shop", "Order"))
+            )
+            assertThat(result.declarations[1].usedTypes).containsExactly(UsedType("dataclass"))
+        }
+
+        @Test
+        fun `should not extract a class declared in a method`() {
+            // Arrange
+            val code = """
+                class Order:
+                    def build(self):
+                        class Draft:
+                            pass
+                        return Draft()
+            """.trimIndent()
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.declarations.map { it.name }).containsExactly("Order")
+        }
+
+        @Test
         fun `should not extract a method or a nested function`() {
             // Arrange
             val code = """

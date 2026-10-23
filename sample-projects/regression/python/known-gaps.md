@@ -61,13 +61,10 @@ extra leaf app/use.py#second -> app/models.py#Model
 
 ## spec-nested-class
 
-A nested class is no declaration: its uses count for the class around it, and `Order.Line` is a use of `Order`.
+The `Order` of `Order.Line` still counts as a use of its own, besides the nested class it qualifies.
 
 ```text
-missing leaf shop/invoice.py#Invoice -> shop/order.py#Line
-missing leaf shop/order.py#Line -> shop/product.py#Product
 extra leaf shop/invoice.py#Invoice -> shop/order.py#Order
-extra leaf shop/order.py#Order -> shop/product.py#Product
 ```
 
 ## spec-reexport-alias
