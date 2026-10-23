@@ -174,12 +174,12 @@ Steps, one commit each:
 24. [ ] Angular: attribute directives
 25. [ ] changelog, README, gh-pages, plan
 
-### Resume TypeScript here (2026-10-23, after step 18)
+### Resume TypeScript here (2026-10-23, after step 18 and spec-reexport-default)
 
-- **Last build** `ccsh-ts46` (head of the branch); the next chain is `chain.sh ts46 ts47`. Checkpoint probes worse than
+- **Last build** `ccsh-ts49` (head of the branch); the next chain is `chain.sh ts49 ts50`. Checkpoint probes worse than
   the release: the eight known by decision (Java, C#, Go, Python) plus `typescript/r3-p3-ts`, worse by decision 7 (it
   draws `Circle -> Shapes.Circle` where the checkpoint expects the namespace as one leaf, `Circle -> Shapes`).
-- **Gaps left (8 of 40, several only partly open):** typescript `spec-reexport-default`; vue `spec-auto-import-unique`,
+- **Gaps left (7 of 40):** vue `spec-auto-import-unique`,
   `spec-binding-over-auto-import`, `spec-components-option`, `spec-global-registration`, `spec-plain-script-export`,
   `spec-template-expression`; angular `spec-attribute-directive`.
 - **Next steps in order:** 20–24, then 19 (drop the heuristics: `TypescriptNameRules` still delegates to `DefaultNameRules`), then 25.
@@ -209,6 +209,20 @@ Steps, one commit each:
   `module.exports = X` / `export = X` is the default export (`DefaultExportClassifier`), `x.A` is a member of it, else
   (no default declaration, `module.exports = { A }`) the export `A` (`MemberImports` binds the module); the extractor
   reports `x.A` through such a binding as one name (`ModuleNames.defaultImportNames`).
+- **spec-reexport-default as done:** `export { default as B } from './m'` reports its use as `DEFAULT_EXPORT` with the
+  specifier as prefix; `DefaultExportUses` writes it as `ModuleExports.defaultPathOf` (the `.vue` rule moved there).
+- **Vue plan (steps 20–23, not started):** `VueAnalyzer` today makes one component node whose uses are the template's
+  tags (Pascal case, `ComponentExtractor` in TSE) and the name of every import; it resolves no binding. Proposed order,
+  analyzer before TSE each time, ask Christian where unsure:
+  1. step 20: resolve the imports of the script blocks as `TypescriptAnalyzer` does (`ImportedModules`, `MemberImports`;
+     a default import of a `.vue` file is the component node, `ModuleExports.defaultPathOf`);
+  2. step 22: TSE reports the names of template expressions (`{{ format(date) }}`, `:title="defaults.size"`) and the
+     analyzer counts an import only where the script or template uses it (gap `spec-template-expression`);
+  3. step 21: tags in the spec's order: a script-setup binding (as written, camel, Pascal), the `components` option
+     (TSE reads `components: { CreatureCard: Card }`), a global `app.component('Name', X)` (project scan like
+     `GlobalDeclarations`), the component itself, else the one `.vue` file of that name (project scan); gaps
+     `spec-binding-over-auto-import`, `spec-components-option`, `spec-global-registration`, `spec-auto-import-unique`;
+  4. step 23: what a plain `<script>` exports by name is a leaf of its own (gap `spec-plain-script-export`).
 - **Follow-up for step 19:** a member chain through an upper-case namespace import (`Gen.createTreemapNodes`) still
   reports the namespace only; reporting the chain made `React.Component` (a library) fall to the heuristics and hit
   the file's own `Component`. A use through a library namespace should draw nothing first.
