@@ -3,6 +3,10 @@ package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractor
 internal const val DEFAULT_EXPORT = "DEFAULT_EXPORT"
 internal const val DEFAULT_KEYWORD = "default"
 
+// The first segment of the parent path of a declaration in `declare module 'name'`, whose path is the module name and
+// not below the file; any other parent path is below the file, as the namespace a declaration is a member of
+internal const val AMBIENT_MODULE = "AMBIENT_MODULE"
+
 internal fun normalizeDefaultKeyword(name: String): String = if (name == DEFAULT_KEYWORD) DEFAULT_EXPORT else name
 
 // Shared tree-sitter node-type constants used across JS/TS/TSX extractors

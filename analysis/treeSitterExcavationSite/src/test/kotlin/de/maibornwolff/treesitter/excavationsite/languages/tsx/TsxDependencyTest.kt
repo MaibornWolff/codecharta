@@ -251,7 +251,7 @@ class TsxDependencyTest {
             assertThat(result.declarations).hasSize(1)
             assertThat(result.declarations[0].name).isEqualTo("myFunction")
             assertThat(result.declarations[0].type).isEqualTo(DeclarationType.FUNCTION)
-            assertThat(result.declarations[0].parentPath).containsExactly("MyModule")
+            assertThat(result.declarations[0].parentPath).containsExactly("AMBIENT_MODULE", "MyModule")
         }
 
         @Test
