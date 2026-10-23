@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_DEFAULT_EXPORT_NAME
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.WILDCARD_EXPORT_NAME
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.DependencyResult
 import de.maibornwolff.treesitter.excavationsite.api.ImportKind
@@ -25,6 +26,12 @@ internal class ModuleExports private constructor(private val analysisRoot: File)
      * module itself, or for a module without a default export.
      */
     fun defaultNameOf(moduleFile: File): String? = tableOf(moduleFile).defaultName
+
+    /** The path of the default export of [moduleFile], whose logical path is [module]: the module itself for a Vue component. */
+    fun defaultPathOf(moduleFile: File, module: Path): Path? {
+        if (moduleFile.name.endsWith(VUE_ENDING)) return module
+        return defaultNameOf(moduleFile)?.let { module + it }
+    }
 
     /** The name below the module's logical path that its export [exportedName] has: the own declaration it stands for. */
     fun nameOf(moduleFile: File, exportedName: String): String = tableOf(moduleFile).ownNameByExport[exportedName] ?: exportedName
