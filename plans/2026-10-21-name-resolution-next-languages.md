@@ -385,7 +385,7 @@ name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these a
     (`shape.h -> point.c`, the body of the struct `point.h` declares forward)
 13. [x] implementation parts (`Node.isImplementationPart`, shared, approved by Christian 2026-10-26), out-of-line
     template members and specializations. Checkpoint probe worse by decision 3: `cpp/r3-p3-cpp` (`a/Foo.cpp -> a/Foo.h`)
-14. [ ] `SpeedType::WALKING` in an expression is a use of `SpeedType`
+14. [x] `SpeedType::WALKING` in an expression is a use of `SpeedType`
 15. [ ] changelog, README, gh-pages, spec table, FINDINGS, plan
 
 ## Steps
