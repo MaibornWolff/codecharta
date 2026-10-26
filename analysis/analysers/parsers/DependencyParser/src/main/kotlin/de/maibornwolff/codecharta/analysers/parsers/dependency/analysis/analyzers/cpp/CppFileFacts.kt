@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_ALIAS_SEGMENT
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_FORWARD_DECLARATION_SEGMENT
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_IMPLEMENTATION_SEGMENT
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DependencyResult
 import de.maibornwolff.treesitter.excavationsite.api.ImportKind
@@ -31,9 +32,11 @@ internal data class CppFileFacts(
             )
         }
 
+        private val MARKERS = setOf(TSE_FORWARD_DECLARATION_SEGMENT, TSE_ALIAS_SEGMENT, TSE_IMPLEMENTATION_SEGMENT)
+
         private fun toDeclared(declaration: Declaration): CppDeclared {
             val marker = declaration.parentPath.firstOrNull()
-            val isMarked = marker == TSE_FORWARD_DECLARATION_SEGMENT || marker == TSE_ALIAS_SEGMENT
+            val isMarked = marker in MARKERS
             return CppDeclared(
                 path = (if (isMarked) declaration.parentPath.drop(1) else declaration.parentPath) + declaration.name,
                 hasBody = !isMarked,
@@ -46,7 +49,7 @@ internal data class CppFileFacts(
 
 /**
  * A class, struct, union or enum by its path of namespaces, classes and name; without a body it is a forward
- * declaration, or a type alias of the type [aliasOf] names.
+ * declaration, the implementation part of a class or a type alias of the type [aliasOf] names.
  */
 internal data class CppDeclared(val path: List<String>, val hasBody: Boolean, val bases: List<UsedType>, val aliasOf: UsedType? = null)
 
