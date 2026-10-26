@@ -288,4 +288,16 @@ class CppAnalyzerTest {
         )
         assertThat(report.nodes.single { it.name() == "Entity" }.usedTypes).containsExactly(Type.simple("repo.CreatureEntity"))
     }
+
+    @Test
+    fun `should write a class tag nothing visible declares as the class its namespace implicitly declares`() {
+        // Arrange
+        val code = "struct Config {};\nnamespace game { struct Nest { struct Roost *held; struct Config *config; }; }"
+
+        // Act
+        val usedTypes = usesOf(code, "Nest")
+
+        // Assert
+        assertThat(usedTypes.map { it.name }).containsExactlyInAnyOrder("game.Roost", "Config")
+    }
 }

@@ -110,7 +110,7 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 | Declarations, decision 7: a typedef of the same name | `c/spec-typedef-same-name` | ok |
 | Declarations, decision 4: a typedef alias | `c/spec-typedef-alias` | ok |
 | Declarations, decision 4: a `using` alias | `cpp/spec-alias-using` | ok |
-| Declarations: `struct N *` declares N | `c/spec-implicit-forward` | gap |
+| Declarations: `struct N *` declares N | `c/spec-implicit-forward` | ok |
 | Declarations, decision 3: implementation part | `cpp/spec-implementation-part` | gap |
 | Declarations, decision 8: explicit specialization | `cpp/spec-template-specialization` | gap |
 | Declarations, decision 8: out-of-line template member | `cpp/spec-template-out-of-line-member` | gap |

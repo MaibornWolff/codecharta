@@ -381,7 +381,7 @@ name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these a
 11. [x] declarations: untagged typedef'd structs, typedef and `using` aliases (aliases are leaves; a typedef a macro
     breaks declares nothing). Checkpoint probe worse by decision 4: `cpp/r1-cpp1` (`Self -> app.Widget`, a member alias
     is a leaf of its own)
-12. [ ] `struct N *` is a use and declares `N` if none is visible. Checkpoint probe worse by decision 5: `c/r2-csrc`
+12. [x] `struct N *` is a use and declares `N` if none is visible. Checkpoint probe worse by decision 5: `c/r2-csrc`
     (`shape.h -> point.c`, the body of the struct `point.h` declares forward)
 13. [ ] implementation parts (`Node.isImplementationPart`, shared, approved by Christian 2026-10-26), out-of-line
     template members and specializations
