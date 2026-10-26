@@ -20,7 +20,8 @@ global namespace. The rules shared by every language are in [README.md](README.m
   of its own; the name means the struct (decision 7).
 - A forward declaration (`struct Creature;`, `class Creature;`) is no declaration: it makes the name visible and means
   the class of that path (decision 5). So does an elaborated type specifier that names no visible class
-  (`struct Roost *held;`): it declares the class in the innermost namespace around it, as the compiler does.
+  (`struct Roost *held;`): it declares the class in the innermost namespace around it, as the compiler does. An
+  unqualified `friend class Util;` declares `Util` in the innermost namespace around its class, whatever is visible.
 - The member functions of a class defined outside it (`void Creature::hit() { … }`, also inside the namespace
   blocks of the class) form the implementation part of the class: a leaf with the class's path in their file, whose
   uses are the uses of these functions, and which uses the class (decision 3). Members defined in the file of the
