@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.cpp.CppNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpProjects
@@ -20,6 +21,7 @@ import java.io.File
 internal object LanguageRules {
     fun namesOf(language: SupportedLanguage): NameRules = when (language) {
         SupportedLanguage.C_SHARP -> CSharpNameRules
+        SupportedLanguage.CPP -> CppNameRules
         SupportedLanguage.JAVA, SupportedLanguage.KOTLIN -> JavaNameRules
         SupportedLanguage.GO -> GoNameRules
         SupportedLanguage.PYTHON -> PythonNameRules

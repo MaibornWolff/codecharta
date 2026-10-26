@@ -339,8 +339,32 @@ name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these a
 (Christian, 2026-10-26: no separate spec review, follow the plan and write such points down).
 
 1. [x] spec page
-2. [ ] probes under `sample-projects/regression/{c,cpp}/spec-*`, `known-gaps.md`
-3. [ ] implementation, one commit per gap group (to be listed after the probes)
+2. [x] probes: 44 under `sample-projects/regression/{c,cpp}/spec-*`, 27 gaps at the start; every probe compiles in
+   clang (`compile-probes.sh` and `mkprobes.py` in the scratchpad generate and check them)
+3. [x] refactor: C and C++ get name rules of their own (`CppNameRules`), the default
+   ones for now; `CppCopyRules` comes with step 5
+4. [ ] `CppIncludes`: an include path means the file of the include rules, a file sees its include closure (project
+   scan, cached per analysis root, as `CSharpProjects`)
+5. [ ] copies: no merge of C++ nodes of one path (`ProcessingPipeline.mergeIdenticalTypes` goes); a use means the copy
+   its include closure holds, else the nearest (closes `spec-closure-over-nearest`, part of
+   `spec-implementation-part`)
+6. [ ] decision 6: a global declaration's path is its name (C copies apart by closure: `spec-include-closure`,
+   `-relative`, `transitive-include`)
+7. [ ] decision 1: a name no file of the closure declares draws no edge (`spec-library-include`,
+   `spec-library-namespace`, the rest of `spec-include-closure`)
+8. [ ] lookup order: TSE writes each use as its candidate paths (class, enclosing namespaces, using-declarations,
+   using-directives at their level, namespace aliases, `::N`, qualified from the first segment), the analyzer takes the
+   first visible one and writes it exactly, `CppNameRules` takes a path only as written; split as needed
+9. [ ] template parameters and classes declared in a function hide (`spec-template-parameter`, `spec-local-type`)
+10. [ ] declarations: untagged typedef'd structs, typedef and `using` aliases (`spec-typedef-*`, `spec-alias-using`,
+    `spec-uses-c`)
+11. [ ] `struct N *` is a use and declares `N` if none is visible (`spec-forward-declaration`, `-implicit-forward`,
+    `-forward-nearest`)
+12. [ ] implementation parts: `Node.isImplementationPart` (shared, approved by Christian 2026-10-26: only such a node
+    keeps a dependency on its own path; cycle detection ignores it; the part is file-scoped), out-of-line bodies look
+    in their class and its namespaces, `Pool<T>::` and specializations are parts of the template
+13. [ ] `SpeedType::WALKING` in an expression is a use of `SpeedType` (`spec-member-of-type`)
+14. [ ] changelog, README, gh-pages, spec table, FINDINGS, plan
 
 ## Steps
 
