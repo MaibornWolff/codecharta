@@ -91,6 +91,20 @@ class CppDependencyDeclarationTest {
     }
 
     @Test
+    fun `should report the tag a typedef names without a body as a forward declaration`() {
+        // Arrange
+        val code = "typedef struct Stable Stable;"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations).containsExactly(
+            Declaration(name = "Stable", type = DeclarationType.CLASS, usedTypes = emptySet(), parentPath = listOf(FORWARD_DECLARATION))
+        )
+    }
+
+    @Test
     fun `should report no forward declaration for a class named in the type of a field`() {
         // Arrange
         val code = "struct Nest { struct Roost *held; };"

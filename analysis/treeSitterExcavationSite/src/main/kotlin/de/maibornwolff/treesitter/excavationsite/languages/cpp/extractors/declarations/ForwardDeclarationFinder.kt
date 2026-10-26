@@ -6,9 +6,9 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 
 /**
- * The forward declarations of a file (`class Creature;`): a class, struct, union or enum without a body that stands
- * as a declaration of its own, reported below [FORWARD_DECLARATION] plus its namespaces and enclosing classes, as it
- * declares no leaf but makes its name visible.
+ * The forward declarations of a file (`class Creature;`, the tag of `typedef struct Stable Stable;`): a class, struct,
+ * union or enum without a body that stands as a declaration of its own or in a typedef, reported below
+ * [FORWARD_DECLARATION] plus its namespaces and enclosing classes, as it declares no leaf but makes its name visible.
  */
 internal object ForwardDeclarationFinder {
     const val FORWARD_DECLARATION = "FORWARD_DECLARATION"
@@ -20,6 +20,7 @@ internal object ForwardDeclarationFinder {
     private val BODIES = setOf("field_declaration_list", "enumerator_list")
     private val STANDALONE_PARENTS = setOf(
         "translation_unit",
+        "type_definition",
         "declaration_list",
         "template_declaration",
         "preproc_if",
