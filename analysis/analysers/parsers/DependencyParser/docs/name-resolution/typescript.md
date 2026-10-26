@@ -145,9 +145,19 @@ A lower-case JSX tag (`<div>`) is an element of the platform: no edge.
   underscores (`user.component.html` is `user_component_html`); the component that names it in `templateUrl` depends
   on it. An inline `template` is read like a template file, as a declaration `template` of the component's file that
   the component depends on.
-- A template uses the components and directives whose selector matches one of its elements or attributes
-  (`<app-badge>`, `<div appHighlight>`, `[appHighlight]="…"`), and the pipes it names (`| currency`). Such a name
-  means:
+- A template uses the components and directives whose selector matches one of its elements (`<app-badge>`,
+  `<div appHighlight>`, `<p [appTooltip]="…">`), and the pipes it names (`| currency`). An element is matched as the
+  Angular compiler matches it (decision 14):
+  - an element has its tag, its attributes with their values, the names of its property and two-way bindings (`[x]`,
+    `[(x)]`, `bind-x`, `bindon-x`, the latter two also `xChange`) and event bindings (`(x)`, `on-x`), and the
+    classes of its `class` attribute; `[attr.x]`, `[class.x]`, `[style.x]`, `[@x]` and `i18n-x` take no part;
+  - a structural directive `*x="let a of b; trackBy: f"` makes an `ng-template` element of its own, whose attributes
+    are `x` and, per key of the microsyntax, `x` with that key capitalized (`xOf`, `xTrackBy`);
+  - a selector is a list of alternatives (`a, b`); an alternative matches when the element has its tag (if it names
+    one, ignoring case), each of its attributes (with the value, if it names one, ignoring case) and classes (ignoring
+    case), and matches none of its `:not(…)` parts.
+- Every class whose selector matches is used: an element carries one component and any number of directives. A
+  selector or pipe name that several classes declare means:
   1. the class in the scope of the template's component, as Angular decides it: the `imports` of a standalone
      component, or the `declarations` and `imports` of the `@NgModule` that declares the component, where an imported
      module adds what it exports, a module it exports in turn included;
@@ -261,8 +271,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
   and `node_modules` folders inside the analysed folder.
 - Vue: components registered by a plugin other than `app.component`, a `defineAsyncComponent` loader with a block
   body, the `name` option as the component's name, and the expressions of a pug template.
-- Angular: selectors with `:not(…)` or several elements, directives matched through `hostDirectives`, and modules
-  returned by a `forRoot()` call.
+- Angular: directives matched through `hostDirectives`, and modules returned by a `forRoot()` call.
 
 ## Decisions
 
@@ -294,3 +303,6 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
     which draws no edge, as a member of a value (decided 2026-10-23).
 13. `defineAsyncComponent` with a loader `() => import('./X.vue')` stands for the default export of `X`, as the Vue
     runtime renders it; a use of what it returns is a use of that export (decided 2026-10-23).
+14. A template element uses every component and directive whose selector matches it as the Angular compiler matches
+    it: by tag, attributes, bindings, events and classes, a compound selector as a whole and `:not(…)` excluding;
+    every match draws an edge, a selector declared by several classes the one the scope decides (decided 2026-10-26).
