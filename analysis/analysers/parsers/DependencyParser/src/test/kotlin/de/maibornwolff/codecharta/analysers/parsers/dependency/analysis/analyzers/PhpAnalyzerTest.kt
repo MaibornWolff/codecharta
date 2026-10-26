@@ -803,4 +803,26 @@ class ArmorClass
             Path(listOf("App", "Kernel"))
         )
     }
+
+    @Test
+    fun `should write an include as the script leaf of the file its path names`() {
+        // Arrange
+        val code = """
+            <?php
+            require '../lib/boot.php';
+            require './helpers.php';
+            require '/vendor/autoload.php';
+            require '../../../outside.php';
+        """.trimIndent()
+
+        // Act
+        val report = PhpAnalyzer(FileInfo(SupportedLanguage.PHP, "src/app/index.php", code)).analyze()
+
+        // Assert
+        assertThat(report.nodes.single().usedTypes.map { it.name }).containsExactly(
+            "src.lib.boot.boot_script",
+            "src.app.helpers.helpers_script",
+            "vendor.autoload.autoload_script"
+        )
+    }
 }

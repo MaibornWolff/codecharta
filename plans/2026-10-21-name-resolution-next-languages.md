@@ -424,7 +424,7 @@ derived (global namespace path, declarations in blocks, script leaf, docblocks).
 11. [x] decision 4: interface `extends`, enum `implements`, anonymous class headers
 12. [x] decision 4: trait bodies; the names of a nested declaration are its own
 13. [x] decision 8: top-level code is a script leaf at the file's path, also next to declarations
-14. [ ] decisions 2 and 3: an include uses the included file's script leaf (old include imports go)
+14. [x] decisions 2 and 3: an include uses the included file's script leaf (old include imports go)
 15. [ ] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
 
 Prototype of steps 5–14 (all probes but the case one green, no checkpoint probe worse, the sample gains the 24 file

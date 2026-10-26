@@ -133,11 +133,11 @@ the expected meaning of each name, except the absolute and the computed include 
 | Decision 4: enum `implements` | `spec-enum-implements` | ok |
 | Decision 4: a trait's body and `use T;` | `spec-trait` | ok |
 | Decision 9: docblock types | `spec-docblock` | ok |
-| Includes, decision 2: the script leaf | `spec-include-script-leaf` | gap |
+| Includes, decision 2: the script leaf | `spec-include-script-leaf` | ok |
 | Includes, decision 2: a file without top-level code | `spec-include-declarations-only` | ok |
-| Includes, decision 3: the path forms | `spec-include-paths` | gap |
-| Includes, decision 3: an absolute path | `spec-include-absolute` | gap |
-| Includes: inside a method | `spec-include-in-function` | gap |
+| Includes, decision 3: the path forms | `spec-include-paths` | ok |
+| Includes, decision 3: an absolute path | `spec-include-absolute` | ok |
+| Includes: inside a method | `spec-include-in-function` | ok |
 | Includes: a computed path | `spec-include-computed` | ok |
 | Shared rule 1, name scope | `spec-name-scope` | ok |
 | Shared rule 2, copies | `spec-copies` | ok |
