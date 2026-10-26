@@ -116,7 +116,7 @@ the expected meaning of each name, except the absolute and the computed include 
 | Class name 5: no global fallback | `spec-no-global-fallback` | ok |
 | Class name: a library class | `spec-library-class` | ok |
 | Class name, decision 5: exact case | `spec-exact-case` | ok |
-| A name below a class | `spec-class-member-access` | gap |
+| A name below a class | `spec-class-member-access` | ok |
 | Function name 3: the current namespace before the global one | `spec-function-own-namespace-first` | ok |
 | Function name 3: the global fallback | `spec-function-global-fallback` | ok |
 | Function name 3: `use function` | `spec-use-function` | ok |
@@ -125,8 +125,8 @@ the expected meaning of each name, except the absolute and the computed include 
 | Constant name 3: `use const` | `spec-use-const` | ok |
 | Constant name 1: fully qualified | `spec-constant-fully-qualified` | ok |
 | Decision 4: parameter, property and return types | `spec-type-positions` | ok |
-| Decision 4: `catch` and `instanceof` | `spec-catch-instanceof` | gap |
-| Decision 4: attributes | `spec-attribute` | gap |
+| Decision 4: `catch` and `instanceof` | `spec-catch-instanceof` | ok |
+| Decision 4: attributes | `spec-attribute` | ok |
 | Decision 4: interface `extends` | `spec-interface-extends` | gap |
 | Decision 4: enum `implements` | `spec-enum-implements` | gap |
 | Decision 4: a trait's body and `use T;` | `spec-trait` | gap |

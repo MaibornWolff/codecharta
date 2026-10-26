@@ -9,8 +9,9 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
  * The names a PHP declaration uses and how, in the order of [Role], each as the full path of the class, function or
  * constant it means by the rules of `php.md`: the last segment as name, the namespace as prefix, and for a function or
  * constant PHP may look up globally the global name as fallback. Read are return, parameter and property types, base
- * classes, interfaces, instantiations, static calls, constant accesses, traits, function calls, constant reads and
- * every type (parameter, return, property, `catch`); left out are `self`, `static`, `parent` and the type keywords.
+ * classes, interfaces, instantiations, static calls and properties, constant accesses, traits, attributes, the class
+ * of an `instanceof`, function calls, constant reads and every type (parameter, return, property, `catch`); left out
+ * are `self`, `static`, `parent` and the type keywords.
  */
 internal object UsedTypeExtractor {
     private const val NAME = "name"
@@ -24,6 +25,9 @@ internal object UsedTypeExtractor {
     private const val CLASS_INTERFACE_CLAUSE = "class_interface_clause"
     private const val OBJECT_CREATION_EXPRESSION = "object_creation_expression"
     private const val SCOPED_CALL_EXPRESSION = "scoped_call_expression"
+    private const val SCOPED_PROPERTY_ACCESS_EXPRESSION = "scoped_property_access_expression"
+    private const val ATTRIBUTE = "attribute"
+    private const val BINARY_EXPRESSION = "binary_expression"
     private const val CLASS_CONSTANT_ACCESS_EXPRESSION = "class_constant_access_expression"
     private const val RETURN_TYPE_FIELD = "return_type"
     private val TYPE_COMPOSITIONS = setOf("optional_type", "union_type", "intersection_type", "disjunctive_normal_form_type", "type_list")
@@ -48,8 +52,10 @@ internal object UsedTypeExtractor {
         INSTANTIATED(TypeUsage.INSTANTIATION),
         PROPERTY_TYPE(TypeUsage.USAGE),
         OTHER_TYPE(TypeUsage.USAGE),
-        STATIC_CALL_OWNER(TypeUsage.USAGE),
+        STATIC_MEMBER_OWNER(TypeUsage.USAGE),
         USED_TRAIT(TypeUsage.USAGE),
+        ATTRIBUTE(TypeUsage.USAGE),
+        CHECKED_INSTANCE(TypeUsage.USAGE),
         CALLED_FUNCTION(TypeUsage.USAGE, Kind.FUNCTION)
     }
 
@@ -91,7 +97,10 @@ internal object UsedTypeExtractor {
             BASE_CLAUSE -> Role.INHERITED.takeIf { parent.parent.type == CLASS_DECLARATION }
             CLASS_INTERFACE_CLAUSE -> Role.IMPLEMENTED.takeIf { parent.parent.type == CLASS_DECLARATION }
             OBJECT_CREATION_EXPRESSION -> Role.INSTANTIATED
-            SCOPED_CALL_EXPRESSION -> Role.STATIC_CALL_OWNER.takeIf { parent.getChildByFieldName(SCOPE_FIELD) == name }
+            SCOPED_CALL_EXPRESSION, SCOPED_PROPERTY_ACCESS_EXPRESSION ->
+                Role.STATIC_MEMBER_OWNER.takeIf { parent.getChildByFieldName(SCOPE_FIELD) == name }
+            ATTRIBUTE -> Role.ATTRIBUTE
+            BINARY_EXPRESSION -> if (ConstantReads.isInstanceofClass(name)) Role.CHECKED_INSTANCE else Role.CONSTANT_READ
             USE_DECLARATION -> Role.USED_TRAIT.takeIf { isMemberOfClass(parent) }
             FUNCTION_CALL_EXPRESSION -> Role.CALLED_FUNCTION.takeIf { parent.getChildByFieldName(FUNCTION_FIELD) == name }
             else -> Role.CONSTANT_READ.takeIf { ConstantReads.isRead(name) }
