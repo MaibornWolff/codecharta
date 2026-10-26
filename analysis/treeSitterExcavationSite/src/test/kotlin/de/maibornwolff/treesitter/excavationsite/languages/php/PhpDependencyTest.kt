@@ -3,7 +3,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.php
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
-import de.maibornwolff.treesitter.excavationsite.api.ImportKind
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import de.maibornwolff.treesitter.excavationsite.api.TypeUsage
@@ -143,30 +142,58 @@ class PhpDependencyTest {
         }
 
         @Test
-        fun `should extract an include of a single-quoted path split at the slashes`() {
+        fun `should not report an include as an import`() {
             // Arrange
-            val code = "require_once './lib/helpers.php';\ninclude '..\\shared\\config.php';"
+            val code = "require_once './lib/helpers.php';\nuse App\\Model\\Order;"
 
             // Act
             val result = analyze(code)
 
             // Assert
-            assertThat(result.imports).containsExactly(
-                ImportDeclaration(path = listOf(".", "lib", "helpers.php"), isWildcard = false, kind = ImportKind.INCLUDE),
-                ImportDeclaration(path = listOf("..", "shared", "config.php"), isWildcard = false, kind = ImportKind.INCLUDE)
+            assertThat(result.imports).containsExactly(ImportDeclaration(path = listOf("App", "Model", "Order"), isWildcard = false))
+        }
+
+        @Test
+        fun `should report an include as a use of the included file's script with its path`() {
+            // Arrange
+            val code = """
+                require_once './lib/helpers.php';
+                include '..\shared\config.php';
+                require "x/view.php";
+                require_once(__DIR__ . '/../lib/boot.php');
+                include dirname(__FILE__) . '/env.php';
+                require '/root/start.php';
+            """.trimIndent()
+
+            // Act
+            val prefixes = analyze(code)
+                .declarations
+                .single()
+                .usedTypes
+                .filter { it.name == "MODULE_SCRIPT" }
+                .map { it.namespacePrefix }
+
+            // Assert
+            assertThat(prefixes).containsExactly(
+                listOf(".", "lib", "helpers.php"),
+                listOf("..", "shared", "config.php"),
+                listOf("x", "view.php"),
+                listOf("..", "lib", "boot.php"),
+                listOf("env.php"),
+                listOf("", "root", "start.php")
             )
         }
 
         @Test
-        fun `should not extract an include of a double-quoted or computed path`() {
+        fun `should not report an include of a computed path`() {
             // Arrange
-            val code = "require \"lib/helpers.php\";\nrequire_once __DIR__ . '/config.php';\nrequire('lib/other.php');"
+            val code = "${'$'}path = 'boot.php';\nrequire ${'$'}path;\nrequire CONFIG_DIR . '/config.php';\nrequire \"${'$'}path/x.php\";"
 
             // Act
-            val result = analyze(code)
+            val usedTypes = analyze(code).declarations.single().usedTypes
 
             // Assert
-            assertThat(result.imports).isEmpty()
+            assertThat(usedTypes.map { it.name }).doesNotContain("MODULE_SCRIPT")
         }
     }
 

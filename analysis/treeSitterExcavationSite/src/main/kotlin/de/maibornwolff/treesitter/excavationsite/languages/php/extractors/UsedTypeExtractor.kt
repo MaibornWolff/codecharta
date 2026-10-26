@@ -10,11 +10,12 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
  * constant PHP may look up globally the global name as fallback. Read are every type (parameter, return, property,
  * `catch`), the base classes and interfaces of a class, an interface, an enum or an anonymous class, instantiations,
  * static calls and properties, constant accesses, traits, attributes, the class of an `instanceof`, function calls and
- * constant reads; left out are `self`, `static`, `parent` and the type keywords, and the names of the functions and
+ * constant reads, and an include as a use of [IncludePaths.INCLUDED_SCRIPT] with the path it names as prefix; left out are `self`, `static`, `parent` and the type keywords, and the names of the functions and
  * classes declared inside the declaration, which are their own.
  */
 internal object UsedTypeExtractor {
     private const val NAME = "name"
+    private const val PATH_SEPARATOR = "/"
     private const val QUALIFIED_NAME = "qualified_name"
     private const val NAMED_TYPE = "named_type"
     private const val ANONYMOUS_CLASS = "anonymous_class"
@@ -35,12 +36,13 @@ internal object UsedTypeExtractor {
     private const val FUNCTION_FIELD = "function"
     private const val FUNCTION_CALL_EXPRESSION = "function_call_expression"
 
-    private val RELEVANT_TYPES = setOf(NAME, QUALIFIED_NAME, NAMED_TYPE, CLASS_CONSTANT_ACCESS_EXPRESSION)
+    private val RELEVANT_TYPES =
+        setOf(NAME, QUALIFIED_NAME, NAMED_TYPE, CLASS_CONSTANT_ACCESS_EXPRESSION) + IncludePaths.INCLUDE_EXPRESSIONS
     private val NAMED_DECLARATIONS =
         setOf("class_declaration", "interface_declaration", "trait_declaration", "enum_declaration", "function_definition")
     private val CLASS_NAMES = setOf(NAME, QUALIFIED_NAME)
 
-    private enum class Kind { CLASS, FUNCTION, CONSTANT }
+    private enum class Kind { CLASS, FUNCTION, CONSTANT, INCLUDE }
 
     // The order of the entries is the order of the used types
     private enum class Role(val usage: TypeUsage, val kind: Kind = Kind.CLASS) {
@@ -58,7 +60,8 @@ internal object UsedTypeExtractor {
         ATTRIBUTE(TypeUsage.USAGE),
         CHECKED_INSTANCE(TypeUsage.USAGE),
         ANONYMOUS_CLASS_HEADER(TypeUsage.USAGE),
-        CALLED_FUNCTION(TypeUsage.USAGE, Kind.FUNCTION)
+        CALLED_FUNCTION(TypeUsage.USAGE, Kind.FUNCTION),
+        INCLUDED_FILE(TypeUsage.USAGE, Kind.INCLUDE)
     }
 
     fun extract(declaration: SyntaxNode, blocks: List<NamespaceBlock>): Set<UsedType> = extract(listOf(declaration), blocks)
@@ -84,6 +87,9 @@ internal object UsedTypeExtractor {
             Kind.CLASS -> names.classPath(written)?.let { usedType(it, role.usage) }
             Kind.FUNCTION -> usedType(names.functionUse(written), role.usage)
             Kind.CONSTANT -> usedType(names.constantUse(written), role.usage)
+            Kind.INCLUDE -> IncludePaths.of(name)?.let {
+                UsedType(IncludePaths.INCLUDED_SCRIPT, namespacePrefix = it.split(PATH_SEPARATOR), usage = role.usage)
+            }
         }
     }
 
@@ -95,6 +101,7 @@ internal object UsedTypeExtractor {
     private fun rolesOf(node: SyntaxNode): List<Pair<Role, SyntaxNode>> = when (node.type) {
         NAME, QUALIFIED_NAME -> listOfNotNull(roleOfName(node)?.let { it to node })
         NAMED_TYPE -> listOf(roleOfNamedType(node) to node)
+        in IncludePaths.INCLUDE_EXPRESSIONS -> listOf(Role.INCLUDED_FILE to node)
         else -> ownersOfReadConstants(node).map { Role.CONSTANT_OWNER to it }
     }
 
