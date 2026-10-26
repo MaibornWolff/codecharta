@@ -181,6 +181,18 @@ class CppDependencyDeclarationTest {
     }
 
     @Test
+    fun `should report nothing for a typedef a macro keeps the parser from reading`() {
+        // Arrange
+        val code = "typedef Foo* FooPtr DEPRECATED;\ntypedef BOX(Foo) Boxed;\ntypedef struct { int x; } Point DEPRECATED;"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.filter { it.parentPath.firstOrNull() != FORWARD_DECLARATION }).isEmpty()
+    }
+
+    @Test
     fun `should report no forward declaration for a class named in the type of a field`() {
         // Arrange
         val code = "struct Nest { struct Roost *held; };"

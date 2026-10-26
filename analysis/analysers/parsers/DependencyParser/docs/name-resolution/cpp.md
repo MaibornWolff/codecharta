@@ -156,7 +156,8 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 
 - The build's include directories (`-I`, `compile_commands.json`, CMake): rule 2 of the include paths stands in.
 - Preprocessor conditions: every `#include` and all code count, under `#if`, `#ifdef` and `#if 0` alike. Macros are
-  not expanded; a type a macro writes is not seen.
+  not expanded; a type a macro writes is not seen, and a typedef a macro keeps the parser from reading
+  (`typedef Foo *FooPtr DEPRECATED;`) declares nothing.
 - Declaration order: a declaration later in the include closure, or later in the same file, counts as well.
 - Declarations in files that are no C or C++ file, such as `.inc` fragments or headers without an extension.
 - Argument-dependent lookup, dependent names in templates (`typename T::Value`), C++20 modules (`import`).
