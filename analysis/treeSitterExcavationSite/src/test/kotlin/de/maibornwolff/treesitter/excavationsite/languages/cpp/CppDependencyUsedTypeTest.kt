@@ -9,6 +9,22 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 class CppDependencyUsedTypeTest {
+    @Test
+    fun `should mark a globally qualified type with a leading scope segment`() {
+        // Arrange
+        val code = "struct U { ::Config config; ::a::b::C deep; a::D relative; };"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.single().usedTypes).containsExactlyInAnyOrder(
+            UsedType(name = "Config", namespacePrefix = listOf("::")),
+            UsedType(name = "C", namespacePrefix = listOf("::", "a", "b")),
+            UsedType(name = "D", namespacePrefix = listOf("a"))
+        )
+    }
+
     @Nested
     inner class Inheritance {
         @Test
