@@ -55,8 +55,11 @@ internal class CppVisibleNames(
         }
         val path = qualifier + written.last()
         if (path in declared) return path
-        return basesOfVisible(qualifier).map { it + written.last() }.firstOrNull { it in declared }
+        return basesOfVisible(qualifier).map { it + written.last() }.firstOrNull { it in declared } ?: memberOf(qualifier)
     }
+
+    // A name below the deepest declaration it reaches that no declaration is, SpeedType::WALKING, is a use of it
+    private fun memberOf(qualifier: List<String>): List<String>? = qualifier.takeIf { it in declared }
 
     private fun lookup(name: String, scope: List<String>, isMeant: (List<String>) -> Boolean): List<String>? {
         for (level in chainOf(scope)) {
