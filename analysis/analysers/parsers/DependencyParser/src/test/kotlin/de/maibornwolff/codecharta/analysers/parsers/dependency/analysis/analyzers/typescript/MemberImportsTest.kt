@@ -74,6 +74,22 @@ class MemberImportsTest {
     }
 
     @Test
+    fun `should write a use of a name an import of no project file binds as the path of that import`() {
+        // Arrange
+        val memberImports = MemberImports(analysisRoot)
+        val named = ImportDeclaration(path = listOf("@angular", "core", "Component"), isWildcard = false, kind = ImportKind.MEMBER)
+        val namespace = ImportDeclaration(path = listOf("three"), isWildcard = true, bindingName = "THREE")
+
+        // Act
+        memberImports.bindOutsideProject(named, Path(listOf("@angular", "core", "Component")))
+        memberImports.bindOutsideProject(namespace, Path(listOf("three")))
+        val nodes = memberImports.rewrite(listOf(node("Component", "THREE.Mesh")))
+
+        // Assert
+        assertThat(nodes.single().usedTypes.map { it.name }).containsExactly("@angular.core.Component", "three.Mesh")
+    }
+
+    @Test
     fun `should write a use of a renamed import under its local name as the path of the export it names`() {
         // Arrange
         val model = File(analysisRoot, "model.ts").apply { writeText("export class Model {}") }

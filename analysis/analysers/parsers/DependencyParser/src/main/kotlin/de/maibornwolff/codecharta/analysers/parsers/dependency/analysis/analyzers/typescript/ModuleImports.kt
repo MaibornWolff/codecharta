@@ -30,6 +30,11 @@ internal class ModuleImports(private val fileInfo: FileInfo) {
         return Dependency(path = Path(module.parts + importedName), isWildcard = import.isWildcard)
     }
 
+    /** Binds the name an import of no project file binds to the [path] its dependency is written as. */
+    fun bindOutsideProject(import: ImportDeclaration, path: Path) {
+        memberImports?.bindOutsideProject(import, path)
+    }
+
     /** The nodes with each use of an imported binding written as the full path of what it names. */
     fun rewrite(nodes: List<Node>): List<Node> = memberImports?.rewrite(nodes) ?: nodes
 

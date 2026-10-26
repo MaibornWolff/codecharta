@@ -117,6 +117,7 @@ open class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInf
     private fun dependenciesByWrittenPath(import: ImportDeclaration): Set<Dependency> {
         val resolvedPath = resolveImportPath(import.defaultImportPath())
         val primary = Dependency(path = Path(resolvedPath), isWildcard = import.isWildcard)
+        moduleImports.bindOutsideProject(import, primary.path)
         val index = buildIndexDependency(resolvedPath, import.isWildcard)
         return if (index != null) setOf(primary, index) else setOf(primary)
     }

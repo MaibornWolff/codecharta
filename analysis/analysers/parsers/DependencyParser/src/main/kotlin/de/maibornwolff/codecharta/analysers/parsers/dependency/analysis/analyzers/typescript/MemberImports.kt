@@ -37,6 +37,17 @@ internal class MemberImports(private val analysisRoot: File) {
         return (module + ownName).also { targetByBinding[boundNameOf(import, importedName)] = Target(it, moduleFile = null) }
     }
 
+    /** Binds the name an import of no project file binds, of a library or a `declare module`, to the [path] it is written as. */
+    fun bindOutsideProject(import: ImportDeclaration, path: Path) {
+        val importedName = import.path.lastOrNull()
+        val boundName = if (ImportedModules.namesMember(import) && importedName != null && importedName != TSE_DEFAULT_EXPORT_NAME) {
+            boundNameOf(import, importedName)
+        } else {
+            import.bindingName
+        }
+        boundName?.let { targetByBinding[it] = Target(path, moduleFile = null) }
+    }
+
     // `import { Model as Base }` binds `Base`; a re-export binds no name, its use is the name it re-exports
     private fun boundNameOf(import: ImportDeclaration, importedName: String): String =
         if (import.kind == ImportKind.MEMBER) import.bindingName ?: importedName else importedName

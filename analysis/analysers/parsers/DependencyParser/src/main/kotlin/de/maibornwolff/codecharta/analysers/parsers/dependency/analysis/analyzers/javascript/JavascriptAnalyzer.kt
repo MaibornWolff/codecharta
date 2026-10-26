@@ -62,6 +62,7 @@ class JavascriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         }
         val path = resolveImportPath(import.defaultImportPath())
         val resolvedPath = if (path.isEmpty()) path else path.dropLast(1) + localExportName(path.last())
+        memberImports?.bindOutsideProject(import, Path(resolvedPath))
         return setOf(Dependency(path = Path(resolvedPath), isWildcard = import.isWildcard))
     }
 
