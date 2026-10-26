@@ -1,0 +1,94 @@
+---
+title: "cc.json file format"
+description: "Integrate your own tools with CodeCharta using the cc.json interchange format, its JSON Schema and validation tools."
+---
+
+import { Code } from 'astro:components';
+import example from '../../../../assets/examples/minimal.cc.json?raw';
+import { ccJsonVersion } from '../../../../lib/currentCcJsonVersion';
+
+The `.cc.json` file format is CodeCharta's data interchange API. Generate files from your own tools to open them in
+the visualization or process them with the [CodeCharta Shell](/docs/analysis/codecharta-shell). A `.cc.json.gz`
+file contains the same JSON, compressed with gzip.
+
+## Structure
+
+A 2.x file has three top-level properties:
+
+| Property | Purpose |
+| --- | --- |
+| `meta` | Project name, format version, checksum and optional commit hash. |
+| `files` | A file tree with exactly one root folder and stable IDs for files and folders. |
+| `lenses` | Analysis results, such as metrics, dependencies and domain words, joined to the file tree by node ID. |
+
+Metrics live in lenses, not on file nodes. When producing files, follow the specification's rules for node IDs and
+checksums so that CodeCharta can combine results from different tools reliably.
+
+### Lenses
+
+| Lens | Purpose and availability |
+| --- | --- |
+| `metrics` | Per-node metric values, attribute descriptions and aggregation types. |
+| `dependency` | Edges between files, dependency levels and optional declarations, namespaces and declaration-level edges. |
+| `domain` | Per-node word frequencies and optional TF-IDF scores. |
+
+Unused lenses can be omitted. Unknown lenses are preserved when cc.json files are read and written.
+Operations that cannot safely update them may reject the file.
+
+## Minimal example
+
+Download [minimal.cc.json](/examples/minimal.cc.json) and open it in the visualization. It describes `hello.ts` with ten lines of real code
+(`rloc`) and `helper.ts` with five. The dependency lens records that `hello.ts` depends on `helper.ts` once.
+It uses format 2.1 for the dependency graph's node levels.
+
+<Code code={example} lang="json" />
+
+The edge points from the file that uses another file (`fromId`) to the file it uses (`toId`). Its `dependencies`
+attribute counts the code-level references. The `nodes` map places files and folders in the dependency graph:
+`helper.ts` is at level 0 and `hello.ts` at level 1 because it depends on `helper.ts`. Levels are local to siblings,
+not global ranks. The synthetic root is at level 0 in its own scope. The optional logical graph (declarations,
+namespaces and declaration-level edges) is omitted here.
+
+### More examples
+
+For additional 2.x examples, see these files in the repository:
+
+- [Metrics and edges](https://github.com/MaibornWolff/codecharta/blob/main/analysis/model/src/test/resources/example.cc.json).
+- [Domain words alongside metrics and edges](https://github.com/MaibornWolff/codecharta/blob/main/analysis/analysers/filters/StructureModifier/src/test/resources/sample_project_with_domain.cc.json).
+
+The [example gallery](/examples) also has larger maps from real projects, including JUnit, Apache HTTP Server and
+NetBeans. Those showcase files use the legacy 1.x format: the visualization opens them directly, but run
+[`ccsh convert`](/docs/filter/convert) before using them with other shell commands.
+
+## Schema and specification
+
+Use these references when implementing an integration:
+
+- [JSON Schema](https://github.com/MaibornWolff/codecharta/blob/main/dev_docs/cc-json-2.0.schema.json)
+  (draft-07): field definitions, types and required properties.
+- [Format specification](https://github.com/MaibornWolff/codecharta/blob/main/dev_docs/cc-json-2.0-format.md):
+  examples, stable IDs, checksums, lens semantics and merge behavior.
+- [Schema changelog](https://github.com/MaibornWolff/codecharta/blob/main/CC_JSON_SCHEMA_CHANGELOG.md):
+  changes between format versions.
+
+The schema defines the structure; the specification also describes semantic rules that JSON Schema cannot express.
+These references are maintained in the repository rather than duplicated on this page.
+
+## Validate your output
+
+Run the [Validation Tool](/docs/filter/validation-tool) before opening or distributing generated files:
+
+```bash
+ccsh check minimal.cc.json
+```
+
+It checks the schema and references between analysis results and declared nodes. Gzip-compressed files are accepted too.
+
+## Compatibility
+
+The shell currently writes format **{ccJsonVersion}** and reads **2.x** files. Minor versions add optional fields; breaking changes
+require a new major version. Older tools can reject newer files that use fields they do not recognize, so update
+CodeCharta when consuming those files.
+
+The visualization also opens legacy 1.x files. For shell commands, upgrade them first with
+[`ccsh convert`](/docs/filter/convert). See [Versioning](/docs/about/versioning) for CodeCharta's release policy.

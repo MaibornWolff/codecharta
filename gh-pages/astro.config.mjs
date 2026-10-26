@@ -187,6 +187,13 @@ export default defineConfig({
 					],
 				},
 				{
+					label: 'Integrations',
+					items: [
+						{ label: 'Overview', slug: 'docs/integrations/overview' },
+						'docs/integrations/file-format',
+					],
+				},
+				{
 					label: 'About',
 					items: [
 						'docs/about/license',
