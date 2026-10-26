@@ -25,6 +25,40 @@ class CppDependencyUsedTypeTest {
         )
     }
 
+    @Test
+    fun `should report no use of a template parameter`() {
+        // Arrange
+        val code = "template <class Creature, typename U = int, class... Rest> struct Box { Creature c; U u; Speed s; };"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactly("Speed")
+    }
+
+    @Test
+    fun `should report no use of a class the enclosing function declares before`() {
+        // Arrange
+        val code = """
+            struct User {
+                int count() {
+                    Node before{0};
+                    struct Node { int local; };
+                    Node node{1};
+                    return node.local;
+                }
+            };
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.map { it.name }).containsExactly("User")
+        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactlyInAnyOrder("Node", "int")
+    }
+
     @Nested
     inner class Inheritance {
         @Test
@@ -233,7 +267,7 @@ class CppDependencyUsedTypeTest {
             // Assert
             val container = result.declarations.single { it.name == "Container" }
             assertThat(container.usedTypes).containsExactly(
-                UsedType(name = "Foo", genericTypes = listOf(UsedType(name = "T")))
+                UsedType(name = "Foo")
             )
         }
 
@@ -252,8 +286,8 @@ class CppDependencyUsedTypeTest {
             // Assert
             val container = result.declarations.single { it.name == "Container" }
             assertThat(container.usedTypes).containsExactlyInAnyOrder(
-                UsedType(name = "Foo", genericTypes = listOf(UsedType(name = "T"))),
-                UsedType(name = "Bar", genericTypes = listOf(UsedType(name = "T")))
+                UsedType(name = "Foo"),
+                UsedType(name = "Bar")
             )
         }
 
@@ -272,8 +306,8 @@ class CppDependencyUsedTypeTest {
             // Assert
             val container = result.declarations.single { it.name == "Container" }
             assertThat(container.usedTypes).containsExactlyInAnyOrder(
-                UsedType(name = "Foo", genericTypes = listOf(UsedType(name = "T"))),
-                UsedType(name = "Bar", genericTypes = listOf(UsedType(name = "T")))
+                UsedType(name = "Foo"),
+                UsedType(name = "Bar")
             )
         }
     }

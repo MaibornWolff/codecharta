@@ -1,5 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations
 
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes.CppLocalNames
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes.CppTypeHelper
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
@@ -9,8 +10,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
 /**
  * The type aliases of a file, `using Entity = CreatureEntity;` and `typedef struct Size Area;`, reported below [ALIAS]
- * plus their namespaces and enclosing classes, each using the type it names. A typedef of a struct of its own name and
- * one of a function pointer is none.
+ * plus their namespaces and enclosing classes, each using the type it names. A typedef of a struct of its own name, one
+ * of a function pointer and an alias declared in a function body are none.
  */
 internal object AliasDeclarationFinder {
     const val ALIAS = "ALIAS"
@@ -25,6 +26,7 @@ internal object AliasDeclarationFinder {
 
     fun find(rootNode: SyntaxNode): List<Declaration> = TreeTraversal
         .findAllDescendantsOfType(rootNode, ALIAS_DECLARATION, TYPE_DEFINITION)
+        .filterNot { CppLocalNames.isInFunction(it) }
         .flatMap { if (it.type == ALIAS_DECLARATION) listOfNotNull(fromUsing(it)) else fromTypedef(it) }
 
     private fun fromUsing(node: SyntaxNode): Declaration? {

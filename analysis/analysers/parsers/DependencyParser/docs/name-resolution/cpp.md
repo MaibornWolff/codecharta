@@ -121,8 +121,8 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 | Include paths 3: system header | `c/spec-library-include` | ok |
 | Visibility, decisions 1 and 6: include closure, copies | `c/spec-include-closure` | ok |
 | Visibility: transitive includes | `c/spec-transitive-include` | ok |
-| 1. template parameter | `cpp/spec-template-parameter` | gap |
-| 1, decision 9: class declared in a function | `cpp/spec-local-type` | gap |
+| 1. template parameter | `cpp/spec-template-parameter` | ok |
+| 1, decision 9: class declared in a function | `cpp/spec-local-type` | ok |
 | 2. member type before the namespace | `cpp/spec-member-type` | ok |
 | 2. member type of an enclosing class | `cpp/spec-enclosing-class-member-type` | ok |
 | 2. inherited member type | `cpp/spec-inherited-member-type` | ok |

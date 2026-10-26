@@ -37,7 +37,8 @@ internal object CppTypeHelper {
         }
     }
 
-    private fun extractLeafName(node: SyntaxNode): UsedType = UsedType(name = node.text.trim())
+    private fun extractLeafName(node: SyntaxNode): UsedType? =
+        node.text.trim().takeUnless { CppLocalNames.isLocal(node, it) }?.let { UsedType(name = it) }
 
     fun extractTypeFromTypeField(node: SyntaxNode): UsedType? {
         val typeField = node.getChildByFieldName(TYPE_FIELD).orNull()
@@ -57,6 +58,7 @@ internal object CppTypeHelper {
         // template_function (name=identifier, used for function-call forms and, per
         // tree-sitter-cpp, also for nested template arguments like C<T> inside list<C<T>>).
         val nameNode = templateNode.children().firstOrNull { it.type in TEMPLATE_NAME_TYPES } ?: return null
+        if (CppLocalNames.isLocal(templateNode, nameNode.text.trim())) return null
         val argList = templateNode.children().firstOrNull { it.type == TEMPLATE_ARGUMENT_LIST }
         val genericTypes = argList
             ?.namedChildren()
