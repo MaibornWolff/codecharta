@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.php.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
@@ -11,15 +10,14 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
  * constant PHP may look up globally the global name as fallback. Read are every type (parameter, return, property,
  * `catch`), the base classes and interfaces of a class, an interface, an enum or an anonymous class, instantiations,
  * static calls and properties, constant accesses, traits, attributes, the class of an `instanceof`, function calls and
- * constant reads; left out are `self`, `static`, `parent` and the type keywords.
+ * constant reads; left out are `self`, `static`, `parent` and the type keywords, and the names of the functions and
+ * classes declared inside the declaration, which are their own.
  */
 internal object UsedTypeExtractor {
     private const val NAME = "name"
     private const val QUALIFIED_NAME = "qualified_name"
     private const val NAMED_TYPE = "named_type"
-    private const val CLASS_DECLARATION = "class_declaration"
     private const val ANONYMOUS_CLASS = "anonymous_class"
-    private const val DECLARATION_LIST = "declaration_list"
     private const val PROPERTY_DECLARATION = "property_declaration"
     private const val USE_DECLARATION = "use_declaration"
     private const val BASE_CLAUSE = "base_clause"
@@ -37,7 +35,9 @@ internal object UsedTypeExtractor {
     private const val FUNCTION_FIELD = "function"
     private const val FUNCTION_CALL_EXPRESSION = "function_call_expression"
 
-    private val RELEVANT_TYPES = arrayOf(NAME, QUALIFIED_NAME, NAMED_TYPE, CLASS_CONSTANT_ACCESS_EXPRESSION)
+    private val RELEVANT_TYPES = setOf(NAME, QUALIFIED_NAME, NAMED_TYPE, CLASS_CONSTANT_ACCESS_EXPRESSION)
+    private val NAMED_DECLARATIONS =
+        setOf("class_declaration", "interface_declaration", "trait_declaration", "enum_declaration", "function_definition")
     private val CLASS_NAMES = setOf(NAME, QUALIFIED_NAME)
 
     private enum class Kind { CLASS, FUNCTION, CONSTANT }
@@ -62,8 +62,8 @@ internal object UsedTypeExtractor {
     }
 
     fun extract(declaration: SyntaxNode, blocks: List<NamespaceBlock>): Set<UsedType> {
-        val namesByRole = TreeTraversal
-            .findAllDescendantsOfType(declaration, *RELEVANT_TYPES)
+        val namesByRole = ownNodes(declaration)
+            .filter { it.type in RELEVANT_TYPES }
             .flatMap { node -> rolesOf(node) }
             .groupBy({ (role, _) -> role }, { (_, name) -> name })
         val usedTypes = Role.entries.flatMap { role ->
@@ -103,7 +103,7 @@ internal object UsedTypeExtractor {
                 Role.STATIC_MEMBER_OWNER.takeIf { parent.getChildByFieldName(SCOPE_FIELD) == name }
             ATTRIBUTE -> Role.ATTRIBUTE
             BINARY_EXPRESSION -> if (ConstantReads.isInstanceofClass(name)) Role.CHECKED_INSTANCE else Role.CONSTANT_READ
-            USE_DECLARATION -> Role.USED_TRAIT.takeIf { isMemberOfClass(parent) }
+            USE_DECLARATION -> Role.USED_TRAIT
             FUNCTION_CALL_EXPRESSION -> Role.CALLED_FUNCTION.takeIf { parent.getChildByFieldName(FUNCTION_FIELD) == name }
             else -> Role.CONSTANT_READ.takeIf { ConstantReads.isRead(name) }
         }
@@ -124,9 +124,21 @@ internal object UsedTypeExtractor {
 
     private fun isOfAnonymousClass(clause: SyntaxNode): Boolean = clause.parent.type == ANONYMOUS_CLASS
 
-    private fun isMemberOfClass(member: SyntaxNode): Boolean {
-        val memberList = member.parent
-        return memberList.type == DECLARATION_LIST && memberList.parent.type == CLASS_DECLARATION
+    // The nodes below a declaration without those of the named declarations inside it, which are leaves of their own
+    private fun ownNodes(declaration: SyntaxNode): Sequence<SyntaxNode> = sequence {
+        val openSiblingLists = ArrayDeque<Iterator<SyntaxNode>>()
+        openSiblingLists.addLast(declaration.children().iterator())
+        while (openSiblingLists.isNotEmpty()) {
+            val siblings = openSiblingLists.last()
+            if (!siblings.hasNext()) {
+                openSiblingLists.removeLast()
+                continue
+            }
+            val node = siblings.next()
+            if (node.type in NAMED_DECLARATIONS) continue
+            yield(node)
+            openSiblingLists.addLast(node.children().iterator())
+        }
     }
 
     // In `Order::LIMIT` both sides are names: the first is the owner

@@ -722,15 +722,29 @@ class PhpDependencyTest {
         }
 
         @Test
-        fun `should give a trait no used types`() {
+        fun `should give a trait the names its body uses, the traits it uses included`() {
             // Arrange
-            val code = "trait Auditable {\n    function audit(Logger ${'$'}logger) {}\n}"
+            val code = "trait Auditable {\n    use Clock;\n    function audit(Logger ${'$'}logger) {}\n}"
 
             // Act
             val usedTypes = usedTypesOf(code, "Auditable")
 
             // Assert
-            assertThat(usedTypes).isEmpty()
+            assertThat(usedTypes).containsExactly(UsedType("Logger", usage = TypeUsage.ARGUMENT), UsedType("Clock"))
+        }
+
+        @Test
+        fun `should leave the names of a function declared inside a function to that function`() {
+            // Arrange
+            val code = "function outer(Outer ${'$'}o) {\n    function inner(Inner ${'$'}i) {}\n}"
+
+            // Act
+            val typesOfOuter = usedTypesOf(code, "outer")
+            val typesOfInner = usedTypesOf(code, "inner")
+
+            // Assert
+            assertThat(typesOfOuter).containsExactly(UsedType("Outer", usage = TypeUsage.ARGUMENT))
+            assertThat(typesOfInner).containsExactly(UsedType("Inner", usage = TypeUsage.ARGUMENT))
         }
     }
 }
