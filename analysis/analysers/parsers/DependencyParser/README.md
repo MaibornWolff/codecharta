@@ -67,8 +67,8 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
 - **`namespace`** is written only where the language has packages apart from its files — Java, Kotlin,
   C#, PHP and C++ — and there only for a declaration that sits in one. Everywhere else the logical
   path is the re-encoded file path, so the leaf carries no `namespace` and no namespace is listed: the
-  file tree already is that hierarchy. A C or C++ declaration outside every namespace has its name alone as logical
-  path, as the compiler names it (`::Point`). A nested declaration is a leaf of its own in the package of the
+  file tree already is that hierarchy. A C, C++ or PHP declaration outside every namespace has its name alone as
+  logical path, as the compiler names it (`::Point`, `\Util`). A nested declaration is a leaf of its own in the package of the
   declaration around it, with only its own uses as dependencies; the schema's `parent` is not written yet.
 - **`namespaces`** lists the packages with their level and their `parent`, the package containing them.
   The hierarchy comes from `parent`, never from the dots of a key.
@@ -147,7 +147,8 @@ edges on common project layouts; every item below is a bug in DependaCharta that
   expanded; DependaCharta probes for `user_service.ts` and gives up.
 - A Vue component pairing a plain `<script>` with a `<script setup>` has both blocks analysed.
 - An explicit import wins over a same-package type of the same name, as Java's single-type import does.
-- Every PHP grouped `use` contributes, not only the first in the file.
+- A PHP name is resolved as the compiler does, through the `use` declarations of its own namespace block, every member
+  of a grouped `use` included; an include is a use of the included file's top-level code.
 - A Module Federation producer is looked up in name order, preferring a federation-name match over a
   directory-name match, so the result does not depend on how the file system lists directories.
 - A file that fails to parse or exceeds `--file-timeout` is reported in a warning per cause naming the files;
