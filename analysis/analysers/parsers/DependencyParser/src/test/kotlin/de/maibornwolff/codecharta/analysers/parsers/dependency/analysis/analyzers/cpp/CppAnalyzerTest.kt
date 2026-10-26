@@ -121,11 +121,10 @@ class CppAnalyzerTest {
     }
 
     @Test
-    fun `should set path of node to file path with file name if there is no namespace it resides in`() {
+    fun `should set the path of a node outside every namespace to its name alone`() {
         // Arrange
         val cppCode = """
             class Foo {
-                // This class is just a placeholder to test the include statement
             };
         """.trimIndent()
 
@@ -134,7 +133,7 @@ class CppAnalyzerTest {
             CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./foo/bar/classes/DummyClasses.cpp", cppCode)).analyze()
 
         // Assert
-        assertThat(report.nodes.first().pathWithName).isEqualTo(Path.fromStringWithDots("foo.bar.classes.DummyClasses_cpp.Foo"))
+        assertThat(report.nodes.first().pathWithName).isEqualTo(Path("Foo"))
     }
 
     @Test
@@ -227,9 +226,8 @@ class CppAnalyzerTest {
         assertThat(fooNode.pathWithName.withoutName().last()).isEqualTo("B")
     }
 
-    @org.junit.jupiter.api.Disabled(".h and .cpp declarations don't merge — documented for future fix")
     @Test
-    fun `should produce matching pathWithName for class declared in header and its implementation file`() {
+    fun `should give a global class declared in a header and its implementation file the same path`() {
         // Arrange — header declares the class; .cpp defines an out-of-class method for it.
         val headerCode = """
             class Executor {
@@ -247,9 +245,7 @@ class CppAnalyzerTest {
         // Assert
         val headerExecutor = headerReport.nodes.single { it.name() == "Executor" }
         val implExecutor = implReport.nodes.single { it.name() == "Executor" }
-        assertThat(implExecutor.pathWithName)
-            .`as`("header and implementation files must produce the same pathWithName so ProcessingPipeline.mergeDuplicates can unite them")
-            .isEqualTo(headerExecutor.pathWithName)
+        assertThat(implExecutor.pathWithName).isEqualTo(headerExecutor.pathWithName)
     }
 
     @Test

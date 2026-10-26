@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.cpp
 
-import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
@@ -11,9 +10,6 @@ import java.util.concurrent.ConcurrentHashMap
  * as text, as only the text tells `"p"` from `<p>`.
  */
 internal class CppIncludes private constructor(private val analysisRoot: File, private val allFiles: List<List<String>>) {
-    /** The C and C++ files below the root, in path order. */
-    val files: List<List<String>> = allFiles.filter { it.last().substringAfterLast('.', "").lowercase() in CPP_SUFFIXES }
-
     private val fileSet = allFiles.toHashSet()
     private val filesByName: Map<String, List<List<String>>> = allFiles.groupBy { it.last() }
     private val includedByFile = ConcurrentHashMap<List<String>, List<List<String>>>()
@@ -73,7 +69,6 @@ internal class CppIncludes private constructor(private val analysisRoot: File, p
         private const val PARENT_FOLDER = ".."
         private const val HIDDEN_PREFIX = "."
         private val SKIPPED_FOLDERS = setOf("node_modules")
-        private val CPP_SUFFIXES = SupportedLanguage.CPP.suffixes.mapTo(HashSet()) { it.lowercase() }
         private val includesByRoot = ConcurrentHashMap<String, CppIncludes>()
 
         /** The includes of [analysisRoot], read once per root, as every C and C++ file of an analysis asks for them. */

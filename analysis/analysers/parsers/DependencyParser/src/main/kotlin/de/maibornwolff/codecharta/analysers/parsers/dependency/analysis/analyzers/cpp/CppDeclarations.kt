@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.cpp
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import java.io.File
@@ -12,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap
 internal class CppDeclarations private constructor(private val analysisRoot: File, private val includes: CppIncludes) {
     private val factsByFile = ConcurrentHashMap<List<String>, CppFileFacts>()
     private val visibleNamesByFile = ConcurrentHashMap<List<String>, CppVisibleNames>()
-    private val bodyFilesByPath: Map<List<String>, List<List<String>>> by lazy { readBodyFiles() }
 
     /** The names [file] sees, with the bases of a class looked up in the file that declares its body. */
     fun visibleNamesOf(file: List<String>): CppVisibleNames = visibleNamesByFile[file] ?: run {
@@ -25,28 +25,24 @@ internal class CppDeclarations private constructor(private val analysisRoot: Fil
         visibleNamesByFile.putIfAbsent(file, names) ?: names
     }
 
-    /** The files of the closure of [file] that declare the body of [path], in include order. */
-    fun bodyFilesInClosure(file: List<String>, path: List<String>): List<List<String>> =
-        includes.closureOf(file).filter { closureFile -> factsOf(closureFile).declarations.any { it.path == path && it.hasBody } }
-
-    /** Every file below the root that declares the body of [path], in path order. */
-    fun bodyFilesOf(path: List<String>): List<List<String>> = bodyFilesByPath[path].orEmpty()
-
     private fun bodyFileIn(closureFiles: Set<List<String>>, classPath: List<String>): List<String>? =
         closureFiles.firstOrNull { closureFile -> factsOf(closureFile).declarations.any { it.path == classPath && it.hasBody } }
 
+    // Only C and C++ files declare anything, as the run analyses no other (cpp.md, decision 13)
     private fun factsOf(file: List<String>): CppFileFacts = factsByFile[file] ?: run {
-        val source = analysisRoot.resolve(file.joinToString(File.separator))
-        val facts = CppFileFacts.of(TreeSitterDependencies.analyze(source.readText(), Language.CPP))
+        val facts = if (isCppFile(file)) readFacts(file) else NO_FACTS
         factsByFile.putIfAbsent(file, facts) ?: facts
     }
 
-    private fun readBodyFiles(): Map<List<String>, List<List<String>>> = includes.files
-        .flatMap { file -> factsOf(file).declarations.filter { it.hasBody }.map { it.path to file } }
-        .groupBy({ it.first }, { it.second })
-        .mapValues { (_, files) -> files.distinct() }
+    private fun readFacts(file: List<String>): CppFileFacts {
+        val source = analysisRoot.resolve(file.joinToString(File.separator))
+        return CppFileFacts.of(TreeSitterDependencies.analyze(source.readText(), Language.CPP))
+    }
+
+    private fun isCppFile(file: List<String>): Boolean = SupportedLanguage.ofFileName(file.last()) == SupportedLanguage.CPP
 
     companion object {
+        private val NO_FACTS = CppFileFacts(emptyList(), emptyList(), emptyList())
         private val declarationsByRoot = ConcurrentHashMap<String, CppDeclarations>()
 
         /** The declarations of [analysisRoot], read once per root, as every C and C++ file of an analysis asks for them. */
