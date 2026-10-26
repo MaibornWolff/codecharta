@@ -298,6 +298,104 @@ class PhpDependencyTest {
     }
 
     @Nested
+    inner class NameResolution {
+        private fun pathsOf(code: String, declarationName: String): List<List<String>> =
+            usedTypesOf(code, declarationName).map { it.namespacePrefix + it.name.substringAfterLast("\\") }
+
+        @Test
+        fun `should resolve an unqualified class name in the current namespace`() {
+            // Arrange
+            val code = "namespace Game\\Model;\nclass Horse {\n    public Speed ${'$'}speed;\n}"
+
+            // Act
+            val paths = pathsOf(code, "Horse")
+
+            // Assert
+            assertThat(paths).containsExactly(listOf("Game", "Model", "Speed"))
+        }
+
+        @Test
+        fun `should resolve a qualified class name through the namespace import of its first segment`() {
+            // Arrange
+            val code = "namespace Game\\App;\nuse Game\\Domain\\Model;\nclass Util {\n    public Model\\Creature ${'$'}creature;\n}"
+
+            // Act
+            val paths = pathsOf(code, "Util")
+
+            // Assert
+            assertThat(paths).containsExactly(listOf("Game", "Domain", "Model", "Creature"))
+        }
+
+        @Test
+        fun `should resolve a qualified class name without an import below the current namespace`() {
+            // Arrange
+            val code = "namespace Game\\App;\nclass Util {\n    public Model\\Creature ${'$'}creature;\n}"
+
+            // Act
+            val paths = pathsOf(code, "Util")
+
+            // Assert
+            assertThat(paths).containsExactly(listOf("Game", "App", "Model", "Creature"))
+        }
+
+        @Test
+        fun `should resolve a name below the namespace keyword in the current namespace`() {
+            // Arrange
+            val code = "namespace Game\\App;\nclass Box {\n    public namespace\\Sub\\Tool ${'$'}tool;\n}"
+
+            // Act
+            val paths = pathsOf(code, "Box")
+
+            // Assert
+            assertThat(paths).containsExactly(listOf("Game", "App", "Sub", "Tool"))
+        }
+
+        @Test
+        fun `should resolve a member of a group import by its alias to the namespace of the group`() {
+            // Arrange
+            val code = "namespace Game\\App;\nuse Game\\Model\\{Creature, Speed as Pace};\nclass Herd {\n    public Pace ${'$'}pace;\n}"
+
+            // Act
+            val namespaces = usedTypesOf(code, "Herd").map { it.namespacePrefix }
+
+            // Assert
+            assertThat(namespaces).containsExactly(listOf("Game", "Model"))
+        }
+
+        @Test
+        fun `should resolve a name only through the imports of its own namespace block`() {
+            // Arrange
+            val code = """
+                namespace Shop;
+                use Shop\Model\Item;
+                class Cart {}
+                namespace Admin;
+                class Panel {
+                    public Item ${'$'}item;
+                }
+            """.trimIndent()
+
+            // Act
+            val paths = pathsOf(code, "Panel")
+
+            // Assert
+            assertThat(paths).containsExactly(listOf("Admin", "Item"))
+        }
+
+        @Test
+        fun `should give the own class and a type keyword no namespace`() {
+            // Arrange
+            val code = "namespace Game;\nclass Horse {\n    function same(): self {}\n}"
+
+            // Act
+            val usedTypes = usedTypesOf(code, "Horse")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(UsedType("self", usage = TypeUsage.RETURN_VALUE))
+        }
+    }
+
+    @Nested
     inner class UsedTypeExtraction {
         @Test
         fun `should extract the used types of a class by kind of usage in a fixed order`() {
@@ -365,7 +463,7 @@ class PhpDependencyTest {
         }
 
         @Test
-        fun `should extract a qualified return type as written`() {
+        fun `should extract a qualified return type as written with the namespace it means`() {
             // Arrange
             val code = "function latest(): \\App\\Models\\Order {}"
 
@@ -373,11 +471,13 @@ class PhpDependencyTest {
             val usedTypes = usedTypesOf(code, "latest")
 
             // Assert
-            assertThat(usedTypes).containsExactly(UsedType("\\App\\Models\\Order", usage = TypeUsage.RETURN_VALUE))
+            assertThat(usedTypes).containsExactly(
+                UsedType("\\App\\Models\\Order", namespacePrefix = listOf("App", "Models"), usage = TypeUsage.RETURN_VALUE)
+            )
         }
 
         @Test
-        fun `should replace an alias by the name it stands for`() {
+        fun `should replace an alias by the name it stands for in the namespace it imports`() {
             // Arrange
             val code = "use App\\Models\\Order as Purchase;\nfunction latest(): Purchase {}"
 
@@ -385,7 +485,9 @@ class PhpDependencyTest {
             val usedTypes = usedTypesOf(code, "latest")
 
             // Assert
-            assertThat(usedTypes).containsExactly(UsedType("Order", usage = TypeUsage.RETURN_VALUE))
+            assertThat(
+                usedTypes
+            ).containsExactly(UsedType("Order", namespacePrefix = listOf("App", "Models"), usage = TypeUsage.RETURN_VALUE))
         }
 
         @Test
@@ -403,7 +505,7 @@ class PhpDependencyTest {
 
             // Assert
             assertThat(typesOfIsFull).containsExactly(
-                UsedType("MAXIMUM", usage = TypeUsage.CONSTANT_ACCESS),
+                UsedType("MAXIMUM", namespacePrefix = listOf("App", "Limits"), usage = TypeUsage.CONSTANT_ACCESS),
                 UsedType("Cart", usage = TypeUsage.ARGUMENT)
             )
             assertThat(typesOfIsEmpty).containsExactly(UsedType("Cart", usage = TypeUsage.ARGUMENT))
@@ -420,7 +522,7 @@ class PhpDependencyTest {
             // Assert
             assertThat(usedTypes).containsExactly(
                 UsedType("Order", usage = TypeUsage.CONSTANT_ACCESS),
-                UsedType("Order", usage = TypeUsage.RETURN_VALUE)
+                UsedType("Order", namespacePrefix = listOf("App", "Reconstruction"), usage = TypeUsage.RETURN_VALUE)
             )
         }
 

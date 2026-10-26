@@ -413,9 +413,9 @@ derived (global namespace path, declarations in blocks, script leaf, docblocks).
    known-gaps.md and the spec table from `scratch/pc-php/`)
 3. [x] refactor: PHP gets name rules of its own (`PhpNameRules`), the default ones for now
 4. [x] decision 5 changed to exact case (spec, probe `spec-exact-case`)
-5. [ ] TSE: namespace blocks; each declaration carries its block's namespace as parent path, imports per block
+5. [x] TSE: namespace blocks; each declaration carries its block's namespace as parent path, imports per block
    (`NamespaceBlocks`, `PhpImports`); no output change
-6. [ ] TSE: every name read today carries the namespace it resolves to (`PhpNames`) as prefix; no output change
+6. [x] TSE: every name read today carries the namespace it resolves to (`PhpNames`) as prefix; no output change
 7. [ ] the switch: declarations at namespace plus name (global: the name, decision 6), uses written as full paths,
    `PhpNameRules` exact; the old heuristics and import dependencies go
 8. [ ] functions and constants: calls and constant reads are uses with the global fallback; `define` with a namespace
