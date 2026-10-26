@@ -1,0 +1,3 @@
+# cpp.md, declarations, decision 7: a typedef of the same name means the struct
+file box.h -> size.h
+leaf box.h#Box -> size.h#Size

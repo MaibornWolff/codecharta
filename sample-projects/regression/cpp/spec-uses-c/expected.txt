@@ -1,0 +1,3 @@
+# README.md, rule 1, cpp.md, C and C++: a C++ name means a C declaration
+file shape.hpp -> point.h
+leaf shape.hpp#Shape -> point.h#Point

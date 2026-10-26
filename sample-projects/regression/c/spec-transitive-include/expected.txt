@@ -1,0 +1,3 @@
+# cpp.md, visibility: a file sees what its includes include
+file app/a.h -> lib/c.h
+leaf app/a.h#A -> lib/c.h#Leaf

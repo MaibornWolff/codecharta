@@ -1,0 +1,3 @@
+# cpp.md, qualified name, decision 10: the qualifying class is no dependency
+file invoice.hpp -> order.hpp
+leaf invoice.hpp#Invoice -> order.hpp#Line

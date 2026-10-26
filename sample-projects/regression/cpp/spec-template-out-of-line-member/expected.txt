@@ -1,0 +1,5 @@
+# cpp.md, declarations, decision 8: an out-of-line template member is an implementation part
+file pool_impl.hpp -> counter.hpp
+file pool_impl.hpp -> pool.hpp
+leaf pool_impl.hpp#Pool -> counter.hpp#Counter
+leaf pool_impl.hpp#Pool -> pool.hpp#Pool

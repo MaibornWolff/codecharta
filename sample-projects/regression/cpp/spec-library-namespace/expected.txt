@@ -1,0 +1,3 @@
+# cpp.md, simple name 4: a library name through a using-directive
+file herd.hpp -> creature.hpp
+leaf herd.hpp#Herd -> creature.hpp#Creature

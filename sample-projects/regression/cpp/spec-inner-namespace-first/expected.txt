@@ -1,0 +1,3 @@
+# cpp.md, simple name 3: the inner namespace before the global one
+file app.hpp -> game/config.hpp
+leaf app.hpp#App -> game/config.hpp#Config
