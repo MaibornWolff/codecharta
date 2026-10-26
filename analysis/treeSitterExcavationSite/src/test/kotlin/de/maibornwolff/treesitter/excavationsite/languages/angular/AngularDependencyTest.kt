@@ -1,5 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.angular
 
+import de.maibornwolff.treesitter.excavationsite.api.AngularSelector
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
@@ -143,6 +144,64 @@ class AngularDependencyTest {
 
             // Assert
             assertThat(usedNames).containsExactly("async", "app-party-list", "sortByRank")
+        }
+    }
+
+    @Nested
+    inner class TemplateElements {
+        private fun elementsOf(code: String): List<AngularSelector> = analyze(code)
+            .declarations
+            .single()
+            .angular
+            ?.elements
+            .orEmpty()
+
+        @Test
+        fun `should report each element once with its tag, its attributes and their lower-case values, and its classes`() {
+            // Arrange
+            val code = """
+                <section class="Cave  dark" appGlow role="Region">
+                  <app-torch lit />
+                  <app-torch lit />
+                </section>
+            """.trimIndent()
+
+            // Act
+            val elements = elementsOf(code)
+
+            // Assert
+            assertThat(elements).containsExactly(
+                AngularSelector(
+                    element = "section",
+                    attributes = mapOf("class" to "cave  dark", "appGlow" to "", "role" to "region"),
+                    classNames = setOf("cave", "dark")
+                ),
+                AngularSelector(element = "app-torch", attributes = mapOf("lit" to ""))
+            )
+        }
+
+        @Test
+        fun `should drop the namespace of an element and an attribute as Angular does`() {
+            // Arrange
+            val code = "<svg:rect xlink:href=\"#cave\"></svg:rect>"
+
+            // Act
+            val elements = elementsOf(code)
+
+            // Assert
+            assertThat(elements).containsExactly(AngularSelector(element = "rect", attributes = mapOf("href" to "#cave")))
+        }
+
+        @Test
+        fun `should leave out references, template variables, i18n markers and animation triggers`() {
+            // Arrange
+            val code = "<ng-template #map ref-legend let-cave i18n i18n-title @fade title=\"Map\"></ng-template>"
+
+            // Act
+            val elements = elementsOf(code)
+
+            // Assert
+            assertThat(elements).containsExactly(AngularSelector(element = "ng-template", attributes = mapOf("title" to "map")))
         }
     }
 }
