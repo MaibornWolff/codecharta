@@ -1,0 +1,10 @@
+# typescript.md, Angular, decision 14: an element and an attribute in one selector match only together
+file app/plain.component.ts -> app/plain.component.html
+file app/save.component.html -> shared/icon-button.component.ts
+file app/save.component.ts -> app/save.component.html
+file app/save.component.ts -> shared/icon-button.component.ts
+leaf app/plain.component.ts#PlainComponent -> app/plain.component.html#plain_component_html
+leaf app/save.component.html#save_component_html -> shared/icon-button.component.ts#IconButtonComponent
+leaf app/save.component.ts#SaveComponent -> app/save.component.html#save_component_html
+leaf app/save.component.ts#SaveComponent -> shared/icon-button.component.ts#IconButtonComponent
+leaf shared/icon-button.component.ts#IconButtonComponent -> shared/icon-button.component.ts#template

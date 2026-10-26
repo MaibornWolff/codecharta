@@ -1,0 +1,4 @@
+<ul>
+  <li *appRepeat="let item of items; trackBy: byName">{{ item }}</li>
+</ul>
+<p *appUnless="items.length">empty</p>
