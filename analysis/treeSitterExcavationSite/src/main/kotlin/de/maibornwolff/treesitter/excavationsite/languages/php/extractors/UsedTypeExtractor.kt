@@ -10,11 +10,15 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
  * as written where a type is declared (return, parameter, property). Where a class is named (base class, interface,
  * instantiation, static call, constant access, trait) only a plain name counts, a qualified one is left out. Also
  * left out: a union type, a nullable parameter type and the nullable return type of a function. An alias is replaced
- * by the name it stands for.
+ * by the name it stands for. Each carries the namespace of the class or constant it means, by the rules of `php.md`,
+ * as prefix.
  *
  * An imported constant counts as used as soon as its name occurs anywhere in the text of the declaration.
  */
 internal object UsedTypeExtractor {
+    /** What the names of a file are looked up in: its imports as a whole and its namespace blocks. */
+    class FileNames(val importedNames: ImportedNames, val blocks: List<NamespaceBlock>)
+
     private const val NAME = "name"
     private const val NAMED_TYPE = "named_type"
     private const val OPTIONAL_TYPE = "optional_type"
@@ -48,25 +52,44 @@ internal object UsedTypeExtractor {
         USED_TRAIT(TypeUsage.USAGE)
     }
 
-    fun extract(declaration: SyntaxNode, importedNames: ImportedNames): Set<UsedType> {
+    fun extract(declaration: SyntaxNode, fileNames: FileNames): Set<UsedType> {
+        val importedNames = fileNames.importedNames
+        val blocks = fileNames.blocks
         val namesByRole = TreeTraversal
             .findAllDescendantsOfType(declaration, *RELEVANT_TYPES)
             .flatMap { node -> rolesOf(node) }
             .groupBy({ (role, _) -> role }, { (_, name) -> name })
         val usedTypes = Role.entries.flatMap { role ->
-            namesByRole[role].orEmpty().map { name -> UsedType(importedNames.namesByAlias[name.trim()] ?: name, usage = role.usage) }
+            namesByRole[role].orEmpty().map { name ->
+                UsedType(
+                    importedNames.namesByAlias[name.text.trim()] ?: name.text,
+                    namespacePrefix = namespaceOf(name, blocks),
+                    usage = role.usage
+                )
+            }
         }
-        return (usedConstants(declaration, importedNames.constants) + usedTypes).toCollection(LinkedHashSet())
+        return (usedConstants(declaration, importedNames.constants, blocks) + usedTypes).toCollection(LinkedHashSet())
     }
 
-    private fun usedConstants(declaration: SyntaxNode, importedConstants: List<String>): List<UsedType> {
+    // The namespace of the class a name means; the name itself stays as written until the analyzer reads it
+    private fun namespaceOf(name: SyntaxNode, blocks: List<NamespaceBlock>): List<String> = NamespaceBlocks
+        .blockOf(name, blocks)
+        ?.names
+        ?.classPath(name.text.trim())
+        ?.dropLast(1)
+        .orEmpty()
+
+    private fun usedConstants(declaration: SyntaxNode, importedConstants: List<String>, blocks: List<NamespaceBlock>): List<UsedType> {
         val declarationText = declaration.text
-        return importedConstants.filter { declarationText.contains(it) }.map { UsedType(it, usage = TypeUsage.CONSTANT_ACCESS) }
+        val imports = NamespaceBlocks.blockOf(declaration, blocks)?.imports
+        return importedConstants.filter { declarationText.contains(it) }.map { constant ->
+            UsedType(constant, namespacePrefix = imports?.constantPath(constant)?.dropLast(1).orEmpty(), usage = TypeUsage.CONSTANT_ACCESS)
+        }
     }
 
-    private fun rolesOf(node: SyntaxNode): List<Pair<Role, String>> = when (node.type) {
-        NAME -> listOfNotNull(roleOfName(node)?.let { it to node.text })
-        NAMED_TYPE -> listOfNotNull(roleOfNamedType(node)?.let { it to node.text })
+    private fun rolesOf(node: SyntaxNode): List<Pair<Role, SyntaxNode>> = when (node.type) {
+        NAME -> listOfNotNull(roleOfName(node)?.let { it to node })
+        NAMED_TYPE -> listOfNotNull(roleOfNamedType(node)?.let { it to node })
         else -> ownersOfReadConstants(node).map { Role.CONSTANT_OWNER to it }
     }
 
@@ -101,6 +124,6 @@ internal object UsedTypeExtractor {
     }
 
     // In `Order::LIMIT` both sides are names: every name but the last is an owner
-    private fun ownersOfReadConstants(constantAccess: SyntaxNode): List<String> =
-        TreeTraversal.findAllChildrenTextByType(constantAccess, NAME).dropLast(1)
+    private fun ownersOfReadConstants(constantAccess: SyntaxNode): List<SyntaxNode> =
+        constantAccess.children().filter { it.type == NAME }.toList().dropLast(1)
 }
