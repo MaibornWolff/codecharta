@@ -19,6 +19,7 @@ internal object CppTypeHelper {
     private const val SIZED_TYPE_SPECIFIER = "sized_type_specifier"
     private const val SCOPE_FIELD = "scope"
     const val GLOBAL_SCOPE = "::"
+    private const val TEMPLATE_ARGUMENTS_START = "<"
     private const val TYPE_FIELD = "type"
 
     private val TYPE_NODE_TYPES =
@@ -119,8 +120,9 @@ internal object CppTypeHelper {
         return if (text.isEmpty()) null else UsedType(name = text)
     }
 
+    // Pool<T>::size() is a member of the template Pool, whatever its arguments
     fun extractSecondToLastSegment(qualifiedId: SyntaxNode): UsedType? {
-        val segments = QualifiedIdentifierPath.scopeSegments(qualifiedId)
+        val segments = QualifiedIdentifierPath.scopeSegments(qualifiedId).map { it.substringBefore(TEMPLATE_ARGUMENTS_START).trim() }
         val name = segments.lastOrNull() ?: return null
         return UsedType(name = name, namespacePrefix = segments.dropLast(1))
     }
