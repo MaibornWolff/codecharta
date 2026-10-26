@@ -10,15 +10,16 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Ty
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.build
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.treesitter.excavationsite.api.AngularDeclaration
+import de.maibornwolff.treesitter.excavationsite.api.AngularSelector
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class AngularTemplateReferencesTest {
     @Test
-    fun `should resolve a selector and a pipe name of an Angular template to the classes declaring them`() {
+    fun `should resolve an element and a pipe name of an Angular template to the classes whose selector and name they match`() {
         // Arrange
-        val template = angularTemplate(usedNames = setOf("app-torch", "goldCoins"))
-        val torch = typescriptClass(listOf("src", "torch_component", "TorchComponent"), templateNames = setOf("app-torch"))
+        val template = angularTemplate(usedNames = setOf("goldCoins"), elements = listOf("app-torch"))
+        val torch = typescriptClass(listOf("src", "torch_component", "TorchComponent"), selector = AngularSelector(element = "app-torch"))
         val goldCoins = typescriptClass(listOf("src", "pipes", "gold-coins_pipe", "GoldCoinsPipe"), templateNames = setOf("goldCoins"))
 
         // Act
@@ -31,11 +32,13 @@ class AngularTemplateReferencesTest {
     }
 
     @Test
-    fun `should not resolve a selector that several classes declare or none does`() {
+    fun `should not resolve an element whose selector several classes declare or none does`() {
         // Arrange
-        val template = angularTemplate(usedNames = setOf("app-torch", "router-outlet"))
-        val torch = typescriptClass(listOf("lantern", "torch_component", "TorchComponent"), templateNames = setOf("app-torch"))
-        val otherTorch = typescriptClass(listOf("dungeon", "torch_component", "DungeonTorch"), templateNames = setOf("app-torch"))
+        val template = angularTemplate(elements = listOf("app-torch", "router-outlet"))
+        val torch =
+            typescriptClass(listOf("lantern", "torch_component", "TorchComponent"), selector = AngularSelector(element = "app-torch"))
+        val otherTorch =
+            typescriptClass(listOf("dungeon", "torch_component", "DungeonTorch"), selector = AngularSelector(element = "app-torch"))
 
         // Act
         val resolvedNodes = DependencyResolverService.resolveNodes(listOf(FileReport(listOf(template, torch, otherTorch))))
@@ -46,9 +49,32 @@ class AngularTemplateReferencesTest {
     }
 
     @Test
+    fun `should resolve an element to every class whose selector matches it`() {
+        // Arrange
+        val element = AngularSelector(element = "app-torch", attributes = mapOf("appGlow" to "", "appTip" to ""))
+        val template = angularTemplate().copy(angular = AngularMetadata(AngularDeclaration(elements = listOf(element))))
+        val torch = typescriptClass(listOf("src", "torch_component", "TorchComponent"), AngularSelector(element = "app-torch"))
+        val glow = typescriptClass(listOf("src", "glow_directive", "GlowDirective"), AngularSelector(attributes = mapOf("appGlow" to "")))
+        val tip = typescriptClass(listOf("src", "tip_directive", "TipDirective"), AngularSelector(attributes = mapOf("appTip" to "")))
+        val buttonGlow =
+            typescriptClass(listOf("src", "button_directive", "ButtonDirective"), AngularSelector("button", mapOf("appGlow" to "")))
+
+        // Act
+        val resolvedNodes = DependencyResolverService.resolveNodes(listOf(FileReport(listOf(template, torch, glow, tip, buttonGlow))))
+
+        // Assert
+        val resolvedTemplate = resolvedNodes.first { it.language == SupportedLanguage.ANGULAR }
+        assertThat(resolvedTemplate.resolvedNodeDependencies.internalDependencies).containsExactlyInAnyOrder(
+            Dependency(torch.pathWithName),
+            Dependency(glow.pathWithName),
+            Dependency(tip.pathWithName)
+        )
+    }
+
+    @Test
     fun `should resolve a selector several classes declare to the one its standalone component imports`() {
         // Arrange
-        val template = angularTemplate(usedNames = setOf("app-torch"))
+        val template = angularTemplate(elements = listOf("app-torch"))
         val cave = typescriptClass(
             listOf("src", "cave_component", "CaveComponent"),
             AngularMetadata(AngularDeclaration(imports = listOf("DungeonTorch")), template.pathWithName)
@@ -56,12 +82,12 @@ class AngularTemplateReferencesTest {
         val torch =
             typescriptClass(
                 listOf("lantern", "torch_component", "TorchComponent"),
-                AngularMetadata(AngularDeclaration(templateNames = setOf("app-torch")))
+                AngularMetadata(AngularDeclaration(selectors = listOf(AngularSelector(element = "app-torch"))))
             )
         val dungeonTorch =
             typescriptClass(
                 listOf("dungeon", "torch_component", "DungeonTorch"),
-                AngularMetadata(AngularDeclaration(templateNames = setOf("app-torch")))
+                AngularMetadata(AngularDeclaration(selectors = listOf(AngularSelector(element = "app-torch"))))
             )
 
         // Act
@@ -75,7 +101,7 @@ class AngularTemplateReferencesTest {
     @Test
     fun `should resolve a selector several classes declare to the one the module of its component declares or imports`() {
         // Arrange
-        val template = angularTemplate(usedNames = setOf("app-torch", "app-lantern"))
+        val template = angularTemplate(elements = listOf("app-torch", "app-lantern"))
         val cave =
             typescriptClass(listOf("src", "cave_component", "CaveComponent"), AngularMetadata(AngularDeclaration(), template.pathWithName))
         val cellarModule = typescriptClass(
@@ -90,22 +116,22 @@ class AngularTemplateReferencesTest {
         val torch =
             typescriptClass(
                 listOf("src", "torch_component", "TorchComponent"),
-                AngularMetadata(AngularDeclaration(templateNames = setOf("app-torch")))
+                AngularMetadata(AngularDeclaration(selectors = listOf(AngularSelector(element = "app-torch"))))
             )
         val otherTorch =
             typescriptClass(
                 listOf("dungeon", "torch_component", "DungeonTorch"),
-                AngularMetadata(AngularDeclaration(templateNames = setOf("app-torch")))
+                AngularMetadata(AngularDeclaration(selectors = listOf(AngularSelector(element = "app-torch"))))
             )
         val lantern =
             typescriptClass(
                 listOf("light", "lantern_component", "Lantern"),
-                AngularMetadata(AngularDeclaration(templateNames = setOf("app-lantern")))
+                AngularMetadata(AngularDeclaration(selectors = listOf(AngularSelector(element = "app-lantern"))))
             )
         val otherLantern =
             typescriptClass(
                 listOf("dungeon", "lantern_component", "OilLantern"),
-                AngularMetadata(AngularDeclaration(templateNames = setOf("app-lantern")))
+                AngularMetadata(AngularDeclaration(selectors = listOf(AngularSelector(element = "app-lantern"))))
             )
         val nodes = listOf(template, cave, cellarModule, lightModule, torch, otherTorch, lantern, otherLantern)
 
@@ -121,7 +147,7 @@ class AngularTemplateReferencesTest {
     @Test
     fun `should resolve a selector through modules that export each other`() {
         // Arrange
-        val template = angularTemplate(usedNames = setOf("app-lantern"))
+        val template = angularTemplate(elements = listOf("app-lantern"))
         val cave = typescriptClass(
             listOf("src", "cave_component", "CaveComponent"),
             AngularMetadata(AngularDeclaration(imports = listOf("LightModule")), template.pathWithName)
@@ -137,11 +163,11 @@ class AngularTemplateReferencesTest {
         val lantern =
             typescriptClass(
                 listOf("light", "lantern_component", "Lantern"),
-                AngularMetadata(AngularDeclaration(templateNames = setOf("app-lantern")))
+                AngularMetadata(AngularDeclaration(selectors = listOf(AngularSelector(element = "app-lantern"))))
             )
         val otherLantern = typescriptClass(
             listOf("dungeon", "lantern_component", "OilLantern"),
-            AngularMetadata(AngularDeclaration(templateNames = setOf("app-lantern")))
+            AngularMetadata(AngularDeclaration(selectors = listOf(AngularSelector(element = "app-lantern"))))
         )
         val nodes = listOf(template, cave, lightModule, flameModule, lantern, otherLantern)
 
@@ -156,7 +182,7 @@ class AngularTemplateReferencesTest {
     @Test
     fun `should leave a selector several classes declare unresolved when the scope of its component does not decide`() {
         // Arrange
-        val template = angularTemplate(usedNames = setOf("app-torch"))
+        val template = angularTemplate(elements = listOf("app-torch"))
         val cave = typescriptClass(
             listOf("src", "cave_component", "CaveComponent"),
             AngularMetadata(AngularDeclaration(imports = listOf("TorchComponent", "DungeonTorch")), template.pathWithName)
@@ -164,12 +190,12 @@ class AngularTemplateReferencesTest {
         val torch =
             typescriptClass(
                 listOf("lantern", "torch_component", "TorchComponent"),
-                AngularMetadata(AngularDeclaration(templateNames = setOf("app-torch")))
+                AngularMetadata(AngularDeclaration(selectors = listOf(AngularSelector(element = "app-torch"))))
             )
         val dungeonTorch =
             typescriptClass(
                 listOf("dungeon", "torch_component", "DungeonTorch"),
-                AngularMetadata(AngularDeclaration(templateNames = setOf("app-torch")))
+                AngularMetadata(AngularDeclaration(selectors = listOf(AngularSelector(element = "app-torch"))))
             )
 
         // Act
@@ -198,16 +224,20 @@ class AngularTemplateReferencesTest {
         assertThat(resolvedScript.resolvedNodeDependencies.internalDependencies).isEmpty()
     }
 
-    private fun angularTemplate(usedNames: Set<String>) = Node.build(
+    private fun angularTemplate(usedNames: Set<String> = emptySet(), elements: List<String> = emptyList()) = Node.build(
         pathWithName = Path(listOf("src", "cave_component_html")),
         physicalPath = "src/cave.component.html",
         nodeType = NodeType.SCRIPT,
         language = SupportedLanguage.ANGULAR,
-        usedTypes = usedNames.map { Type.simple(it) }.toSet()
+        usedTypes = usedNames.map { Type.simple(it) }.toSet(),
+        angular = AngularMetadata(AngularDeclaration(elements = elements.map { AngularSelector(element = it) }))
     )
 
     private fun typescriptClass(pathWithName: List<String>, templateNames: Set<String>) =
         typescriptClass(pathWithName, AngularMetadata(AngularDeclaration(templateNames = templateNames)))
+
+    private fun typescriptClass(pathWithName: List<String>, selector: AngularSelector) =
+        typescriptClass(pathWithName, AngularMetadata(AngularDeclaration(selectors = listOf(selector))))
 
     private fun typescriptClass(pathWithName: List<String>, angular: AngularMetadata) = Node.build(
         pathWithName = Path(pathWithName),
