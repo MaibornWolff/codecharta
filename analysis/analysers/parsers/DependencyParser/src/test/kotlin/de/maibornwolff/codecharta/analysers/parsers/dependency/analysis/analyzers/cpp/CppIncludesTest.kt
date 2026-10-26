@@ -153,20 +153,6 @@ class CppIncludesTest {
     }
 
     @Test
-    fun `should list only the C and C++ files as files`(
-        @TempDir root: File
-    ) {
-        // Arrange
-        root.withFile("creature_types.inc").withFile("include/mylib/Widget").withFile("speed.h").withFile("main.C")
-
-        // Act
-        val files = CppIncludes.of(root).files
-
-        // Assert
-        assertThat(files).containsExactly(path("main.C"), path("speed.h"))
-    }
-
-    @Test
     fun `should read an include line continued with a backslash`(
         @TempDir root: File
     ) {

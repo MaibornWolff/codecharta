@@ -360,7 +360,7 @@ name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these a
    `CppNameRules` exact; 17 gaps left
 8. [x] copies: no merge of C++ nodes of one path, `CppCopyRules` picks the copy of the include closure, else the
    nearest (the parked patch)
-9. [ ] decision 6: a global declaration's path is its name
+9. [x] decision 6: a global declaration's path is its name (CppTargets and the body index go; the copy rules pick the file)
 10. [ ] TSE: `::N`, namespace aliases, template parameters and classes declared in a function
 11. [ ] declarations: untagged typedef'd structs, typedef and `using` aliases
 12. [ ] `struct N *` is a use and declares `N` if none is visible

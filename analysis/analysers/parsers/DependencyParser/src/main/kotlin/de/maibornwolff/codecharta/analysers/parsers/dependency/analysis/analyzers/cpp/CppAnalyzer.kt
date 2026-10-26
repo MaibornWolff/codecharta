@@ -28,30 +28,28 @@ class CppAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         val result = TreeSitterDependencies.analyze(fileInfo.content, Language.CPP)
         val project = fileInfo.analysisRoot?.let { CppDeclarations.of(it) }
         val names = project?.visibleNamesOf(file) ?: CppVisibleNames(listOf(CppFileFacts.of(result)))
-        val targets = CppTargets(file, project, result)
         val nodes = result.declarations.filterNot { it.isForwardDeclaration() || it.isAlias() }.map { declaration ->
-            toNode(declaration, names, targets)
+            toNode(declaration, names)
         }
         return FileReport(nodes)
     }
 
-    private fun toNode(declaration: Declaration, names: CppVisibleNames, targets: CppTargets): Node {
+    private fun toNode(declaration: Declaration, names: CppVisibleNames): Node {
         val scope = declaration.parentPath + declaration.name
         return Node(
-            pathWithName = Path(targets.ownPathOf(scope)),
+            pathWithName = Path(scope),
             physicalPath = fileInfo.physicalPath,
             language = SupportedLanguage.CPP,
             nodeType = declaration.type.toNodeType(),
             dependencies = emptySet(),
-            usedTypes = declaration.usedTypes.flatMap { resolve(it, scope, names, targets) }.toSet()
+            usedTypes = declaration.usedTypes.flatMap { resolve(it, scope, names) }.toSet()
         )
     }
 
     // A use that means nothing visible still holds its template arguments, which are uses of their own
-    private fun resolve(used: UsedType, scope: List<String>, names: CppVisibleNames, targets: CppTargets): List<Type> {
-        val genericTypes = used.genericTypes.flatMap { resolve(it, scope, names, targets) }
-        val target = names.resolve(used.namespacePrefix + used.name, scope)?.let { targets.targetPathOf(it) }
-            ?: return genericTypes
+    private fun resolve(used: UsedType, scope: List<String>, names: CppVisibleNames): List<Type> {
+        val genericTypes = used.genericTypes.flatMap { resolve(it, scope, names) }
+        val target = names.resolve(used.namespacePrefix + used.name, scope) ?: return genericTypes
         return listOf(Type.generic(Path(target).withDots(), genericTypes, used.usage.toTypeOfUsage()))
     }
 
