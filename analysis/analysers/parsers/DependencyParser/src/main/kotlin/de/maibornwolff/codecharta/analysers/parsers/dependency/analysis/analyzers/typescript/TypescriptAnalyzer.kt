@@ -47,8 +47,8 @@ open class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInf
     }
 
     override fun analyze(): FileReport {
-        val declaredNodes = moduleImports.rewrite(declaredNodes())
-        val baseReport = FileReport(qualifiedNames.resolvedIn(DefaultExports.withoutOwnNames(declaredNodes)))
+        val declaredNodes = qualifiedNames.resolvedIn(DefaultExports.withoutOwnNames(moduleImports.rewrite(declaredNodes())))
+        val baseReport = FileReport(OwnNames.writtenInFull(declaredNodes, physicalFilePath))
         val analysisRoot = fileInfo.analysisRoot ?: return baseReport
         val ownNames = baseReport.nodes
             .filter { it.pathWithName.parts.lastOrNull() != WILDCARD_EXPORT_NAME }

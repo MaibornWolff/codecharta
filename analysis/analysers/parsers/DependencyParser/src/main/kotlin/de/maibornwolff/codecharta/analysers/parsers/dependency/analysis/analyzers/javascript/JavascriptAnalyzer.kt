@@ -10,6 +10,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ImportedModules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.MemberImports
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ModuleScriptUses
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.OwnNames
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ScriptLeaf
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
@@ -28,10 +29,11 @@ import de.maibornwolff.treesitter.excavationsite.api.UsedType
 class JavascriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     override val language = SupportedLanguage.JAVASCRIPT
     private val memberImports = fileInfo.analysisRoot?.let { MemberImports(it) }
+    private val modulePath by lazy {
+        fileInfo.physicalPathAsPath().withoutFileSuffix(fileInfo.physicalPath.substringAfterLast('.', "").lowercase())
+    }
 
     override fun buildPathWithName(packagePath: List<String>, declaration: Declaration): Path {
-        val extension = fileInfo.physicalPath.substringAfterLast('.', "").lowercase()
-        val modulePath = fileInfo.physicalPathAsPath().withoutFileSuffix(extension)
         if (declaration.type == DeclarationType.SCRIPT) return ScriptLeaf.pathIn(modulePath)
         return modulePath + localExportName(declaration.name)
     }
@@ -41,7 +43,7 @@ class JavascriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
 
     override fun analyze(): FileReport {
         val declaredNodes = super.analyze().nodes.let { memberImports?.rewrite(it) ?: it }
-        return FileReport(DefaultExports.withoutOwnNames(declaredNodes))
+        return FileReport(OwnNames.writtenInFull(DefaultExports.withoutOwnNames(declaredNodes), modulePath))
     }
 
     override fun convertImport(import: ImportDeclaration): Set<Dependency> {
