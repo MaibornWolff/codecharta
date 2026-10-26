@@ -22,7 +22,7 @@ internal object InClassDeclarationFinder {
         val allDeclarationNodes = TreeTraversal
             .findAllDescendantsOfType(rootNode, *DECLARATION_NODE_TYPES.toTypedArray())
         val nameByStartByte = allDeclarationNodes.associate { node ->
-            node.startByte to TreeTraversal.findFirstChildTextByType(node, TYPE_IDENTIFIER)
+            node.startByte to (TreeTraversal.findFirstChildTextByType(node, TYPE_IDENTIFIER) ?: TypedefNames.nameOfUntagged(node))
         }
         return allDeclarationNodes.mapNotNull { toDeclaration(it, nameByStartByte) }
     }

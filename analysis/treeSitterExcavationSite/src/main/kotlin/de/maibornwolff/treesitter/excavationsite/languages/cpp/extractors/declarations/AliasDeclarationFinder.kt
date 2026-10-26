@@ -47,9 +47,14 @@ internal object AliasDeclarationFinder {
             .toList()
     }
 
-    // An untagged struct a typedef names is the struct's own name, not an alias
+    // An untagged struct takes the first name of its typedef, which is then no alias of it
     private fun targetOf(typeNode: SyntaxNode): UsedType? = if (typeNode.type in TAGGED_SPECIFIERS) {
-        TreeTraversal.findFirstChildTextByType(typeNode, TYPE_IDENTIFIER)?.let { UsedType(name = it) }
+        (
+            TreeTraversal.findFirstChildTextByType(
+                typeNode,
+                TYPE_IDENTIFIER
+            ) ?: TypedefNames.nameOfUntagged(typeNode)
+        )?.let { UsedType(name = it) }
     } else {
         CppTypeHelper.extractType(typeNode)
     }

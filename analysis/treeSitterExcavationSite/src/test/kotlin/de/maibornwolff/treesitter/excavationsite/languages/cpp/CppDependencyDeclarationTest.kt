@@ -165,6 +165,22 @@ class CppDependencyDeclarationTest {
     }
 
     @Test
+    fun `should name an untagged struct or enum by the typedef that names it`() {
+        // Arrange
+        val code = "typedef struct { Speed speed; } Point, *PointPtr;\ntypedef enum { RED } Color;"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations).containsExactlyInAnyOrder(
+            Declaration(name = "Point", type = DeclarationType.CLASS, usedTypes = setOf(UsedType("Speed")), parentPath = emptyList()),
+            Declaration(name = "Color", type = DeclarationType.ENUM, usedTypes = emptySet(), parentPath = emptyList()),
+            Declaration(name = "PointPtr", type = DeclarationType.CLASS, usedTypes = setOf(UsedType("Point")), parentPath = listOf(ALIAS))
+        )
+    }
+
+    @Test
     fun `should report no forward declaration for a class named in the type of a field`() {
         // Arrange
         val code = "struct Nest { struct Roost *held; };"

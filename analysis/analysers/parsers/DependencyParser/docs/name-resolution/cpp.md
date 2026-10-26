@@ -106,7 +106,7 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 | --- | --- | --- |
 | Declarations: logical path through namespaces | `cpp/spec-own-namespace` | ok |
 | Declarations: a member type is a leaf of its own | `cpp/spec-member-type` | ok |
-| Declarations, decision 7: a typedef names an untagged struct | `c/spec-typedef-untagged` | gap |
+| Declarations, decision 7: a typedef names an untagged struct | `c/spec-typedef-untagged` | ok |
 | Declarations, decision 7: a typedef of the same name | `c/spec-typedef-same-name` | ok |
 | Declarations, decision 4: a typedef alias | `c/spec-typedef-alias` | gap |
 | Declarations, decision 4: a `using` alias | `cpp/spec-alias-using` | gap |
@@ -146,7 +146,7 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 | Which file 2, decision 5: opaque pointer | `c/spec-opaque-pointer` | ok |
 | Which file 2: nearest of several bodies | `c/spec-forward-nearest` | gap |
 | Which file 1, decision 11: two bodies in one closure | none: does not compile | - |
-| C and C++, shared rule 1 | `cpp/spec-uses-c` | gap |
+| C and C++, shared rule 1 | `cpp/spec-uses-c` | ok |
 | Shared rule 1, name scope | `c/spec-name-scope` | ok |
 | Shared rule 1, name scope | `cpp/spec-name-scope` | ok |
 | Shared rule 4, self | `c/spec-self` | ok |
