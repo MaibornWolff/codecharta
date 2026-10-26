@@ -115,12 +115,12 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 | Declarations, decision 8: explicit specialization | `cpp/spec-template-specialization` | gap |
 | Declarations, decision 8: out-of-line template member | `cpp/spec-template-out-of-line-member` | gap |
 | Declarations: unnamed namespace | `cpp/spec-unnamed-namespace` | ok |
-| Include paths 1: relative to the including file | `c/spec-include-relative` | gap |
+| Include paths 1: relative to the including file | `c/spec-include-relative` | ok |
 | Include paths 2: path ending | `c/spec-include-path-suffix` | ok |
 | Include paths 2, decisions 2 and 12: one segment, nearest | `c/spec-include-suffix-nearest` | ok |
-| Include paths 3: system header | `c/spec-library-include` | gap |
-| Visibility, decisions 1 and 6: include closure, copies | `c/spec-include-closure` | gap |
-| Visibility: transitive includes | `c/spec-transitive-include` | gap |
+| Include paths 3: system header | `c/spec-library-include` | ok |
+| Visibility, decisions 1 and 6: include closure, copies | `c/spec-include-closure` | ok |
+| Visibility: transitive includes | `c/spec-transitive-include` | ok |
 | 1. template parameter | `cpp/spec-template-parameter` | gap |
 | 1, decision 9: class declared in a function | `cpp/spec-local-type` | gap |
 | 2. member type before the namespace | `cpp/spec-member-type` | ok |
@@ -128,15 +128,15 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 | 2. inherited member type | `cpp/spec-inherited-member-type` | ok |
 | 2 and 3. out-of-line member body | `cpp/spec-out-of-line-lookup` | gap |
 | 3. own namespace | `cpp/spec-own-namespace` | ok |
-| 3. enclosing namespace | `cpp/spec-enclosing-namespace` | gap |
-| 3. inner namespace before the global one | `cpp/spec-inner-namespace-first` | gap |
+| 3. enclosing namespace | `cpp/spec-enclosing-namespace` | ok |
+| 3. inner namespace before the global one | `cpp/spec-inner-namespace-first` | ok |
 | 3. using-declaration | `cpp/spec-using-declaration` | ok |
 | 3. using-directive | `cpp/spec-using-directive` | ok |
-| 3. using-directive placement | `cpp/spec-using-directive-placement` | gap |
-| 3. two using-directives: ambiguous | `cpp/spec-ambiguous-using-directives` | gap |
-| 3. namespace alias | `cpp/spec-namespace-alias` | gap |
-| 4. library name | `cpp/spec-library-namespace` | gap |
-| Qualified: first segment as a simple name | `cpp/spec-qualified-relative` | gap |
+| 3. using-directive placement | `cpp/spec-using-directive-placement` | ok |
+| 3. two using-directives: ambiguous | `cpp/spec-ambiguous-using-directives` | ok |
+| 3. namespace alias | `cpp/spec-namespace-alias` | ok |
+| 4. library name | `cpp/spec-library-namespace` | ok |
+| Qualified: first segment as a simple name | `cpp/spec-qualified-relative` | ok |
 | Qualified: `::N` | `cpp/spec-qualified-global` | gap |
 | Qualified, decision 10: the qualifying class is no dependency | `cpp/spec-qualified-member-type` | ok |
 | Qualified: a member below a declaration | `cpp/spec-member-of-type` | gap |

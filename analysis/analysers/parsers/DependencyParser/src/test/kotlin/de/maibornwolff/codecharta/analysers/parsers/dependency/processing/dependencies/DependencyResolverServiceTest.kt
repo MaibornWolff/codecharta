@@ -61,17 +61,14 @@ class DependencyResolverServiceTest {
     }
 
     @Test
-    fun `should resolve used type from relative wildcard dependency`() {
+    fun `should resolve a C++ use written as the exact path of its declaration`() {
         // Arrange
         val address = Node.build(
             pathWithName = Path(listOf("cpu", "aarch64", "assembler_aarch64_inline_hpp", "Address")),
             physicalPath = "cpu/aarch64/assembler_aarch64.inline.hpp",
             nodeType = NodeType.CLASS,
             language = SupportedLanguage.CPP,
-            dependencies = setOf(
-                Dependency(Path(listOf("asm", "assembler_inline_hpp")), true)
-            ),
-            usedTypes = setOf(Type("Assembler", TypeOfUsage.USAGE, emptyList()))
+            usedTypes = setOf(Type("foo.bar.anywhere.asm.assembler_inline_hpp.Assembler", TypeOfUsage.USAGE, emptyList()))
         )
         val assembler = Node.build(
             pathWithName = Path(listOf("foo", "bar", "anywhere", "asm", "assembler_inline_hpp", "Assembler")),
