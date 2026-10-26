@@ -29,13 +29,11 @@ missing leaf App/Facade.php#Facade -> Ann/Transactional.php#Transactional
 
 ## spec-catch-instanceof
 
-`catch` and `instanceof` are not read.
+`instanceof` is not read.
 
 ```text
 missing file App/Spotter.php -> Model/Centaur.php
-missing file App/Spotter.php -> Model/NotFound.php
 missing leaf App/Spotter.php#Spotter -> Model/Centaur.php#Centaur
-missing leaf App/Spotter.php#Spotter -> Model/NotFound.php#NotFound
 ```
 
 ## spec-class-member-access
@@ -126,18 +124,4 @@ The body of a trait is not read, only its name.
 ```text
 missing file Model/HasSpeed.php -> Model/Speed.php
 missing leaf Model/HasSpeed.php#HasSpeed -> Model/Speed.php#Speed usage=return_value
-```
-
-## spec-type-positions
-
-Nullable, union and intersection parameter types and variadic and promoted constructor parameters are not read.
-
-```text
-missing leaf App/Svc.php#Svc -> Model/types.php#A usage=argument
-missing leaf App/Svc.php#Svc -> Model/types.php#B usage=argument
-missing leaf App/Svc.php#Svc -> Model/types.php#C usage=argument
-missing leaf App/Svc.php#Svc -> Model/types.php#D usage=argument
-missing leaf App/Svc.php#Svc -> Model/types.php#E usage=argument
-missing leaf App/Svc.php#Svc -> Model/types.php#F usage=argument
-missing leaf App/Svc.php#Svc -> Model/types.php#G usage=argument
 ```
