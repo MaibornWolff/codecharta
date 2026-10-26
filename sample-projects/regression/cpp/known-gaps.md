@@ -51,15 +51,6 @@ The implementation part names its own logical path, which the shared self rule d
 missing leaf Creature.cpp#Creature -> Creature.hpp#Creature
 ```
 
-## spec-qualified-global
-
-TSE reports ::Config with a leading global scope segment, which the lookup does not read yet.
-
-```text
-missing file app.hpp -> config.hpp
-missing leaf app.hpp#App -> config.hpp#Config
-```
-
 ## spec-template-out-of-line-member
 
 An out-of-line member of a template is a declaration named `Pool<T>`, not part of `Pool`, and does not use `Pool`.

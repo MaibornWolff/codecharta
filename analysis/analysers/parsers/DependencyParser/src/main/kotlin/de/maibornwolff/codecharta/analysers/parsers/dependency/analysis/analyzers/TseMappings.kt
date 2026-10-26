@@ -26,6 +26,9 @@ const val TSE_COMPONENT_TAG_SEGMENT = "COMPONENT_TAG"
 // The sentinel name of a use TSE reports for a JavaScript or TypeScript side-effect import, its specifier as the prefix
 const val TSE_MODULE_SCRIPT_NAME = "MODULE_SCRIPT"
 
+// The first namespace prefix segment TSE gives a C++ type written with a leading ::, the global namespace
+const val TSE_CPP_GLOBAL_SCOPE = "::"
+
 // The first parent path segment TSE gives a C or C++ type alias, which names the type it uses
 const val TSE_ALIAS_SEGMENT = "ALIAS"
 
