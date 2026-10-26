@@ -38,8 +38,6 @@ internal object NamespaceUses {
         .filter { path -> path.any { it.trim().contains(CONSTANT_MARKER) } }
         .map { path -> withoutConstantKeyword(path) }
 
-    fun importedNames(useDeclarations: List<SyntaxNode>) = ImportedNames(constants = constantPaths(useDeclarations).map { it.last() })
-
     private fun qualifiedClausePaths(useDeclarations: List<SyntaxNode>): List<List<String>> = useDeclarations
         .flatMap { TreeTraversal.findAllDescendantsOfType(it, NAMESPACE_USE_CLAUSE) }
         .filter { clause -> clause.children().any { it.type == QUALIFIED_NAME } }
@@ -67,6 +65,3 @@ internal object NamespaceUses {
         return listOf(path.first().replace(CONSTANT_KEYWORD, "")) + path.drop(1)
     }
 }
-
-/** @property constants the names of the imported constants */
-internal class ImportedNames(val constants: List<String>)

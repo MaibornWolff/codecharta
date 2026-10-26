@@ -47,33 +47,6 @@ missing file App/Herd.php -> Model/Counter.php
 missing leaf App/Herd.php#Herd -> Model/Counter.php#Counter
 ```
 
-## spec-constant-fully-qualified
-
-A constant read is a use only through `use const`.
-
-```text
-missing file App/Cap.php -> lib/limits.php
-missing leaf App/Cap.php#Cap -> lib/limits.php#MAX usage=constant_access
-```
-
-## spec-declaration-in-block
-
-A function call is no use.
-
-```text
-missing file app/Page.php -> lib/polyfill.php
-missing leaf app/Page.php#Page -> lib/polyfill.php#slug
-```
-
-## spec-define
-
-A constant read is a use only through `use const`.
-
-```text
-missing file app/Cap.php -> lib/config.php
-missing leaf app/Cap.php#Cap -> lib/config.php#LIMIT usage=constant_access
-```
-
 ## spec-enum-implements
 
 `implements` is read for classes only.
@@ -81,33 +54,6 @@ missing leaf app/Cap.php#Cap -> lib/config.php#LIMIT usage=constant_access
 ```text
 missing file Model/Alignment.php -> Model/Describable.php
 missing leaf Model/Alignment.php#Alignment -> Model/Describable.php#Describable usage=implementation
-```
-
-## spec-function-global-fallback
-
-A function call is no use.
-
-```text
-missing file App/Job.php -> lib/global.php
-missing leaf App/Job.php#Job -> lib/global.php#helper
-```
-
-## spec-function-own-namespace-first
-
-A function call is no use.
-
-```text
-missing file App/Job.php -> lib/app.php
-missing leaf App/Job.php#Job -> lib/app.php#helper
-```
-
-## spec-function
-
-A function call is no use.
-
-```text
-missing file app/Fight.php -> lib/dice.php
-missing leaf app/Fight.php#Fight -> lib/dice.php#roll
 ```
 
 ## spec-include-absolute
@@ -164,24 +110,6 @@ missing leaf Model/Boss.php#Boss -> Model/Describable.php#Describable usage=inhe
 missing leaf Model/Boss.php#Boss -> Model/Fightable.php#Fightable usage=inheritance
 ```
 
-## spec-namespace-constant
-
-A constant read is a use only through `use const`.
-
-```text
-missing file app/Cap.php -> lib/limits.php
-missing leaf app/Cap.php#Cap -> lib/limits.php#MAX usage=constant_access
-```
-
-## spec-qualified-function
-
-A function call is no use.
-
-```text
-missing file App/Fight.php -> Dice/dice.php
-missing leaf App/Fight.php#Fight -> Dice/dice.php#roll
-```
-
 ## spec-script-leaf
 
 Top-level code is a script leaf only in a file without declarations.
@@ -212,13 +140,4 @@ missing leaf App/Svc.php#Svc -> Model/types.php#D usage=argument
 missing leaf App/Svc.php#Svc -> Model/types.php#E usage=argument
 missing leaf App/Svc.php#Svc -> Model/types.php#F usage=argument
 missing leaf App/Svc.php#Svc -> Model/types.php#G usage=argument
-```
-
-## spec-use-function
-
-A function call is no use.
-
-```text
-missing file App/Fight.php -> Dice/dice.php
-missing leaf App/Fight.php#Fight -> Dice/dice.php#roll
 ```

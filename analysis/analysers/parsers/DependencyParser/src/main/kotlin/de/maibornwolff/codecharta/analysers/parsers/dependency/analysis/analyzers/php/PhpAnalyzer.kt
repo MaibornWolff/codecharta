@@ -17,7 +17,7 @@ import de.maibornwolff.treesitter.excavationsite.api.UsedType
 /**
  * The declarations of a PHP file, each at the namespace of its block plus its name (the name alone in the global
  * namespace). The extractor has resolved every name as the compiler does, so the analyzer writes each use as its full
- * path, and [PhpNameRules] takes a path only as written.
+ * path, with the global path a function or constant falls back to, and [PhpNameRules] takes a path only as written.
  */
 class PhpAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     override fun analyze(): FileReport {
@@ -42,7 +42,9 @@ class PhpAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         )
     }
 
-    private fun typeOf(use: UsedType): Type = Type.simple(Path(use.namespacePrefix + use.name).withDots(), use.usage.toTypeOfUsage())
+    private fun typeOf(use: UsedType): Type = Type
+        .simple(Path(use.namespacePrefix + use.name).withDots(), use.usage.toTypeOfUsage())
+        .copy(fallbacks = use.fallbacks.map { typeOf(it) })
 
     private fun fileNameWithoutEnding(): String =
         fileInfo.physicalPath.split(PATH_SEPARATOR, WINDOWS_PATH_SEPARATOR).last().removeSuffix(PHP_ENDING)
