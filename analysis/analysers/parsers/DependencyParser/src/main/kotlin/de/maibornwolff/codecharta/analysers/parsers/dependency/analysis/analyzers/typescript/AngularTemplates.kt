@@ -2,10 +2,12 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.splitNameToParts
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.AngularMetadata
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
+import de.maibornwolff.treesitter.excavationsite.api.AngularDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
 
 private const val INLINE_TEMPLATE_NAME = "template"
@@ -26,7 +28,7 @@ internal fun templateFilePath(templateUrl: String, componentFile: String): Path 
 internal fun inlineTemplatePath(componentPath: Path): Path = componentPath + INLINE_TEMPLATE_NAME
 
 /**
- * The inline template of an Angular component as a node in the template language, so the selectors and pipe names it
+ * The inline template of an Angular component as a node in the template language, so the elements and pipe names it
  * uses resolve like those of a template file. It lives in the file of the component, so its edges leave that file.
  */
 internal fun inlineTemplateNode(templateDeclarations: List<Declaration>, component: Node): Node = Node(
@@ -38,5 +40,6 @@ internal fun inlineTemplateNode(templateDeclarations: List<Declaration>, compone
     usedTypes = templateDeclarations
         .flatMap { it.usedTypes }
         .map { it.toType() }
-        .toSet()
+        .toSet(),
+    angular = AngularMetadata(AngularDeclaration(elements = templateDeclarations.flatMap { it.angular?.elements.orEmpty() }))
 )

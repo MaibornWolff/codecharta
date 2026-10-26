@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 
 /**
- * @property angular what the Angular decorator of the class declares, null for a node without one
+ * @property angular what the Angular decorator of the class declares or the elements of a template, null for other nodes
  * @property isFileScoped whether only its own file can name it, as a Kotlin `private` top-level declaration
  */
 data class Node(
