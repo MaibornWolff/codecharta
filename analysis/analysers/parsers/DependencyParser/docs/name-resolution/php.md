@@ -95,27 +95,27 @@ the expected meaning of each name, except the absolute and the computed include 
 | Rule | Probe | Today |
 | --- | --- | --- |
 | Declarations: namespace plus name, not the folder | `spec-namespace-path` | ok |
-| Declarations, decision 6: the global namespace | `spec-global-namespace` | gap |
+| Declarations, decision 6: the global namespace | `spec-global-namespace` | ok |
 | Declarations, decision 1: a function | `spec-function` | gap |
 | Declarations, decision 1: a namespace constant | `spec-namespace-constant` | gap |
 | Declarations: `define`, read through the global fallback | `spec-define` | gap |
 | Declarations, decision 7: a function declared in a block | `spec-declaration-in-block` | gap |
 | Declarations: an anonymous class | `spec-anonymous-class` | gap |
 | Declarations, decision 8: top-level code next to declarations | `spec-script-leaf` | gap |
-| Namespace blocks | `spec-namespace-blocks` | gap |
-| Imports: an alias | `spec-import-alias` | gap |
-| Imports: a group | `spec-group-use` | gap |
+| Namespace blocks | `spec-namespace-blocks` | ok |
+| Imports: an alias | `spec-import-alias` | ok |
+| Imports: a group | `spec-group-use` | ok |
 | Imports: an unused import | `spec-unused-import` | ok |
-| Class name 1: `self`, `static`, `parent` | `spec-self-parent-static` | gap |
-| Class name 2: fully qualified | `spec-fully-qualified` | gap |
-| Class name 3: `namespace\` | `spec-namespace-keyword` | gap |
-| Class name 4: qualified through a namespace import | `spec-qualified-through-import` | gap |
-| Class name 4: qualified below the current namespace | `spec-qualified-relative` | gap |
+| Class name 1: `self`, `static`, `parent` | `spec-self-parent-static` | ok |
+| Class name 2: fully qualified | `spec-fully-qualified` | ok |
+| Class name 3: `namespace\` | `spec-namespace-keyword` | ok |
+| Class name 4: qualified through a namespace import | `spec-qualified-through-import` | ok |
+| Class name 4: qualified below the current namespace | `spec-qualified-relative` | ok |
 | Class name 5: the current namespace | `spec-own-namespace` | ok |
 | Class name 5: an import over the current namespace | `spec-import-beats-own-namespace` | ok |
 | Class name 5: no global fallback | `spec-no-global-fallback` | ok |
 | Class name: a library class | `spec-library-class` | ok |
-| Class name, decision 5: exact case | `spec-exact-case` | gap |
+| Class name, decision 5: exact case | `spec-exact-case` | ok |
 | A name below a class | `spec-class-member-access` | gap |
 | Function name 3: the current namespace before the global one | `spec-function-own-namespace-first` | gap |
 | Function name 3: the global fallback | `spec-function-global-fallback` | gap |

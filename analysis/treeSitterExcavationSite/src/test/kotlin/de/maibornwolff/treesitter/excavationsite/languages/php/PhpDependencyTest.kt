@@ -300,7 +300,7 @@ class PhpDependencyTest {
     @Nested
     inner class NameResolution {
         private fun pathsOf(code: String, declarationName: String): List<List<String>> =
-            usedTypesOf(code, declarationName).map { it.namespacePrefix + it.name.substringAfterLast("\\") }
+            usedTypesOf(code, declarationName).map { it.namespacePrefix + it.name }
 
         @Test
         fun `should resolve an unqualified class name in the current namespace`() {
@@ -351,15 +351,15 @@ class PhpDependencyTest {
         }
 
         @Test
-        fun `should resolve a member of a group import by its alias to the namespace of the group`() {
+        fun `should resolve a member of a group import by its alias`() {
             // Arrange
             val code = "namespace Game\\App;\nuse Game\\Model\\{Creature, Speed as Pace};\nclass Herd {\n    public Pace ${'$'}pace;\n}"
 
             // Act
-            val namespaces = usedTypesOf(code, "Herd").map { it.namespacePrefix }
+            val paths = pathsOf(code, "Herd")
 
             // Assert
-            assertThat(namespaces).containsExactly(listOf("Game", "Model"))
+            assertThat(paths).containsExactly(listOf("Game", "Model", "Speed"))
         }
 
         @Test
@@ -383,15 +383,15 @@ class PhpDependencyTest {
         }
 
         @Test
-        fun `should give the own class and a type keyword no namespace`() {
+        fun `should leave out the own class and the type keywords`() {
             // Arrange
-            val code = "namespace Game;\nclass Horse {\n    function same(): self {}\n}"
+            val code = "namespace Game;\nclass Horse {\n    function same(): self {}\n    function count(): int {}\n}"
 
             // Act
             val usedTypes = usedTypesOf(code, "Horse")
 
             // Assert
-            assertThat(usedTypes).containsExactly(UsedType("self", usage = TypeUsage.RETURN_VALUE))
+            assertThat(usedTypes).isEmpty()
         }
     }
 
@@ -451,7 +451,7 @@ class PhpDependencyTest {
         }
 
         @Test
-        fun `should leave out a nullable parameter type and a base class written as a qualified name`() {
+        fun `should extract a base class written as a qualified name but leave out a nullable parameter type`() {
             // Arrange
             val code = "class Order extends \\App\\Entity {\n    function pay(?Gateway ${'$'}gateway) {}\n}"
 
@@ -459,11 +459,11 @@ class PhpDependencyTest {
             val usedTypes = usedTypesOf(code, "Order")
 
             // Assert
-            assertThat(usedTypes).isEmpty()
+            assertThat(usedTypes).containsExactly(UsedType("Entity", namespacePrefix = listOf("App"), usage = TypeUsage.INHERITANCE))
         }
 
         @Test
-        fun `should extract a qualified return type as written with the namespace it means`() {
+        fun `should extract a fully qualified return type as the path it names`() {
             // Arrange
             val code = "function latest(): \\App\\Models\\Order {}"
 
@@ -472,7 +472,7 @@ class PhpDependencyTest {
 
             // Assert
             assertThat(usedTypes).containsExactly(
-                UsedType("\\App\\Models\\Order", namespacePrefix = listOf("App", "Models"), usage = TypeUsage.RETURN_VALUE)
+                UsedType("Order", namespacePrefix = listOf("App", "Models"), usage = TypeUsage.RETURN_VALUE)
             )
         }
 
