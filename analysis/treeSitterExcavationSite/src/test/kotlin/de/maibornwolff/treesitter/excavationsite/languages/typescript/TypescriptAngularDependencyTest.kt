@@ -1,5 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.typescript
 
+import de.maibornwolff.treesitter.excavationsite.api.AngularSelector
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import org.assertj.core.api.Assertions.assertThat
@@ -196,13 +197,11 @@ class TypescriptAngularDependencyTest {
         }
 
         @Test
-        fun `should not name classes without component or pipe decorator`() {
+        fun `should not name classes without component, directive or pipe decorator`() {
             // Arrange
             val code = """
                 @Injectable({ providedIn: 'root' })
                 export class TreasuryService {}
-                @Directive({ selector: 'app-glow' })
-                export class GlowDirective {}
                 export class Centaur {}
             """.trimIndent()
 
@@ -211,6 +210,75 @@ class TypescriptAngularDependencyTest {
 
             // Assert
             assertThat(declarations.mapNotNull { it.angular }).isEmpty()
+        }
+    }
+
+    @Nested
+    inner class AngularSelectors {
+        private fun selectorsOf(code: String): List<AngularSelector> = TreeSitterDependencies
+            .analyze(code, Language.TYPESCRIPT)
+            .declarations
+            .single()
+            .angular
+            ?.selectors
+            .orEmpty()
+
+        @Test
+        fun `should read each alternative of a component selector with its element, attributes and classes`() {
+            // Arrange
+            val code = """
+                @Component({ selector: 'App-Lantern[lit], [appGlow=Bright].flame.Ember' })
+                export class LanternComponent {}
+            """.trimIndent()
+
+            // Act
+            val selectors = selectorsOf(code)
+
+            // Assert
+            assertThat(selectors).containsExactly(
+                AngularSelector(element = "app-lantern", attributes = mapOf("lit" to "")),
+                AngularSelector(attributes = mapOf("appGlow" to "bright"), classNames = setOf("flame", "ember"))
+            )
+        }
+
+        @Test
+        fun `should read the selector of a directive with its not parts and quoted attribute values`() {
+            // Arrange
+            val code = """
+                @Directive({ selector: 'input[type="range"]:not([disabled]):not(.locked), #torch' })
+                export class RangeDirective {}
+            """.trimIndent()
+
+            // Act
+            val selectors = selectorsOf(code)
+
+            // Assert
+            assertThat(selectors).containsExactly(
+                AngularSelector(
+                    element = "input",
+                    attributes = mapOf("type" to "range"),
+                    notSelectors = listOf(
+                        AngularSelector(attributes = mapOf("disabled" to "")),
+                        AngularSelector(classNames = setOf("locked"))
+                    )
+                ),
+                AngularSelector(attributes = mapOf("id" to "torch"))
+            )
+        }
+
+        @Test
+        fun `should read a selector of only not parts as one that matches any other element`() {
+            // Arrange
+            val code = """
+                @Directive({ selector: ':not(a)' })
+                export class NotLinkDirective {}
+            """.trimIndent()
+
+            // Act
+            val selectors = selectorsOf(code)
+
+            // Assert
+            assertThat(selectors).containsExactly(AngularSelector(notSelectors = listOf(AngularSelector(element = "a"))))
         }
     }
 }
