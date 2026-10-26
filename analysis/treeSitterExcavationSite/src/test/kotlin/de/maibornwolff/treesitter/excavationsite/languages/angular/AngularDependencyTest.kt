@@ -45,78 +45,6 @@ class AngularDependencyTest {
     }
 
     @Nested
-    inner class UsedComponents {
-        @Test
-        fun `should extract the elements of the template once each in source order`() {
-            // Arrange
-            val code = """
-                <section>
-                  <app-cave-map [cave]="cave"></app-cave-map>
-                  @if (lit) { <app-torch /> }
-                  <app-cave-map />
-                </section>
-            """.trimIndent()
-
-            // Act
-            val usedNames = usedNamesOf(code)
-
-            // Assert
-            assertThat(usedNames).containsExactly("section", "app-cave-map", "app-torch")
-        }
-
-        @Test
-        fun `should extract an element without a hyphen, as a component selector needs none`() {
-            // Arrange
-            val code = "<creature [kind]=\"'centaur'\"></creature>"
-
-            // Act
-            val usedNames = usedNamesOf(code)
-
-            // Assert
-            assertThat(usedNames).containsExactly("creature")
-        }
-
-        @Test
-        fun `should leave out the ng elements of angular itself`() {
-            // Arrange
-            val code = """
-                <div><ng-container *ngIf="lit"><ng-template><span>Dark</span></ng-template></ng-container></div>
-                <ng-content select="footer" />
-            """.trimIndent()
-
-            // Act
-            val usedNames = usedNamesOf(code)
-
-            // Assert
-            assertThat(usedNames).containsExactly("div", "span")
-        }
-
-        @Test
-        fun `should keep a component whose selector starts with ng like those of Angular itself`() {
-            // Arrange
-            val code = """<ng-select [items]="dragons"></ng-select><ng-container><ngx-charts-bar /></ng-container>"""
-
-            // Act
-            val usedNames = usedNamesOf(code)
-
-            // Assert
-            assertThat(usedNames).containsExactly("ng-select", "ngx-charts-bar")
-        }
-
-        @Test
-        fun `should lowercase the element name the way html does`() {
-            // Arrange
-            val code = "<App-Torch></App-Torch>"
-
-            // Act
-            val usedNames = usedNamesOf(code)
-
-            // Assert
-            assertThat(usedNames).containsExactly("app-torch")
-        }
-    }
-
-    @Nested
     inner class UsedPipes {
         @Test
         fun `should extract every pipe of a pipe sequence`() {
@@ -127,11 +55,11 @@ class AngularDependencyTest {
             val usedNames = usedNamesOf(code)
 
             // Assert
-            assertThat(usedNames).containsExactly("p", "goldCoins", "uppercase")
+            assertThat(usedNames).containsExactly("goldCoins", "uppercase")
         }
 
         @Test
-        fun `should extract the pipes and elements of bindings and control flow blocks in source order`() {
+        fun `should extract only the pipes of bindings and control flow blocks, in source order`() {
             // Arrange
             val code = """
                 @if (party$ | async; as party) {
@@ -143,7 +71,7 @@ class AngularDependencyTest {
             val usedNames = usedNamesOf(code)
 
             // Assert
-            assertThat(usedNames).containsExactly("async", "app-party-list", "sortByRank")
+            assertThat(usedNames).containsExactly("async", "sortByRank")
         }
     }
 
@@ -178,6 +106,24 @@ class AngularDependencyTest {
                 ),
                 AngularSelector(element = "app-torch", attributes = mapOf("lit" to ""))
             )
+        }
+
+        @Test
+        fun `should report the elements of control flow blocks and lower-case tags once each in source order`() {
+            // Arrange
+            val code = """
+                <section>
+                  <App-Cave-Map></App-Cave-Map>
+                  @if (lit) { <app-torch /> }
+                  <app-cave-map />
+                </section>
+            """.trimIndent()
+
+            // Act
+            val elements = elementsOf(code)
+
+            // Assert
+            assertThat(elements.map { it.element }).containsExactly("section", "app-cave-map", "app-torch")
         }
 
         @Test

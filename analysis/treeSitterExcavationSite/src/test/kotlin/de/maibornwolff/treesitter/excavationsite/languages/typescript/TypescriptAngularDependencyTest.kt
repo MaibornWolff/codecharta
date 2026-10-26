@@ -26,7 +26,7 @@ class TypescriptAngularDependencyTest {
         }
 
         @Test
-        fun `should declare the components and pipes the inline template of each component uses`() {
+        fun `should declare the elements and pipes of the inline template of each component`() {
             // Arrange
             val code = """
                 @Component({ selector: 'app-chest', template: `<app-torch />{{ gold | goldCoins }}` })
@@ -42,11 +42,21 @@ class TypescriptAngularDependencyTest {
             assertThat(embedded.map { it.owner to it.language })
                 .containsExactly("ChestComponent" to Language.ANGULAR, "LidComponent" to Language.ANGULAR)
             assertThat(embedded.map { template -> template.declarations.single().usedTypes.map { it.name } })
-                .containsExactly(listOf("app-torch", "goldCoins"), listOf("p"))
+                .containsExactly(listOf("goldCoins"), emptyList())
+            assertThat(
+                embedded.map { template ->
+                    template.declarations
+                        .single()
+                        .angular
+                        ?.elements
+                        .orEmpty()
+                        .map { it.element }
+                }
+            ).containsExactly(listOf("app-torch"), listOf("p"))
         }
 
         @Test
-        fun `should declare the components a quoted inline template uses behind escaped quotes`() {
+        fun `should declare the elements of a quoted inline template behind escaped quotes`() {
             // Arrange
             val code = """
                 @Component({ selector: 'app-lair', template: '<app-dragon size=\'large\'></app-dragon>' })
@@ -57,7 +67,8 @@ class TypescriptAngularDependencyTest {
             val template = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).embedded.single()
 
             // Assert
-            assertThat(template.declarations.single().usedTypes.map { it.name }).containsExactly("app-dragon")
+            assertThat(template.declarations.single().angular?.elements)
+                .containsExactly(AngularSelector(element = "app-dragon", attributes = mapOf("size" to "large")))
         }
 
         @Test
