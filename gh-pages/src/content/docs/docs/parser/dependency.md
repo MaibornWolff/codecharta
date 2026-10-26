@@ -184,6 +184,15 @@ A declaration outside every namespace has its name as logical path, so two progr
 `struct Creature` are told apart by their includes. The build's include directories (`-I`, CMake,
 `compile_commands.json`) are not read, and macros are not expanded.
 
+PHP resolves a name as the compiler does, from the text of its file: through the `use` declarations of the namespace
+block it stands in, aliases and groups included, else in the current namespace; `\A\B` is taken as written and
+`namespace\A` below the current namespace. A class name never falls back to the global namespace, while a function
+call or a constant does where the current namespace declares none. A class counts wherever the compiler resolves one:
+any type, `extends`, `implements`, `new`, `X::member`, `catch`, `instanceof`, an attribute and a trait; function calls
+and constant reads count too, and a name matches only in its declared case. The code at the top level of a file is a
+leaf `<file>_script`, which an `include` or `require` of the file uses, its path taken relative to the including file;
+a computed path draws nothing, and neither `composer.json` nor docblock types are read.
+
 TypeScript and JavaScript find an imported module where the compiler would: a relative path from the importing file,
 or a bare specifier through the `paths` and `baseUrl` of the nearest `tsconfig.json` or `jsconfig.json`, a bundler
 alias, a Module Federation remote, a workspace package of that `package.json` name or a `declare module` block; each

@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   `typedef` as leaves, and the member functions a source file defines for a class of a header as a leaf of the source
   file that points at the header.
 
+- **Leaves of PHP files**: the dependency map shows the code at the top level of a PHP file as a leaf `<file>_script`,
+  also beside the file's classes, which an `include` or `require` of the file uses, and a class outside every
+  namespace under its name alone.
+
 ### Fixed 🐞
 
 - **Same name in several places**: `dependencyparser` links a class that several files declare under one name to the
@@ -63,6 +67,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   directly or through other headers, and looks it up as the compiler does through classes, namespaces, `using`
   declarations and directives and namespace aliases, so it tells `model::Creature` from `dto::Creature`, follows a
   forward declaration to the class's body and no longer links a name to a class another program in the folder declares.
+
+- **Imports in PHP**: `dependencyparser` resolves a PHP name as the compiler does, through the `use` declarations of
+  its namespace, aliases, groups and fully qualified names, and links function calls and constants with PHP's fallback
+  to the global ones, so it tells `Dto\Creature` from `Model\Creature` and finds a class in nullable, union and
+  promoted parameter types, `catch`, `instanceof`, attributes and traits.
 
 - **Using directives in C#**: `dependencyparser` looks a C# name up in each enclosing namespace before the using
   directives written around it, so a class of the namespace wins over a using at the top of the file, a name two
