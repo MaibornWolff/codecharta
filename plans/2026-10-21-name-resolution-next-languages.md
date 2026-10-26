@@ -423,7 +423,7 @@ derived (global namespace path, declarations in blocks, script leaf, docblocks).
 10. [x] decision 4: `instanceof`, attributes, `X::$property`
 11. [x] decision 4: interface `extends`, enum `implements`, anonymous class headers
 12. [x] decision 4: trait bodies; the names of a nested declaration are its own
-13. [ ] decision 8: top-level code is a script leaf at the file's path, also next to declarations
+13. [x] decision 8: top-level code is a script leaf at the file's path, also next to declarations
 14. [ ] decisions 2 and 3: an include uses the included file's script leaf (old include imports go)
 15. [ ] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
 

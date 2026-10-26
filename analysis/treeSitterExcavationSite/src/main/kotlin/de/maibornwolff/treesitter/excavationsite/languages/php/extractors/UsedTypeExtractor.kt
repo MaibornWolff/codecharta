@@ -61,8 +61,13 @@ internal object UsedTypeExtractor {
         CALLED_FUNCTION(TypeUsage.USAGE, Kind.FUNCTION)
     }
 
-    fun extract(declaration: SyntaxNode, blocks: List<NamespaceBlock>): Set<UsedType> {
-        val namesByRole = ownNodes(declaration)
+    fun extract(declaration: SyntaxNode, blocks: List<NamespaceBlock>): Set<UsedType> = extract(listOf(declaration), blocks)
+
+    /** The names a group of statements uses, such as the top-level code of a file. */
+    fun extract(roots: List<SyntaxNode>, blocks: List<NamespaceBlock>): Set<UsedType> {
+        val namesByRole = roots
+            .asSequence()
+            .flatMap { ownNodes(it) }
             .filter { it.type in RELEVANT_TYPES }
             .flatMap { node -> rolesOf(node) }
             .groupBy({ (role, _) -> role }, { (_, name) -> name })

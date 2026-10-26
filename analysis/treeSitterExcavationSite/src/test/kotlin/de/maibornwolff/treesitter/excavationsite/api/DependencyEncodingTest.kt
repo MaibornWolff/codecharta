@@ -42,8 +42,9 @@ class DependencyEncodingTest {
         val result = TreeSitterDependencies.analyze(code, Language.GO)
 
         // Assert
-        assertThat(result.declarations.map { it.name }).containsExactly("AfterTheRange")
-        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactly("RangeBase")
+        val classDeclaration = result.declarations.single { it.type == DeclarationType.CLASS }
+        assertThat(classDeclaration.name).isEqualTo("AfterTheRange")
+        assertThat(classDeclaration.usedTypes.map { it.name }).containsExactly("RangeBase")
     }
 
     @Test
@@ -68,8 +69,9 @@ class DependencyEncodingTest {
         val result = TreeSitterDependencies.analyze(code, Language.PHP)
 
         // Assert
-        assertThat(result.declarations.map { it.name }).containsExactly("AfterTheRange")
-        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactly("RangeBase")
+        val classDeclaration = result.declarations.single { it.type == DeclarationType.CLASS }
+        assertThat(classDeclaration.name).isEqualTo("AfterTheRange")
+        assertThat(classDeclaration.usedTypes.map { it.name }).containsExactly("RangeBase")
     }
 
     @Test
