@@ -57,6 +57,22 @@ class MemberImportsTest {
     }
 
     @Test
+    fun `should write a use of a renamed import under its local name as the path of the export it names`() {
+        // Arrange
+        val model = File(analysisRoot, "model.ts").apply { writeText("export class Model {}") }
+        val memberImports = MemberImports(analysisRoot)
+        val import =
+            ImportDeclaration(path = listOf(".", "model", "Model"), isWildcard = false, kind = ImportKind.MEMBER, bindingName = "Base")
+        memberImports.targetOf(import, model, Path(listOf("model")))
+
+        // Act
+        val nodes = memberImports.rewrite(listOf(node("Base", "Model")))
+
+        // Assert
+        assertThat(nodes.single().usedTypes.map { it.name }).containsExactly("model.Model", "Model")
+    }
+
+    @Test
     fun `should leave a qualified name alone whose first segment no import binds`() {
         // Arrange
         val geo = File(analysisRoot, "geo.ts").apply { writeText("export default class Shape {}") }

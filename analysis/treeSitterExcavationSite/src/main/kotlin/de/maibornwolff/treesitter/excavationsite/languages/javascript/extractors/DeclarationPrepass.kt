@@ -5,19 +5,19 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportKind
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
 /**
- * What a module binds that the use extraction needs: the local name of each import with the name it imports, the local
+ * What a module binds that the use extraction needs: the local name of each import, the local
  * names of its namespace imports and of its default imports and `require` bindings, the names of its own top-level
  * declarations, and what its dynamic imports bind.
  */
 internal data class ModuleNames(
-    val aliasMap: Map<String, String>,
+    val importNames: Set<String>,
     val namespaceNames: Set<String>,
     val defaultImportNames: Set<String>,
     val localDeclarationNames: Set<String>,
     val dynamicImports: DynamicImportBindings
 ) {
     /** Whether a binding of the module binds [name]: an import, a namespace or dynamic import, a top-level declaration. */
-    fun binds(name: String): Boolean = name in aliasMap || name in namespaceNames || name in localDeclarationNames
+    fun binds(name: String): Boolean = name in importNames || name in namespaceNames || name in localDeclarationNames
 
     /** The names a declaration sees, without its own, which names the declaration itself rather than a use. */
     fun without(ownName: String): ModuleNames = copy(localDeclarationNames = localDeclarationNames - ownName)
@@ -25,23 +25,12 @@ internal data class ModuleNames(
 
 internal object DeclarationPrepass {
     internal fun moduleNamesOf(rootNode: SyntaxNode, imports: List<ImportDeclaration>): ModuleNames = ModuleNames(
-        aliasMap = buildAliasMap(imports),
+        importNames = imports.mapNotNullTo(HashSet()) { it.bindingName },
         namespaceNames = imports.filter { it.isWildcard && it.kind == ImportKind.STANDARD }.mapNotNullTo(HashSet()) { it.bindingName },
         defaultImportNames = imports.filter { it.path.lastOrNull() == DEFAULT_EXPORT }.mapNotNullTo(HashSet()) { it.bindingName },
         localDeclarationNames = extractLocalDeclarationNames(rootNode),
         dynamicImports = DynamicImportBindings.of(rootNode)
     )
-
-    internal fun buildAliasMap(imports: List<ImportDeclaration>): Map<String, String> = imports
-        .mapNotNull { import ->
-            val localName = import.bindingName ?: return@mapNotNull null
-            val realName = if (import.isWildcard || import.path.lastOrNull() == DEFAULT_EXPORT) {
-                localName
-            } else {
-                import.path.lastOrNull() ?: return@mapNotNull null
-            }
-            localName to realName
-        }.toMap()
 
     internal fun extractLocalDeclarationNames(rootNode: SyntaxNode): Set<String> = rootNode
         .children()

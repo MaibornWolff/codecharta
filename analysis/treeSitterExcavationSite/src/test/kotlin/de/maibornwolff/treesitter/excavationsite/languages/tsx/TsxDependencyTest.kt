@@ -397,7 +397,7 @@ class TsxDependencyTest {
         }
 
         @Test
-        fun `should resolve import alias to original type name in usedTypes`() {
+        fun `should report a use of a renamed import under the local name it binds`() {
             // Arrange
             val code = """
                 import { MyType as MyRenamedType } from './MyType'
@@ -409,7 +409,7 @@ class TsxDependencyTest {
 
             // Assert
             val usedTypeNames = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("MyType")
+            assertThat(usedTypeNames).containsExactlyInAnyOrder("MyRenamedType")
         }
 
         @Test

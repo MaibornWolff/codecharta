@@ -35,10 +35,14 @@ internal class MemberImports(private val analysisRoot: File) {
             return target
         }
         val ownName = exports.nameOf(moduleFile, importedName)
-        if (ownName == importedName) return null
-        // The extractor writes a use of a renamed import under the imported name, `Model` for `import { Model as Base }`
-        return (module + ownName).also { targetByBinding[importedName] = Target(it, moduleFile = null) }
+        val boundName = boundNameOf(import, importedName)
+        if (ownName == importedName && boundName == importedName) return null
+        return (module + ownName).also { targetByBinding[boundName] = Target(it, moduleFile = null) }
     }
+
+    // `import { Model as Base }` binds `Base`; a re-export binds no name, its use is the name it re-exports
+    private fun boundNameOf(import: ImportDeclaration, importedName: String): String =
+        if (import.kind == ImportKind.MEMBER) import.bindingName ?: importedName else importedName
 
     // `import * as ns` binds the module itself, `import { shapes }` the module it exports by `export * as shapes`
     private fun boundModuleOf(import: ImportDeclaration, moduleFile: File): File? {

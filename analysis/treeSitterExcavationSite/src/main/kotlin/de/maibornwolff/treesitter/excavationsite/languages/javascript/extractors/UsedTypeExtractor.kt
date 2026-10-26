@@ -50,7 +50,6 @@ internal object UsedTypeExtractor {
     )
 
     fun extract(declaration: SyntaxNode, names: ModuleNames): Set<UsedType> {
-        val aliasMap = names.aliasMap
         val scopes = LocalScopes(declaration.startByte, declaration.endByte)
         val buckets = TreeTraversal
             .findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
@@ -82,9 +81,7 @@ internal object UsedTypeExtractor {
             typeIdentifiers, constructorCalls, memberAccesses, extensions,
             relevantIdentifiers, constraintTypes, typeAliasRhsTypes, jsxComponents, typeAssertions, genericTypeArgs
         ).flatten().map { markedGlobalIfFree(it, names) }
-        return (namesInScope + methodCalls + AsyncComponents.usesIn(declaration))
-            .map { usedType -> aliasMap[usedType.name]?.let { UsedType(name = it) } ?: usedType }
-            .toSet()
+        return (namesInScope + methodCalls + AsyncComponents.usesIn(declaration)).toSet()
     }
 
     // A name no module binding binds may mean a global (rule 3), which the analyzer looks it up among

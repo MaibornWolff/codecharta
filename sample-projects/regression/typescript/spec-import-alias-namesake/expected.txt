@@ -1,0 +1,5 @@
+# typescript.md, binding: import { A as B } binds B, an import of the name A from another module binds A
+file facade.ts -> dto/creature.ts
+file facade.ts -> model.ts
+leaf facade.ts#Facade -> dto/creature.ts#Creature
+leaf facade.ts#Facade -> model.ts#Creature

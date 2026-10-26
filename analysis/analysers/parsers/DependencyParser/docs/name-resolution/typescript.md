@@ -205,6 +205,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Specifiers 2.5: a library | `spec-library-import` | ok |
 | Specifiers: no project file | `spec-unresolved-specifier` | ok |
 | Binding: `import { A as B }` | `spec-import-alias` | ok |
+| Binding: `import { A as B }` beside an import of another `A` | `spec-import-alias-namesake` | ok |
 | Binding: `import type` | `spec-import-type` | ok |
 | Binding: `import * as ns` | `spec-namespace-import` | gap |
 | Binding: an import alone draws no edge | `spec-unused-import` | ok |

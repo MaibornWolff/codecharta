@@ -140,7 +140,7 @@ class TypescriptDependencyUsedTypeTest {
         }
 
         @Test
-        fun `should resolve import alias to original type name in usedTypes`() {
+        fun `should report a use of a renamed import under the local name it binds`() {
             // Arrange
             val code = """
                 import { MyType as MyRenamedType } from './MyType'
@@ -152,7 +152,7 @@ class TypescriptDependencyUsedTypeTest {
 
             // Assert
             val usedTypeNames = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("MyType")
+            assertThat(usedTypeNames).containsExactlyInAnyOrder("MyRenamedType")
         }
 
         @Test
@@ -230,7 +230,7 @@ class TypescriptDependencyUsedTypeTest {
         }
 
         @Test
-        fun `should resolve aliased lowercase import to original name as usedType`() {
+        fun `should report a renamed lower-case import under the local name it binds`() {
             // Arrange
             val code = """
                 import { Hash as createHash } from 'crypto'
@@ -242,7 +242,7 @@ class TypescriptDependencyUsedTypeTest {
 
             // Assert
             val usedTypeNames = result.declarations.first { it.name == "process" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("Hash")
+            assertThat(usedTypeNames).containsExactlyInAnyOrder("createHash")
         }
     }
 

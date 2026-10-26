@@ -601,7 +601,7 @@ class JavascriptDependencyTest {
     @Nested
     inner class CjsAliasUsages {
         @Test
-        fun `should resolve CJS destructured require alias to original name as usedType`() {
+        fun `should report a renamed CJS destructured require under the local name it binds`() {
             // Arrange
             val code = """
                 const { myMethod: alias } = require('./module')
@@ -615,7 +615,7 @@ class JavascriptDependencyTest {
 
             // Assert — MyClass also appears because JS class names are plain `identifier` nodes (PascalCase check)
             val usedTypeNames = result.declarations.first { it.name == "MyClass" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactly("myMethod")
+            assertThat(usedTypeNames).containsExactly("alias")
         }
 
         @Test

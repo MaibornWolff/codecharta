@@ -605,7 +605,7 @@ class TypescriptAnalyzerTest {
     }
 
     @Test
-    fun `should add used type identifier with alias to usedTypes of a Node`() {
+    fun `should add a use of a renamed import under the local name it binds to usedTypes of a Node`() {
         // Arrange
         val typescriptCode = """
             import { MyType as MyRenamedType } from './MyType'
@@ -625,7 +625,7 @@ class TypescriptAnalyzerTest {
 
         // Assert
         val expectedTypes = listOf(
-            Type.simple("MyType")
+            Type.simple("MyRenamedType")
         )
         val node = report.nodes[0]
         assertThat(node.usedTypes).containsAll(expectedTypes)
@@ -935,7 +935,7 @@ class TypescriptAnalyzerTest {
     }
 
     @Test
-    fun `should add alias for named commonjs imports to node dependencies`() {
+    fun `should add a renamed commonjs import to node dependencies and its use under the local name`() {
         // Arrange
         val typescriptCode = """
             const { myMethod: alias } = require('myModule');
@@ -955,7 +955,7 @@ class TypescriptAnalyzerTest {
 
         // Assert
         assertThat(report.nodes[0].dependencies).contains(Dependency(Path(listOf("myModule", "myMethod"))))
-        assertThat(report.nodes[0].usedTypes).contains(Type.simple("myMethod"))
+        assertThat(report.nodes[0].usedTypes).contains(Type.simple("alias"))
     }
 
     @Test
