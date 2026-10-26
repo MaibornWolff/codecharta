@@ -1,0 +1,3 @@
+# rust.md, simple name 3: a glob binds only what is visible to the importer
+file src/user.rs -> src/a.rs
+leaf src/user.rs#Holder -> src/a.rs#Creature

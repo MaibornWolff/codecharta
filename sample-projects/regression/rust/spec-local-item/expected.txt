@@ -1,0 +1,3 @@
+# rust.md, decision 8: an item in a body is no target; its names are uses of the function
+file src/fight.rs -> src/model.rs
+leaf src/fight.rs#fight -> src/model.rs#Speed

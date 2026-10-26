@@ -1,0 +1,3 @@
+# Shared rule 1: a Rust name means no declaration of another language
+file src/arena.rs -> src/ffi.rs
+leaf src/arena.rs#Arena -> src/ffi.rs#Creature

@@ -1,0 +1,3 @@
+# rust.md, use declarations: `use … as E` binds `E`
+file src/repo.rs -> src/model.rs
+leaf src/repo.rs#Repo -> src/model.rs#CreatureEntity

@@ -1,0 +1,3 @@
+# rust.md, paths: a path through a `use` without visibility means what it names
+file src/app/child.rs -> src/model.rs
+leaf src/app/child.rs#make -> src/model.rs#Creature

@@ -1,0 +1,3 @@
+# rust.md, modules, decision 2: a file no `mod` reaches keeps the path of the file system
+file src/legacy/old.rs -> src/model.rs
+leaf src/legacy/old.rs#Old -> src/model.rs#Creature

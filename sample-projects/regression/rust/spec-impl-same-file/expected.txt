@@ -1,0 +1,5 @@
+# rust.md, declarations, decision 3: an impl in its type's file belongs to the type
+file src/creature.rs -> src/fightable.rs
+file src/creature.rs -> src/speed.rs
+leaf src/creature.rs#Creature -> src/fightable.rs#Fightable
+leaf src/creature.rs#Creature -> src/speed.rs#Speed

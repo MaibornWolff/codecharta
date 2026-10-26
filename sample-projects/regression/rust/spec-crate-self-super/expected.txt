@@ -1,0 +1,6 @@
+# rust.md, paths: `crate`, `self` and `super`
+file src/model/arena.rs -> src/model/mod.rs
+file src/model/arena.rs -> src/model/speed.rs
+leaf src/model/arena.rs#Arena -> src/model/arena.rs#Deep
+leaf src/model/arena.rs#Arena -> src/model/mod.rs#Creature
+leaf src/model/arena.rs#Arena -> src/model/speed.rs#Speed

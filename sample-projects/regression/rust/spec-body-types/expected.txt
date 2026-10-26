@@ -1,0 +1,5 @@
+# rust.md, decision 4: types in a body (let, turbofish, closure, cast) are uses
+file src/body.rs -> src/model.rs
+leaf src/body.rs#body -> src/model.rs#Dice
+leaf src/body.rs#body -> src/model.rs#Kind
+leaf src/body.rs#body -> src/model.rs#Speed

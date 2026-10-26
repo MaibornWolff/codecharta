@@ -1,0 +1,3 @@
+# rust.md, decision 9: a project crate counts whether or not it is a dependency
+file crates/app/src/lib.rs -> crates/model/src/lib.rs
+leaf crates/app/src/lib.rs#Arena -> crates/model/src/lib.rs#Creature

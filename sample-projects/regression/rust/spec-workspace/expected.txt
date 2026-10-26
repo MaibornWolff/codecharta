@@ -1,0 +1,3 @@
+# rust.md, simple name 4: another crate of the workspace by its name
+file crates/app/src/lib.rs -> crates/model/src/lib.rs
+leaf crates/app/src/lib.rs#Arena -> crates/model/src/lib.rs#Creature

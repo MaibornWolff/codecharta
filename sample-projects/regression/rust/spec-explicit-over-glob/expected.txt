@@ -1,0 +1,3 @@
+# rust.md, simple name 2 and 3: an explicit `use` wins over a glob
+file src/user.rs -> src/b.rs
+leaf src/user.rs#Holder -> src/b.rs#Creature
