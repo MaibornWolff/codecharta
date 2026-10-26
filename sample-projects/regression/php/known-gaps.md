@@ -16,35 +16,6 @@ missing leaf Model/Arena.php#Arena -> Model/Base.php#Base
 missing leaf Model/Arena.php#Arena -> Model/Fightable.php#Fightable
 ```
 
-## spec-attribute
-
-Attributes are not read.
-
-```text
-missing file App/Facade.php -> Ann/Cached.php
-missing file App/Facade.php -> Ann/Transactional.php
-missing leaf App/Facade.php#Facade -> Ann/Cached.php#Cached
-missing leaf App/Facade.php#Facade -> Ann/Transactional.php#Transactional
-```
-
-## spec-catch-instanceof
-
-`instanceof` is not read.
-
-```text
-missing file App/Spotter.php -> Model/Centaur.php
-missing leaf App/Spotter.php#Spotter -> Model/Centaur.php#Centaur
-```
-
-## spec-class-member-access
-
-A static property `X::$count` is not read.
-
-```text
-missing file App/Herd.php -> Model/Counter.php
-missing leaf App/Herd.php#Herd -> Model/Counter.php#Counter
-```
-
 ## spec-enum-implements
 
 `implements` is read for classes only.

@@ -30,7 +30,8 @@ internal object ConstantReads {
         return parent.type != BINARY_EXPRESSION || !isInstanceofClass(name)
     }
 
-    private fun isInstanceofClass(name: SyntaxNode): Boolean {
+    /** Whether a name is the class on the right of an `instanceof`. */
+    fun isInstanceofClass(name: SyntaxNode): Boolean {
         val expression = name.parent
         return expression.getChildByFieldName(RIGHT_FIELD).orNull() == name && expression.children().any { it.type == INSTANCEOF }
     }
