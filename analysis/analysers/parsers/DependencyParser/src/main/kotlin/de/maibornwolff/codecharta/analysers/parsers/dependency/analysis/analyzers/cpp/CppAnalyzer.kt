@@ -27,6 +27,7 @@ class CppAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         val physicalPath = Path.fromPhysicalPath(fileInfo.physicalPath)
         val physicalPathParts = splitNameToParts(fileInfo.physicalPath).filter { it != "." }
         val importsByNamespace = result.imports
+            .filter { it.bindingName == null }
             .groupBy { it.namespacePath }
             .mapValues { (_, imports) -> imports.map { it.normalize(physicalPath) } }
         val globalImports = importsByNamespace[emptyList()].orEmpty()

@@ -9,6 +9,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 internal object ImportExtractor {
     private const val PREPROC_INCLUDE = "preproc_include"
     private const val USING_DECLARATION = "using_declaration"
+    private const val NAMESPACE_ALIAS_DEFINITION = "namespace_alias_definition"
+    private const val NAME_FIELD = "name"
     private const val SYSTEM_LIB_STRING = "system_lib_string"
     private const val STRING_LITERAL = "string_literal"
     private const val IDENTIFIER = "identifier"
@@ -32,11 +34,12 @@ internal object ImportExtractor {
     )
 
     fun extract(rootNode: SyntaxNode): List<ImportDeclaration> = TreeTraversal
-        .findAllDescendantsOfType(rootNode, PREPROC_INCLUDE, USING_DECLARATION)
+        .findAllDescendantsOfType(rootNode, PREPROC_INCLUDE, USING_DECLARATION, NAMESPACE_ALIAS_DEFINITION)
         .mapNotNull { node ->
             when (node.type) {
                 PREPROC_INCLUDE -> toIncludeImport(node)
                 USING_DECLARATION -> toUsingImport(node)
+                NAMESPACE_ALIAS_DEFINITION -> toNamespaceAlias(node)
                 else -> null
             }
         }
@@ -83,6 +86,18 @@ internal object ImportExtractor {
             path = splitNamespacePath(qualifiedName),
             isWildcard = false,
             namespacePath = namespacePath
+        )
+    }
+
+    // namespace m = a::b; binds m to the namespace a::b in the namespace it is written in
+    private fun toNamespaceAlias(node: SyntaxNode): ImportDeclaration? {
+        val alias = node.getChildByFieldName(NAME_FIELD).takeUnless { it.isNull } ?: return null
+        val target = node.namedChildren().lastOrNull()?.takeIf { it.startByte != alias.startByte } ?: return null
+        return ImportDeclaration(
+            path = splitNamespacePath(target.text),
+            isWildcard = false,
+            namespacePath = CppNamespaceWalker.walkAncestorsFrom(node),
+            bindingName = alias.text
         )
     }
 
