@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.golang.GoCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.golang.GoNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.java.JavaNameRules
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.php.PhpNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.python.PythonNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.TypescriptNameRules
@@ -26,6 +27,7 @@ internal object LanguageRules {
         SupportedLanguage.CPP -> CppNameRules
         SupportedLanguage.JAVA, SupportedLanguage.KOTLIN -> JavaNameRules
         SupportedLanguage.GO -> GoNameRules
+        SupportedLanguage.PHP -> PhpNameRules
         SupportedLanguage.PYTHON -> PythonNameRules
         SupportedLanguage.TYPESCRIPT, SupportedLanguage.JAVASCRIPT, SupportedLanguage.VUE -> TypescriptNameRules
         else -> DefaultNameRules
