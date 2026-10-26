@@ -203,5 +203,41 @@ class AngularDependencyTest {
             // Assert
             assertThat(elements).containsExactly(AngularSelector(element = "ng-template", attributes = mapOf("title" to "map")))
         }
+
+        @Test
+        fun `should report property, two-way and event bindings by name, a two-way one also with its change event`() {
+            // Arrange
+            val code = """<input [appGlow]="lit" [(appLevel)]="level" (appLit)="light()" (window:resize)="fit()" />"""
+
+            // Act
+            val elements = elementsOf(code)
+
+            // Assert
+            assertThat(elements.single().attributes).containsOnlyKeys("appGlow", "appLevel", "appLevelChange", "appLit", "resize")
+        }
+
+        @Test
+        fun `should report bindings written with a prefix like those written with brackets`() {
+            // Arrange
+            val code = """<input bind-appGlow="lit" bindon-appLevel="level" on-appLit="light()" />"""
+
+            // Act
+            val elements = elementsOf(code)
+
+            // Assert
+            assertThat(elements.single().attributes).containsOnlyKeys("appGlow", "appLevel", "appLevelChange", "appLit")
+        }
+
+        @Test
+        fun `should leave out attribute, class, style and animation bindings`() {
+            // Arrange
+            val code = """<div [attr.role]="r" [class.lit]="l" [style.width.px]="w" [@fade]="f"></div>"""
+
+            // Act
+            val elements = elementsOf(code)
+
+            // Assert
+            assertThat(elements).containsExactly(AngularSelector(element = "div"))
+        }
     }
 }
