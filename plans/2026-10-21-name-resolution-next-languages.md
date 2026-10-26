@@ -13,9 +13,9 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 ## Resume here (for a fresh agent)
 
 - **State:** Java, Kotlin, C#, Go and Python are done. TypeScript, JavaScript, Vue and Angular templates are in
-  progress: the TypeScript part is pushed on `fix/dependency-name-resolution-typescript`; the Vue part goes on on
-  branch `fix/dependency-name-resolution-vue` (cut from it, not pushed yet): resume with the section "TypeScript,
-  JavaScript, Vue and Angular templates" below, at "Resume Vue here".
+  progress: TypeScript and Vue are pushed (`fix/dependency-name-resolution-typescript`, `-vue`); Angular (step 24) is
+  done on `fix/dependency-name-resolution-angular` (cut from the Vue branch, not pushed yet): resume with the section
+  "TypeScript, JavaScript, Vue and Angular templates" below, at "Resume Angular here".
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -174,15 +174,35 @@ Steps, one commit each:
 21. [x] Vue: tags by binding, `components`, global registration, the one component
 22. [x] Vue: template expressions are uses, an import alone is none
 23. [x] Vue: named exports of a plain `<script>` (closed by step 22)
-24. [ ] Angular: a template element matches selectors as the compiler does (decision 14, branch
+24. [x] Angular: a template element matches selectors as the compiler does (decision 14, branch
     `fix/dependency-name-resolution-angular`, 8 gaps):
-    1. [ ] TSE: a `@Component` or `@Directive` selector as its alternatives (`AngularSelector`)
-    2. [ ] TSE: a template's elements as selectors: tag, static attributes, classes
-    3. [ ] TSE: property, two-way and event bindings as attributes
-    4. [ ] TSE: a structural directive as an `ng-template` element with its microsyntax keys
-    5. [ ] a template element uses every class whose selector matches it
-    6. [ ] refactor: a template reports only pipe names, a class only its pipe name
+    1. [x] TSE: a `@Component` or `@Directive` selector as its alternatives (`AngularSelector`)
+    2. [x] TSE: a template's elements as selectors: tag, static attributes, classes
+    3. [x] TSE: property, two-way and event bindings as attributes
+    4. [x] TSE: a structural directive as an `ng-template` element with its microsyntax keys
+    5. [x] a template element uses every class whose selector matches it (template nodes carry their elements
+       first, two test moves as refactors before)
+    6. [x] refactor: a template reports only pipe names, a class only its pipe name
 25. [ ] changelog, README, gh-pages, plan
+
+### Resume Angular here (2026-10-26, Angular done: step 24)
+
+- **Branch** `fix/dependency-name-resolution-angular`, waiting for Christian's review and push; **last build**
+  `ccsh-ang8` (head), the next chain is `chain.sh ang8 ang9`. Checkpoint probes worse than the release: the nine known,
+  no new one. No gap left in `regression/angular/`.
+- **Decision 14** (Christian, 2026-10-26): an element is matched as Angular's `SelectorMatcher` does (tag, attributes
+  with values, bindings `[x]` `[(x)]` `(x)` and their `bind-`/`on-`/`bindon-` forms, classes; a structural directive
+  is an `ng-template` with `x` and `x<Key>`); every match is a use; a selector several classes declare goes through
+  the scope as before. Expected lines of the probes come from Angular 22's compiler: `node
+  .claude/name-resolution-tools/ng/ngmatch.mjs <probe src>` prints per element the classes it matches.
+- **How it is built:** TSE `AngularSelectorParser` (decorator selector → `AngularDeclaration.selectors`, `@Directive`
+  read too), `TemplateElements` + `StructuralDirectives` (template → `AngularDeclaration.elements` on the template's
+  SCRIPT declaration; Christian chose this over a new `Declaration` field), template used types = pipe names only,
+  `pipeName` replaced `templateNames`. Parser: template nodes carry `AngularMetadata(elements)`,
+  `AngularSelectorMatch.matches`, `AngularTemplateReferences` groups matching classes by selector alternative.
+- **Not supported:** `hostDirectives` (the four unmatched `cc*` directives of `visualization/app` are host directives),
+  `forRoot()`, microsyntax keys tree-sitter-angular cannot parse (`then` without a colon).
+- **Next:** 19 (drop the heuristics), 25 (changelog, README, gh-pages) as below.
 
 ### Resume Vue here (2026-10-23, Vue done: steps 20 to 23)
 
