@@ -6,12 +6,16 @@ import java.util.concurrent.ConcurrentHashMap
 
 /**
  * The files an `#include` means and the include closure of a file, by "Include paths" and "Visibility" of
- * `docs/name-resolution/cpp.md`, over every C and C++ file below the analysis root. A file is its path below the root
- * in segments. The include lines are read as text, as only the text tells `"p"` from `<p>`.
+ * `docs/name-resolution/cpp.md`, over every file below the analysis root, as an include may name a header without an
+ * extension or a fragment such as `.inc`. A file is its path below the root in segments. The include lines are read
+ * as text, as only the text tells `"p"` from `<p>`.
  */
-internal class CppIncludes private constructor(private val analysisRoot: File, private val files: List<List<String>>) {
-    private val fileSet = files.toHashSet()
-    private val filesByName: Map<String, List<List<String>>> = files.groupBy { it.last() }
+internal class CppIncludes private constructor(private val analysisRoot: File, private val allFiles: List<List<String>>) {
+    /** The C and C++ files below the root, in path order. */
+    val files: List<List<String>> = allFiles.filter { it.last().substringAfterLast('.', "").lowercase() in CPP_SUFFIXES }
+
+    private val fileSet = allFiles.toHashSet()
+    private val filesByName: Map<String, List<List<String>>> = allFiles.groupBy { it.last() }
     private val includedByFile = ConcurrentHashMap<List<String>, List<List<String>>>()
     private val closureByFile = ConcurrentHashMap<List<String>, Set<List<String>>>()
 
@@ -29,7 +33,7 @@ internal class CppIncludes private constructor(private val analysisRoot: File, p
     private fun includedBy(file: List<String>): List<List<String>> = includedByFile.computeIfAbsent(file) {
         val source = analysisRoot.resolve(file.joinToString(File.separator))
         if (!source.isFile) return@computeIfAbsent emptyList()
-        source.readLines().mapNotNull { INCLUDE_LINE.matchEntire(it) }.mapNotNull { line ->
+        source.readText().replace(LINE_CONTINUATION, "").lines().mapNotNull { INCLUDE_LINE.matchEntire(it) }.mapNotNull { line ->
             fileOf(line.groupValues[INCLUDE_PATH].split(SEPARATOR).filter { it.isNotEmpty() }, line.groupValues[OPENING] == ANGLE, file)
         }
     }
@@ -60,6 +64,7 @@ internal class CppIncludes private constructor(private val analysisRoot: File, p
 
     companion object {
         private val INCLUDE_LINE = Regex("""\s*#\s*include\s*([<"])([^>"]+)[>"].*""")
+        private val LINE_CONTINUATION = Regex("""\\\s*\n\s*""")
         private const val OPENING = 1
         private const val INCLUDE_PATH = 2
         private const val ANGLE = "<"
@@ -68,6 +73,7 @@ internal class CppIncludes private constructor(private val analysisRoot: File, p
         private const val PARENT_FOLDER = ".."
         private const val HIDDEN_PREFIX = "."
         private val SKIPPED_FOLDERS = setOf("node_modules")
+        private val CPP_SUFFIXES = SupportedLanguage.CPP.suffixes.mapTo(HashSet()) { it.lowercase() }
         private val includesByRoot = ConcurrentHashMap<String, CppIncludes>()
 
         /** The includes of [analysisRoot], read once per root, as every C and C++ file of an analysis asks for them. */
@@ -75,11 +81,10 @@ internal class CppIncludes private constructor(private val analysisRoot: File, p
 
         // Sorted, so of equally near files the first in path order wins
         private fun read(analysisRoot: File): CppIncludes {
-            val suffixes = SupportedLanguage.CPP.suffixes.mapTo(HashSet()) { it.lowercase() }
             val files = analysisRoot
                 .walkTopDown()
                 .onEnter { folder -> folder == analysisRoot || !(folder.name.startsWith(HIDDEN_PREFIX) || folder.name in SKIPPED_FOLDERS) }
-                .filter { it.isFile && it.extension.lowercase() in suffixes }
+                .filter { it.isFile }
                 .map { it.relativeTo(analysisRoot).invariantSeparatorsPath.split(SEPARATOR) }
                 .sortedBy { it.joinToString(SEPARATOR) }
                 .toList()
