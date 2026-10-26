@@ -159,4 +159,21 @@ class CppVisibleNamesTest {
         // Assert
         assertThat(found).isEqualTo(path("repo.Entity"))
     }
+
+    @Test
+    fun `should read a name with a leading global scope from the global namespace`() {
+        // Arrange
+        val names =
+            namesOf(
+                "struct Config {};\nnamespace a { struct Config {}; }\nnamespace game { namespace a { struct Config {}; } struct App {}; }"
+            )
+
+        // Act
+        val global = names.resolve(listOf("::", "Config"), path("game.App"))
+        val qualified = names.resolve(listOf("::", "a", "Config"), path("game.App"))
+
+        // Assert
+        assertThat(global).isEqualTo(path("Config"))
+        assertThat(qualified).isEqualTo(path("a.Config"))
+    }
 }

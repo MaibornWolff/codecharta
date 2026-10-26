@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.cpp
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_CPP_GLOBAL_SCOPE
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
 
 /**
@@ -23,8 +24,11 @@ internal class CppVisibleNames(
         .toMap()
 
     /** The path [written] means, written as `Q::N` segments inside the declaration of path [scope]. */
-    fun resolve(written: List<String>, scope: List<String>): List<String>? =
-        if (written.size == 1) resolveSimple(written.single(), scope) else resolveQualified(written, scope)
+    fun resolve(written: List<String>, scope: List<String>): List<String>? = when {
+        written.first() == TSE_CPP_GLOBAL_SCOPE -> resolveGlobal(written.drop(1))
+        written.size == 1 -> resolveSimple(written.single(), scope)
+        else -> resolveQualified(written, scope)
+    }
 
     /** The direct base classes of the class [path], each looked up where the class is declared. */
     fun basesOf(path: List<String>): List<List<String>> {
@@ -36,9 +40,16 @@ internal class CppVisibleNames(
 
     private fun resolveSimple(name: String, scope: List<String>): List<String>? = lookup(name, scope) { it in declared }
 
+    private fun resolveGlobal(written: List<String>): List<String>? {
+        if (written.size == 1) return written.takeIf { it in declared }
+        return written.first().let { listOf(it) }.takeIf { it in scopes || it in aliases }?.let { below(it, written) }
+    }
+
     // The first segment of a qualified name is looked up as a simple name, as a namespace, class or alias of one
-    private fun resolveQualified(written: List<String>, scope: List<String>): List<String>? {
-        val first = lookup(written.first(), scope) { it in scopes || it in aliases } ?: return null
+    private fun resolveQualified(written: List<String>, scope: List<String>): List<String>? =
+        lookup(written.first(), scope) { it in scopes || it in aliases }?.let { below(it, written) }
+
+    private fun below(first: List<String>, written: List<String>): List<String>? {
         val qualifier = written.drop(1).dropLast(1).fold(unaliased(first) ?: return null) { outer, segment ->
             unaliased(outer + segment) ?: return null
         }

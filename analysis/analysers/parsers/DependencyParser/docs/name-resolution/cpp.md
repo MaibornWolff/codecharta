@@ -137,7 +137,7 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 | 3. namespace alias | `cpp/spec-namespace-alias` | ok |
 | 4. library name | `cpp/spec-library-namespace` | ok |
 | Qualified: first segment as a simple name | `cpp/spec-qualified-relative` | ok |
-| Qualified: `::N` | `cpp/spec-qualified-global` | gap |
+| Qualified: `::N` | `cpp/spec-qualified-global` | ok |
 | Qualified, decision 10: the qualifying class is no dependency | `cpp/spec-qualified-member-type` | ok |
 | Qualified: a member below a declaration | `cpp/spec-member-of-type` | gap |
 | Which file 1, decision 6: the included copy | `cpp/spec-closure-over-nearest` | ok |
