@@ -12,9 +12,9 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 ## Resume here (for a fresh agent)
 
-- **State:** Java, Kotlin, C#, Go, Python, TypeScript, JavaScript, Vue and Angular templates are done and pushed (last:
-  `fix/dependency-name-resolution-typescript-bindings`). C and C++ are done on `fix/dependency-name-resolution-c-cpp`
-  (not pushed yet), see "C and C++" and "Resume C/C++ here" below. Next language by the order below: PHP.
+- **State:** Java, Kotlin, C#, Go, Python, TypeScript, JavaScript, Vue and Angular templates, C and C++ are done and
+  pushed (last: `fix/dependency-name-resolution-c-cpp`). PHP is in progress on `fix/dependency-name-resolution-php`,
+  see "PHP" below.
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -396,6 +396,20 @@ name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these a
 14. [x] `SpeedType::WALKING` in an expression is a use of `SpeedType`
 15. [x] changelog, README, gh-pages, the extractor's README, spec table (no gap left), FINDINGS of both samples, plan
 
+## PHP (in progress, 2026-10-26)
+
+Branch `fix/dependency-name-resolution-php`, cut from the pushed `-c-cpp`; comparison build of the first commit
+`ccsh-cc29`. Christian: "do it like the compiler does it, else like the other languages". Ground truth: PHP 8.4.25
+from php-wasm in the session scratchpad (`npm i --ignore-scripts @php-wasm/node@3.1.56`, runner `php.mjs`). Spec
+`docs/name-resolution/php.md`, decisions 1–4 chosen by Christian on 2026-10-26: functions and constants are
+declarations with PHP's global fallback; an include uses the included file's script leaf; include paths relative to
+the including file; a class name counts in every place the compiler resolves one. Decisions 5–9 derived (case, global
+namespace path, declarations in blocks, script leaf, docblocks).
+
+1. [x] spec page
+2. [ ] probes under `sample-projects/regression/php/spec-*`, each run in PHP 8.4
+3. [ ] implementation, one commit per group of gaps (list announced after the probes)
+
 ## Steps
 
 - [x] Ask Christian which language comes next: C# (2026-10-22)
@@ -404,4 +418,5 @@ name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these a
 - [x] Next language: TypeScript, JavaScript, Vue and Angular templates (left to Claude by Christian, 2026-10-23), done
   2026-10-26
 - [x] Next language: C and C++ (Christian, 2026-10-26), done 2026-10-26
+- [ ] Next language: PHP (by the order above, 2026-10-26)
 - [ ] For each language: spec, probes, implementation commits, acceptance
