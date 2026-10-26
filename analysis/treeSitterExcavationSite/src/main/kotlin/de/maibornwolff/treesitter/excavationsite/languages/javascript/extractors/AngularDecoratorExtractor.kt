@@ -1,6 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularDeclaration
+import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularSelector
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ancestors
@@ -8,15 +9,17 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 
 /**
  * What the Angular decorator of a class declares: the elements its `@Component` selector names and the name of its
- * `@Pipe`, the names a template refers to the class by, the template file of a component, and the classes a component
- * or an `@NgModule` imports, declares and exports. An attribute or class selector names no element, so it is left out.
- * The inline template of a component is a source of its own, see [InlineTemplateExtractor].
+ * `@Pipe`, the names a template refers to the class by, the selector of a component or `@Directive`, the template file
+ * of a component, and the classes a component or an `@NgModule` imports, declares and exports. An attribute or class
+ * selector names no element, so it is left out of the names. The inline template of a component is a source of its
+ * own, see [InlineTemplateExtractor].
  */
 internal object AngularDecoratorExtractor {
     private const val COMPONENT = "Component"
     private const val SELECTOR = "selector"
     private const val TEMPLATE_URL = "templateUrl"
     private const val TEMPLATE = "template"
+    private const val DIRECTIVE = "Directive"
     private const val PIPE = "Pipe"
     private const val NG_MODULE = "NgModule"
     private const val IMPORTS = "imports"
@@ -52,6 +55,7 @@ internal object AngularDecoratorExtractor {
         val call = callOf(decorator) ?: return null
         return when (TreeTraversal.findFirstChildTextByType(call, IDENTIFIER)) {
             COMPONENT -> componentOf(call)
+            DIRECTIVE -> AngularDeclaration(selectors = selectorsOf(call))
             PIPE -> AngularDeclaration(templateNames = setOfNotNull(stringPropertyOf(call, PIPE_NAME)))
             NG_MODULE -> moduleOf(call)
             else -> null
@@ -60,9 +64,13 @@ internal object AngularDecoratorExtractor {
 
     private fun componentOf(call: SyntaxNode): AngularDeclaration = AngularDeclaration(
         templateNames = stringPropertyOf(call, SELECTOR)?.let { elementsOf(it) }.orEmpty().toSet(),
+        selectors = selectorsOf(call),
         templateUrl = stringPropertyOf(call, TEMPLATE_URL),
         imports = classesOf(call, IMPORTS)
     )
+
+    private fun selectorsOf(call: SyntaxNode): List<AngularSelector> =
+        stringPropertyOf(call, SELECTOR)?.let { AngularSelectorParser.parse(it) }.orEmpty()
 
     private fun moduleOf(call: SyntaxNode): AngularDeclaration = AngularDeclaration(
         imports = classesOf(call, IMPORTS),
