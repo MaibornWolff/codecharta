@@ -225,6 +225,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Qualified: a chain through a re-exported module | `spec-qualified-chain` | ok |
 | Qualified: a static member, an enum member | `spec-static-member` | ok |
 | Qualified: a member of a value | `spec-member-on-value` | ok |
+| Qualified: a method of a value named like an imported class | `spec-member-call-on-value` | ok |
 | Shared rule 1, name scope | `spec-name-scope` | ok |
 | Shared rule 4, self | `spec-self` | ok |
 | JavaScript, binding: `const x = require` | `javascript/spec-commonjs-require-module` | ok |

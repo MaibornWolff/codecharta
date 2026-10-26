@@ -1,0 +1,4 @@
+# typescript.md, qualified name: p.N on a value is a member of its type, no edge, also where N is an imported name
+file view.ts -> render.ts
+leaf view.ts#draw -> view.ts#Widget
+leaf view.ts#make -> render.ts#Render

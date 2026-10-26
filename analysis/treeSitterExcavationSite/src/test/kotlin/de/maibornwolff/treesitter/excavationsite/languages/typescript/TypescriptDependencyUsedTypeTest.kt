@@ -346,6 +346,22 @@ class TypescriptDependencyUsedTypeTest {
     @Nested
     inner class UsedTypeEdgeCases {
         @Test
+        fun `should report no use of a method called on a value, also where its name starts upper case`() {
+            // Arrange
+            val code = """
+                import { Render } from './render'
+                export function draw(widget: Widget): void { widget.Render() }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+            // Assert
+            val usedTypeNames = result.declarations.first { it.name == "draw" }.usedTypes.map { it.name }
+            assertThat(usedTypeNames).containsExactlyInAnyOrder("Widget")
+        }
+
+        @Test
         fun `should report a free lower-case constructor as a possible global`() {
             // Arrange
             val code = "export class Foo { x = new xmlParser() }"

@@ -35,7 +35,6 @@ internal object UsedTypeExtractor {
         TYPE_ANNOTATION,
         NEW_EXPRESSION,
         MEMBER_EXPRESSION,
-        CALL_EXPRESSION,
         EXTENDS_CLAUSE,
         EXTENDS_TYPE_CLAUSE,
         IMPLEMENTS_CLAUSE,
@@ -58,7 +57,6 @@ internal object UsedTypeExtractor {
         val typeIdentifiers = collectTypeIdentifiersFromNodes(buckets[TYPE_ANNOTATION].orEmpty(), scopes)
         val constructorCalls = extractConstructorCalls(buckets, names, scopes)
         val memberAccesses = extractMemberAccesses(buckets, names, scopes)
-        val methodCalls = extractMethodCalls(buckets)
         val extensions = extractExtensions(buckets, scopes)
         val relevantIdentifiers = extractRelevantIdentifiers(buckets, names)
 
@@ -81,7 +79,7 @@ internal object UsedTypeExtractor {
             typeIdentifiers, constructorCalls, memberAccesses, extensions,
             relevantIdentifiers, constraintTypes, typeAliasRhsTypes, jsxComponents, typeAssertions, genericTypeArgs
         ).flatten().map { markedGlobalIfFree(it, names) }
-        return (namesInScope + methodCalls + AsyncComponents.usesIn(declaration)).toSet()
+        return (namesInScope + AsyncComponents.usesIn(declaration)).toSet()
     }
 
     // A name no module binding binds may mean a global (rule 3), which the analyzer looks it up among
@@ -132,17 +130,6 @@ internal object UsedTypeExtractor {
             NamespaceMembers.useOf(node, names, scopes)?.let { return@mapNotNull it }
             val isUpperCaseRoot = root != null && root.text.firstOrNull()?.isUpperCase() == true
             if (isUpperCaseRoot && names.dynamicImports.exportOf(root) == null) UsedType(name = root.text.trim()) else null
-        }
-
-    private fun extractMethodCalls(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
-        buckets[CALL_EXPRESSION].orEmpty().mapNotNull { callNode ->
-            val memberExpr = callNode.children().firstOrNull { it.type == MEMBER_EXPRESSION }
-                ?: return@mapNotNull null
-            val prop = memberExpr.children().firstOrNull { it.type == PROPERTY_IDENTIFIER }
-                ?: return@mapNotNull null
-            val name = prop.text.trim()
-            if (name.firstOrNull()?.isUpperCase() != true) return@mapNotNull null
-            UsedType(name = name)
         }
 
     private fun extractExtensions(buckets: Map<String, List<SyntaxNode>>, scopes: LocalScopes): List<UsedType> {
