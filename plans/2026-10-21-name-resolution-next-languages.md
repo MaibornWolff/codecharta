@@ -347,8 +347,8 @@ name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these a
   `CppAnalyzer` (exact paths, unresolved uses left out, template arguments kept), `CppNameRules` exact,
   `CppCopyRules` (closure copy, else nearest). TSE markers: `FORWARD_DECLARATION`, `ALIAS` first parent segments;
   namespace alias = import with `bindingName`.
-- **Helpers** (scratchpad of this session, gone with it; rebuild if needed): `mkprobes.py` writes the probes,
-  `compile-probes.sh` compiles them with `zig c++` (pip `ziglang` into a target dir); tools folder
+- **Helpers** in the tools folder `cpp/`: `mkprobes.py [lang/probe]` writes the probes (and `probe-meta.json`),
+  `compile-probes.sh` compiles each probe file alone (`ZIG=<path to zig>`, from `pip install --target <dir> ziglang`);
   `scratch/regen-gaps.py [lang/probe=cause]` rewrites both known-gaps.md and the spec table from `scratch/pc-<lang>/`,
   filled by `probecheck.sh` (clear `scratch/pc` first, it keeps stale files). `lines.py` now prints usage and flags.
 - **Lesson:** a switch to exact names loses every line the old heuristics found by accident; run the checkpoint

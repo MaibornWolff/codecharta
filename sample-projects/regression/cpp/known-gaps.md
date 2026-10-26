@@ -53,13 +53,11 @@ missing leaf Creature.cpp#Creature -> Creature.hpp#Creature
 
 ## spec-qualified-global
 
-`::Config` is looked up by its simple name, so the namespace's `Config` wins over the global one.
+TSE reports ::Config with a leading global scope segment, which the lookup does not read yet.
 
 ```text
 missing file app.hpp -> config.hpp
 missing leaf app.hpp#App -> config.hpp#Config
-extra file app.hpp -> game/config.hpp
-extra leaf app.hpp#App -> game/config.hpp#Config
 ```
 
 ## spec-template-out-of-line-member

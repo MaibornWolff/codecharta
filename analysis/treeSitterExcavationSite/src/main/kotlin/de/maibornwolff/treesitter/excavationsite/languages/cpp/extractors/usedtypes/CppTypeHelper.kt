@@ -16,6 +16,7 @@ internal object CppTypeHelper {
     private const val PRIMITIVE_TYPE = "primitive_type"
     private const val SIZED_TYPE_SPECIFIER = "sized_type_specifier"
     private const val SCOPE_FIELD = "scope"
+    const val GLOBAL_SCOPE = "::"
     private const val TYPE_FIELD = "type"
 
     private val TYPE_NODE_TYPES =
@@ -75,13 +76,18 @@ internal object CppTypeHelper {
         return extractType(argNode)
     }
 
+    // A leading :: names the global namespace, reported as the first prefix segment GLOBAL_SCOPE
     fun extractRightmostSegment(qualifiedId: SyntaxNode): UsedType? = QualifiedIdentifierPath.readLeaf(qualifiedId) { scopeSegments, leaf ->
+        val prefix = (if (isGloballyQualified(qualifiedId)) listOf(GLOBAL_SCOPE) else emptyList()) + scopeSegments
         when {
             leaf == null -> null
-            leaf.type in TEMPLATE_LIKE_TYPES -> extractTemplateLike(leaf)?.copy(namespacePrefix = scopeSegments)
-            else -> leaf.text.trim().takeIf { it.isNotEmpty() }?.let { UsedType(name = it, namespacePrefix = scopeSegments) }
+            leaf.type in TEMPLATE_LIKE_TYPES -> extractTemplateLike(leaf)?.copy(namespacePrefix = prefix)
+            else -> leaf.text.trim().takeIf { it.isNotEmpty() }?.let { UsedType(name = it, namespacePrefix = prefix) }
         }
     }
+
+    private fun isGloballyQualified(qualifiedId: SyntaxNode): Boolean =
+        qualifiedId.getChildByFieldName(SCOPE_FIELD).isNull && qualifiedId.children().firstOrNull()?.type == GLOBAL_SCOPE
 
     fun extractSingleSegmentScope(qualifiedId: SyntaxNode): UsedType? {
         val scope = qualifiedId.getChildByFieldName(SCOPE_FIELD).orNull() ?: return null
