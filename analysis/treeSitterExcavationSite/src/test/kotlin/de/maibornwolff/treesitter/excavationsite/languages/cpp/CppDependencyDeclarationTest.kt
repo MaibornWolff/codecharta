@@ -213,6 +213,44 @@ class CppDependencyDeclarationTest {
     }
 
     @Test
+    fun `should report an out-of-line member of a template as an implementation part of the template`() {
+        // Arrange
+        val code = "template <class T> int Pool<T>::size() const { Counter counter{0}; return counter.count; }"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations).containsExactly(
+            Declaration(
+                name = "Pool",
+                type = DeclarationType.CLASS,
+                usedTypes = setOf(UsedType("int"), UsedType("Counter")),
+                parentPath = listOf(IMPLEMENTATION)
+            )
+        )
+    }
+
+    @Test
+    fun `should report an explicit specialization as an implementation part of its template that uses the arguments`() {
+        // Arrange
+        val code = "namespace store { template <> class Repository<Centaur> { Centaur *centaurs; }; }"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations).containsExactly(
+            Declaration(
+                name = "Repository",
+                type = DeclarationType.CLASS,
+                usedTypes = setOf(UsedType("Centaur")),
+                parentPath = listOf(IMPLEMENTATION, "store")
+            )
+        )
+    }
+
+    @Test
     fun `should report no forward declaration for a class named in the type of a field`() {
         // Arrange
         val code = "struct Nest { struct Roost *held; };"

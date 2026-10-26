@@ -112,8 +112,8 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 | Declarations, decision 4: a `using` alias | `cpp/spec-alias-using` | ok |
 | Declarations: `struct N *` declares N | `c/spec-implicit-forward` | ok |
 | Declarations, decision 3: implementation part | `cpp/spec-implementation-part` | ok |
-| Declarations, decision 8: explicit specialization | `cpp/spec-template-specialization` | gap |
-| Declarations, decision 8: out-of-line template member | `cpp/spec-template-out-of-line-member` | gap |
+| Declarations, decision 8: explicit specialization | `cpp/spec-template-specialization` | ok |
+| Declarations, decision 8: out-of-line template member | `cpp/spec-template-out-of-line-member` | ok |
 | Declarations: unnamed namespace | `cpp/spec-unnamed-namespace` | ok |
 | Include paths 1: relative to the including file | `c/spec-include-relative` | ok |
 | Include paths 2: path ending | `c/spec-include-path-suffix` | ok |

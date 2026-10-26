@@ -3,8 +3,9 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.decla
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 
 /**
- * Decision 3 of `cpp.md`: member functions defined outside their class's file form an implementation part of the class,
- * reported below [IMPLEMENTATION] plus the class's path; those defined in the file of the class body belong to it.
+ * Decisions 3 and 8 of `cpp.md`: member functions defined outside their class's file, and the specializations of a
+ * template, form an implementation part of the class, reported below [IMPLEMENTATION] plus the class's path; those in
+ * the file of the class body belong to it.
  */
 internal object ImplementationParts {
     const val IMPLEMENTATION = "IMPLEMENTATION"
