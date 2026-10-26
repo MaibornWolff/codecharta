@@ -83,7 +83,7 @@ class TypescriptAngularDependencyTest {
             val angular = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations.single().angular
 
             // Assert
-            assertThat(angular?.templateNames).isEmpty()
+            assertThat(angular?.selectors).isEmpty()
             assertThat(angular?.templateUrl).isEqualTo("../pages/lair.page.html")
         }
     }
@@ -128,47 +128,7 @@ class TypescriptAngularDependencyTest {
     }
 
     @Nested
-    inner class AngularTemplateNames {
-        private fun templateNamesOf(code: String, className: String): Set<String> = TreeSitterDependencies
-            .analyze(
-                code,
-                Language.TYPESCRIPT
-            ).declarations
-            .first { it.name == className }
-            .angular
-            ?.templateNames
-            .orEmpty()
-
-        @Test
-        fun `should name an exported component after its element selector`() {
-            // Arrange
-            val code = """
-                @Component({ selector: 'app-cave-map', templateUrl: './cave-map.component.html' })
-                export class CaveMapComponent {}
-            """.trimIndent()
-
-            // Act
-            val templateNames = templateNamesOf(code, "CaveMapComponent")
-
-            // Assert
-            assertThat(templateNames).containsExactly("app-cave-map")
-        }
-
-        @Test
-        fun `should name a component after each element of a selector list but not after attribute or class selectors`() {
-            // Arrange
-            val code = """
-                @Component({ selector: 'app-torch, App-Lantern[lit], [appGlow], .flame' })
-                class TorchComponent {}
-            """.trimIndent()
-
-            // Act
-            val templateNames = templateNamesOf(code, "TorchComponent")
-
-            // Assert
-            assertThat(templateNames).containsExactly("app-torch", "app-lantern")
-        }
-
+    inner class AngularPipeNames {
         @Test
         fun `should name a pipe after its pipe name`() {
             // Arrange
@@ -178,10 +138,10 @@ class TypescriptAngularDependencyTest {
             """.trimIndent()
 
             // Act
-            val templateNames = templateNamesOf(code, "GoldCoinsPipe")
+            val angular = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations.single().angular
 
             // Assert
-            assertThat(templateNames).containsExactly("goldCoins")
+            assertThat(angular?.pipeName).isEqualTo("goldCoins")
         }
 
         @Test
@@ -200,10 +160,10 @@ class TypescriptAngularDependencyTest {
             val declarations = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations
 
             // Assert
-            assertThat(declarations.map { it.angular?.templateNames to it.angular?.templateUrl }).containsExactly(
-                setOf("app-vault") to "./vault.component.html",
-                setOf("goldCoins") to null,
-                emptySet<String>() to null
+            assertThat(declarations.map { listOf(it.angular?.selectors, it.angular?.pipeName, it.angular?.templateUrl) }).containsExactly(
+                listOf(listOf(AngularSelector(element = "app-vault")), null, "./vault.component.html"),
+                listOf(emptyList<AngularSelector>(), "goldCoins", null),
+                listOf(emptyList<AngularSelector>(), null, null)
             )
         }
 
