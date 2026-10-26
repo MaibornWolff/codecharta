@@ -1,0 +1,5 @@
+# php.md, imports: a group import binds each member below the prefix
+file App/Herd.php -> Model/Creature.php
+file App/Herd.php -> Model/Speed.php
+leaf App/Herd.php#Herd -> Model/Creature.php#Creature
+leaf App/Herd.php#Herd -> Model/Speed.php#Speed

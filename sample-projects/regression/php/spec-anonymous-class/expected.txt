@@ -1,0 +1,5 @@
+# php.md, declarations: an anonymous class is no target; its names are uses of the declaration around it
+file Model/Arena.php -> Model/Base.php
+file Model/Arena.php -> Model/Fightable.php
+leaf Model/Arena.php#Arena -> Model/Base.php#Base
+leaf Model/Arena.php#Arena -> Model/Fightable.php#Fightable

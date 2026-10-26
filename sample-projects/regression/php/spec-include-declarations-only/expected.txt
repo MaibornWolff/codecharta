@@ -1,0 +1,1 @@
+# php.md, includes, decision 2: an included file without top-level code draws no edge

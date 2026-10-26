@@ -1,0 +1,5 @@
+# php.md, namespace blocks: each block has its own namespace and imports
+file lib/two.php -> Admin/Item.php
+file lib/two.php -> Model/Item.php
+leaf lib/two.php#Cart -> Model/Item.php#Item
+leaf lib/two.php#Panel -> Admin/Item.php#Item

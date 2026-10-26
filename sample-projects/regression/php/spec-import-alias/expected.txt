@@ -1,0 +1,5 @@
+# php.md, imports: an alias binds the name after `as` to the imported path
+file App/Facade.php -> Dto/Creature.php
+file App/Facade.php -> Model/Creature.php
+leaf App/Facade.php#Facade -> Dto/Creature.php#Creature
+leaf App/Facade.php#Facade -> Model/Creature.php#Creature usage=argument

@@ -1,0 +1,3 @@
+# php.md, class name 3: `namespace\A` is below the current namespace
+file App/Box.php -> x/Tool.php
+leaf App/Box.php#Box -> x/Tool.php#Tool

@@ -1,0 +1,3 @@
+<?php
+
+putenv('MODE=test');
