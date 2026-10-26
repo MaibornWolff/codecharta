@@ -255,7 +255,14 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Angular 1: the NgModule and the exports of its imports | `angular/spec-ngmodule-scope` | ok |
 | Angular 2, decision 6: the one class of a selector | `angular/spec-unique-selector` | ok |
 | Angular 3: several classes, no scope decides | `angular/spec-ambiguous-selector` | ok |
-| Angular: an attribute directive | `angular/spec-attribute-directive` | gap |
+| Angular, decision 14: an attribute directive | `angular/spec-attribute-directive` | gap |
+| Angular, decision 14: an element and an attribute in one selector | `angular/spec-compound-selector` | gap |
+| Angular, decision 14: an attribute value in a selector | `angular/spec-attribute-value` | gap |
+| Angular, decision 14: a class selector | `angular/spec-class-selector` | gap |
+| Angular, decision 14: `:not(…)` and alternatives | `angular/spec-not-selector` | gap |
+| Angular, decision 14: bindings, events and what takes no part | `angular/spec-bound-attributes` | gap |
+| Angular, decision 14: a structural directive | `angular/spec-structural-directive` | gap |
+| Angular, decision 14: a component and directives on one element | `angular/spec-several-matches` | gap |
 | Angular: a pipe | `angular/spec-pipe` | ok |
 | Angular: an inline template | `angular/spec-inline-template` | ok |
 
