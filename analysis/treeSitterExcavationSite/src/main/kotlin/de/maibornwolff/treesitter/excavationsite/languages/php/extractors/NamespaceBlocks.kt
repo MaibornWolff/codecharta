@@ -4,6 +4,9 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
 /** A namespace of a PHP file with the statements that stand in it; the global namespace is empty. */
 internal class NamespaceBlock(val namespace: List<String>, val statements: List<SyntaxNode>) {
+    val imports: PhpImports by lazy { PhpImports.of(statements) }
+    val names: PhpNames by lazy { PhpNames(namespace, imports) }
+
     fun holds(node: SyntaxNode): Boolean = statements.any { it.startByte <= node.startByte && node.endByte <= it.endByte }
 }
 
@@ -37,9 +40,10 @@ internal object NamespaceBlocks {
         return blocks.filter { it.statements.isNotEmpty() }
     }
 
-    /** The namespace of the block a node stands in. */
-    fun namespaceOf(node: SyntaxNode, blocks: List<NamespaceBlock>): List<String> =
-        blocks.firstOrNull { it.holds(node) }?.namespace.orEmpty()
+    /** The block a node stands in. */
+    fun blockOf(node: SyntaxNode, blocks: List<NamespaceBlock>): NamespaceBlock? = blocks.firstOrNull { it.holds(node) }
+
+    fun namespaceOf(node: SyntaxNode, blocks: List<NamespaceBlock>): List<String> = blockOf(node, blocks)?.namespace.orEmpty()
 
     private fun namespaceOf(definition: SyntaxNode): List<String> {
         val name = definition.getChildByFieldName(NAME_FIELD)
