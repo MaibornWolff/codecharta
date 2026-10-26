@@ -23,7 +23,7 @@ fun Node.resolveTypes(project: ProjectNames, nameRules: NameRules = DefaultNameR
         .asSequence()
         .filter { it.resolvedPath != null }
         .filter { !languageDictionary.containsValue(it.resolvedPath) }
-        .filter { it.resolvedPath != pathWithName }
+        .filter { it.resolvedPath != pathWithName || isImplementationPart }
         .map { Dependency(path = it.resolvedPath!!, type = it.usageSource) }
         .toSet()
 

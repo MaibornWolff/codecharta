@@ -446,6 +446,28 @@ class ProcessingPipelineTest {
     }
 
     @Test
+    fun `should draw the dependency of an implementation part on the class of its own path, as no cycle`() {
+        // Arrange: Creature.cpp defines the member functions of the class whose body is in Creature.hpp.
+        val body = cppNode("game/Creature", "game/Creature.hpp")
+        val implementation = cppNode("game/Creature", "game/Creature.cpp", usedTypes = setOf(Type.simple("game.Creature")))
+            .copy(isImplementationPart = true, isFileScoped = true)
+        val fileReports = listOf(FileReport(listOf(body)), FileReport(listOf(implementation)))
+
+        // Act
+        val graph = ProcessingPipeline.run(fileReports, omitGraphAnalysis = false)
+
+        // Assert
+        val implementationAddress = DeclarationAddress(listOf("game", "Creature.cpp"), "Creature")
+        val bodyAddress = DeclarationAddress(listOf("game", "Creature.hpp"), "Creature")
+        assertThat(graph.declarationEdges.map { Triple(it.from, it.to, it.isCyclic) }).containsExactly(
+            Triple(implementationAddress, bodyAddress, false)
+        )
+        assertThat(graph.edges.map { Triple(it.fromPath, it.toPath, it.isCyclic) }).containsExactly(
+            Triple(listOf("game", "Creature.cpp"), listOf("game", "Creature.hpp"), false)
+        )
+    }
+
+    @Test
     fun `should drop an edge from a declaration to itself`() {
         // Arrange: a class that names itself, e.g. a builder returning its own type.
         val source =

@@ -65,12 +65,16 @@ class DependencyResolverService {
             return rest
         }
 
-        fun mapNodeInfo(node: Node) = NodeInformation(
-            id = node.pathWithName.withDots(),
-            dependencies = node.resolvedNodeDependencies.internalDependencies
-                .map { it.withDots() }
-                .toSet()
-        )
+        // An implementation part depends on the class of its own path, which is no cycle
+        fun mapNodeInfo(node: Node): NodeInformation {
+            val id = node.pathWithName.withDots()
+            return NodeInformation(
+                id = id,
+                dependencies = node.resolvedNodeDependencies.internalDependencies
+                    .map { it.withDots() }
+                    .filterTo(HashSet()) { it != id }
+            )
+        }
 
         fun getDictionary(nodes: List<Node>) = nodes.map { it.pathWithName }.groupBy { it.parts.last() }
 
