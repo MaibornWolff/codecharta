@@ -85,7 +85,7 @@ internal class LogicalProjection(
     private fun edgesBetween(node: Node, dependency: Dependency): List<DeclarationEdge> {
         val sourcePath = node.pathWithName.withDots()
         val targetPath = dependency.withDots()
-        if (targetPath == sourcePath) return emptyList()
+        if (targetPath == sourcePath && !node.isImplementationPart) return emptyList()
         val sourceFile = FilePath.of(node)
         val isCyclic = targetPath in cyclicEdgesByDeclaration[sourcePath].orEmpty()
         return declaringFiles.filesFor(targetPath, sourceFile, node.language).map { targetFile ->
