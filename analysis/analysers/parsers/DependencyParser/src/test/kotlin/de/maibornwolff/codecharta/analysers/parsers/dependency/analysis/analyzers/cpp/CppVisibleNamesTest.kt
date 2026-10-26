@@ -176,4 +176,20 @@ class CppVisibleNamesTest {
         assertThat(global).isEqualTo(path("Config"))
         assertThat(qualified).isEqualTo(path("a.Config"))
     }
+
+    @Test
+    fun `should read a member below a declaration as a use of the declaration and a function of a namespace as nothing`() {
+        // Arrange
+        val names = namesOf("namespace game { enum class SpeedType { WALKING }; struct Factory {}; struct Mover {}; }")
+
+        // Act
+        val enumerator = names.resolve(listOf("SpeedType", "WALKING"), path("game.Mover"))
+        val call = names.resolve(listOf("game", "Factory", "make"), path("game.Mover"))
+        val namespaceFunction = names.resolve(listOf("game", "helper"), path("game.Mover"))
+
+        // Assert
+        assertThat(enumerator).isEqualTo(path("game.SpeedType"))
+        assertThat(call).isEqualTo(path("game.Factory"))
+        assertThat(namespaceFunction).isNull()
+    }
 }
