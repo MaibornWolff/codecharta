@@ -1,0 +1,3 @@
+# rust.md, decision 11: an enum variant in an expression or pattern is a use of the enum
+file src/mover.rs -> src/speed_type.rs
+leaf src/mover.rs#pace -> src/speed_type.rs#SpeedType

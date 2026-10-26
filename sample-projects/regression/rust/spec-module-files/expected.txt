@@ -1,0 +1,3 @@
+# rust.md, modules, decision 2: `mod` loads `m.rs` or `m/mod.rs`
+file src/app.rs -> src/domain/model/creature.rs
+leaf src/app.rs#App -> src/domain/model/creature.rs#Creature

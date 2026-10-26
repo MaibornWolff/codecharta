@@ -1,0 +1,3 @@
+# rust.md, paths: the first segment is a module a `use` binds
+file src/report.rs -> src/domain/model.rs
+leaf src/report.rs#pace -> src/domain/model.rs#Speed

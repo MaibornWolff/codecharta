@@ -1,0 +1,3 @@
+# rust.md, modules: an inline module adds its name
+file src/user.rs -> src/lib.rs
+leaf src/user.rs#User -> src/lib.rs#Inner

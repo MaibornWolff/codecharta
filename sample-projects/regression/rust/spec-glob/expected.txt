@@ -1,0 +1,3 @@
+# rust.md, simple name 3: a glob import binds what the module offers
+file src/user.rs -> src/model.rs
+leaf src/user.rs#Holder -> src/model.rs#Creature
