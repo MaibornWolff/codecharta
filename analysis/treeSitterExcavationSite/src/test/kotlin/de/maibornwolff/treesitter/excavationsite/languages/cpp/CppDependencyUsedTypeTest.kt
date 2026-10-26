@@ -2,6 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp
 
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -11,7 +12,7 @@ class CppDependencyUsedTypeTest {
     @Nested
     inner class Inheritance {
         @Test
-        fun `should extract single public base class as used type`() {
+        fun `should extract a single public base class as an inherited type`() {
             // Arrange
             val code = """
                 class Parent {};
@@ -23,11 +24,11 @@ class CppDependencyUsedTypeTest {
 
             // Assert
             val child = result.declarations.single { it.name == "Child" }
-            assertThat(child.usedTypes).containsExactly(UsedType(name = "Parent"))
+            assertThat(child.usedTypes).containsExactly(UsedType(name = "Parent", usage = TypeUsage.INHERITANCE))
         }
 
         @Test
-        fun `should extract all base classes from multiple inheritance`() {
+        fun `should extract all base classes of multiple inheritance as inherited types`() {
             // Arrange
             val code = """
                 class Child : public Base1, protected Base2 {};
@@ -39,13 +40,13 @@ class CppDependencyUsedTypeTest {
             // Assert
             val child = result.declarations.single { it.name == "Child" }
             assertThat(child.usedTypes).containsExactlyInAnyOrder(
-                UsedType(name = "Base1"),
-                UsedType(name = "Base2")
+                UsedType(name = "Base1", usage = TypeUsage.INHERITANCE),
+                UsedType(name = "Base2", usage = TypeUsage.INHERITANCE)
             )
         }
 
         @Test
-        fun `should extract template specialization as base class`() {
+        fun `should extract a template specialization as an inherited type and its argument as a use`() {
             // Arrange
             val code = """
                 class Child : public Base<int> {};
@@ -57,7 +58,7 @@ class CppDependencyUsedTypeTest {
             // Assert
             val child = result.declarations.single { it.name == "Child" }
             assertThat(child.usedTypes).containsExactly(
-                UsedType(name = "Base", genericTypes = listOf(UsedType(name = "int")))
+                UsedType(name = "Base", genericTypes = listOf(UsedType(name = "int")), usage = TypeUsage.INHERITANCE)
             )
         }
     }
@@ -519,7 +520,10 @@ class CppDependencyUsedTypeTest {
 
             // Assert
             val derived = result.declarations.single { it.name == "Derived" }
-            assertThat(derived.usedTypes).containsExactly(UsedType(name = "Base"))
+            assertThat(derived.usedTypes).containsExactlyInAnyOrder(
+                UsedType(name = "Base"),
+                UsedType(name = "Base", usage = TypeUsage.INHERITANCE)
+            )
         }
 
         @Test

@@ -348,7 +348,8 @@ name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these a
 5. [x] TSE reports forward declarations below a `FORWARD_DECLARATION` parent segment; the analyzer makes no node of
    them (reordered 2026-10-26: dropping the merge first let the default rules draw C++ headers into the C sample, a
    bad regression; the parked work is `step-copies.patch` in the scratchpad)
-6. [ ] `CppDeclarations`: the paths every C and C++ file declares, with its forward declarations and using
+6. [x] TSE marks a C++ base class as a use of kind inheritance, as Java does (rule 2 needs the bases)
+6b. [ ] `CppDeclarations`: the paths every C and C++ file declares, with its forward declarations and using
    directives/declarations (project scan, cached per root)
 7. [ ] the analyzer writes each use as the exact path of the first visible candidate (class scopes with direct bases,
    enclosing namespaces, using-declarations, using-directives at their level, qualified names from their first
