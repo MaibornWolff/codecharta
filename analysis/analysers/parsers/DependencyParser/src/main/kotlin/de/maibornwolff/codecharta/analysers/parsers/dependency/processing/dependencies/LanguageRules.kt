@@ -11,6 +11,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.java.JavaNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.php.PhpNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.python.PythonNameRules
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.rust.RustNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.TypescriptNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.CopyRules
@@ -29,6 +30,7 @@ internal object LanguageRules {
         SupportedLanguage.GO -> GoNameRules
         SupportedLanguage.PHP -> PhpNameRules
         SupportedLanguage.PYTHON -> PythonNameRules
+        SupportedLanguage.RUST -> RustNameRules
         SupportedLanguage.TYPESCRIPT, SupportedLanguage.JAVASCRIPT, SupportedLanguage.VUE -> TypescriptNameRules
         else -> DefaultNameRules
     }
