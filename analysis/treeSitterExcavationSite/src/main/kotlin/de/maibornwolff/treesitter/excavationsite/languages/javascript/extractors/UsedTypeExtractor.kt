@@ -7,6 +7,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 
 internal object UsedTypeExtractor {
     private const val TYPE_ANNOTATION = "type_annotation"
+    private const val TYPE_PREDICATE = "type_predicate"
     private const val NEW_EXPRESSION = "new_expression"
     private const val MEMBER_EXPRESSION = "member_expression"
     private const val EXTENDS_CLAUSE = "extends_clause"
@@ -33,6 +34,7 @@ internal object UsedTypeExtractor {
 
     private val ALL_NODE_TYPES = setOf(
         TYPE_ANNOTATION,
+        TYPE_PREDICATE,
         NEW_EXPRESSION,
         MEMBER_EXPRESSION,
         EXTENDS_CLAUSE,
@@ -54,7 +56,8 @@ internal object UsedTypeExtractor {
             .findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
             .mapValues { (_, nodes) -> nodes.filterNot { isHiddenName(it, scopes) } }
 
-        val typeIdentifiers = collectTypeIdentifiersFromNodes(buckets[TYPE_ANNOTATION].orEmpty(), scopes)
+        val typeIdentifiers =
+            collectTypeIdentifiersFromNodes(buckets[TYPE_ANNOTATION].orEmpty() + buckets[TYPE_PREDICATE].orEmpty(), scopes)
         val constructorCalls = extractConstructorCalls(buckets, names, scopes)
         val memberAccesses = extractMemberAccesses(buckets, names, scopes)
         val extensions = extractExtensions(buckets, scopes)

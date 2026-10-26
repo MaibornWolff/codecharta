@@ -156,6 +156,24 @@ class TypescriptDependencyUsedTypeTest {
         }
 
         @Test
+        fun `should extract the type a type predicate or an assertion predicate names`() {
+            // Arrange
+            val code = """
+                export function isCentaur(creature: Creature): creature is Centaur { return true }
+                export function assertCentaur(creature: Creature): asserts creature is Centaur {}
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+            // Assert
+            assertThat(result.declarations.map { declaration -> declaration.usedTypes.map { it.name } }).containsExactly(
+                listOf("Creature", "Centaur"),
+                listOf("Creature", "Centaur")
+            )
+        }
+
+        @Test
         fun `should extract type constraint from generic type parameter`() {
             // Arrange
             val code = "export class Foo<T extends Bar> {}"

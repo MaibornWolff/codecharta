@@ -1,0 +1,5 @@
+# typescript.md, a simple name: every identifier in a type is a name, also the type a type predicate names
+file check.ts -> model.ts
+leaf check.ts#isCentaur -> model.ts#Centaur
+leaf check.ts#isCentaur -> model.ts#Creature
+leaf model.ts#Centaur -> model.ts#Creature
