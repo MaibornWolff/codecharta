@@ -81,6 +81,8 @@ What an import binds, in the module it is written in:
   declaration of the importing file, of the script declaration of `m`, if `m` has one (decision 3).
 - `import('./m')` is a module `m` loaded later: a name read from its result, `.then(m => m.A)`, `.then(({ A }) => …)`
   or `(await import('./m')).A`, is a use of the export `A` of `m` (decision 4).
+- An import type, `import('./m').A` in a type (`fastest?: import('./speed').Speed`), is a use of the export `A` of `m`,
+  as the compiler resolves it (decision 15).
 
 An import binds a name and draws no edge of its own; an edge comes from a use of the name.
 
@@ -213,6 +215,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Binding, decision 3: a side-effect import | `spec-side-effect-import` | ok |
 | Binding, decision 4: a dynamic import read by name | `spec-dynamic-import` | ok |
 | Binding, decision 4: a dynamic import not read | `spec-dynamic-import-unread` | ok |
+| Binding, decision 15: an import type `import('./m').A` | `spec-import-type-expression` | gap |
 | 1. a local class | `spec-local-declaration` | gap |
 | 1. a parameter | `spec-parameter-shadows-import` | gap |
 | 1. a type parameter | `spec-type-parameter` | gap |
@@ -319,3 +322,5 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 14. A template element uses every component and directive whose selector matches it as the Angular compiler matches
     it: by tag, attributes, bindings, events and classes, a compound selector as a whole and `:not(…)` excluding;
     every match draws an edge, a selector declared by several classes the one the scope decides (decided 2026-10-26).
+15. An import type `import('./m').A` in code is a use of the export `A` of `m`, as the compiler resolves it, like
+    `ns.A` behind `import * as ns` (decided 2026-10-26).

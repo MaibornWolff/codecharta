@@ -1,0 +1,3 @@
+# typescript.md, decision 15: an import type import('./m').A in code is a use of the export A of m
+file limit.ts -> speed.ts
+leaf limit.ts#Limit -> speed.ts#Speed
