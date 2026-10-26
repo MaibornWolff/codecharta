@@ -143,6 +143,8 @@ Round 3 in numbers: 9 of the 16 expected new file edges are found (EncounterReso
 - Language vs. CodeCharta: PHP has namespaces and `use`, but no module system; the file-to-class mapping is the PSR-4
   convention. Leaves are matched by namespace name, `composer.json` is not read, and it works although `src/Domain/Model`
   and `De\Sots\CellarsAndCentaurs\Domain\Model` differ. Group use `use ...\Model\{ArmorClass, Creature, ...}` resolves.
+- Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/php.md`): listed
+  per probe in `regression/php/known-gaps.md`.
 
 ## Unified parser
 

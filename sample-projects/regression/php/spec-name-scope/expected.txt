@@ -1,0 +1,1 @@
+# Shared rule 1: a PHP name means no declaration of another language

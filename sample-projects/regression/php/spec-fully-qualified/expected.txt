@@ -1,0 +1,5 @@
+# php.md, class name 2: a fully qualified name means exactly that path
+file Feat/Log.php -> lib/Logger.php
+file Feat/User.php -> Base/User.php
+leaf Feat/Log.php#Log -> lib/Logger.php#Logger
+leaf Feat/User.php#User -> Base/User.php#User usage=inheritance

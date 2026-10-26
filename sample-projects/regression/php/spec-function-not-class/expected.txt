@@ -1,0 +1,1 @@
+# php.md: a function name means no class, a class name no function

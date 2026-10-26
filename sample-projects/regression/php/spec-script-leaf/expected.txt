@@ -1,0 +1,3 @@
+# php.md, declarations, decision 8: top-level code is a script leaf, also next to declarations
+file app/boot.php -> Model/Config.php
+leaf app/boot.php#boot_script -> Model/Config.php#Config usage=instantiation

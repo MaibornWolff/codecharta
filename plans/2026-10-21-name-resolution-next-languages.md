@@ -407,7 +407,9 @@ the including file; a class name counts in every place the compiler resolves one
 namespace path, declarations in blocks, script leaf, docblocks).
 
 1. [x] spec page
-2. [ ] probes under `sample-projects/regression/php/spec-*`, each run in PHP 8.4
+2. [x] probes: 46 under `sample-projects/regression/php/spec-*`, 32 gaps at the start; each runs in PHP 8.4 (tools
+   `php/mkprobes.py` writes them, `php/check-probes.sh` runs `php/check.php` on each, `php/regen-gaps.py` rewrites
+   known-gaps.md and the spec table from `scratch/pc-php/`)
 3. [ ] implementation, one commit per group of gaps (list announced after the probes)
 
 ## Steps

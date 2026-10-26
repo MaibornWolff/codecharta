@@ -1,0 +1,9 @@
+# php.md, includes, decision 3: literal, `__DIR__` and `dirname(__FILE__)` paths, relative to the including file
+file app/index.php -> app/helpers.php
+file app/index.php -> app/x/view.php
+file app/index.php -> lib/boot.php
+file app/index.php -> lib/env.php
+leaf app/index.php#index_script -> app/helpers.php#helpers_script
+leaf app/index.php#index_script -> app/x/view.php#view_script
+leaf app/index.php#index_script -> lib/boot.php#boot_script
+leaf app/index.php#index_script -> lib/env.php#env_script

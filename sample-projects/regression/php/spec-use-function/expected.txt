@@ -1,0 +1,3 @@
+# php.md, function name 3: `use function` beats the current namespace
+file App/Fight.php -> Dice/dice.php
+leaf App/Fight.php#Fight -> Dice/dice.php#roll

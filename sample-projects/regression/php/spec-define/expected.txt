@@ -1,0 +1,3 @@
+# php.md, declarations: `define` declares a global constant; a namespace falls back to it
+file app/Cap.php -> lib/config.php
+leaf app/Cap.php#Cap -> lib/config.php#LIMIT usage=constant_access

@@ -1,0 +1,3 @@
+# php.md, constant name 1: a fully qualified constant means exactly that path
+file App/Cap.php -> lib/limits.php
+leaf App/Cap.php#Cap -> lib/limits.php#MAX usage=constant_access
