@@ -108,15 +108,16 @@ declarations:
 - `usage` names how the source uses the target: `usage`, `inheritance`, `implementation`,
   `instantiation`, `argument`, `return_value`, `constant_access`. A pair carries one kind, the first the
   extractor found, as in DependaCharta. PHP reports every kind; Java, Kotlin and C# report `inheritance`
-  and `implementation`; see [known issues](#known-issues).
+  and `implementation`, C++ `inheritance`; see [known issues](#known-issues).
 - A name declared in several files — a C# partial class, a Go function name reused within a package, two projects
   with the same package — is one leaf per file, with the same key and, where it has one, the same `namespace`. Each
   copy's dependencies leave the file they are written in, while a dependency *on* the name points at the file that
   shares the longest folder path with the file using it, and among equally near files at the first as the scan
   lists them (path order); for SQL at the latest migration, and for C# at every file of the nearest project (the
   folder of a `.csproj`) that declares it, the parts of a partial class; for Go at every file of the package that
-  declares it, its build-tag variants. A Kotlin `private` top-level copy or a C# `file` type counts only for the file
-  it is written in.
+  declares it, its build-tag variants; for C and C++ at the copy the include closure of the using file holds, else
+  the nearest. A Kotlin `private` top-level copy, a C# `file` type or a C++ implementation part counts only for the
+  file it is written in.
 - `kind` is the declaration kind: `class`, `valueclass`, `interface`, `annotation`, `enum`, `function`,
   `variable`, `reexport`, `script` or `unknown`.
 
@@ -169,6 +170,20 @@ or one in each branch of `try` and `except ImportError`, or a name a wildcard im
 `__all__` lists it. A class nested in a class is a leaf of its own; a parameter, a local variable, a builtin or a
 method called on a variable draws no edge.
 
+C and C++ resolve a name as the compiler does: a file sees only what it declares and what its `#include`s bring in,
+directly or through other headers. `#include "p"` means the file `p` beside the including file, else, as for
+`#include <p>`, the project file whose path ends with `p`, the nearest to the including file; a header without an
+extension or an `.inc` fragment is followed too, and a system header such as `<vector>` declares nothing of the
+project. A name is looked up in its class and the class's base classes, then in the enclosing namespaces outwards,
+with `using` declarations, `using namespace` directives and namespace aliases where they apply, and `::Name` in the
+global namespace; a template parameter or a class declared in a function hides a class of the same name. A forward
+declaration such as `struct Creature;` means the class wherever its body is, and `Type::member` is a use of `Type`. A
+type alias (`using` or `typedef`) is a leaf of its own, a struct named only by its `typedef` takes that name, and the
+member functions a source file defines for the class of a header form a leaf of that file that depends on the header.
+A declaration outside every namespace has its name as logical path, so two programs in one folder that both define
+`struct Creature` are told apart by their includes. The build's include directories (`-I`, CMake,
+`compile_commands.json`) are not read, and macros are not expanded.
+
 TypeScript and JavaScript find an imported module where the compiler would: a relative path from the importing file,
 or a bare specifier through the `paths` and `baseUrl` of the nearest `tsconfig.json` or `jsconfig.json`, a bundler
 alias, a Module Federation remote, a workspace package of that `package.json` name or a `declare module` block; each
@@ -219,9 +234,9 @@ its cause.
 
 ## Known issues
 
-**Usage kinds are only reported for PHP and partly for Java, Kotlin and C#.** The `usage` list on a leaf edge can name seven
-kinds, but every language except PHP — which runs its own queries — reports only `usage`, apart from `inheritance`
-and `implementation` in Java, Kotlin and C#. The underlying extraction
+**Usage kinds are only reported for PHP and partly for Java, Kotlin, C# and C++.** The `usage` list on a leaf edge can
+name seven kinds, but every language except PHP — which runs its own queries — reports only `usage`, apart from
+`inheritance` and `implementation` in Java, Kotlin and C# and `inheritance` in C++. The underlying extraction
 (`TreeSitterExcavationSite`) does separate used types by the position they appear in, but flattens that
 away in the type it hands back, so the distinction is lost before this parser sees it. DependaCharta has
 the same gap.

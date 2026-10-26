@@ -12,14 +12,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Local changes and past commits in one step**: `ccsh analyse` takes `--local-changes` to map only the files you
   changed since your last push, and `--commit` to map the codebase as it was at a commit, tag, branch or date.
 
-- **Inheritance on leaf edges**: a leaf edge from a Java, Kotlin or C# class to the class it extends or the interface
-  it implements says so, as `inheritance` or `implementation`.
+- **Inheritance on leaf edges**: a leaf edge from a Java, Kotlin, C# or C++ class to the class it extends or the
+  interface it implements says so, as `inheritance` or `implementation`.
 
 ### Changed
 
 - **Leaves of TypeScript and JavaScript files**: the dependency map shows every top-level declaration of a TypeScript
   or JavaScript file as a leaf, exported or not, each member a namespace exports, and the code at the top level of a
   file as a leaf `<file>_script`, which a side-effect import such as `import './polyfills'` uses.
+
+- **Leaves of C and C++ files**: the dependency map shows a C or C++ type alias and a struct named only by its
+  `typedef` as leaves, and the member functions a source file defines for a class of a header as a leaf of the source
+  file that points at the header.
 
 ### Fixed 🐞
 
@@ -55,6 +59,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   matches one of its elements, as Angular matches them, so an attribute directive such as `[appHighlight]` and a
   structural directive such as `*appRepeat` get their edge.
 
+- **Includes in C and C++**: `dependencyparser` links a C or C++ name only to what the file's includes make visible,
+  directly or through other headers, and looks it up as the compiler does through classes, namespaces, `using`
+  declarations and directives and namespace aliases, so it tells `model::Creature` from `dto::Creature`, follows a
+  forward declaration to the class's body and no longer links a name to a class another program in the folder declares.
+
 - **Using directives in C#**: `dependencyparser` looks a C# name up in each enclosing namespace before the using
   directives written around it, so a class of the namespace wins over a using at the top of the file, a name two
   using directives both import links to neither, and `Settings.Config` inside `namespace Shop` means
@@ -76,8 +85,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   other class of that name, and finds a Java or Kotlin one through an import such as `import …CreatureFacade.Builder`.
 
 - **Type parameters and local classes**: `dependencyparser` no longer links a Java, Kotlin, C# or Go type parameter, a
-  Java or Kotlin local class, or a type or variable declared in a Go function to a declaration of the same name
-  elsewhere in the package.
+  C++ template parameter, a Java, Kotlin or C++ local class, or a type or variable declared in a Go function to a
+  declaration of the same name elsewhere in the package.
 
 - **Private Kotlin declarations and C# file types**: `dependencyparser` links a Kotlin `private` top-level declaration
   or a C# `file` type only from its own file, so two files with such a class of the same name each link to their own.

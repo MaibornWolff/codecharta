@@ -97,7 +97,7 @@ data class UsedType(
 | Kind | Source | Adapter handling |
 |---|---|---|
 | `STANDARD` (default) | Java `import`, Kotlin `import`, C# `using`, C++ `using namespace` / `using X::Y`, Rust `use` | Consumed as-is — the `path` is already the canonical reference |
-| `INCLUDE` | C++ `#include "…"` or `#include <…>`, PHP `require`/`include` (and their `_once` forms) of a single-quoted path directly behind the keyword, not in parentheses | Adapter resolves relative paths (`./`, `../`): for C++ against the file's physical path, rewriting the final segment's `.` → `_` to match DC's node-naming convention; for PHP against the namespace of the file plus its file name, or the physical path where it has no namespace, dropping the `.php` ending |
+| `INCLUDE` | C++ `#include "…"` or `#include <…>`, PHP `require`/`include` (and their `_once` forms) of a single-quoted path directly behind the keyword, not in parentheses | C++: the adapter reads the include lines of the files itself (`CppIncludes`), as its include rules need `"…"` apart from `<…>`, which this triple drops. PHP: the adapter resolves relative paths (`./`, `../`) against the namespace of the file plus its file name, or the physical path where it has no namespace, dropping the `.php` ending |
 | `REEXPORT` | Rust `pub use module::Type` (incl. `pub(crate) use`) | Adapter models it as a forwarding node — a crate flattens its public API via `pub use`, so consumers import the short `crate::Type` path; the forwarding node `crate::Type` points at the real `crate::module::Type` so the consumer's reference resolves transitively |
 | `MEMBER` | Python `from module import name` and `from module import *` | The last path segment is the imported name (none for a wildcard). A relative module starts with one `.` segment per leading dot, which the adapter resolves against the module path of the file. The adapter makes the names a package's `__init__.py` imports re-export leaves; the uses of a declaration need no import, as the extractor reports each with the module it binds |
 
@@ -114,22 +114,23 @@ Java, Kotlin, C#, TypeScript, JavaScript, Go, Delphi and Vue leave the field at 
 | Language | Typical style | Does `namespacePrefix` carry info? |
 |---|---|---|
 | Java, Kotlin, C# | Import types at the top, use short names inline. Qualified inline usage (`com.other.Settings s`) is rare and idiomatically discouraged. | No — always empty. The import list already carries the neighborhood info the resolver needs. |
-| C++ | `using namespace` is discouraged in headers because it pollutes scope. Writing `cppcheck::Settings` inline is **the normal way** to reference cross-namespace types. | Yes — populated on every qualified inline reference. |
+| C++ | `using namespace` is discouraged in headers because it pollutes scope. Writing `cppcheck::Settings` inline is **the normal way** to reference cross-namespace types. | Yes — populated on every qualified reference, in a type or an expression (`SpeedType::WALKING`); a leading `::` is the first segment `::`. |
 | Go | Import-aliased usage (`pkg.Type`) is idiomatic but stored as a dotted string in `UsedType.name`; the resolver splits on `.`. | No — always empty. |
 | TypeScript, JavaScript, Vue | A name means the binding the compiler sees: a local one hides it, else an import or a declaration of the module, else a global. | Only as a marker — the extractor leaves out what a local binding hides and reports a name through a module binding as that binding plus the members read behind it (`ns.Shapes.Circle`, `dynamic_import_<offset>.A`), a renamed import under its local name. The prefix is `GLOBAL` for a name no module binding binds, `COMPONENT_TAG` for a tag of a Vue template, and the specifier for a side-effect import (name `MODULE_SCRIPT`) and for `export { default as B } from` (name `DEFAULT_EXPORT`). |
 | Python | A name means whatever binds it where it is used: a declaration of the module, an import, a wildcard import. | Yes — the extractor finds the binding Python sees for each name and reports the use with the module the name is looked up in as prefix (empty for the own module, one `.` per leading dot for a relative import, a last `*` for a wildcard import) and the name with the attribute names behind it as `name` (`Order.Line`); `fallbacks` hold what the use means when a wildcard import does not bind the name. |
 | PHP | Has namespaces similar to C++. A declared type (return, parameter, property) is taken as written, qualifier included, in `UsedType.name`; a qualified base class, interface or instantiated class is left out. | No — always empty. |
 | Rust | A `use` brings most types into scope, but fully-qualified inline references (`crate::a::Foo`, `super::B`) without a `use` are legal and common. | Yes — populated for `scoped_type_identifier` references (the scope segments before the final name, verbatim incl. `crate`/`self`/`super`). |
 
-**How a DC-side adapter consumes it:** when building a node's `dependencies` set, emit a synthetic `Dependency(Path(namespacePrefix), isWildcard = true)` per `UsedType` that has a non-empty prefix. This mirrors what DC's legacy C++ analyzer did implicitly via `TypeExtractionService.extractTypeWithFoundNamespacesAsDependencies`: for every qualified usage, add a wildcard pointing at the type's neighborhood so the resolver can match the short name against classes declared there.
+**How an adapter consumes it:** the C++ adapter looks the written name, prefix included, up as the compiler does
+(`docs/name-resolution/cpp.md` of the dependency parser). DC's legacy adapters instead, when building a node's `dependencies` set, emit a synthetic `Dependency(Path(namespacePrefix), isWildcard = true)` per `UsedType` that has a non-empty prefix. This mirrors what DC's legacy C++ analyzer did implicitly via `TypeExtractionService.extractTypeWithFoundNamespacesAsDependencies`: for every qualified usage, add a wildcard pointing at the type's neighborhood so the resolver can match the short name against classes declared there.
 
 The resolver itself needs no changes — the existing wildcard-matching loop in `Node.resolveTypeImport` already prepends wildcards to type names and looks for project matches.
 
 ### Usage of a type
 
 `UsedType.usage` says how a declaration uses a type: `INHERITANCE`, `IMPLEMENTATION`, `CONSTANT_ACCESS`,
-`RETURN_VALUE`, `INSTANTIATION`, `ARGUMENT`, or `USAGE` for any other way. Only the PHP extractor fills it; every
-other language leaves it at `USAGE`. Two used types that differ only in `usage` are two entries of the set. DC
+`RETURN_VALUE`, `INSTANTIATION`, `ARGUMENT`, or `USAGE` for any other way. The PHP extractor fills every kind; Java,
+Kotlin and C# report `INHERITANCE` and `IMPLEMENTATION`, C++ `INHERITANCE`; every other use stays `USAGE`. Two used types that differ only in `usage` are two entries of the set. DC
 identifies a type by its name alone, so its adapter keeps the first: the order of the set decides which usage a
 dependency gets.
 
@@ -144,6 +145,24 @@ dependency gets.
 - An Angular template is one `SCRIPT` with an empty name. Its used types are the names of the pipes it uses; its
   elements, each with its tag, attributes, bindings and classes, are `AngularDeclaration.elements`, which the adapter
   matches against the selectors of the project's components and directives.
+
+### Marked C and C++ declarations
+
+C and C++ mark a declaration that is no class body by its first parent path segment, followed by its namespaces and
+classes:
+
+- `FORWARD_DECLARATION`: a forward declaration (`class Creature;`), also the tag of `typedef struct Stable Stable;`
+  and the class of an unqualified `friend class Util;`, in the namespace around it. It declares no leaf but makes the
+  name visible.
+- `ALIAS`: a type alias, `using Entity = CreatureEntity;` or a `typedef` of another name, whose used type is the type
+  it names. A `typedef` a macro keeps the parser from reading is none.
+- `IMPLEMENTATION`: the member functions a file defines for a class whose body lies in another file, and the explicit
+  or partial specializations of a template, under the class's or template's name.
+
+A class tag without a body in a type (`struct Roost *held;`) is a used type whose `fallbacks` hold the path of the
+declaration it makes when no visible declaration has its name, written from `::`. A name a template parameter, or a
+class or alias declared earlier in the function body, means is no used type; a class or alias declared in a function
+is no declaration.
 
 ### Selectors and pipe names
 
@@ -351,11 +370,11 @@ Multiple top-level namespaces per file are legal, and nested namespaces scope th
 | Language | `packagePath` source | `parentPath` content |
 |---|---|---|
 | C# | first declared namespace (informational only) | full namespace chain + parent class chain |
-| C++ (planned) | first declared namespace (informational only) | full namespace chain + parent class chain |
+| C++ | first declared namespace (informational only) | full namespace chain + parent class chain, after a marker segment for a forward declaration, alias or implementation part |
 | TypeScript ambient modules (planned) | file path | ambient module path per declaration |
 | Rust | always empty (file-module path is filesystem-derived; DC derives it from `physicalPath`) | in-file inline-`mod` chain (`mod a { mod b { … } }`) |
 
-DC's C# adapter (`CSharpAnalyzer` on `feat/tse-csharp-integration`) **ignores `result.packagePath`** and derives everything from `declaration.parentPath`: the node's `pathWithName` is `parentPath + name`, scoped imports match on `parentPath`, and the self-wildcard import is emitted **per declaration** from its own `parentPath`. C++ will follow the same pattern when migrated.
+DC's C# adapter (`CSharpAnalyzer` on `feat/tse-csharp-integration`) **ignores `result.packagePath`** and derives everything from `declaration.parentPath`: the node's `pathWithName` is `parentPath + name`, scoped imports match on `parentPath`, and the self-wildcard import is emitted **per declaration** from its own `parentPath`. The C++ adapter (`CppAnalyzer`) does the same.
 
 ### Guidance when adding a new language
 
