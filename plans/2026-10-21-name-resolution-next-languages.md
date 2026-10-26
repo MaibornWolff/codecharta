@@ -403,8 +403,9 @@ Branch `fix/dependency-name-resolution-php`, cut from the pushed `-c-cpp`; compa
 from php-wasm in the session scratchpad (`npm i --ignore-scripts @php-wasm/node@3.1.56`, runner `php.mjs`). Spec
 `docs/name-resolution/php.md`, decisions 1–4 chosen by Christian on 2026-10-26: functions and constants are
 declarations with PHP's global fallback; an include uses the included file's script leaf; include paths relative to
-the including file; a class name counts in every place the compiler resolves one. Decisions 5–9 derived (case, global
-namespace path, declarations in blocks, script leaf, docblocks).
+the including file; a class name counts in every place the compiler resolves one; 5, names match in their exact case
+only (asked again after the prototype matched ignoring case and let `count()` mean a class `Count`). Decisions 6–9
+derived (global namespace path, declarations in blocks, script leaf, docblocks).
 
 1. [x] spec page
 2. [x] probes: 46 under `sample-projects/regression/php/spec-*`, 32 gaps at the start; each runs in PHP 8.4 (tools

@@ -54,8 +54,7 @@ Where a class, interface, trait or enum is named (decision 4: every type, `new`,
    unless an import binds it.
 
 The name then means the project declaration of exactly that path, or none: a library class (`\RuntimeException`,
-`Psr\Log\LoggerInterface`) draws no edge. Class, interface, trait, enum, function and namespace names match ignoring
-case, as PHP does (decision 5); a constant's own name matches exactly.
+`Psr\Log\LoggerInterface`) draws no edge. A name matches a declaration only in its declared case (decision 5).
 
 ## A function or constant name
 
@@ -116,7 +115,7 @@ the expected meaning of each name, except the absolute and the computed include 
 | Class name 5: an import over the current namespace | `spec-import-beats-own-namespace` | ok |
 | Class name 5: no global fallback | `spec-no-global-fallback` | ok |
 | Class name: a library class | `spec-library-class` | ok |
-| Class name, decision 5: ignoring case | `spec-case-insensitive` | gap |
+| Class name, decision 5: exact case | `spec-exact-case` | gap |
 | A name below a class | `spec-class-member-access` | gap |
 | Function name 3: the current namespace before the global one | `spec-function-own-namespace-first` | gap |
 | Function name 3: the global fallback | `spec-function-global-fallback` | gap |
@@ -146,6 +145,8 @@ the expected meaning of each name, except the absolute and the computed include 
 
 - Names in strings and computed names: `new $class`, `'App\Model\Creature'`, `call_user_func('slug')`,
   `class_exists('Foo')`, `class_alias()`.
+- A name written in another case than its declaration (`new creature()` for `Creature`), which PHP accepts for classes,
+  functions and namespaces (decision 5).
 - Types written in docblocks (`@var Speed`, `@param list<Creature>`, `@throws`): the compiler ignores them (decision
   9).
 - The autoloader and `include_path`: which file declares a name is decided by the copy rule; an include path is never
@@ -164,8 +165,10 @@ the expected meaning of each name, except the absolute and the computed include 
 4. A class name is a use in every place the compiler resolves one, including nullable, union and intersection types,
    promoted constructor parameters, variadic parameters, `catch`, `instanceof`, attributes, interface `extends`, enum
    `implements`, anonymous classes and trait bodies (decided 2026-10-26).
-5. Names match ignoring case where PHP does: classes, interfaces, traits, enums, functions and namespaces; a
-   constant's own name exactly (derived from the compiler, 2026-10-26).
+5. A name matches a declaration only in its declared case, as in every language before. PHP ignores case for classes,
+   functions and namespaces, but an autoloader finds `Creature` only in `Creature.php`, so code keeps the declared
+   case; matching ignoring case without knowing whether a path is a class or a function would let `count()` mean a
+   class `Count` (decided 2026-10-26).
 6. A declaration in the global namespace has its name as logical path, as in C and C++ (derived from cpp.md decision
    6, 2026-10-26).
 7. A declaration inside a function or block is one of its namespace, as PHP declares it there (derived from the
