@@ -411,7 +411,24 @@ derived (global namespace path, declarations in blocks, script leaf, docblocks).
 2. [x] probes: 46 under `sample-projects/regression/php/spec-*`, 32 gaps at the start; each runs in PHP 8.4 (tools
    `php/mkprobes.py` writes them, `php/check-probes.sh` runs `php/check.php` on each, `php/regen-gaps.py` rewrites
    known-gaps.md and the spec table from `scratch/pc-php/`)
-3. [ ] implementation, one commit per group of gaps (list announced after the probes)
+3. [x] refactor: PHP gets name rules of its own (`PhpNameRules`), the default ones for now
+4. [x] decision 5 changed to exact case (spec, probe `spec-exact-case`)
+5. [ ] TSE: namespace blocks; each declaration carries its block's namespace as parent path, imports per block
+   (`NamespaceBlocks`, `PhpImports`); no output change
+6. [ ] TSE: every name read today carries the namespace it resolves to (`PhpNames`) as prefix; no output change
+7. [ ] the switch: declarations at namespace plus name (global: the name, decision 6), uses written as full paths,
+   `PhpNameRules` exact; the old heuristics and import dependencies go
+8. [ ] functions and constants: calls and constant reads are uses with the global fallback; `define` with a namespace
+9. [ ] decision 4: every type position (nullable, union, intersection, variadic, promoted, closures)
+10. [ ] decision 4: `catch`, `instanceof`, attributes, `X::$property`
+11. [ ] decision 4: interface `extends`, enum `implements`, anonymous class headers
+12. [ ] decision 4: trait bodies; the names of a nested declaration are its own
+13. [ ] decision 8: top-level code is a script leaf at the file's path, also next to declarations
+14. [ ] decisions 2 and 3: an include uses the included file's script leaf (old include imports go)
+15. [ ] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
+
+Prototype of steps 5–14 (all probes but the case one green, no checkpoint probe worse, the sample gains the 24 file
+edges FINDINGS expects): `git stash` "php-prototype", copy in the scratchpad `php-prototype.patch`.
 
 ## Steps
 
