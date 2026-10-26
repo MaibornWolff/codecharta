@@ -1,0 +1,3 @@
+# cpp.md, simple name 3: a using-directive
+file app.hpp -> lib/widget.hpp
+leaf app.hpp#Panel -> lib/widget.hpp#Widget

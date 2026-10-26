@@ -1,0 +1,3 @@
+# cpp.md, simple name 3: the own namespace
+file model/centaur.hpp -> model/creature.hpp
+leaf model/centaur.hpp#Centaur -> model/creature.hpp#Creature

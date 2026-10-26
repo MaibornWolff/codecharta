@@ -1,0 +1,3 @@
+# cpp.md, which file 1, decision 6: the included copy, not the nearest
+file app/app.hpp -> far/config.hpp
+leaf app/app.hpp#App -> far/config.hpp#Config

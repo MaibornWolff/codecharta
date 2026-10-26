@@ -1,0 +1,3 @@
+# cpp.md, qualified name: the first segment is looked up as a simple name
+file application/inspector.hpp -> domain/model/creature.hpp
+leaf application/inspector.hpp#Inspector -> domain/model/creature.hpp#Creature

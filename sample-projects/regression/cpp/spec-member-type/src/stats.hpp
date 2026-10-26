@@ -1,0 +1,1 @@
+struct Stats { int global; };

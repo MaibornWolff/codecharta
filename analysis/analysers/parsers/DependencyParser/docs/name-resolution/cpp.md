@@ -94,6 +94,62 @@ A name that resolves to a logical path means:
 
 One name scope (shared rule 1): a C file and a C++ file see each other's declarations through their includes.
 
+## Probes
+
+Each rule is tested by a probe under `sample-projects/regression/c/` or `cpp/`; every probe compiles in clang
+(zig 0.17), except the two whose rule is that the code does not. "Gap" means the parser does not follow the rule
+yet; `known-gaps.md` of the probe's folder says how it deviates.
+
+| Rule | Probe | Today |
+| --- | --- | --- |
+| Declarations: logical path through namespaces | `cpp/spec-own-namespace` | ok |
+| Declarations: a member type is a leaf of its own | `cpp/spec-member-type` | ok |
+| Declarations, decision 7: a typedef names an untagged struct | `c/spec-typedef-untagged` | gap |
+| Declarations, decision 7: a typedef of the same name | `c/spec-typedef-same-name` | ok |
+| Declarations, decision 4: a typedef alias | `c/spec-typedef-alias` | gap |
+| Declarations, decision 4: a `using` alias | `cpp/spec-alias-using` | gap |
+| Declarations: `struct N *` declares N | `c/spec-implicit-forward` | gap |
+| Declarations, decision 3: implementation part | `cpp/spec-implementation-part` | gap |
+| Declarations, decision 8: explicit specialization | `cpp/spec-template-specialization` | gap |
+| Declarations, decision 8: out-of-line template member | `cpp/spec-template-out-of-line-member` | gap |
+| Declarations: unnamed namespace | `cpp/spec-unnamed-namespace` | ok |
+| Include paths 1: relative to the including file | `c/spec-include-relative` | gap |
+| Include paths 2: path ending | `c/spec-include-path-suffix` | ok |
+| Include paths 2, decisions 2 and 12: one segment, nearest | `c/spec-include-suffix-nearest` | ok |
+| Include paths 3: system header | `c/spec-library-include` | gap |
+| Visibility, decisions 1 and 6: include closure, copies | `c/spec-include-closure` | gap |
+| Visibility: transitive includes | `c/spec-transitive-include` | gap |
+| 1. template parameter | `cpp/spec-template-parameter` | gap |
+| 1, decision 9: class declared in a function | `cpp/spec-local-type` | gap |
+| 2. member type before the namespace | `cpp/spec-member-type` | ok |
+| 2. member type of an enclosing class | `cpp/spec-enclosing-class-member-type` | ok |
+| 2. inherited member type | `cpp/spec-inherited-member-type` | ok |
+| 2 and 3. out-of-line member body | `cpp/spec-out-of-line-lookup` | gap |
+| 3. own namespace | `cpp/spec-own-namespace` | ok |
+| 3. enclosing namespace | `cpp/spec-enclosing-namespace` | gap |
+| 3. inner namespace before the global one | `cpp/spec-inner-namespace-first` | gap |
+| 3. using-declaration | `cpp/spec-using-declaration` | ok |
+| 3. using-directive | `cpp/spec-using-directive` | ok |
+| 3. using-directive placement | `cpp/spec-using-directive-placement` | gap |
+| 3. two using-directives: ambiguous | `cpp/spec-ambiguous-using-directives` | gap |
+| 3. namespace alias | `cpp/spec-namespace-alias` | gap |
+| 4. library name | `cpp/spec-library-namespace` | gap |
+| Qualified: first segment as a simple name | `cpp/spec-qualified-relative` | gap |
+| Qualified: `::N` | `cpp/spec-qualified-global` | gap |
+| Qualified, decision 10: the qualifying class is no dependency | `cpp/spec-qualified-member-type` | ok |
+| Qualified: a member below a declaration | `cpp/spec-member-of-type` | gap |
+| Which file 1, decision 6: the included copy | `cpp/spec-closure-over-nearest` | gap |
+| Which file 2, decision 5: forward declaration, a cycle | `c/spec-forward-declaration` | gap |
+| Which file 2, decision 5: forward declaration in a namespace | `cpp/spec-forward-declaration` | ok |
+| Which file 2, decision 5: opaque pointer | `c/spec-opaque-pointer` | ok |
+| Which file 2: nearest of several bodies | `c/spec-forward-nearest` | gap |
+| Which file 1, decision 11: two bodies in one closure | none: does not compile | - |
+| C and C++, shared rule 1 | `cpp/spec-uses-c` | gap |
+| Shared rule 1, name scope | `c/spec-name-scope` | ok |
+| Shared rule 1, name scope | `cpp/spec-name-scope` | ok |
+| Shared rule 4, self | `c/spec-self` | ok |
+| Shared rule 4, self | `cpp/spec-self` | ok |
+
 ## Not supported
 
 - The build's include directories (`-I`, `compile_commands.json`, CMake): rule 2 of the include paths stands in.

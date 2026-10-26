@@ -252,6 +252,8 @@ access through a field (`defender->armor_class.total`) is not expected as an edg
 - Language vs. CodeCharta: C has no module system; the `#include` graph is the dependency graph and is not turned
   into edges. Every edge in the output starts at a field of a struct or union and ends at a type of that name
   somewhere in the project, which is why a duplicated name lands on one file regardless of the includes.
+- Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/cpp.md`): listed
+  per probe in `regression/c/known-gaps.md`.
 - Tests: `test/creature_service_test.c` is dropped by default (49 instead of 50 files) but has no struct, so
   `--include-tests` changes nothing. Scratch probe (`output/probe-dependency.cc.json`): a struct-holding
   `src/wyvern_test.c`, `src/WyvernTest.c` and `src/test_wyvern.c` are analysed in the default run, `test/roost_check.c`

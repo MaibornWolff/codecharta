@@ -1,0 +1,5 @@
+# cpp.md, which file 2, decision 5: a forward declaration means the body (a cycle)
+file creature.h -> fightable.h
+file fightable.h -> creature.h
+leaf creature.h#Creature -> fightable.h#Fightable
+leaf fightable.h#Fightable -> creature.h#Creature

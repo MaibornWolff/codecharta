@@ -1,0 +1,3 @@
+# cpp.md, simple name 3: a namespace alias names its namespace
+file app.hpp -> model/creature.hpp
+leaf app.hpp#App -> model/creature.hpp#Creature

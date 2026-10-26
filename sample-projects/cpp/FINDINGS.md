@@ -274,6 +274,8 @@ Round 3:
   signatures, fields, base lists, local variable declarations, `new`, `sizeof` / `alignof`, casts, template arguments
   and default arguments; it does not see `Type::member` expressions in bodies, `typeid`, braced temporaries, lambda
   parameters, pointers to members, constrained template parameters, aliases, catch types, or anything outside a class.
+- Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/cpp.md`): listed
+  per probe in `regression/cpp/known-gaps.md`.
 
 ## Domain language parser
 

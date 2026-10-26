@@ -1,0 +1,1 @@
+namespace game { class Creature {}; }

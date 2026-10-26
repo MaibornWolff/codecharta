@@ -1,0 +1,3 @@
+# cpp.md, visibility, decisions 1 and 6: only the include closure, copies apart
+file centaur.h -> model/creature.h
+leaf centaur.h#Centaur -> model/creature.h#Creature

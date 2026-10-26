@@ -1,0 +1,1 @@
+struct Widget { int global; };
