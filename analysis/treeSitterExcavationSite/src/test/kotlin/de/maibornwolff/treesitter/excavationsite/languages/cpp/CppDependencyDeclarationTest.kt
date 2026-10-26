@@ -2,6 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp
 
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.ForwardDeclarationFinder.FORWARD_DECLARATION
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
@@ -59,7 +60,7 @@ class CppDependencyDeclarationTest {
     }
 
     @Test
-    fun `should skip forward class declaration without body`() {
+    fun `should report a forward class declaration below the forward declaration marker`() {
         // Arrange
         val code = "class Foo;"
 
@@ -67,7 +68,38 @@ class CppDependencyDeclarationTest {
         val result = TreeSitterDependencies.analyze(code, Language.CPP)
 
         // Assert
-        assertThat(result.declarations).isEmpty()
+        assertThat(result.declarations).containsExactly(
+            Declaration(name = "Foo", type = DeclarationType.CLASS, usedTypes = emptySet(), parentPath = listOf(FORWARD_DECLARATION))
+        )
+    }
+
+    @Test
+    fun `should report forward declarations in a namespace, a class and of an enum with their scope`() {
+        // Arrange
+        val code = "namespace g { struct C; enum E : int; }\nstruct H { class Inner; };"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations).containsExactlyInAnyOrder(
+            Declaration(name = "C", type = DeclarationType.CLASS, usedTypes = emptySet(), parentPath = listOf(FORWARD_DECLARATION, "g")),
+            Declaration(name = "E", type = DeclarationType.ENUM, usedTypes = emptySet(), parentPath = listOf(FORWARD_DECLARATION, "g")),
+            Declaration(name = "H", type = DeclarationType.CLASS, usedTypes = emptySet(), parentPath = emptyList()),
+            Declaration(name = "Inner", type = DeclarationType.CLASS, usedTypes = emptySet(), parentPath = listOf(FORWARD_DECLARATION, "H"))
+        )
+    }
+
+    @Test
+    fun `should report no forward declaration for a class named in the type of a field`() {
+        // Arrange
+        val code = "struct Nest { struct Roost *held; };"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.map { it.name }).containsExactly("Nest")
     }
 
     @Test

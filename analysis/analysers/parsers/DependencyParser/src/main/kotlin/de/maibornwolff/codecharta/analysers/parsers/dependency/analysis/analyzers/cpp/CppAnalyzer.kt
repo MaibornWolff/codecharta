@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.cpp
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_FORWARD_DECLARATION_SEGMENT
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.model.RelativeImport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.resolveRelativePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toDependency
@@ -30,7 +31,7 @@ class CppAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
             .mapValues { (_, imports) -> imports.map { it.normalize(physicalPath) } }
         val globalImports = importsByNamespace[emptyList()].orEmpty()
 
-        val nodes = result.declarations.map { declaration ->
+        val nodes = result.declarations.filterNot { it.isForwardDeclaration() }.map { declaration ->
             toNode(declaration, globalImports, importsByNamespace, physicalPathParts)
         }
         return FileReport(nodes)
@@ -73,6 +74,8 @@ class CppAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         val own = if (namespacePrefix.isEmpty()) emptyList() else listOf(namespacePrefix)
         return own + genericTypes.flatMap { it.collectNamespacePrefixes() }
     }
+
+    private fun Declaration.isForwardDeclaration(): Boolean = parentPath.firstOrNull() == TSE_FORWARD_DECLARATION_SEGMENT
 
     private fun ImportDeclaration.normalize(physicalPath: Path): Dependency {
         if (kind != ImportKind.INCLUDE) return toDependency()

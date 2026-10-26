@@ -345,26 +345,24 @@ name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these a
    ones for now; `CppCopyRules` comes with step 5
 4. [x] `CppIncludes`: an include path means the file of the include rules, a file sees its include closure (project
    scan, cached per analysis root, as `CSharpProjects`)
-5. [ ] copies: no merge of C++ nodes of one path (`ProcessingPipeline.mergeIdenticalTypes` goes); a use means the copy
-   its include closure holds, else the nearest (closes `spec-closure-over-nearest`, part of
-   `spec-implementation-part`)
-6. [ ] decision 6: a global declaration's path is its name (C copies apart by closure: `spec-include-closure`,
-   `-relative`, `transitive-include`)
-7. [ ] decision 1: a name no file of the closure declares draws no edge (`spec-library-include`,
-   `spec-library-namespace`, the rest of `spec-include-closure`)
-8. [ ] lookup order: TSE writes each use as its candidate paths (class, enclosing namespaces, using-declarations,
-   using-directives at their level, namespace aliases, `::N`, qualified from the first segment), the analyzer takes the
-   first visible one and writes it exactly, `CppNameRules` takes a path only as written; split as needed
-9. [ ] template parameters and classes declared in a function hide (`spec-template-parameter`, `spec-local-type`)
-10. [ ] declarations: untagged typedef'd structs, typedef and `using` aliases (`spec-typedef-*`, `spec-alias-using`,
-    `spec-uses-c`)
-11. [ ] `struct N *` is a use and declares `N` if none is visible (`spec-forward-declaration`, `-implicit-forward`,
-    `-forward-nearest`)
-12. [ ] implementation parts: `Node.isImplementationPart` (shared, approved by Christian 2026-10-26: only such a node
-    keeps a dependency on its own path; cycle detection ignores it; the part is file-scoped), out-of-line bodies look
-    in their class and its namespaces, `Pool<T>::` and specializations are parts of the template
-13. [ ] `SpeedType::WALKING` in an expression is a use of `SpeedType` (`spec-member-of-type`)
-14. [ ] changelog, README, gh-pages, spec table, FINDINGS, plan
+5. [x] TSE reports forward declarations below a `FORWARD_DECLARATION` parent segment; the analyzer makes no node of
+   them (reordered 2026-10-26: dropping the merge first let the default rules draw C++ headers into the C sample, a
+   bad regression; the parked work is `step-copies.patch` in the scratchpad)
+6. [ ] `CppDeclarations`: the paths every C and C++ file declares, with its forward declarations and using
+   directives/declarations (project scan, cached per root)
+7. [ ] the analyzer writes each use as the exact path of the first visible candidate (class scopes with direct bases,
+   enclosing namespaces, using-declarations, using-directives at their level, qualified names from their first
+   segment); a name nothing visible declares is dropped; `CppNameRules` takes a path only as written
+8. [ ] copies: no merge of C++ nodes of one path, `CppCopyRules` picks the copy of the include closure, else the
+   nearest (the parked patch)
+9. [ ] decision 6: a global declaration's path is its name
+10. [ ] TSE: `::N`, namespace aliases, template parameters and classes declared in a function
+11. [ ] declarations: untagged typedef'd structs, typedef and `using` aliases
+12. [ ] `struct N *` is a use and declares `N` if none is visible
+13. [ ] implementation parts (`Node.isImplementationPart`, shared, approved by Christian 2026-10-26), out-of-line
+    template members and specializations
+14. [ ] `SpeedType::WALKING` in an expression is a use of `SpeedType`
+15. [ ] changelog, README, gh-pages, spec table, FINDINGS, plan
 
 ## Steps
 
