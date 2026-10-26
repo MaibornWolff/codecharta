@@ -5,26 +5,6 @@ The probes of this folder whose output deviates from their `expected.txt` today,
 expected line the parser does not draw yet and `extra <line>` a wrong line it draws; `ProbeRegressionTest` fails once a
 gap closes, and the closed lines are deleted here.
 
-## spec-anonymous-class
-
-The extractor reads `extends` and `implements` of a named class only.
-
-```text
-missing file Model/Arena.php -> Model/Base.php
-missing file Model/Arena.php -> Model/Fightable.php
-missing leaf Model/Arena.php#Arena -> Model/Base.php#Base
-missing leaf Model/Arena.php#Arena -> Model/Fightable.php#Fightable
-```
-
-## spec-enum-implements
-
-`implements` is read for classes only.
-
-```text
-missing file Model/Alignment.php -> Model/Describable.php
-missing leaf Model/Alignment.php#Alignment -> Model/Describable.php#Describable usage=implementation
-```
-
 ## spec-include-absolute
 
 An include is no use of the included file's script leaf.
@@ -66,17 +46,6 @@ An include is no use of the included file's script leaf.
 ```text
 missing file app/index.php -> lib/boot.php
 missing leaf app/index.php#index_script -> lib/boot.php#boot_script
-```
-
-## spec-interface-extends
-
-`extends` is read for classes only.
-
-```text
-missing file Model/Boss.php -> Model/Describable.php
-missing file Model/Boss.php -> Model/Fightable.php
-missing leaf Model/Boss.php#Boss -> Model/Describable.php#Describable usage=inheritance
-missing leaf Model/Boss.php#Boss -> Model/Fightable.php#Fightable usage=inheritance
 ```
 
 ## spec-script-leaf

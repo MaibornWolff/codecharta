@@ -8,16 +8,17 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 /**
  * The names a PHP declaration uses and how, in the order of [Role], each as the full path of the class, function or
  * constant it means by the rules of `php.md`: the last segment as name, the namespace as prefix, and for a function or
- * constant PHP may look up globally the global name as fallback. Read are return, parameter and property types, base
- * classes, interfaces, instantiations, static calls and properties, constant accesses, traits, attributes, the class
- * of an `instanceof`, function calls, constant reads and every type (parameter, return, property, `catch`); left out
- * are `self`, `static`, `parent` and the type keywords.
+ * constant PHP may look up globally the global name as fallback. Read are every type (parameter, return, property,
+ * `catch`), the base classes and interfaces of a class, an interface, an enum or an anonymous class, instantiations,
+ * static calls and properties, constant accesses, traits, attributes, the class of an `instanceof`, function calls and
+ * constant reads; left out are `self`, `static`, `parent` and the type keywords.
  */
 internal object UsedTypeExtractor {
     private const val NAME = "name"
     private const val QUALIFIED_NAME = "qualified_name"
     private const val NAMED_TYPE = "named_type"
     private const val CLASS_DECLARATION = "class_declaration"
+    private const val ANONYMOUS_CLASS = "anonymous_class"
     private const val DECLARATION_LIST = "declaration_list"
     private const val PROPERTY_DECLARATION = "property_declaration"
     private const val USE_DECLARATION = "use_declaration"
@@ -56,6 +57,7 @@ internal object UsedTypeExtractor {
         USED_TRAIT(TypeUsage.USAGE),
         ATTRIBUTE(TypeUsage.USAGE),
         CHECKED_INSTANCE(TypeUsage.USAGE),
+        ANONYMOUS_CLASS_HEADER(TypeUsage.USAGE),
         CALLED_FUNCTION(TypeUsage.USAGE, Kind.FUNCTION)
     }
 
@@ -94,8 +96,8 @@ internal object UsedTypeExtractor {
     private fun roleOfName(name: SyntaxNode): Role? {
         val parent = name.parent
         return when (parent.type) {
-            BASE_CLAUSE -> Role.INHERITED.takeIf { parent.parent.type == CLASS_DECLARATION }
-            CLASS_INTERFACE_CLAUSE -> Role.IMPLEMENTED.takeIf { parent.parent.type == CLASS_DECLARATION }
+            BASE_CLAUSE -> if (isOfAnonymousClass(parent)) Role.ANONYMOUS_CLASS_HEADER else Role.INHERITED
+            CLASS_INTERFACE_CLAUSE -> if (isOfAnonymousClass(parent)) Role.ANONYMOUS_CLASS_HEADER else Role.IMPLEMENTED
             OBJECT_CREATION_EXPRESSION -> Role.INSTANTIATED
             SCOPED_CALL_EXPRESSION, SCOPED_PROPERTY_ACCESS_EXPRESSION ->
                 Role.STATIC_MEMBER_OWNER.takeIf { parent.getChildByFieldName(SCOPE_FIELD) == name }
@@ -119,6 +121,8 @@ internal object UsedTypeExtractor {
             else -> Role.OTHER_TYPE
         }
     }
+
+    private fun isOfAnonymousClass(clause: SyntaxNode): Boolean = clause.parent.type == ANONYMOUS_CLASS
 
     private fun isMemberOfClass(member: SyntaxNode): Boolean {
         val memberList = member.parent
