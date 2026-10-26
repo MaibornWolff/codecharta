@@ -51,7 +51,7 @@ class TypescriptAngularAnalyzerTest {
     fun `should add the inline template of an Angular component as a template node of the component file`() {
         // Arrange
         val typescriptCode = """
-            @Component({ selector: 'app-torch', template: `<app-flame />` })
+            @Component({ selector: 'app-torch', template: `{{ heat | celsius }}` })
             export class TorchComponent {}
         """.trimIndent()
 
@@ -62,7 +62,7 @@ class TypescriptAngularAnalyzerTest {
         val template = report.nodes.single { it.language == SupportedLanguage.ANGULAR }
         assertThat(template.pathWithName).isEqualTo(Path(listOf("torch_component", "TorchComponent", "template")))
         assertThat(template.physicalPath).isEqualTo("torch.component.ts")
-        assertThat(template.usedTypes.map { it.name }).containsExactly("app-flame")
+        assertThat(template.usedTypes.map { it.name }).containsExactly("celsius")
         assertThat(
             report.nodes.single { it.language == SupportedLanguage.TYPESCRIPT }.angular?.templatePath
         ).isEqualTo(template.pathWithName)
@@ -72,7 +72,7 @@ class TypescriptAngularAnalyzerTest {
     fun `should give each of two components in one file a template node with only the names of its own template`() {
         // Arrange
         val typescriptCode = """
-            @Component({ selector: 'app-torch', template: `<app-flame />` })
+            @Component({ selector: 'app-torch', template: `{{ heat | celsius }}` })
             export class TorchComponent {}
             @Component({ selector: 'app-lantern', template: `<app-wick />{{ oil | litres }}` })
             export class LanternComponent {}
@@ -86,7 +86,7 @@ class TypescriptAngularAnalyzerTest {
             .filter { it.language == SupportedLanguage.ANGULAR }
             .associate { template -> template.pathWithName.parts[1] to template.usedTypes.map { it.name } }
         assertThat(usedNamesByTemplate).isEqualTo(
-            mapOf("TorchComponent" to listOf("app-flame"), "LanternComponent" to listOf("app-wick", "litres"))
+            mapOf("TorchComponent" to listOf("celsius"), "LanternComponent" to listOf("litres"))
         )
     }
 
