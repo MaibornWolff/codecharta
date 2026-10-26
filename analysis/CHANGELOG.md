@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Inheritance on leaf edges**: a leaf edge from a Java, Kotlin or C# class to the class it extends or the interface
   it implements says so, as `inheritance` or `implementation`.
 
+### Changed
+
+- **Leaves of TypeScript and JavaScript files**: the dependency map shows every top-level declaration of a TypeScript
+  or JavaScript file as a leaf, exported or not, each member a namespace exports, and the code at the top level of a
+  file as a leaf `<file>_script`, which a side-effect import such as `import './polyfills'` uses.
+
 ### Fixed 🐞
 
 - **Same name in several places**: `dependencyparser` links a class that several files declare under one name to the
@@ -34,6 +40,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   `src/`, and links a name to what Python itself binds it to there, so it follows aliases, relative and wildcard imports
   with their `__all__`, nested classes and both branches of `try` and `except ImportError`, and no longer links a
   parameter, a local variable or a method called on a variable to a class of the same name.
+
+- **Imports in TypeScript and JavaScript**: `dependencyparser` finds a TypeScript or JavaScript module where the
+  compiler would, also through a workspace package, a folder's `package.json` or a `.js` specifier of a `.ts` file, and
+  links a name to what the module binds it to, through any form of import, `require` or re-export, so it tells
+  `Creature` from `Creature as CreatureDto` and no longer links a parameter, a local variable or a method called on a
+  variable to a class of the same name.
+
+- **Vue components**: `dependencyparser` links a Vue component to each component its template names, as Vue looks it
+  up in `<script setup>`, the `components` option, a global `app.component` registration and the project, and to what
+  its template expressions read, also when another folder or a `.ts` file imports the component.
+
+- **Angular directives**: `dependencyparser` links an Angular template to every component and directive whose selector
+  matches one of its elements, as Angular matches them, so an attribute directive such as `[appHighlight]` and a
+  structural directive such as `*appRepeat` get their edge.
 
 - **Using directives in C#**: `dependencyparser` looks a C# name up in each enclosing namespace before the using
   directives written around it, so a class of the namespace wins over a using at the top of the file, a name two

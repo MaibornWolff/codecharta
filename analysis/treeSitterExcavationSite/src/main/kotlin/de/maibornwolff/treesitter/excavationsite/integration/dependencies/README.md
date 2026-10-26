@@ -76,7 +76,7 @@ data class Declaration(
     val type: DeclarationType,              // CLASS, INTERFACE, ENUM, RECORD, ANNOTATION, FUNCTION, VARIABLE, REEXPORT, SCRIPT
     val usedTypes: Set<UsedType>,           // types referenced inside this declaration
     val parentPath: List<String> = [],      // namespace/package path: ["com", "example"]
-    val angular: AngularDeclaration? = null, // what an Angular decorator declares: templateNames, templateUrl, imports, ...
+    val angular: AngularDeclaration? = null, // what an Angular decorator declares: selectors, pipeName, templateUrl, imports, ...
     val isFileScoped: Boolean = false       // only its own file can name it: Kotlin `private` top level, a C# `file` type
 )
 
@@ -115,7 +115,8 @@ Java, Kotlin, C#, TypeScript, JavaScript, Go, Delphi and Vue leave the field at 
 |---|---|---|
 | Java, Kotlin, C# | Import types at the top, use short names inline. Qualified inline usage (`com.other.Settings s`) is rare and idiomatically discouraged. | No — always empty. The import list already carries the neighborhood info the resolver needs. |
 | C++ | `using namespace` is discouraged in headers because it pollutes scope. Writing `cppcheck::Settings` inline is **the normal way** to reference cross-namespace types. | Yes — populated on every qualified inline reference. |
-| TypeScript, JavaScript, Go, Vue | Import-aliased usage (`pkg.Type`) is idiomatic but stored as a dotted string in `UsedType.name`; the resolver splits on `.`. | No — always empty. |
+| Go | Import-aliased usage (`pkg.Type`) is idiomatic but stored as a dotted string in `UsedType.name`; the resolver splits on `.`. | No — always empty. |
+| TypeScript, JavaScript, Vue | A name means the binding the compiler sees: a local one hides it, else an import or a declaration of the module, else a global. | Only as a marker — the extractor leaves out what a local binding hides and reports a name through a module binding as that binding plus the members read behind it (`ns.Shapes.Circle`, `dynamic_import_<offset>.A`), a renamed import under its local name. The prefix is `GLOBAL` for a name no module binding binds, `COMPONENT_TAG` for a tag of a Vue template, and the specifier for a side-effect import (name `MODULE_SCRIPT`) and for `export { default as B } from` (name `DEFAULT_EXPORT`). |
 | Python | A name means whatever binds it where it is used: a declaration of the module, an import, a wildcard import. | Yes — the extractor finds the binding Python sees for each name and reports the use with the module the name is looked up in as prefix (empty for the own module, one `.` per leading dot for a relative import, a last `*` for a wildcard import) and the name with the attribute names behind it as `name` (`Order.Line`); `fallbacks` hold what the use means when a wildcard import does not bind the name. |
 | PHP | Has namespaces similar to C++. A declared type (return, parameter, property) is taken as written, qualifier included, in `UsedType.name`; a qualified base class, interface or instantiated class is left out. | No — always empty. |
 | Rust | A `use` brings most types into scope, but fully-qualified inline references (`crate::a::Foo`, `super::B`) without a `use` are legal and common. | Yes — populated for `scoped_type_identifier` references (the scope segments before the final name, verbatim incl. `crate`/`self`/`super`). |
@@ -140,16 +141,19 @@ dependency gets.
   migration, are one declaration with an empty name next to the objects the file creates.
 - A Vue component is one `CLASS` named `DEFAULT_EXPORT`, like the default export of a JavaScript file. Its used types
   are the components its template names. The adapter names it after the file.
-- An Angular template is one `SCRIPT` with an empty name. Its used types are its elements, but for Angular's own
-  `ng-container`, `ng-template` and `ng-content`, and the names of the pipes it uses; the adapter resolves the ones a
-  component or pipe declares and drops the rest, such as plain HTML elements.
+- An Angular template is one `SCRIPT` with an empty name. Its used types are the names of the pipes it uses; its
+  elements, each with its tag, attributes, bindings and classes, are `AngularDeclaration.elements`, which the adapter
+  matches against the selectors of the project's components and directives.
 
-### Template names
+### Selectors and pipe names
 
-An Angular template refers to a component by the element its selector names (`<app-cave-map>`) and to a pipe by its
-pipe name (`| goldCoins`), not by the class name. The TypeScript extractor reads them off the `@Component` and `@Pipe`
-decorators into `Declaration.angular.templateNames`: every element of a selector list, lowercased, and the pipe name. Attribute
-and class selectors name no element and are left out. The adapter matches the used types of a template against them.
+An Angular template refers to a component or directive by an element its selector matches (`<app-cave-map>`,
+`<div appHighlight>`) and to a pipe by its pipe name (`| goldCoins`), not by the class name. The TypeScript extractor
+reads them off the `@Component`, `@Directive` and `@Pipe` decorators: `AngularDeclaration.selectors` holds each
+alternative of a selector list (`AngularSelectorParser`: tag, attributes with values, classes, `:not(…)` parts),
+`pipeName` the pipe name. A template's elements are read the same way (`TemplateElements`), a structural directive
+as an `ng-template` element of its own (`StructuralDirectives`); the adapter matches them as Angular's
+`SelectorMatcher` does.
 
 ### Embedded sources
 
@@ -300,27 +304,25 @@ A different concatenation order with the same types produces identical dependenc
 |---|---|---|
 | **Java** | inheritance, variables, annotations, methodInvocations, constructorCalls, thrownTypes, fields, methods | `JavaAnalyzer.kt` |
 | **Kotlin** | inheritance, properties, parameters, returnTypes, annotations, constructorCalls, callExpressions | `KotlinAnalyzer.kt` |
-| **TypeScript** | typeIdentifiers, constructorCalls, memberAccesses, methodCalls, extensions, relevantIdentifiers | `TypeScriptAnalyzer.kt` |
+| **TypeScript** | typeIdentifiers (annotations and type predicates), constructorCalls, memberAccesses, extensions, relevantIdentifiers | `TypeScriptAnalyzer.kt` |
 | **PHP** | imported constants, inherited, implemented, constant owners, return, argument, instantiations, properties, static call owners, traits | `UsedTypesExtractor.kt` |
 | **C#** | constructors, methods, casts, genericParams, genericConstraints, inherited, variables, objectCreations, memberAccesses, attributes, isTypeChecks | `CsharpAnalyzer.kt` |
 | **C++** | processor list order: typeDecl, inheritance, methods, typeDef, alias, generic, define | `BodyProcessor.kt` |
 | **Go** | for a function: parameter types, result types, methods called through a selector, functions called directly, package-qualified types; then for every declaration all type identifiers and qualified types in source order. The used types of a method are appended to its receiver type | `GoAnalyzer.kt` |
 | **Python** | every name a binding gives a meaning, in source order, as the binding Python sees there (scopes of functions, comprehensions and class bodies, then the module, by position); one use per alternative binding in branches of one `if` or `try` | `PythonAnalyzer.kt` |
-| **JavaScript** | Same as TypeScript (shared `UsedTypeExtractor`): typeIdentifiers, constructorCalls, memberAccesses, methodCalls, extensions, relevantIdentifiers, constraintTypes, typeAliasRhsTypes, jsxComponents. DC legacy was imports-only; TSE adds full used-type extraction. | `JavascriptAnalyzer.kt` |
-| **Vue** | template components in source order; the script imports are imports, which the adapter appends as used types | `VueAnalyzer.kt` |
-| **Angular template** | elements and pipes in source order | N/A — TSE-native, no DC legacy |
+| **JavaScript** | Same as TypeScript (shared `UsedTypeExtractor`): typeIdentifiers, constructorCalls, memberAccesses, extensions, relevantIdentifiers, constraintTypes, typeAliasRhsTypes, jsxComponents. DC legacy was imports-only; TSE adds full used-type extraction. | `JavascriptAnalyzer.kt` |
+| **Vue** | the template's tags in source order, marked `COMPONENT_TAG`; `<script setup>` and the template's expressions are an embedded source of the component | `VueAnalyzer.kt` |
+| **Angular template** | pipes in source order; the elements are `AngularDeclaration.elements` | N/A — TSE-native, no DC legacy |
 | **Delphi** | inheritance, parameters, returnTypes, fieldTypes, propertyTypes, constTypes, variableTypes, constructorCalls, methodCalls, castTypes, attributeTypes, genericConstraintTypes | N/A — TSE-native, no DC legacy |
 | **Rust** | supertraits, fields (named + tuple), parameters, returnTypes, genericBounds, whereBounds, associatedBounds, typeAliasRhs, constStaticTypes; then per-target `impl` folding appends the impl'd trait followed by the impl method-signature types | N/A — TSE-native, no DC legacy |
 | **SQL** | the objects referenced (`FROM`, `JOIN`, `INTO`, `UPDATE`, `DELETE`, `MERGE`, `USING`, `INSERT`, `TRUNCATE`, `REFERENCES`, `EXEC`, `CALL`, `PERFORM`, the table of a trigger) and the routines called, in source order | N/A — TSE-native, no DC legacy |
 
-### JavaScript vs TypeScript: DEFAULT_EXPORT copy behavior
+### Default exports of JavaScript and TypeScript
 
-For `export default function Foo` / `export default class Foo` (named inline default export), JavaScript and TypeScript intentionally diverge:
-
-- **JavaScript**: emits both the named declaration (`Foo`) AND a second `Declaration(name="DEFAULT_EXPORT", type=<same>)`. This matches DC's legacy `JavascriptAnalyzer`, which produced both nodes.
-- **TypeScript**: emits only the named declaration (`Foo`). No `DEFAULT_EXPORT` copy. This matches DC's legacy `TypeScriptAnalyzer`.
-
-This asymmetry is a DC legacy compatibility shim, not a principled semantic choice. It is implemented in `JavascriptDependencyMapping.extractJsDeclarations()`.
+JavaScript and TypeScript report a default export alike (`DefaultExportClassifier`): `export default class Foo` or
+`function Foo` is the declaration `Foo`; `export default Foo` a `REEXPORT` named `DEFAULT_EXPORT` that uses `Foo`; an
+anonymous one (`export default {…}`, `export default () => 1`) and CommonJS `module.exports = …` or TypeScript
+`export = …` a declaration `DEFAULT_EXPORT`, which the adapter names `default`.
 
 ## Namespace models: single-namespace vs multi-namespace languages
 

@@ -44,7 +44,8 @@ hitPoints, armorClass (not titlecase, ambiguous roll, [ccGlow]); panel→armorCl
 - All 13 expected template edges found, none extra, none cyclic or upwards. Template leaf: kind `script`, named after the
   file with ending (`creature-card_component_html`), language `angular`.
 - Unresolved as intended: router-outlet, mat-icon, uppercase, titlecase, ambiguous `roll`.
-- Gap: attribute directives (`[ccGlow]`) draw no edge.
+- Gap: attribute directives (`[ccGlow]`) draw no edge. **Fixed 2026-10-26 (typescript.md decision 14: a template element uses every
+  class whose selector matches it).**
 - Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/typescript.md`): listed
   per probe in `regression/angular/known-gaps.md`.
 
@@ -115,5 +116,5 @@ hitPoints, armorClass (not titlecase, ambiguous roll, [ccGlow]); panel→armorCl
 ## Verdict
 Unified: Good – all templates and inline templates measured, counts exact, ICU cases counted. Bad – every .html is measured.
 Dependency: Good – every template edge expected, a component points at its template, ambiguous names resolve through the
-component's imports or module. Missing – attribute directives.
+component's imports or module. Missing – attribute directives (fixed 2026-10-26, decision 14).
 Domain: Good – template vocabulary is the component's domain, text weighs like identifiers. Bad – German stop words leak.

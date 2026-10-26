@@ -177,20 +177,20 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | --- | --- | --- |
 | Declarations: the file path is the logical path | `spec-module-path` | ok |
 | Declarations: a top-level declaration that is not exported | `spec-unexported-declaration` | ok |
-| Declarations: every name a `const` binds, also by destructuring | `spec-variable-declaration` | gap |
-| Declarations, decision 7: a namespace member is a leaf of its own | `spec-namespace-member` | gap |
-| Declarations, decision 2: a named default export | `spec-default-named` | gap |
-| Declarations, decision 2: an anonymous default export | `spec-default-anonymous` | gap |
-| Declarations: `export default name` | `spec-default-identifier` | gap |
+| Declarations: every name a `const` binds, also by destructuring | `spec-variable-declaration` | ok |
+| Declarations, decision 7: a namespace member is a leaf of its own | `spec-namespace-member` | ok |
+| Declarations, decision 2: a named default export | `spec-default-named` | ok |
+| Declarations, decision 2: an anonymous default export | `spec-default-anonymous` | ok |
+| Declarations: `export default name` | `spec-default-identifier` | ok |
 | Declarations, decision 3: top-level code is a script leaf | `spec-script-top-level` | ok |
 | Declarations, decision 8: `export { A } from`, a use through a barrel | `spec-reexport-named` | ok |
 | Declarations, decision 8: `export { A as B } from` | `spec-reexport-alias` | ok |
 | Declarations, decision 8: `export { default as B } from` | `spec-reexport-default` | ok |
-| Declarations, decision 8: an imported name exported again | `spec-reexport-imported` | gap |
-| Declarations, decision 8: `export *` without default and unexported names | `spec-reexport-star` | gap |
+| Declarations, decision 8: an imported name exported again | `spec-reexport-imported` | ok |
+| Declarations, decision 8: `export *` without default and unexported names | `spec-reexport-star` | ok |
 | Declarations, decision 8: an own declaration over `export *` | `spec-reexport-star-own-wins` | ok |
-| Declarations, decision 8: a name two `export *` offer | `spec-reexport-star-ambiguous` | gap |
-| Declarations: `export { A as B }` without `from` | `spec-export-local-alias` | gap |
+| Declarations, decision 8: a name two `export *` offer | `spec-reexport-star-ambiguous` | ok |
+| Declarations: `export { A as B }` without `from` | `spec-export-local-alias` | ok |
 | Declarations and 3: a script file is global | `spec-global-script` | ok |
 | Declarations and 3: `declare global` | `spec-declare-global` | ok |
 | Declarations and specifiers 2.4: `declare module` | `spec-ambient-module` | ok |
@@ -198,32 +198,32 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Specifiers: a file before a folder of the same name | `spec-file-over-folder` | ok |
 | Specifiers 1: `.js` written, the `.ts` file found | `spec-js-extension-maps-to-ts` | ok |
 | Specifiers 2: the order of the endings | `spec-extension-order` | ok |
-| Specifiers 3: a folder's `package.json` | `spec-package-json-types` | gap |
+| Specifiers 3: a folder's `package.json` | `spec-package-json-types` | ok |
 | Specifiers 2.1: tsconfig `paths` | `spec-tsconfig-paths` | ok |
 | Specifiers 2.1: tsconfig `baseUrl` | `spec-tsconfig-baseurl` | ok |
 | Specifiers 2.2: a bundler alias | `spec-bundler-alias` | ok |
-| Specifiers 2.3, decision 5: a workspace package | `spec-workspace-package` | gap |
-| Specifiers 2.3, decision 5: a subpath of a workspace package | `spec-workspace-subpath` | gap |
+| Specifiers 2.3, decision 5: a workspace package | `spec-workspace-package` | ok |
+| Specifiers 2.3, decision 5: a subpath of a workspace package | `spec-workspace-subpath` | ok |
 | Specifiers 2.5: a library | `spec-library-import` | ok |
 | Specifiers: no project file | `spec-unresolved-specifier` | ok |
 | Binding: `import { A as B }` | `spec-import-alias` | ok |
 | Binding: `import { A as B }` beside an import of another `A` | `spec-import-alias-namesake` | ok |
 | Binding: `import type` | `spec-import-type` | ok |
-| Binding: `import * as ns` | `spec-namespace-import` | gap |
+| Binding: `import * as ns` | `spec-namespace-import` | ok |
 | Qualified: `ns.A` through `import * as Ns` written upper case | `spec-namespace-import-upper-case` | ok |
 | Binding: an import alone draws no edge | `spec-unused-import` | ok |
 | Binding, decision 3: a side-effect import | `spec-side-effect-import` | ok |
 | Binding, decision 4: a dynamic import read by name | `spec-dynamic-import` | ok |
 | Binding, decision 4: a dynamic import not read | `spec-dynamic-import-unread` | ok |
 | Binding, decision 15: an import type `import('./m').A` | `spec-import-type-expression` | ok |
-| 1. a local class | `spec-local-declaration` | gap |
-| 1. a parameter | `spec-parameter-shadows-import` | gap |
-| 1. a type parameter | `spec-type-parameter` | gap |
+| 1. a local class | `spec-local-declaration` | ok |
+| 1. a parameter | `spec-parameter-shadows-import` | ok |
+| 1. a type parameter | `spec-type-parameter` | ok |
 | 2. declarations that merge | `spec-declaration-merging` | ok |
 | 2 and 3: a module binding over a global | `spec-module-shadows-global` | ok |
 | 3, decision 9: globals of one name in several files | `spec-global-alternatives` | ok |
 | 4. a global of the runtime | `spec-builtin-global` | ok |
-| Simple name: JSX tags | `spec-jsx-tag` | gap |
+| Simple name: JSX tags | `spec-jsx-tag` | ok |
 | Simple name: the type a type predicate names | `spec-type-predicate` | ok |
 | Simple name: a shorthand property | `spec-shorthand-property` | ok |
 | Qualified: a chain through a re-exported module | `spec-qualified-chain` | ok |
@@ -238,7 +238,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | JavaScript, declarations: `module.exports = X` | `javascript/spec-commonjs-default` | ok |
 | JavaScript, decision 10: a member of a required `module.exports = X` | `javascript/spec-commonjs-default-member` | ok |
 | JavaScript, binding: `exports.A =` | `javascript/spec-commonjs-exports-property` | ok |
-| JavaScript, decision 2: a named default export | `javascript/spec-js-default-named` | gap |
+| JavaScript, decision 2: a named default export | `javascript/spec-js-default-named` | ok |
 | JavaScript, decision 8: `export *` without default and unexported names | `javascript/spec-reexport-star` | ok |
 | JavaScript, binding: a default import of a CommonJS module | `javascript/spec-esm-import-commonjs` | ok |
 | JavaScript, 3: a script file is global | `javascript/spec-script-global` | ok |

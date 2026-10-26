@@ -12,10 +12,10 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 ## Resume here (for a fresh agent)
 
-- **State:** Java, Kotlin, C#, Go and Python are done. TypeScript, JavaScript, Vue and Angular templates are in
-  progress: TypeScript and Vue are pushed (`fix/dependency-name-resolution-typescript`, `-vue`); Angular (step 24) is
-  done on `fix/dependency-name-resolution-angular` (cut from the Vue branch, not pushed yet): resume with the section
-  "TypeScript, JavaScript, Vue and Angular templates" below, at "Resume Angular here".
+- **State:** Java, Kotlin, C#, Go, Python, TypeScript, JavaScript, Vue and Angular templates are done. TypeScript, Vue
+  and Angular are pushed (`fix/dependency-name-resolution-typescript`, `-vue`, `-angular`); steps 19 and 25 are on
+  `fix/dependency-name-resolution-typescript-bindings` (cut from the Angular branch, not pushed yet), see "Resume after
+  TypeScript here" below. Next language by the order below: C and C++.
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -95,8 +95,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 ## Order and state
 
-- Done: Java, Kotlin (see the plan above), C#, Go, Python. Next, by Christian's choice when asked: TypeScript and
-  JavaScript (with Vue and Angular templates), C and C++, PHP, Rust, Delphi, SQL.
+- Done: Java, Kotlin (see the plan above), C#, Go, Python, TypeScript and JavaScript (with Vue and Angular
+  templates). Next, by Christian's choice when asked: C and C++, PHP, Rust, Delphi, SQL.
 - Material: the checkpoint branch `fix/nearest-file-for-shared-logical-path` holds an earlier, unreviewed attempt and
   its reviewer probes; use them for ideas and as the regression net, not as code to copy.
 
@@ -135,7 +135,7 @@ its own; `Outer.Node` is no use of `Outer`). Order lessons: the import roots had
 alias resolved through it and attribute names stopped being plain names, or `am.Model` lost to the bare `Model`; a
 decision asked mid-way (5, alternatives) went in as spec, probes, then the implementation.
 
-## TypeScript, JavaScript, Vue and Angular templates (in progress, 2026-10-23)
+## TypeScript, JavaScript, Vue and Angular templates (done, 2026-10-26)
 
 Branch `fix/dependency-name-resolution-typescript`, cut from the pushed Python branch; comparison build of the first
 commit `ccsh-py12`, then `ccsh-ts<n>`. Christian chose all four at once and decisions 2 to 6 of
@@ -169,7 +169,19 @@ Steps, one commit each:
 16. [x] a name read from a dynamic import's result
 17. [x] globals of script files and `declare global`
 18. [x] CommonJS: `require` binds the module, `module.exports` is the default export
-19. [ ] resolve a name only through the binding the compiler sees (the heuristics go)
+19. [x] resolve a name only through the binding the compiler sees (the heuristics go), branch
+    `fix/dependency-name-resolution-typescript-bindings`:
+    1. [x] a renamed import binds its local name (TSE keeps it, `MemberImports` maps it)
+    2. [x] refactor: every named import of a project module is written as the path of its export
+    3. [x] refactor: a name an import of no project file binds is written as the import's path
+    4. [x] refactor: a name the own module declares is written as its path (`OwnNames`)
+    5. [x] `TypescriptNameRules` takes a name only as written, as `PythonNameRules`
+    6. [x] a member chain through an upper-case namespace import is one name (refactor: test move before)
+    7. [x] no use of an upper-case method called on a value (TSE `methodCalls` gone)
+    8. [x] refactor: no guessed `index` dependency
+    9. [x] JavaScript expands `export *` as TypeScript does (refactor: `StarExports` before; Christian chose it)
+    10. [x] `import x = require` binds the module; the type of a type predicate is a use; decision 15, an import type
+        `import('./m').A` is a use of the export (all three found on the sample, Christian chose to fix them)
 20. [x] Vue: a default import of a `.vue` file names its component
 21. [x] Vue: tags by binding, `components`, global registration, the one component
 22. [x] Vue: template expressions are uses, an import alone is none
@@ -183,7 +195,20 @@ Steps, one commit each:
     5. [x] a template element uses every class whose selector matches it (template nodes carry their elements
        first, two test moves as refactors before)
     6. [x] refactor: a template reports only pipe names, a class only its pipe name
-25. [ ] changelog, README, gh-pages, plan
+25. [x] changelog, README, gh-pages, the extractor's README, the spec table (no gap left), FINDINGS.md of the four
+    samples, plan
+
+### Resume after TypeScript here (2026-10-26, steps 19 and 25 done)
+
+- **Branch** `fix/dependency-name-resolution-typescript-bindings`, waiting for Christian's review and push; **last
+  build** `ccsh-b13` (head before the docs commit), the next language's first chain is `chain.sh b13 <tag>`.
+  Checkpoint probes worse than the release: the nine known, no new one. No gap left in any of the four folders.
+- **How it is built:** the analyzer writes every bound name in full (`MemberImports` for imports of project files and,
+  by `bindOutsideProject`, of libraries and `declare module`; `OwnNames` for the module's own and namespace names;
+  `QualifiedNames`, `GlobalUses`, `StarExports` as before), and `TypescriptNameRules` only looks the path up, as
+  `PythonNameRules`; a name left simple means nothing. TSE reports a renamed import under its local name and a member
+  read through any namespace or default import, or on an `import()` call that is not called, as one name.
+- **Samples:** `typescript` and `vue` draw exactly the expected number of file edges of their FINDINGS (79/85, 93/99).
 
 ### Resume Angular here (2026-10-26, Angular done: step 24)
 
@@ -306,5 +331,6 @@ Steps, one commit each:
 - [x] Ask Christian which language comes next: C# (2026-10-22)
 - [x] Next language: Go (left to Claude by Christian, 2026-10-22), done 2026-10-22
 - [x] Next language: Python (left to Claude by Christian, 2026-10-23), done 2026-10-23
-- [ ] Next language: TypeScript, JavaScript, Vue and Angular templates (left to Claude by Christian, 2026-10-23)
+- [x] Next language: TypeScript, JavaScript, Vue and Angular templates (left to Claude by Christian, 2026-10-23), done
+  2026-10-26
 - [ ] For each language: spec, probes, implementation commits, acceptance

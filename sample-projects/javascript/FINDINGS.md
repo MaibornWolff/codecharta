@@ -430,27 +430,27 @@ centaur(1), saves(1)) and removed by `--exclude-tests`. `test` itself is filtere
      {Speed}`, ...), plus `@implements {Fightable}`. **Decision: ignore.**
   2. `export * from "./CreatureUtil.js"` (`application/index.js`), `export * as model from` and
      `export { default } from` (`domain/index.js`): dead re-export leaves, no edge from the barrel and none
-     from its consumers (`ArmorClass.js`), so one upward edge and two of the three expected cycles are lost. **Decision: accept (derived from TypeScript).**
-  3. Side-effect import `import "./logging.js"` (`application/bootstrap.js`). **Decision: accept (derived from TypeScript).**
-  4. Directory resolution: `require("./mapping")` in `creatureEntityMapper.cjs` gets no edge. **Decision: accept.**
+     from its consumers (`ArmorClass.js`), so one upward edge and two of the three expected cycles are lost. **Decision: accept (derived from TypeScript).** **Fixed 2026-10-26 (typescript.md decision 8): `export *` and `export { default } from` are re-export leaves; `export * as model` binds the module and draws no edge of its own.**
+  3. Side-effect import `import "./logging.js"` (`application/bootstrap.js`). **Decision: accept (derived from TypeScript).** **Fixed 2026-10-23 (typescript.md decision 3).**
+  4. Directory resolution: `require("./mapping")` in `creatureEntityMapper.cjs` gets no edge. **Decision: accept.** **Fixed 2026-10-23 (typescript.md specifiers: a folder's `index` file).**
   5. `import { Creature as CreatureDto } from "./dto/Creature.js"` next to `import { Creature }`
-     (`CreatureFacade.js`): the edge to `application/dto/Creature.js` is missing. **Decision: accept (derived from Java).**
+     (`CreatureFacade.js`): the edge to `application/dto/Creature.js` is missing. **Decision: accept (derived from Java).** **Fixed 2026-10-26 (typescript.md: a renamed import binds its local name).**
   6. Not statically resolvable, acceptable: `new URL(..., import.meta.url)` in `CreatureLoader.js`, the
      computed `require` in `creatureEntityMapper.cjs`. **Decision: ignore (the report itself calls it acceptable).**
   7. `Zentaurenhöhle.js` is absent under a `POSIX` locale, without a message. **Decision: accept (derived from Java).**
 - Wrong:
   1. `import { CreatureFacade } from "../../application"` (`CreatureStable.js`) points at
-     `application/CreatureFacade.js` instead of `application/index.js`. **Decision: ignore (derived from TypeScript: an import through a barrel should point at the real target, which is what happens here).**
+     `application/CreatureFacade.js` instead of `application/index.js`. **Decision: ignore (derived from TypeScript: an import through a barrel should point at the real target, which is what happens here).** **Superseded by typescript.md decision 8: the import points at `application/index.js`, whose re-export leaf points on at `CreatureFacade.js`.**
   2. With two imports of the same exported name the aliased one resolves to the first import's file
-     (probe `import { Creature as CreatureDto } from "./b/Creature.js"` -> edge to `a/Creature.js`). **Decision: accept (derived from Java).**
+     (probe `import { Creature as CreatureDto } from "./b/Creature.js"` -> edge to `a/Creature.js`). **Decision: accept (derived from Java).** **Fixed 2026-10-26.**
 - Bad:
   1. `export default function defaultEncounter` (`EncounterEdgeCases.js`) and `export default CreatureType`
-     produce a second leaf `default`. **Decision: accept (derived from TypeScript).**
+     produce a second leaf `default`. **Decision: accept (derived from TypeScript).** **Fixed 2026-10-23 (typescript.md decision 2).**
   2. `const winston = require("winston")` and `REPOSITORY_MODULE` are project leaves of
      `creatureEntityMapper.cjs`. **Decision: ignore.**
   3. Functions written as arrow or function expression (`arrowExpression`, `functionExpression`, the
      component `SpeedBadge`) have leaf kind `variable`. **Decision: accept (derived from TypeScript).**
-  4. A module that only has top-level statements gets no leaf and no edge (probe). **Decision: accept (derived from Java).**
+  4. A module that only has top-level statements gets no leaf and no edge (probe). **Decision: accept (derived from Java).** **Fixed 2026-10-23 (typescript.md decision 3: a leaf `<file>_script`).**
 - Good: all 15 round-3 edges, including a JSX tag as the only use (`<SpeedBadge />`), uses inside a default
   parameter value, a static block, a template literal substitution, a generator, a getter, a private method
   and an IIFE; `.cjs`, `.mjs` and `.jsx` with `require` and `import`; aliased and namespace imports;

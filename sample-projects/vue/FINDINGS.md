@@ -706,20 +706,20 @@ All 17 appear. Top of the list: creature 82, speed 75, id 42, armor 37, hit 28, 
 ### Dependency parser
 - Wrong: `EncounterEdgeCases.vue -> EncounterResolver.ts` instead of `-> EncounterResolver.vue`
   (`import EncounterResolver from './EncounterResolver.vue'`): `X.vue` and `X.ts` in one folder share one node
-  path. The `.vue` gets no incoming edge. **Decision: accept.**
+  path. The `.vue` gets no incoming edge. **Decision: accept.** **Fixed 2026-10-23 (typescript.md, Vue: a default import of a `.vue` file names its component).**
 - Missing: a static default import of a `.vue` is not resolved by its path. `EncounterEdgeCasesPug.vue ->
   ui/CreatureBadge.vue`, `App.vue -> ui/CreatureStable.vue` (`@/` alias), `ui/pages/StablePage.vue ->
   ui/CreatureStable.vue` (`../`), `main.ts -> App.vue`, `main.ts -> ui/CreatureBadge.vue`. Only a component of the
-  same folder whose tag or binding name equals its file name is linked, and a dynamic `import()`. **Decision: accept.**
-- Missing: `import HitPointsModule = require('./HitPoints')` in `model/stableSize.cts` gives no edge. **Decision: accept (derived from TypeScript).**
+  same folder whose tag or binding name equals its file name is linked, and a dynamic `import()`. **Decision: accept.** **Fixed 2026-10-23 (typescript.md, Vue components).**
+- Missing: `import HitPointsModule = require('./HitPoints')` in `model/stableSize.cts` gives no edge. **Decision: accept (derived from TypeScript).** **Fixed 2026-10-26 (typescript.md: `import x = require` binds the module).**
 - Missing: `CreatureFacade.ts -> application/dto/Creature.ts` (`import { Creature as CreatureDto }` beside a
-  `Creature` from another file). **Decision: accept (derived from Java).**
+  `Creature` from another file). **Decision: accept (derived from Java).** **Fixed 2026-10-26 (typescript.md: a renamed import binds its local name).**
 - Missing: `--include-tests` changes nothing: `__tests__/CreatureService.spec.ts` has no top-level declaration, so
-  it has no node and its 6 edges are absent. **Decision: accept (derived from Java).**
+  it has no node and its 6 edges are absent. **Decision: accept (derived from Java).** **Fixed 2026-10-23 (typescript.md decision 3: its top-level code is a leaf `CreatureService_spec_script` with the 6 edges).**
 - Missing: inline `import('../model/Speed').Speed` types in `CreatureService.ts`; global registration
-  (`App.vue -> ui/CreatureBadge.vue`). **Decision: accept (derived from Java).**
+  (`App.vue -> ui/CreatureBadge.vue`). **Decision: accept (derived from Java).** **Fixed 2026-10-26 (typescript.md decision 15 and Vue tag rule 4).**
 - Wrong: `ui/CreatureStable.vue` skips the barrel (`-> CreatureFacade.ts`, `-> CreatureUtil.ts`), `.ts` files stop
-  at `application/index.ts`. **Decision: accept (derived from TypeScript: every import through a barrel should point at the real target, so the `.ts` behaviour is the one to change).**
+  at `application/index.ts`. **Decision: accept (derived from TypeScript: every import through a barrel should point at the real target, so the `.ts` behaviour is the one to change).** **Superseded by typescript.md decision 8: `.vue` and `.ts` both point at `application/index.ts`, whose re-export leaves point on.**
 - Wrong: files with a non-ASCII name are dropped silently without a UTF-8 locale. **Decision: accept (derived from Java).**
 - Bad: default-export leaves differ by form and language (`..._DEFAULT_EXPORT` of kind `enum` / `variable` /
   `reexport`, `default` in `.mjs`); `PersistedCreatures.ts -> application/index.ts` is not flagged upward. **Decision derived from TypeScript: accept — synthetic default-export leaves.** **Decision: ignore — the missing upward flag; that edge goes away once imports through a barrel point at the real target (derived from TypeScript).**

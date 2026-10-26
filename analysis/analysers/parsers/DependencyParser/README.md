@@ -152,8 +152,10 @@ edges on common project layouts; every item below is a bug in DependaCharta that
 
 1. **Extract.** Every source file is parsed with tree-sitter into the declarations it contains and the
    types they use. Imports are resolved through the language's own rules, plus tsconfig/jsconfig path
-   aliases, bundler aliases (webpack, vite, vue.config), Module Federation remotes, Go's `go.mod` files and
-   `vendor/` folders, and the folders above Python's top-level packages.
+   aliases, bundler aliases (webpack, vite, vue.config), Module Federation remotes, workspace packages and
+   `package.json` entry files, Go's `go.mod` files and `vendor/` folders, and the folders above Python's top-level
+   packages. TypeScript, JavaScript and Vue write every name as the full path of what its binding names, so the
+   resolve step only looks that path up.
 2. **Resolve.** Used types are matched against the declarations the whole project offers, with a
    per-language standard-library filter so `java.util.List` does not become a project dependency. A name is
    matched only against languages that can refer to each other by name (`SupportedLanguage.nameScope`): Java
@@ -175,8 +177,10 @@ differ from the namespace levels in the logical layer — which are DependaChart
 
 Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates and SQL.
 
-An Angular template (`.html`) depends on each component it names by the element of its selector and on each pipe it
-names, as the `@Component` and `@Pipe` decorators in the TypeScript files declare them. A name that several classes
+An Angular template (`.html`) depends on each component and directive whose selector matches one of its elements, as
+the Angular compiler matches them by tag, attribute and value, property, two-way and event binding, class and, for a
+structural directive such as `*ngFor`, its `ng-template` element, and on each pipe it names, as the `@Component`,
+`@Directive` and `@Pipe` decorators in the TypeScript files declare them. A selector or pipe name that several classes
 declare means the one in the scope of the template's component, as Angular decides it: the `imports` of a standalone
 component, or the `declarations` and `imports` of the `@NgModule` that declares the component, where an imported
 module adds what it exports, a module it exports in turn included. A class a decorator names is the one its file

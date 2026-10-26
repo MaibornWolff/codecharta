@@ -133,8 +133,10 @@ Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, R
 the same file extensions as the [Unified Parser](/docs/parser/unified#supported-languages). C files (`.c`, `.h`) are
 read as C++.
 
-An Angular template (`.html`) depends on each component it names by the element of its selector and on each pipe it
-names, as the `@Component` and `@Pipe` decorators in the TypeScript files declare them. A name that several classes
+An Angular template (`.html`) depends on each component and directive whose selector matches one of its elements, as
+the Angular compiler matches them by tag, attribute and value, property, two-way and event binding, class and, for a
+structural directive such as `*ngFor`, its `ng-template` element, and on each pipe it names, as the `@Component`,
+`@Directive` and `@Pipe` decorators in the TypeScript files declare them. A selector or pipe name that several classes
 declare means the one in the scope of the template's component, as Angular decides it: the `imports` of a standalone
 component, or the `declarations` and `imports` of the `@NgModule` that declares the component, where an imported
 module adds what it exports, a module it exports in turn included. A class a decorator names is the one its file
@@ -166,6 +168,22 @@ means what Python binds it to where it is used: a declaration of the own module,
 or one in each branch of `try` and `except ImportError`, or a name a wildcard import brings in, as the module's
 `__all__` lists it. A class nested in a class is a leaf of its own; a parameter, a local variable, a builtin or a
 method called on a variable draws no edge.
+
+TypeScript and JavaScript find an imported module where the compiler would: a relative path from the importing file,
+or a bare specifier through the `paths` and `baseUrl` of the nearest `tsconfig.json` or `jsconfig.json`, a bundler
+alias, a Module Federation remote, a workspace package of that `package.json` name or a `declare module` block; each
+with the endings TypeScript tries, a `.js` specifier finding the `.ts` file, and a folder by its `package.json` or its
+`index` file. A name means what the module binds it to: a declaration of the own module or of a namespace around it,
+an import of any form (named, renamed, default, namespace, `require`, `import x = require`, `import()` and an import
+type `import('./m').A`), or a global declaration of a script file or of `declare global`. A re-export such as
+`export { A } from` or `export *` is a leaf of the barrel that points on at what it re-exports. Every top-level
+declaration is a leaf, exported or not, and so is each member a namespace exports and the code at the top level of a
+file (`main_script`), which a side-effect import uses. A parameter, a local variable, a name from a library or a
+method called on a variable draws no edge.
+
+A Vue component is named after its file and uses what its scripts use, what its template expressions read from
+`<script setup>`, and the component each tag names, looked up as Vue does: a binding of `<script setup>`, the
+`components` option, a global `app.component` registration, else the one component of the project of that name.
 
 SQL has no imports: a table, view, synonym, package or routine is found by its name, whatever file creates it and
 in whatever dialect. A name with a schema (`dbo.orders`) finds the object of that schema, or else one created
