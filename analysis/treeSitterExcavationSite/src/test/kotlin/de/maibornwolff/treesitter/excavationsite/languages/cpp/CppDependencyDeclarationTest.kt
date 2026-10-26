@@ -146,6 +146,25 @@ class CppDependencyDeclarationTest {
     }
 
     @Test
+    fun `should report the class an unqualified friend declaration names as forward declared in its namespace`() {
+        // Arrange
+        val code = "namespace app { class T { friend class Util; friend struct lib::Other; friend Third; }; }"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.filter { it.parentPath.firstOrNull() == FORWARD_DECLARATION }).containsExactly(
+            Declaration(
+                name = "Util",
+                type = DeclarationType.CLASS,
+                usedTypes = emptySet(),
+                parentPath = listOf(FORWARD_DECLARATION, "app")
+            )
+        )
+    }
+
+    @Test
     fun `should report no forward declaration for a class named in the type of a field`() {
         // Arrange
         val code = "struct Nest { struct Roost *held; };"
