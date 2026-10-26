@@ -118,8 +118,7 @@ open class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInf
         val resolvedPath = resolveImportPath(import.defaultImportPath())
         val primary = Dependency(path = Path(resolvedPath), isWildcard = import.isWildcard)
         moduleImports.bindOutsideProject(import, primary.path)
-        val index = buildIndexDependency(resolvedPath, import.isWildcard)
-        return if (index != null) setOf(primary, index) else setOf(primary)
+        return setOf(primary)
     }
 
     // One re-export leaf per name `export *` re-exports, pointing at the declaration that name means in its module
@@ -137,14 +136,5 @@ open class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInf
                 usedTypes = setOf(Type.simple(target.withDots()))
             )
         }
-    }
-
-    private fun buildIndexDependency(resolvedPath: List<String>, isWildcard: Boolean): Dependency? {
-        // A wildcard import with an empty resolved path has no module to point an
-        // `index` barrel dependency at, so there is nothing to synthesize.
-        if (isWildcard && resolvedPath.isEmpty()) return null
-        if (isWildcard) return Dependency(Path(resolvedPath + "index"), isWildcard = true)
-        if (resolvedPath.size < 2) return null
-        return Dependency(Path(resolvedPath.dropLast(1) + listOf("index") + resolvedPath.takeLast(1)))
     }
 }

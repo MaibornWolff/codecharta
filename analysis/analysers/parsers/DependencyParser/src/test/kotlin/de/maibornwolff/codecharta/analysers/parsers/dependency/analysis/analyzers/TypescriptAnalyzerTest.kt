@@ -500,7 +500,7 @@ class TypescriptAnalyzerTest {
     }
 
     @Test
-    fun `should add implicit dependency on index`() {
+    fun `should add only the dependency the specifier names, no guessed index`() {
         // Arrange
         val typescriptCode = """
             import { MyGreatInterface } from 'MyGreatInterface';
@@ -518,13 +518,9 @@ class TypescriptAnalyzerTest {
         ).analyze()
 
         // Assert
-        val expectedDependencies = listOf(
-            Dependency(path = Path(listOf("MyGreatInterface", "MyGreatInterface"))),
-            Dependency(path = Path(listOf("MyGreatInterface", "index", "MyGreatInterface")))
-        )
         val expectedType = Type.simple("MyGreatInterface")
         val node = report.nodes[0]
-        assertThat(node.dependencies).containsAll(expectedDependencies)
+        assertThat(node.dependencies).containsExactly(Dependency(path = Path(listOf("MyGreatInterface", "MyGreatInterface"))))
         assertThat(node.usedTypes).containsExactly(expectedType)
     }
 
