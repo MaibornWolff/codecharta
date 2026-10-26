@@ -8,8 +8,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.fieldOfType
 
 /**
  * The declarations of a PHP file wherever they stand, grouped by kind, each with the namespace of the block it stands
- * in as parent path; a constant `define` declares has the namespace its name gives. A file without any is one
- * [DeclarationType.SCRIPT] that uses what the whole file uses.
+ * in as parent path; a constant `define` declares has the namespace its name gives. The top-level code of the file
+ * comes first, as [TopLevelCode] gives it.
  *
  * A constant uses what its value names.
  */
@@ -26,9 +26,7 @@ internal object DeclarationExtractor {
     private const val ARGUMENTS = "arguments"
     private const val ARGUMENT = "argument"
     private const val NAME_FIELD = "name"
-    private const val FUNCTION_FIELD = "function"
     private const val ARGUMENTS_FIELD = "arguments"
-    private const val DEFINE = "define"
     private const val ESCAPED_SEPARATOR = "\\\\"
     private val MEMBER_LISTS = setOf("declaration_list", "enum_declaration_list")
 
@@ -56,7 +54,7 @@ internal object DeclarationExtractor {
             inBlocks(ENUM_DECLARATION) { listOfNotNull(namedByField(it, DeclarationType.ENUM, blocks)) } +
             inBlocks(CONST_DECLARATION) { namespaceConstants(it, blocks) } +
             nodesOfType(FUNCTION_CALL_EXPRESSION).mapNotNull { definedConstant(it, blocks) }
-        return declarations.ifEmpty { listOf(script(rootNode, blocks)) }
+        return listOfNotNull(TopLevelCode.scriptOf(blocks)) + declarations
     }
 
     private fun namedByField(declaration: SyntaxNode, type: DeclarationType, blocks: List<NamespaceBlock>): Declaration? {
@@ -83,9 +81,8 @@ internal object DeclarationExtractor {
 
     // `define('Game\MAX', 3)` declares the constant its first argument names, in the namespace that name gives
     private fun definedConstant(call: SyntaxNode, blocks: List<NamespaceBlock>): Declaration? {
-        val function = call.fieldOfType(FUNCTION_FIELD, NAME) ?: return null
+        if (!DefineCalls.isDefine(call)) return null
         val arguments = call.fieldOfType(ARGUMENTS_FIELD, ARGUMENTS) ?: return null
-        if (function.text != DEFINE) return null
         val (nameArgument, valueArguments) = arguments.namedChildren().filter { it.type == ARGUMENT }.toList().let {
             it.firstOrNull() to
                 it.drop(1)
@@ -100,7 +97,4 @@ internal object DeclarationExtractor {
         val usedTypes = valueArguments.flatMap { UsedTypeExtractor.extract(it, blocks) }.toCollection(LinkedHashSet())
         return Declaration(path.last(), DeclarationType.VARIABLE, usedTypes, parentPath = path.dropLast(1))
     }
-
-    private fun script(rootNode: SyntaxNode, blocks: List<NamespaceBlock>) =
-        Declaration(name = "", type = DeclarationType.SCRIPT, usedTypes = UsedTypeExtractor.extract(rootNode, blocks))
 }
