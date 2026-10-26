@@ -191,6 +191,7 @@ export default defineConfig({
 					items: [
 						{ label: 'Overview', slug: 'docs/integrations/overview' },
 						'docs/integrations/file-format',
+						'docs/integrations/visualization-url-params',
 					],
 				},
 				{

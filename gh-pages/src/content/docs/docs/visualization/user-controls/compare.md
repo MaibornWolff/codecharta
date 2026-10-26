@@ -18,7 +18,7 @@ removed files stand out.
 
 Compare belongs to the Metric view and is not offered while the map layout is Sunburst or Radial TreeMap. To link
 straight to a comparison, add `mode=Delta` to a URL with two `file` parameters; the first map becomes the reference.
-See [Open maps from a URL](/docs/visualization/user-controls/loading-maps#open-maps-from-a-url).
+See [Visualization URL Parameters](/docs/integrations/visualization-url-params).
 
 **Explore** in the mode bar leaves Compare and shows the maps you had before.
 
