@@ -4,7 +4,6 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Fi
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
-import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.CycleAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.CycleAnalyzer.Companion.groupByLeafs
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies.DependencyResolverService
@@ -24,7 +23,7 @@ import java.io.File
 object ProcessingPipeline {
     /** [analysisRoot] is the folder the file paths of the reports are relative to. */
     fun run(fileReports: List<FileReport>, omitGraphAnalysis: Boolean, analysisRoot: File? = null): DependencyGraph {
-        val resolvedNodes = resolveDependencies(mergeIdenticalTypes(fileReports))
+        val resolvedNodes = resolveDependencies(fileReports)
         if (resolvedNodes.isEmpty()) {
             Logger.warn {
                 "No analyzable declarations were found, so the dependency lens stays empty. This usually means no " +
@@ -129,30 +128,6 @@ object ProcessingPipeline {
 
     private fun resolveDependencies(fileReports: List<FileReport>): Collection<Node> =
         Logger.timed("Resolving dependencies") { DependencyResolverService.resolveNodes(fileReports) }
-
-    // C++ declares a type in a header and defines it in a source file, so the type arrives twice and would appear to
-    // depend on itself across the two files
-    private fun mergeIdenticalTypes(fileReports: List<FileReport>): List<FileReport> {
-        val nodes = fileReports.flatMap { it.nodes }
-        val (mergeable, rest) = nodes.partition { it.language == SupportedLanguage.CPP }
-        val (duplicates, singles) = mergeable.groupBy { it.pathWithName }.entries.partition { it.value.size > 1 }
-        if (duplicates.isEmpty()) return fileReports
-        return listOf(FileReport(singles.flatMap { it.value } + mergeDuplicates(duplicates) + rest))
-    }
-
-    private fun mergeDuplicates(duplicates: List<Map.Entry<Path, List<Node>>>): List<Node> = duplicates.flatMap { duplicate ->
-        val byName = duplicate.value.groupBy { it.pathWithName.getName() }
-        val (sameName, differentNames) = byName.entries.partition { it.value.size > 1 }
-        // Sorted so the surviving node's file is the same on every run, whatever order the scan found the files in
-        val merged = sameName.flatMap { it.value }.sortedBy { it.physicalPath }.reduce { first, second ->
-            first.copy(
-                dependencies = first.dependencies + second.dependencies,
-                usedTypes = first.usedTypes + second.usedTypes,
-                resolvedNodeDependencies = first.resolvedNodeDependencies + second.resolvedNodeDependencies
-            )
-        }
-        differentNames.flatMap { it.value } + merged
-    }
 
     private fun AggregatedFileEdge.withoutLevelization(): FileDependencyEdge =
         FileDependencyEdge(from.segments, to.segments, weight, isCyclic, isPointingUpwards = false)

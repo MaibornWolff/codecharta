@@ -358,7 +358,7 @@ name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these a
    their landing level, namespace and type aliases as qualifiers, ambiguity), `CppTargets` (a global declaration's node
    path still starts with the file that has its body), the analyzer writes uses exactly or leaves them out,
    `CppNameRules` exact; 17 gaps left
-8. [ ] copies: no merge of C++ nodes of one path, `CppCopyRules` picks the copy of the include closure, else the
+8. [x] copies: no merge of C++ nodes of one path, `CppCopyRules` picks the copy of the include closure, else the
    nearest (the parked patch)
 9. [ ] decision 6: a global declaration's path is its name
 10. [ ] TSE: `::N`, namespace aliases, template parameters and classes declared in a function

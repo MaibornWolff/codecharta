@@ -19,13 +19,13 @@ internal class CppIncludes private constructor(private val analysisRoot: File, p
     private val includedByFile = ConcurrentHashMap<List<String>, List<List<String>>>()
     private val closureByFile = ConcurrentHashMap<List<String>, Set<List<String>>>()
 
-    /** [file] and every file it includes, directly or through other included files. */
+    /** [file] and every file it includes, directly or through other included files, in the order the compiler reads them. */
     fun closureOf(file: List<String>): Set<List<String>> = closureByFile.computeIfAbsent(file) {
         val closure = LinkedHashSet<List<String>>()
         val pending = ArrayDeque(listOf(file))
         while (pending.isNotEmpty()) {
-            val next = pending.removeFirst()
-            if (closure.add(next)) pending.addAll(includedBy(next))
+            val next = pending.removeLast()
+            if (closure.add(next)) pending.addAll(includedBy(next).asReversed())
         }
         closure
     }
