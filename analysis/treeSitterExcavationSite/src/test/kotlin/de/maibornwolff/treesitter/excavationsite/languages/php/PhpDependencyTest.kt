@@ -596,6 +596,35 @@ class PhpDependencyTest {
         }
 
         @Test
+        fun `should extract what an interface extends and an enum implements`() {
+            // Arrange
+            val code = "interface Boss extends Fightable, Describable {}\nenum Alignment: string implements Describable {}"
+
+            // Act
+            val typesOfInterface = usedTypesOf(code, "Boss")
+            val typesOfEnum = usedTypesOf(code, "Alignment")
+
+            // Assert
+            assertThat(typesOfInterface).containsExactly(
+                UsedType("Fightable", usage = TypeUsage.INHERITANCE),
+                UsedType("Describable", usage = TypeUsage.INHERITANCE)
+            )
+            assertThat(typesOfEnum).containsExactly(UsedType("Describable", usage = TypeUsage.IMPLEMENTATION))
+        }
+
+        @Test
+        fun `should extract what an anonymous class extends and implements as uses of the declaration around it`() {
+            // Arrange
+            val code = "class Arena {\n    function spawn() {\n        return new class extends Base implements Fightable {};\n    }\n}"
+
+            // Act
+            val usedTypes = usedTypesOf(code, "Arena")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(UsedType("Base"), UsedType("Fightable"))
+        }
+
+        @Test
         fun `should extract the nullable return type of a method and of a function`() {
             // Arrange
             val code = """

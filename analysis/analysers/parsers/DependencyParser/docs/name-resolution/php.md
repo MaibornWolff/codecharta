@@ -100,7 +100,7 @@ the expected meaning of each name, except the absolute and the computed include 
 | Declarations, decision 1: a namespace constant | `spec-namespace-constant` | ok |
 | Declarations: `define`, read through the global fallback | `spec-define` | ok |
 | Declarations, decision 7: a function declared in a block | `spec-declaration-in-block` | ok |
-| Declarations: an anonymous class | `spec-anonymous-class` | gap |
+| Declarations: an anonymous class | `spec-anonymous-class` | ok |
 | Declarations, decision 8: top-level code next to declarations | `spec-script-leaf` | gap |
 | Namespace blocks | `spec-namespace-blocks` | ok |
 | Imports: an alias | `spec-import-alias` | ok |
@@ -127,8 +127,8 @@ the expected meaning of each name, except the absolute and the computed include 
 | Decision 4: parameter, property and return types | `spec-type-positions` | ok |
 | Decision 4: `catch` and `instanceof` | `spec-catch-instanceof` | ok |
 | Decision 4: attributes | `spec-attribute` | ok |
-| Decision 4: interface `extends` | `spec-interface-extends` | gap |
-| Decision 4: enum `implements` | `spec-enum-implements` | gap |
+| Decision 4: interface `extends` | `spec-interface-extends` | ok |
+| Decision 4: enum `implements` | `spec-enum-implements` | ok |
 | Decision 4: a trait's body and `use T;` | `spec-trait` | gap |
 | Decision 9: docblock types | `spec-docblock` | ok |
 | Includes, decision 2: the script leaf | `spec-include-script-leaf` | gap |
