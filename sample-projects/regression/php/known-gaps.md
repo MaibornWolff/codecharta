@@ -56,12 +56,3 @@ Top-level code is a script leaf only in a file without declarations.
 missing file app/boot.php -> Model/Config.php
 missing leaf app/boot.php#boot_script -> Model/Config.php#Config usage=instantiation
 ```
-
-## spec-trait
-
-The body of a trait is not read, only its name.
-
-```text
-missing file Model/HasSpeed.php -> Model/Speed.php
-missing leaf Model/HasSpeed.php#HasSpeed -> Model/Speed.php#Speed usage=return_value
-```

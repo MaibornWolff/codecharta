@@ -18,6 +18,8 @@ parser does not read. The rules shared by every language are in [README.md](READ
   runs (`if (!function_exists('slug')) { function slug() {} }`), unlike a Java local class (decision 7).
 - An anonymous class (`new class extends Base {}`) is no target: no name can mean it. The names it writes are uses of
   the declaration around it, as a closure's are.
+- The uses of a declaration are the names it writes outside the named declarations inside it: a function declared in
+  a method, or a class in a function, has its own. A trait's are those of its body.
 - Top-level code, every statement outside the declarations, `namespace`, `use` and `declare`, is a script leaf
   `<file>_script` of the file, as in TypeScript (decision 8). Inline HTML counts as top-level code unless it is only
   whitespace. A file without top-level code has no script leaf. As only an include, which names a file, reaches it,
@@ -129,7 +131,7 @@ the expected meaning of each name, except the absolute and the computed include 
 | Decision 4: attributes | `spec-attribute` | ok |
 | Decision 4: interface `extends` | `spec-interface-extends` | ok |
 | Decision 4: enum `implements` | `spec-enum-implements` | ok |
-| Decision 4: a trait's body and `use T;` | `spec-trait` | gap |
+| Decision 4: a trait's body and `use T;` | `spec-trait` | ok |
 | Decision 9: docblock types | `spec-docblock` | ok |
 | Includes, decision 2: the script leaf | `spec-include-script-leaf` | gap |
 | Includes, decision 2: a file without top-level code | `spec-include-declarations-only` | ok |

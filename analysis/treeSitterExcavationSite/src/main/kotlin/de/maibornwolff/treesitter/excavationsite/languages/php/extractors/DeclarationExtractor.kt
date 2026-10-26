@@ -11,7 +11,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.fieldOfType
  * in as parent path; a constant `define` declares has the namespace its name gives. A file without any is one
  * [DeclarationType.SCRIPT] that uses what the whole file uses.
  *
- * A trait is searched for used types in its name only, so it uses nothing; a constant uses what its value names.
+ * A constant uses what its value names.
  */
 internal object DeclarationExtractor {
     private const val CLASS_DECLARATION = "class_declaration"
@@ -50,7 +50,7 @@ internal object DeclarationExtractor {
             nodesOfType(type).flatMap { node -> declare(node).map { it.copy(parentPath = NamespaceBlocks.namespaceOf(node, blocks)) } }
         }
         val declarations = inBlocks(CLASS_DECLARATION) { listOfNotNull(namedByField(it, DeclarationType.CLASS, blocks)) } +
-            inBlocks(TRAIT_DECLARATION) { listOfNotNull(trait(it, blocks)) } +
+            inBlocks(TRAIT_DECLARATION) { listOfNotNull(namedByField(it, DeclarationType.CLASS, blocks)) } +
             inBlocks(FUNCTION_DEFINITION) { listOfNotNull(function(it, blocks)) } +
             inBlocks(INTERFACE_DECLARATION) { listOfNotNull(namedByField(it, DeclarationType.INTERFACE, blocks)) } +
             inBlocks(ENUM_DECLARATION) { listOfNotNull(namedByField(it, DeclarationType.ENUM, blocks)) } +
@@ -62,11 +62,6 @@ internal object DeclarationExtractor {
     private fun namedByField(declaration: SyntaxNode, type: DeclarationType, blocks: List<NamespaceBlock>): Declaration? {
         val name = declaration.fieldOfType(NAME_FIELD, NAME) ?: return null
         return Declaration(name.text, type, UsedTypeExtractor.extract(declaration, blocks))
-    }
-
-    private fun trait(trait: SyntaxNode, blocks: List<NamespaceBlock>): Declaration? {
-        val name = trait.fieldOfType(NAME_FIELD, NAME) ?: return null
-        return Declaration(name.text, DeclarationType.CLASS, UsedTypeExtractor.extract(name, blocks))
     }
 
     private fun function(function: SyntaxNode, blocks: List<NamespaceBlock>): Declaration? {
