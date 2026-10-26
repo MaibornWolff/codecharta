@@ -762,4 +762,24 @@ class ArmorClass
             Type.simple("php.invertebrates.Ant")
         )
     }
+
+    @Test
+    fun `should write a called function in its namespace with the global function as fallback`() {
+        // Arrange
+        val code = """
+            <?php
+            namespace App;
+            function run() {
+                return helper();
+            }
+        """.trimIndent()
+
+        // Act
+        val report = PhpAnalyzer(FileInfo(SupportedLanguage.PHP, "run.php", code)).analyze()
+
+        // Assert
+        assertThat(report.nodes.single().usedTypes).containsExactly(
+            Type.simple("App.helper").copy(fallbacks = listOf(Type.simple("helper")))
+        )
+    }
 }

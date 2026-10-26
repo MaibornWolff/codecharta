@@ -255,7 +255,7 @@ class PhpDependencyTest {
         }
 
         @Test
-        fun `should extract a constant that is the value of a const as a declaration as well`() {
+        fun `should read the constant that is the value of a const as a use of it`() {
             // Arrange
             val code = "const LIMIT = MAXIMUM;"
 
@@ -263,7 +263,47 @@ class PhpDependencyTest {
             val result = analyze(code)
 
             // Assert
-            assertThat(result.declarations.map { it.name }).containsExactly("LIMIT", "MAXIMUM")
+            assertThat(result.declarations).containsExactly(
+                Declaration("LIMIT", DeclarationType.VARIABLE, setOf(UsedType("MAXIMUM", usage = TypeUsage.CONSTANT_ACCESS)))
+            )
+        }
+
+        @Test
+        fun `should extract a constant of a namespace in braces with its namespace`() {
+            // Arrange
+            val code = "namespace Game {\n    const MAX = 3;\n}"
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.declarations).extracting({ it.name }, { it.parentPath }).containsExactly(tuple("MAX", listOf("Game")))
+        }
+
+        @Test
+        fun `should declare the constant define names in the namespace its name gives`() {
+            // Arrange
+            val code = "namespace App;\ndefine('Game\\\\MAX', LIMIT);\ndefine('MIN', 1);"
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.declarations).extracting({ it.name }, { it.parentPath }, { it.usedTypes }).containsExactly(
+                tuple(
+                    "MAX",
+                    listOf("Game"),
+                    setOf(
+                        UsedType(
+                            "LIMIT",
+                            namespacePrefix = listOf("App"),
+                            usage = TypeUsage.CONSTANT_ACCESS,
+                            fallbacks = listOf(UsedType("LIMIT", usage = TypeUsage.CONSTANT_ACCESS))
+                        )
+                    )
+                ),
+                tuple("MIN", emptyList<String>(), emptySet<UsedType>())
+            )
         }
 
         @Test
@@ -383,6 +423,71 @@ class PhpDependencyTest {
         }
 
         @Test
+        fun `should resolve a called function in the current namespace with the global one as fallback`() {
+            // Arrange
+            val code = "namespace App;\nfunction run() {\n    return helper();\n}"
+
+            // Act
+            val usedTypes = usedTypesOf(code, "run")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(
+                UsedType("helper", namespacePrefix = listOf("App"), fallbacks = listOf(UsedType("helper")))
+            )
+        }
+
+        @Test
+        fun `should resolve a called function through its function import without a fallback`() {
+            // Arrange
+            val code = "namespace App;\nuse function Game\\Dice\\roll;\nfunction hit() {\n    return roll();\n}"
+
+            // Act
+            val usedTypes = usedTypesOf(code, "hit")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(UsedType("roll", namespacePrefix = listOf("Game", "Dice")))
+        }
+
+        @Test
+        fun `should resolve a qualified function name through the namespace import of its first segment`() {
+            // Arrange
+            val code = "namespace App;\nuse Game\\Dice;\nfunction hit() {\n    return Dice\\roll();\n}"
+
+            // Act
+            val paths = pathsOf(code, "hit")
+
+            // Assert
+            assertThat(paths).containsExactly(listOf("Game", "Dice", "roll"))
+        }
+
+        @Test
+        fun `should resolve a constant read through its constant import`() {
+            // Arrange
+            val code = "namespace App;\nuse const Game\\Limits\\MAX;\nfunction cap() {\n    return MAX + \\Game\\MIN;\n}"
+
+            // Act
+            val usedTypes = usedTypesOf(code, "cap")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(
+                UsedType("MAX", namespacePrefix = listOf("Game", "Limits"), usage = TypeUsage.CONSTANT_ACCESS),
+                UsedType("MIN", namespacePrefix = listOf("Game"), usage = TypeUsage.CONSTANT_ACCESS)
+            )
+        }
+
+        @Test
+        fun `should not read a method, property or argument name as a constant`() {
+            // Arrange
+            val code = "namespace App;\nfunction run(${'$'}cart) {\n    return ${'$'}cart->total(limit: 3)->items;\n}"
+
+            // Act
+            val usedTypes = usedTypesOf(code, "run")
+
+            // Assert
+            assertThat(usedTypes).isEmpty()
+        }
+
+        @Test
         fun `should leave out the own class and the type keywords`() {
             // Arrange
             val code = "namespace Game;\nclass Horse {\n    function same(): self {}\n    function count(): int {}\n}"
@@ -491,7 +596,7 @@ class PhpDependencyTest {
         }
 
         @Test
-        fun `should extract an imported constant first when its name occurs in the declaration`() {
+        fun `should extract an imported constant first where it is read`() {
             // Arrange
             val code = """
                 use const App\Limits\MAXIMUM;
@@ -512,7 +617,7 @@ class PhpDependencyTest {
         }
 
         @Test
-        fun `should treat an import with const in a segment as a constant`() {
+        fun `should not take an import with const in a segment for a constant`() {
             // Arrange
             val code = "use App\\Reconstruction\\Order;\nfunction latest(): Order {}"
 
@@ -520,10 +625,9 @@ class PhpDependencyTest {
             val usedTypes = usedTypesOf(code, "latest")
 
             // Assert
-            assertThat(usedTypes).containsExactly(
-                UsedType("Order", usage = TypeUsage.CONSTANT_ACCESS),
-                UsedType("Order", namespacePrefix = listOf("App", "Reconstruction"), usage = TypeUsage.RETURN_VALUE)
-            )
+            assertThat(
+                usedTypes
+            ).containsExactly(UsedType("Order", namespacePrefix = listOf("App", "Reconstruction"), usage = TypeUsage.RETURN_VALUE))
         }
 
         @Test

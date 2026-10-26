@@ -1,6 +1,5 @@
 package de.maibornwolff.treesitter.excavationsite.languages.php.extractors
 
-import de.maibornwolff.treesitter.excavationsite.languages.php.extractors.UsedTypeExtractor.FileNames
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
@@ -9,11 +8,10 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.fieldOfType
 
 /**
  * The declarations of a PHP file wherever they stand, grouped by kind, each with the namespace of the block it stands
- * in as parent path (a `define` has none). A file without any is one
+ * in as parent path; a constant `define` declares has the namespace its name gives. A file without any is one
  * [DeclarationType.SCRIPT] that uses what the whole file uses.
  *
- * A trait and a constant are searched for used types in their name only, so they use nothing but an imported
- * constant whose name occurs in their own. A `const` whose value is another constant declares that one as well.
+ * A trait is searched for used types in its name only, so it uses nothing; a constant uses what its value names.
  */
 internal object DeclarationExtractor {
     private const val CLASS_DECLARATION = "class_declaration"
@@ -24,7 +22,6 @@ internal object DeclarationExtractor {
     private const val CONST_DECLARATION = "const_declaration"
     private const val CONST_ELEMENT = "const_element"
     private const val FUNCTION_CALL_EXPRESSION = "function_call_expression"
-    private const val PROGRAM = "program"
     private const val NAME = "name"
     private const val ARGUMENTS = "arguments"
     private const val ARGUMENT = "argument"
@@ -32,6 +29,8 @@ internal object DeclarationExtractor {
     private const val FUNCTION_FIELD = "function"
     private const val ARGUMENTS_FIELD = "arguments"
     private const val DEFINE = "define"
+    private const val ESCAPED_SEPARATOR = "\\\\"
+    private val MEMBER_LISTS = setOf("declaration_list", "enum_declaration_list")
 
     private val DECLARING_TYPES = setOf(
         CLASS_DECLARATION,
@@ -40,69 +39,73 @@ internal object DeclarationExtractor {
         INTERFACE_DECLARATION,
         ENUM_DECLARATION,
         CONST_DECLARATION,
-        FUNCTION_CALL_EXPRESSION,
-        NamespaceUses.NAMESPACE_USE_DECLARATION
+        FUNCTION_CALL_EXPRESSION
     )
 
     fun extract(rootNode: SyntaxNode): List<Declaration> {
         val nodesByType = TreeTraversal.findAllDescendantsGroupedByType(rootNode, DECLARING_TYPES)
         val nodesOfType = { type: String -> nodesByType[type].orEmpty() }
-        val importedNames = NamespaceUses.importedNames(nodesOfType(NamespaceUses.NAMESPACE_USE_DECLARATION))
         val blocks = NamespaceBlocks.of(rootNode)
-        val fileNames = FileNames(importedNames, blocks)
         val inBlocks = { type: String, declare: (SyntaxNode) -> List<Declaration> ->
             nodesOfType(type).flatMap { node -> declare(node).map { it.copy(parentPath = NamespaceBlocks.namespaceOf(node, blocks)) } }
         }
-        val declarations = inBlocks(CLASS_DECLARATION) { listOfNotNull(namedByField(it, DeclarationType.CLASS, fileNames)) } +
-            inBlocks(TRAIT_DECLARATION) { listOfNotNull(trait(it, fileNames)) } +
-            inBlocks(FUNCTION_DEFINITION) { listOfNotNull(function(it, fileNames)) } +
-            inBlocks(INTERFACE_DECLARATION) { listOfNotNull(namedByField(it, DeclarationType.INTERFACE, fileNames)) } +
-            inBlocks(ENUM_DECLARATION) { listOfNotNull(namedByField(it, DeclarationType.ENUM, fileNames)) } +
-            inBlocks(CONST_DECLARATION) { topLevelConstants(it, fileNames) } +
-            nodesOfType(FUNCTION_CALL_EXPRESSION).mapNotNull { definedConstant(it, fileNames) }
-        return declarations.ifEmpty { listOf(script(rootNode, fileNames)) }
+        val declarations = inBlocks(CLASS_DECLARATION) { listOfNotNull(namedByField(it, DeclarationType.CLASS, blocks)) } +
+            inBlocks(TRAIT_DECLARATION) { listOfNotNull(trait(it, blocks)) } +
+            inBlocks(FUNCTION_DEFINITION) { listOfNotNull(function(it, blocks)) } +
+            inBlocks(INTERFACE_DECLARATION) { listOfNotNull(namedByField(it, DeclarationType.INTERFACE, blocks)) } +
+            inBlocks(ENUM_DECLARATION) { listOfNotNull(namedByField(it, DeclarationType.ENUM, blocks)) } +
+            inBlocks(CONST_DECLARATION) { namespaceConstants(it, blocks) } +
+            nodesOfType(FUNCTION_CALL_EXPRESSION).mapNotNull { definedConstant(it, blocks) }
+        return declarations.ifEmpty { listOf(script(rootNode, blocks)) }
     }
 
-    private fun namedByField(declaration: SyntaxNode, type: DeclarationType, fileNames: FileNames): Declaration? {
+    private fun namedByField(declaration: SyntaxNode, type: DeclarationType, blocks: List<NamespaceBlock>): Declaration? {
         val name = declaration.fieldOfType(NAME_FIELD, NAME) ?: return null
-        return Declaration(name.text, type, UsedTypeExtractor.extract(declaration, fileNames))
+        return Declaration(name.text, type, UsedTypeExtractor.extract(declaration, blocks))
     }
 
-    private fun trait(trait: SyntaxNode, fileNames: FileNames): Declaration? {
+    private fun trait(trait: SyntaxNode, blocks: List<NamespaceBlock>): Declaration? {
         val name = trait.fieldOfType(NAME_FIELD, NAME) ?: return null
-        return searchedInNameOnly(name, DeclarationType.CLASS, fileNames)
+        return Declaration(name.text, DeclarationType.CLASS, UsedTypeExtractor.extract(name, blocks))
     }
 
-    private fun function(function: SyntaxNode, fileNames: FileNames): Declaration? {
+    private fun function(function: SyntaxNode, blocks: List<NamespaceBlock>): Declaration? {
         val name = TreeTraversal.findFirstChildTextByType(function, NAME) ?: return null
-        return Declaration(name, DeclarationType.FUNCTION, UsedTypeExtractor.extract(function, fileNames))
+        return Declaration(name, DeclarationType.FUNCTION, UsedTypeExtractor.extract(function, blocks))
     }
 
-    private fun topLevelConstants(constDeclaration: SyntaxNode, fileNames: FileNames): List<Declaration> {
-        if (constDeclaration.parent.type != PROGRAM) return emptyList()
+    // A `const` outside a class, interface or enum; the first name of each element is the one it declares
+    private fun namespaceConstants(constDeclaration: SyntaxNode, blocks: List<NamespaceBlock>): List<Declaration> {
+        if (constDeclaration.parent.type in MEMBER_LISTS) return emptyList()
         return constDeclaration
             .children()
             .filter { it.type == CONST_ELEMENT }
-            .flatMap { element -> element.children().filter { it.type == NAME } }
-            .map { name -> searchedInNameOnly(name, DeclarationType.VARIABLE, fileNames) }
-            .toList()
+            .mapNotNull { element ->
+                val name = element.children().firstOrNull { it.type == NAME } ?: return@mapNotNull null
+                Declaration(name.text, DeclarationType.VARIABLE, UsedTypeExtractor.extract(element, blocks))
+            }.toList()
     }
 
-    private fun definedConstant(call: SyntaxNode, fileNames: FileNames): Declaration? {
+    // `define('Game\MAX', 3)` declares the constant its first argument names, in the namespace that name gives
+    private fun definedConstant(call: SyntaxNode, blocks: List<NamespaceBlock>): Declaration? {
         val function = call.fieldOfType(FUNCTION_FIELD, NAME) ?: return null
         val arguments = call.fieldOfType(ARGUMENTS_FIELD, ARGUMENTS) ?: return null
         if (function.text != DEFINE) return null
-        val nameArgument = arguments.namedChildren().firstOrNull { it.type == ARGUMENT } ?: return null
-        return Declaration(
-            nameArgument.text.withoutQuotes(),
-            DeclarationType.VARIABLE,
-            UsedTypeExtractor.extract(nameArgument, fileNames)
-        )
+        val (nameArgument, valueArguments) = arguments.namedChildren().filter { it.type == ARGUMENT }.toList().let {
+            it.firstOrNull() to
+                it.drop(1)
+        }
+        nameArgument ?: return null
+        val path = nameArgument.text
+            .withoutQuotes()
+            .replace(
+                ESCAPED_SEPARATOR,
+                NamespaceUses.NAMESPACE_SEPARATOR
+            ).split(NamespaceUses.NAMESPACE_SEPARATOR)
+        val usedTypes = valueArguments.flatMap { UsedTypeExtractor.extract(it, blocks) }.toCollection(LinkedHashSet())
+        return Declaration(path.last(), DeclarationType.VARIABLE, usedTypes, parentPath = path.dropLast(1))
     }
 
-    private fun script(rootNode: SyntaxNode, fileNames: FileNames) =
-        Declaration(name = "", type = DeclarationType.SCRIPT, usedTypes = UsedTypeExtractor.extract(rootNode, fileNames))
-
-    private fun searchedInNameOnly(name: SyntaxNode, type: DeclarationType, fileNames: FileNames) =
-        Declaration(name.text, type, UsedTypeExtractor.extract(name, fileNames))
+    private fun script(rootNode: SyntaxNode, blocks: List<NamespaceBlock>) =
+        Declaration(name = "", type = DeclarationType.SCRIPT, usedTypes = UsedTypeExtractor.extract(rootNode, blocks))
 }
