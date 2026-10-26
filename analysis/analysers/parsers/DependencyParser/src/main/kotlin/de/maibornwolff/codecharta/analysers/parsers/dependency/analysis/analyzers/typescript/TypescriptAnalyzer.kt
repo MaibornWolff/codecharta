@@ -11,9 +11,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.De
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.treesitter.excavationsite.api.AngularDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
@@ -22,7 +20,6 @@ import de.maibornwolff.treesitter.excavationsite.api.EmbeddedDeclarations
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
-import java.io.File
 
 open class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     override val language = SupportedLanguage.TYPESCRIPT
@@ -49,19 +46,7 @@ open class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInf
     override fun analyze(): FileReport {
         val declaredNodes = qualifiedNames.resolvedIn(DefaultExports.withoutOwnNames(moduleImports.rewrite(declaredNodes())))
         val baseReport = FileReport(OwnNames.writtenInFull(declaredNodes, physicalFilePath))
-        val analysisRoot = fileInfo.analysisRoot ?: return baseReport
-        val ownNames = baseReport.nodes
-            .filter { it.pathWithName.parts.lastOrNull() != WILDCARD_EXPORT_NAME }
-            .mapNotNull { it.pathWithName.parts.lastOrNull() }
-            .toSet()
-        val nodes = baseReport.nodes.flatMap { node ->
-            if (node.pathWithName.parts.lastOrNull() == WILDCARD_EXPORT_NAME) {
-                expandStarExports(node, analysisRoot, ownNames)
-            } else {
-                listOf(node)
-            }
-        }
-        return FileReport(nodes)
+        return moduleImports.starExports?.let { FileReport(it.expandedIn(baseReport.nodes, physicalFilePath)) } ?: baseReport
     }
 
     /** The node of each declaration of the file, before the uses of its imports and its qualified names are written in full. */
@@ -119,22 +104,5 @@ open class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInf
         val primary = Dependency(path = Path(resolvedPath), isWildcard = import.isWildcard)
         moduleImports.bindOutsideProject(import, primary.path)
         return setOf(primary)
-    }
-
-    // One re-export leaf per name `export *` re-exports, pointing at the declaration that name means in its module
-    private fun expandStarExports(wildcardNode: Node, analysisRoot: File, ownNames: Set<String>): List<Node> {
-        if (moduleImports.starSources.isEmpty()) return listOf(wildcardNode)
-        val exports = ModuleExports.of(analysisRoot)
-        return exports.starExports(moduleImports.starSources.toList(), ownNames).map { (name, source) ->
-            val target = ImportedModules.logicalPathOf(source, analysisRoot) + exports.nameOf(source, name)
-            Node(
-                pathWithName = physicalFilePath + name,
-                physicalPath = wildcardNode.physicalPath,
-                language = language,
-                nodeType = NodeType.REEXPORT,
-                dependencies = setOf(Dependency(path = target)),
-                usedTypes = setOf(Type.simple(target.withDots()))
-            )
-        }
     }
 }

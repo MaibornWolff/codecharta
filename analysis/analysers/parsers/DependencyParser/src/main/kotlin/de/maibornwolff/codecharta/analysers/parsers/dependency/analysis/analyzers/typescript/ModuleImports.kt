@@ -6,8 +6,6 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Fi
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
-import de.maibornwolff.treesitter.excavationsite.api.ImportKind
-import java.io.File
 
 /**
  * The imports of one module file that name a project module, by "Module specifiers" and "What an import binds" of
@@ -15,8 +13,8 @@ import java.io.File
  * the names they bind written as the full path of what they name.
  */
 internal class ModuleImports(private val fileInfo: FileInfo) {
-    /** The modules `export * from` names, whose named exports the importing module re-exports. */
-    val starSources = LinkedHashSet<File>()
+    /** What the module's `export * from` re-exports; null without an analysis root to read the source modules below. */
+    val starExports = fileInfo.analysisRoot?.let { StarExports(it) }
     private val memberImports = fileInfo.analysisRoot?.let { MemberImports(it) }
 
     /** The dependency an import of a project module draws; null for a library or a specifier that names no project file. */
@@ -24,7 +22,7 @@ internal class ModuleImports(private val fileInfo: FileInfo) {
         val analysisRoot = fileInfo.analysisRoot ?: return null
         val moduleFile = ImportedModules.fileOf(import, fileInfo) ?: return null
         val module = ImportedModules.logicalPathOf(moduleFile, analysisRoot)
-        if (isStarReexport(import)) starSources.add(moduleFile)
+        starExports?.remember(import, moduleFile)
         memberImports?.targetOf(import, moduleFile, module)?.let { return Dependency(path = it) }
         val importedName = if (ImportedModules.namesMember(import)) listOf(import.defaultImportPath().last()) else emptyList()
         return Dependency(path = Path(module.parts + importedName), isWildcard = import.isWildcard)
@@ -37,8 +35,4 @@ internal class ModuleImports(private val fileInfo: FileInfo) {
 
     /** The nodes with each use of an imported binding written as the full path of what it names. */
     fun rewrite(nodes: List<Node>): List<Node> = memberImports?.rewrite(nodes) ?: nodes
-
-    // `export * from` re-exports the names of the module, `export * as ns from` binds the module as one name
-    private fun isStarReexport(import: ImportDeclaration): Boolean =
-        import.isWildcard && import.kind == ImportKind.REEXPORT && import.bindingName == null
 }
