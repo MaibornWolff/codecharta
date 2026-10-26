@@ -1,5 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.typescript
 
+import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.ImportKind
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
@@ -118,6 +119,25 @@ class TypescriptDependencyImportTest {
             assertThat(result.imports).hasSize(1)
             assertThat(result.imports[0].path).containsExactly(".", "foo", "DEFAULT_EXPORT")
             assertThat(result.imports[0].isWildcard).isFalse()
+        }
+
+        @Test
+        fun `should extract an import that binds a module by require as a binding of what the module exports`() {
+            // Arrange
+            val code = "import util = require('./util')"
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+            // Assert
+            assertThat(result.imports).containsExactly(
+                ImportDeclaration(
+                    path = listOf(".", "util", "DEFAULT_EXPORT"),
+                    isWildcard = false,
+                    kind = ImportKind.MEMBER,
+                    bindingName = "util"
+                )
+            )
         }
 
         @Test

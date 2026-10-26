@@ -22,6 +22,7 @@ internal object ImportExtractor {
     private fun extractEs6Imports(rootNode: SyntaxNode): List<ImportDeclaration> = TreeTraversal
         .findAllDescendantsOfType(rootNode, IMPORT_STATEMENT)
         .flatMap { importNode ->
+            importNode.children().firstOrNull { it.type == IMPORT_REQUIRE_CLAUSE }?.let { return@flatMap listOfNotNull(requireBinding(it)) }
             val pathText = extractStringText(importNode) ?: return@flatMap emptyList()
             val basePath = splitPath(pathText)
             val importClause = importNode.children().firstOrNull { it.type == IMPORT_CLAUSE }
@@ -55,6 +56,17 @@ internal object ImportExtractor {
                 }
             }
         }
+
+    // `import x = require('./m')` binds `x` to what `m` exports as `module.exports`, as `const x = require('./m')` does
+    private fun requireBinding(requireClause: SyntaxNode): ImportDeclaration? {
+        val pathText = extractStringText(requireClause) ?: return null
+        return ImportDeclaration(
+            path = splitPath(pathText) + DEFAULT_EXPORT,
+            isWildcard = false,
+            kind = ImportKind.MEMBER,
+            bindingName = requireClause.children().firstOrNull { it.type == IDENTIFIER }?.text?.trim()
+        )
+    }
 
     private fun extractNamedSpecifiers(importClause: SyntaxNode, basePath: List<String>): List<ImportDeclaration> {
         val namedImports = importClause.children().firstOrNull { it.type == NAMED_IMPORTS }

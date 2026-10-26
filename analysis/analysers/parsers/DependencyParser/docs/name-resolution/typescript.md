@@ -228,6 +228,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Qualified: a method of a value named like an imported class | `spec-member-call-on-value` | ok |
 | Shared rule 1, name scope | `spec-name-scope` | ok |
 | Shared rule 4, self | `spec-self` | ok |
+| Binding: `import x = require` | `spec-import-require` | ok |
 | JavaScript, binding: `const x = require` | `javascript/spec-commonjs-require-module` | ok |
 | JavaScript, binding: `const { A, B: C } = require` | `javascript/spec-commonjs-destructure` | ok |
 | JavaScript, declarations: `module.exports = X` | `javascript/spec-commonjs-default` | ok |

@@ -39,7 +39,7 @@ internal object TopLevelCode {
         statement.type == EXPRESSION_STATEMENT && statement.namedChildren().singleOrNull()?.type == STRING
 
     private fun isSideEffectImport(statement: SyntaxNode): Boolean =
-        statement.type == IMPORT_STATEMENT && statement.children().none { it.type == IMPORT_CLAUSE }
+        statement.type == IMPORT_STATEMENT && statement.children().none { it.type == IMPORT_CLAUSE || it.type == IMPORT_REQUIRE_CLAUSE }
 
     // The specifier of a module a statement runs for its effect alone: `import './polyfill'` or `require('./setup')`
     private fun moduleRunBy(statement: SyntaxNode): String? = when {

@@ -69,4 +69,19 @@ class TypescriptScriptDeclarationTest {
             "MODULE_SCRIPT" to listOf("..", "setup")
         )
     }
+
+    @Test
+    fun `should report no use of a module's script for an import that binds the module by require`() {
+        // Arrange
+        val code = """
+            import util = require('./util')
+            export const ready = true
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+        // Assert
+        assertThat(result.declarations).noneMatch { it.type == DeclarationType.SCRIPT }
+    }
 }
