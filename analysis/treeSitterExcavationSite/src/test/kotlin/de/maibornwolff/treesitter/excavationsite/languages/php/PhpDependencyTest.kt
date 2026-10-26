@@ -335,6 +335,37 @@ class PhpDependencyTest {
                 )
             )
         }
+
+        @Test
+        fun `should extract one unnamed script for the top-level code of a file next to its declarations`() {
+            // Arrange
+            val code = "declare(strict_types=1);\nnamespace App;\nuse App\\Model\\Config;\nclass Kernel {}\n${'$'}config = new Config();"
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.declarations).extracting({ it.name }, { it.type }, { it.usedTypes }).containsExactly(
+                tuple(
+                    "",
+                    DeclarationType.SCRIPT,
+                    setOf(UsedType("Config", namespacePrefix = listOf("App", "Model"), usage = TypeUsage.INSTANTIATION))
+                ),
+                tuple("Kernel", DeclarationType.CLASS, emptySet<UsedType>())
+            )
+        }
+
+        @Test
+        fun `should extract no script for a file of declarations, imports and define calls only`() {
+            // Arrange
+            val code = "namespace App;\nuse App\\Model\\Config;\ndefine('LIMIT', 3);\nfunction run() {}\n?>\n"
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.declarations.map { it.type }).containsExactly(DeclarationType.FUNCTION, DeclarationType.VARIABLE)
+        }
     }
 
     @Nested

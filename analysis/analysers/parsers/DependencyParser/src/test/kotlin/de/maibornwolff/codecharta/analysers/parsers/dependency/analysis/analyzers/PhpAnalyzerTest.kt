@@ -47,7 +47,7 @@ class PhpAnalyzerTest {
      */
 
     @Test
-    fun `should name a node after its file with a script suffix when the file declares nothing`() {
+    fun `should name the script leaf after its file with a script suffix at the file's path`() {
         // Arrange
         val code = """
             <?php
@@ -68,7 +68,7 @@ class PhpAnalyzerTest {
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactly(
-                tuple(NodeType.SCRIPT, Path(listOf("JustScript_php", "JustScript_script")))
+                tuple(NodeType.SCRIPT, Path(listOf("JustScript", "JustScript.script")))
             )
     }
 
@@ -214,7 +214,7 @@ class PhpAnalyzerTest {
     }
 
     @Test
-    fun `should convert a constant define declares to a global node with type VARIABLE`() {
+    fun `should convert a constant define declares to a global node with type VARIABLE and other calls to the script`() {
         // Arrange
         val code = """
             <?php
@@ -238,6 +238,7 @@ class PhpAnalyzerTest {
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactlyInAnyOrder(
+                tuple(NodeType.SCRIPT, Path(listOf("TestClass", "TestClass.script"))),
                 tuple(NodeType.VARIABLE, Path(listOf("MY_CONSTANT"))),
                 tuple(NodeType.VARIABLE, Path(listOf("MY_SECOND_CONSTANT"))),
                 tuple(NodeType.VARIABLE, Path(listOf("MY_3_CONSTANT")))
@@ -780,6 +781,26 @@ class ArmorClass
         // Assert
         assertThat(report.nodes.single().usedTypes).containsExactly(
             Type.simple("App.helper").copy(fallbacks = listOf(Type.simple("helper")))
+        )
+    }
+
+    @Test
+    fun `should place the script leaf of a file with a namespace at the file's path`() {
+        // Arrange
+        val code = """
+            <?php
+            namespace App;
+            class Kernel {}
+            echo "boot";
+        """.trimIndent()
+
+        // Act
+        val report = PhpAnalyzer(FileInfo(SupportedLanguage.PHP, "src/boot.php", code)).analyze()
+
+        // Assert
+        assertThat(report.nodes.map { it.pathWithName }).containsExactly(
+            Path(listOf("src", "boot", "boot.script")),
+            Path(listOf("App", "Kernel"))
         )
     }
 }

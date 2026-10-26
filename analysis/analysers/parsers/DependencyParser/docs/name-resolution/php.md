@@ -103,7 +103,7 @@ the expected meaning of each name, except the absolute and the computed include 
 | Declarations: `define`, read through the global fallback | `spec-define` | ok |
 | Declarations, decision 7: a function declared in a block | `spec-declaration-in-block` | ok |
 | Declarations: an anonymous class | `spec-anonymous-class` | ok |
-| Declarations, decision 8: top-level code next to declarations | `spec-script-leaf` | gap |
+| Declarations, decision 8: top-level code next to declarations | `spec-script-leaf` | ok |
 | Namespace blocks | `spec-namespace-blocks` | ok |
 | Imports: an alias | `spec-import-alias` | ok |
 | Imports: a group | `spec-group-use` | ok |
