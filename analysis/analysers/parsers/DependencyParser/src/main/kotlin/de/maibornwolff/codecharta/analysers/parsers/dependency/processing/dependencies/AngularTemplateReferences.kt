@@ -24,10 +24,9 @@ import de.maibornwolff.treesitter.excavationsite.api.AngularSelector
 internal class AngularTemplateReferences private constructor(nodes: List<Node>) {
     private val angularNodes = nodes.filter { it.angular != null && it.language != SupportedLanguage.ANGULAR }
 
-    // A class with a selector is matched by it, see [matches]; the template names of the others are pipe names
     private val selectorClasses = angularNodes.filter { it.angularDeclaration().selectors.isNotEmpty() }
-    private val declarationsByTemplateName: Map<String, List<Node>> = (angularNodes - selectorClasses.toSet())
-        .flatMap { node -> node.angularDeclaration().templateNames.map { templateName -> templateName to node } }
+    private val pipesByName: Map<String, List<Node>> = angularNodes
+        .mapNotNull { node -> node.angularDeclaration().pipeName?.let { pipeName -> pipeName to node } }
         .groupBy({ it.first }, { it.second })
     private val componentsByTemplate: Map<Path, Node> = angularNodes
         .mapNotNull { node -> node.angular?.templatePath?.let { templatePath -> templatePath to node } }
@@ -37,7 +36,7 @@ internal class AngularTemplateReferences private constructor(nodes: List<Node>) 
 
     private fun qualify(template: Node): Node {
         val pipes = template.usedTypes.mapNotNull { type ->
-            declarationOf(declarationsByTemplateName[type.name].orEmpty(), template)?.let { type.copy(name = it.pathWithName.withDots()) }
+            declarationOf(pipesByName[type.name].orEmpty(), template)?.let { type.copy(name = it.pathWithName.withDots()) }
         }
         val matchedClasses = template.angularDeclaration().elements.flatMap { matchedClassesOf(it, template) }
         return template.copy(

@@ -20,7 +20,7 @@ class AngularTemplateReferencesTest {
         // Arrange
         val template = angularTemplate(usedNames = setOf("goldCoins"), elements = listOf("app-torch"))
         val torch = typescriptClass(listOf("src", "torch_component", "TorchComponent"), selector = AngularSelector(element = "app-torch"))
-        val goldCoins = typescriptClass(listOf("src", "pipes", "gold-coins_pipe", "GoldCoinsPipe"), templateNames = setOf("goldCoins"))
+        val goldCoins = typescriptClass(listOf("src", "pipes", "gold-coins_pipe", "GoldCoinsPipe"), pipeName = "goldCoins")
 
         // Act
         val resolvedNodes = DependencyResolverService.resolveNodes(listOf(FileReport(listOf(template, torch, goldCoins))))
@@ -214,7 +214,7 @@ class AngularTemplateReferencesTest {
             language = SupportedLanguage.TYPESCRIPT,
             usedTypes = setOf(Type.simple("goldCoins"))
         )
-        val goldCoins = typescriptClass(listOf("src", "gold-coins_pipe", "GoldCoinsPipe"), templateNames = setOf("goldCoins"))
+        val goldCoins = typescriptClass(listOf("src", "gold-coins_pipe", "GoldCoinsPipe"), pipeName = "goldCoins")
 
         // Act
         val resolvedNodes = DependencyResolverService.resolveNodes(listOf(FileReport(listOf(script, goldCoins))))
@@ -233,8 +233,8 @@ class AngularTemplateReferencesTest {
         angular = AngularMetadata(AngularDeclaration(elements = elements.map { AngularSelector(element = it) }))
     )
 
-    private fun typescriptClass(pathWithName: List<String>, templateNames: Set<String>) =
-        typescriptClass(pathWithName, AngularMetadata(AngularDeclaration(templateNames = templateNames)))
+    private fun typescriptClass(pathWithName: List<String>, pipeName: String) =
+        typescriptClass(pathWithName, AngularMetadata(AngularDeclaration(pipeName = pipeName)))
 
     private fun typescriptClass(pathWithName: List<String>, selector: AngularSelector) =
         typescriptClass(pathWithName, AngularMetadata(AngularDeclaration(selectors = listOf(selector))))
