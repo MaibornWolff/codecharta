@@ -64,12 +64,3 @@ missing file centaur_repository.hpp -> repository.hpp
 missing leaf centaur_repository.hpp#Repository -> centaur.hpp#Centaur
 missing leaf centaur_repository.hpp#Repository -> repository.hpp#Repository
 ```
-
-## spec-uses-c
-
-An untagged struct that a typedef names is no declaration.
-
-```text
-missing file shape.hpp -> point.h
-missing leaf shape.hpp#Shape -> point.h#Point
-```

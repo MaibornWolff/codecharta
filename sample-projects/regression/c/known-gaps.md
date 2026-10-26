@@ -42,12 +42,3 @@ missing leaf room.h#Room -> size.h#Area
 missing leaf room.h#Room -> size.h#Meters
 missing leaf size.h#Area -> size.h#Size
 ```
-
-## spec-typedef-untagged
-
-An untagged struct that a typedef names is no declaration.
-
-```text
-missing file shape.h -> point.h
-missing leaf shape.h#Shape -> point.h#Point
-```
