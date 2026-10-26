@@ -10,9 +10,7 @@ gap closes, and the closed lines are deleted here.
 A tag reference `struct Creature *` in a field is not reported as a use.
 
 ```text
-missing file creature.h -> fightable.h
 missing file fightable.h -> creature.h
-missing leaf creature.h#Creature -> fightable.h#Fightable
 missing leaf fightable.h#Fightable -> creature.h#Creature
 ```
 
