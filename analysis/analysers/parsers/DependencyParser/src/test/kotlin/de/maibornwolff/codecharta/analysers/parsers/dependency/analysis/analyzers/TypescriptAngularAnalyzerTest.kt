@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 
 class TypescriptAngularAnalyzerTest {
     @Test
-    fun `should carry the selector of an Angular component as its template name`() {
+    fun `should carry the selector of an Angular component`() {
         // Arrange
         val typescriptCode = """
             @Component({ selector: 'app-torch', templateUrl: './torch.component.html' })
@@ -26,8 +26,8 @@ class TypescriptAngularAnalyzerTest {
                 .single()
                 .angular
                 ?.declaration
-                ?.templateNames
-        ).containsExactly("app-torch")
+                ?.selectors
+        ).containsExactly(AngularSelector(element = "app-torch"))
     }
 
     @Test
