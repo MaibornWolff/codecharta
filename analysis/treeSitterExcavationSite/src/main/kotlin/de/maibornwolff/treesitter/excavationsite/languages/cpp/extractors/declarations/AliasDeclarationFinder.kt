@@ -36,6 +36,7 @@ internal object AliasDeclarationFinder {
     }
 
     private fun fromTypedef(node: SyntaxNode): List<Declaration> {
+        if (!TypedefNames.isReadable(node)) return emptyList()
         val typeNode = node.getChildByFieldName(TYPE_FIELD).takeUnless { it.isNull } ?: return emptyList()
         val target = targetOf(typeNode) ?: return emptyList()
         return node
