@@ -111,7 +111,7 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 | Declarations, decision 4: a typedef alias | `c/spec-typedef-alias` | ok |
 | Declarations, decision 4: a `using` alias | `cpp/spec-alias-using` | ok |
 | Declarations: `struct N *` declares N | `c/spec-implicit-forward` | ok |
-| Declarations, decision 3: implementation part | `cpp/spec-implementation-part` | gap |
+| Declarations, decision 3: implementation part | `cpp/spec-implementation-part` | ok |
 | Declarations, decision 8: explicit specialization | `cpp/spec-template-specialization` | gap |
 | Declarations, decision 8: out-of-line template member | `cpp/spec-template-out-of-line-member` | gap |
 | Declarations: unnamed namespace | `cpp/spec-unnamed-namespace` | ok |
@@ -126,7 +126,7 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 | 2. member type before the namespace | `cpp/spec-member-type` | ok |
 | 2. member type of an enclosing class | `cpp/spec-enclosing-class-member-type` | ok |
 | 2. inherited member type | `cpp/spec-inherited-member-type` | ok |
-| 2 and 3. out-of-line member body | `cpp/spec-out-of-line-lookup` | gap |
+| 2 and 3. out-of-line member body | `cpp/spec-out-of-line-lookup` | ok |
 | 3. own namespace | `cpp/spec-own-namespace` | ok |
 | 3. enclosing namespace | `cpp/spec-enclosing-namespace` | ok |
 | 3. inner namespace before the global one | `cpp/spec-inner-namespace-first` | ok |

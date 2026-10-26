@@ -36,17 +36,22 @@ class CppAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         return FileReport(nodes)
     }
 
-    // A type alias is a leaf of its own; what it names is looked up in the scope around it
+    // A type alias is a leaf of its own; what it names is looked up in the scope around it. An implementation part
+    // defines members of the class of its own path, which it uses (decision 3)
     private fun toNode(declaration: Declaration, names: CppVisibleNames): Node {
         val path = (if (declaration.isMarked()) declaration.parentPath.drop(1) else declaration.parentPath) + declaration.name
         val scope = if (declaration.isAlias()) path.dropLast(1) else path
+        val isImplementationPart = declaration.parentPath.firstOrNull() == TSE_IMPLEMENTATION_SEGMENT
+        val ownClass = listOfNotNull(Type.simple(Path(path).withDots()).takeIf { isImplementationPart })
         return Node(
             pathWithName = Path(path),
             physicalPath = fileInfo.physicalPath,
             language = SupportedLanguage.CPP,
             nodeType = declaration.type.toNodeType(),
             dependencies = emptySet(),
-            usedTypes = declaration.usedTypes.flatMap { resolve(it, scope, names) }.toSet()
+            usedTypes = (declaration.usedTypes.flatMap { resolve(it, scope, names) } + ownClass).toSet(),
+            isFileScoped = isImplementationPart,
+            isImplementationPart = isImplementationPart
         )
     }
 
