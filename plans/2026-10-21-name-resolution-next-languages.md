@@ -174,7 +174,14 @@ Steps, one commit each:
 21. [x] Vue: tags by binding, `components`, global registration, the one component
 22. [x] Vue: template expressions are uses, an import alone is none
 23. [x] Vue: named exports of a plain `<script>` (closed by step 22)
-24. [ ] Angular: attribute directives
+24. [ ] Angular: a template element matches selectors as the compiler does (decision 14, branch
+    `fix/dependency-name-resolution-angular`, 8 gaps):
+    1. [ ] TSE: a `@Component` or `@Directive` selector as its alternatives (`AngularSelector`)
+    2. [ ] TSE: a template's elements as selectors: tag, static attributes, classes
+    3. [ ] TSE: property, two-way and event bindings as attributes
+    4. [ ] TSE: a structural directive as an `ng-template` element with its microsyntax keys
+    5. [ ] a template element uses every class whose selector matches it
+    6. [ ] refactor: a template reports only pipe names, a class only its pipe name
 25. [ ] changelog, README, gh-pages, plan
 
 ### Resume Vue here (2026-10-23, Vue done: steps 20 to 23)
