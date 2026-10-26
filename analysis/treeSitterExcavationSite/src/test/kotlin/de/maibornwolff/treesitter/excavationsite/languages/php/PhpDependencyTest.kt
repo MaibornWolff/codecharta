@@ -201,6 +201,36 @@ class PhpDependencyTest {
         }
 
         @Test
+        fun `should give each declaration the namespace of the block it stands in as parent path`() {
+            // Arrange
+            val code = "namespace Shop;\nclass Cart {}\nnamespace Admin;\nfunction panel() {}"
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.declarations).extracting({ it.name }, { it.parentPath }).containsExactly(
+                tuple("Cart", listOf("Shop")),
+                tuple("panel", listOf("Admin"))
+            )
+        }
+
+        @Test
+        fun `should give a declaration in braces its namespace and one in the global block none`() {
+            // Arrange
+            val code = "namespace Shop\\Model {\n    class Cart {}\n}\nnamespace {\n    class Legacy {}\n}"
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.declarations).extracting({ it.name }, { it.parentPath }).containsExactly(
+                tuple("Cart", listOf("Shop", "Model")),
+                tuple("Legacy", emptyList<String>())
+            )
+        }
+
+        @Test
         fun `should not extract a method as a function`() {
             // Arrange
             val code = "class Order {\n    function total() {}\n}"
