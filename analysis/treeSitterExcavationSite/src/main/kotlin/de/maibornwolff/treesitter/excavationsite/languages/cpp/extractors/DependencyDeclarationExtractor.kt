@@ -1,5 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors
 
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.AliasDeclarationFinder
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.DeclarationMerger
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.ForwardDeclarationFinder
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.InClassDeclarationFinder
@@ -11,5 +12,5 @@ internal object DependencyDeclarationExtractor {
     fun extract(rootNode: SyntaxNode): List<Declaration> = DeclarationMerger.merge(
         InClassDeclarationFinder.find(rootNode) +
             OutOfClassMethodPromoter.promote(rootNode)
-    ) + ForwardDeclarationFinder.find(rootNode)
+    ) + ForwardDeclarationFinder.find(rootNode) + AliasDeclarationFinder.find(rootNode)
 }

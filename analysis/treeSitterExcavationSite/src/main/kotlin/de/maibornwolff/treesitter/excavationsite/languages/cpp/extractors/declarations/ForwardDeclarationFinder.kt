@@ -46,17 +46,7 @@ internal object ForwardDeclarationFinder {
             name = name,
             type = if (specifier.type == ENUM_SPECIFIER) DeclarationType.ENUM else DeclarationType.CLASS,
             usedTypes = emptySet(),
-            parentPath = listOf(FORWARD_DECLARATION) + CppNamespaceWalker.walkAncestorsFrom(specifier) + enclosingClasses(specifier)
+            parentPath = listOf(FORWARD_DECLARATION) + CppNamespaceWalker.walkAncestorsFrom(specifier) + EnclosingClasses.of(specifier)
         )
-    }
-
-    private fun enclosingClasses(specifier: SyntaxNode): List<String> {
-        val classes = mutableListOf<String>()
-        var current = specifier.parent
-        while (!current.isNull) {
-            if (current.type in SPECIFIERS) TreeTraversal.findFirstChildTextByType(current, TYPE_IDENTIFIER)?.let { classes.add(0, it) }
-            current = current.parent
-        }
-        return classes
     }
 }

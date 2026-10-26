@@ -2,6 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp
 
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.AliasDeclarationFinder.ALIAS
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.ForwardDeclarationFinder.FORWARD_DECLARATION
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
@@ -102,6 +103,46 @@ class CppDependencyDeclarationTest {
         assertThat(result.declarations).containsExactly(
             Declaration(name = "Stable", type = DeclarationType.CLASS, usedTypes = emptySet(), parentPath = listOf(FORWARD_DECLARATION))
         )
+    }
+
+    @Test
+    fun `should report typedefs of another name and using aliases below the alias marker with the type they name`() {
+        // Arrange
+        val code = """
+            typedef struct Size Area;
+            typedef int Meters, *MetersPtr;
+            typedef struct Foo { int a; } Bar;
+            namespace n { using Entity = lib::CreatureEntity; }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.filter { it.parentPath.firstOrNull() == ALIAS }).containsExactlyInAnyOrder(
+            Declaration(name = "Area", type = DeclarationType.CLASS, usedTypes = setOf(UsedType("Size")), parentPath = listOf(ALIAS)),
+            Declaration(name = "Meters", type = DeclarationType.CLASS, usedTypes = setOf(UsedType("int")), parentPath = listOf(ALIAS)),
+            Declaration(name = "MetersPtr", type = DeclarationType.CLASS, usedTypes = setOf(UsedType("int")), parentPath = listOf(ALIAS)),
+            Declaration(name = "Bar", type = DeclarationType.CLASS, usedTypes = setOf(UsedType("Foo")), parentPath = listOf(ALIAS)),
+            Declaration(
+                name = "Entity",
+                type = DeclarationType.CLASS,
+                usedTypes = setOf(UsedType("CreatureEntity", namespacePrefix = listOf("lib"))),
+                parentPath = listOf(ALIAS, "n")
+            )
+        )
+    }
+
+    @Test
+    fun `should report no alias for a typedef of a struct of the same name or of a function pointer`() {
+        // Arrange
+        val code = "typedef struct Size Size;\ntypedef struct Point { int x; } Point;\ntypedef int (*Callback)(int);"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.filter { it.parentPath.firstOrNull() == ALIAS }).isEmpty()
     }
 
     @Test
