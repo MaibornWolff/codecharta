@@ -27,15 +27,6 @@ missing leaf App/Facade.php#Facade -> Ann/Cached.php#Cached
 missing leaf App/Facade.php#Facade -> Ann/Transactional.php#Transactional
 ```
 
-## spec-case-insensitive
-
-Names are compared with their case: `CREATURE` finds no `Creature`.
-
-```text
-missing file App/Den.php -> Model/Creature.php
-missing leaf App/Den.php#Den -> Model/Creature.php#Creature usage=instantiation
-```
-
 ## spec-catch-instanceof
 
 `catch` and `instanceof` are not read.

@@ -1,0 +1,1 @@
+# php.md, decision 5: a name matches a declaration only in its declared case
