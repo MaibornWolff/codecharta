@@ -626,4 +626,16 @@ void Creature::SetSpeed(SpeedType speedType, const Speed& speed) {
         // Assert
         assertThat(report.nodes.map { it.name() }).containsExactly("Fightable")
     }
+
+    @Test
+    fun `should make no dependency of a namespace alias`() {
+        // Arrange
+        val code = "namespace m = game::model;\nstruct App { m::Creature *creature; };"
+
+        // Act
+        val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "app.hpp", code)).analyze()
+
+        // Assert
+        assertThat(report.nodes.single().dependencies).noneMatch { it.path == Path("game", "model") }
+    }
 }

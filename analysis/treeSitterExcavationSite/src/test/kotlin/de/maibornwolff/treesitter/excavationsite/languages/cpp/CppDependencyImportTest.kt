@@ -494,6 +494,24 @@ class CppDependencyImportTest {
                     ImportDeclaration(path = listOf("std", "vector"), isWildcard = false, kind = ImportKind.STANDARD)
                 )
             }
+
+            @Test
+            fun `should extract a namespace alias as an import bound to the alias in its namespace`() {
+                // Arrange
+                val code = """
+                    namespace m = game::model;
+                    namespace app { namespace s = store; }
+                """.trimIndent()
+
+                // Act
+                val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+                // Assert
+                assertThat(result.imports).containsExactly(
+                    ImportDeclaration(path = listOf("game", "model"), isWildcard = false, bindingName = "m"),
+                    ImportDeclaration(path = listOf("store"), isWildcard = false, namespacePath = listOf("app"), bindingName = "s")
+                )
+            }
         }
     }
 
