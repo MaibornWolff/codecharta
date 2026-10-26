@@ -1,0 +1,7 @@
+# typescript.md, declarations, decision 8: export * in JavaScript re-exports every named export, not the default and not what is not exported
+file models/index.js -> models/model.js
+file user.js -> models/index.js
+leaf models/index.js#Model -> models/model.js#Model
+leaf models/index.js#hidden -> models/model.js#hidden
+leaf models/model.js#hidden -> models/model.js#Hidden
+leaf user.js#User -> models/index.js#Model

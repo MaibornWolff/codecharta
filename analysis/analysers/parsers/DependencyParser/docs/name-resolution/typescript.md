@@ -234,6 +234,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | JavaScript, decision 10: a member of a required `module.exports = X` | `javascript/spec-commonjs-default-member` | ok |
 | JavaScript, binding: `exports.A =` | `javascript/spec-commonjs-exports-property` | ok |
 | JavaScript, decision 2: a named default export | `javascript/spec-js-default-named` | gap |
+| JavaScript, decision 8: `export *` without default and unexported names | `javascript/spec-reexport-star` | ok |
 | JavaScript, binding: a default import of a CommonJS module | `javascript/spec-esm-import-commonjs` | ok |
 | JavaScript, 3: a script file is global | `javascript/spec-script-global` | ok |
 | JavaScript, decision 3: a `require` not bound | `javascript/spec-require-side-effect` | ok |

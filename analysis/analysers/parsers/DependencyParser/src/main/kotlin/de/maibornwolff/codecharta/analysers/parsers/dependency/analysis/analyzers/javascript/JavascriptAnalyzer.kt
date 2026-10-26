@@ -12,6 +12,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ModuleScriptUses
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.OwnNames
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ScriptLeaf
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.StarExports
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
@@ -22,13 +23,10 @@ import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
 
-// Unlike TypescriptAnalyzer, JavascriptAnalyzer does not expand wildcard re-exports
-// (`export * from './module'`) into one node per re-exported name. A JS wildcard re-export is
-// represented as a single REEXPORT node carrying the wildcard dependency. This matches DC's
-// established JavaScript behavior (see the `should handle ES6 wildcard re-exports` test).
 class JavascriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     override val language = SupportedLanguage.JAVASCRIPT
     private val memberImports = fileInfo.analysisRoot?.let { MemberImports(it) }
+    private val starExports = fileInfo.analysisRoot?.let { StarExports(it) }
     private val modulePath by lazy {
         fileInfo.physicalPathAsPath().withoutFileSuffix(fileInfo.physicalPath.substringAfterLast('.', "").lowercase())
     }
@@ -43,7 +41,8 @@ class JavascriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
 
     override fun analyze(): FileReport {
         val declaredNodes = super.analyze().nodes.let { memberImports?.rewrite(it) ?: it }
-        return FileReport(OwnNames.writtenInFull(DefaultExports.withoutOwnNames(declaredNodes), modulePath))
+        val nodes = OwnNames.writtenInFull(DefaultExports.withoutOwnNames(declaredNodes), modulePath)
+        return FileReport(starExports?.expandedIn(nodes, modulePath) ?: nodes)
     }
 
     override fun convertImport(import: ImportDeclaration): Set<Dependency> {
@@ -51,6 +50,7 @@ class JavascriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         val moduleFile = ImportedModules.fileOf(import, fileInfo)
         if (analysisRoot != null && moduleFile != null) {
             val module = ImportedModules.logicalPathOf(moduleFile, analysisRoot)
+            starExports?.remember(import, moduleFile)
             memberImports?.targetOf(import, moduleFile, module)?.let { return setOf(Dependency(path = it)) }
             val importedName = if (ImportedModules.namesMember(
                     import
