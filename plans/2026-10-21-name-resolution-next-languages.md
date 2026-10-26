@@ -12,9 +12,9 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 ## Resume here (for a fresh agent)
 
-- **State:** Java, Kotlin, C#, Go, Python, TypeScript, JavaScript, Vue and Angular templates, C and C++ are done and
-  pushed (last: `fix/dependency-name-resolution-c-cpp`). PHP is done on `fix/dependency-name-resolution-php` (not
-  pushed yet), see "PHP" below. Next language by the order below: Rust.
+- **State:** Java, Kotlin, C#, Go, Python, TypeScript, JavaScript, Vue and Angular templates, C and C++, PHP are done
+  and pushed (last: `fix/dependency-name-resolution-php`). Rust is in progress on `fix/dependency-name-resolution-rust`,
+  see "Rust" below.
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -449,6 +449,21 @@ derived (global namespace path, declarations in blocks, script leaf, docblocks).
 Prototype of steps 5–14 (all probes but the case one green, no checkpoint probe worse, the sample gains the 24 file
 edges FINDINGS expects): `git stash` "php-prototype", copy in the scratchpad `php-prototype.patch`.
 
+## Rust (in progress, 2026-10-26)
+
+Branch `fix/dependency-name-resolution-rust`, cut from the pushed `-php`; comparison build of the first commit
+`ccsh-php11`. Christian: "do it like the compiler does it, else like the other languages". Ground truth: rustc 1.99.1
+from `rustup-init --profile minimal` in the session scratchpad (`RUSTUP_HOME`/`CARGO_HOME` there; `cargo check` and
+`rustc --emit=metadata` need no linker). Spec `docs/name-resolution/rust.md`, decisions 1–6 chosen by Christian on
+2026-10-26: crate name from `Cargo.toml`; module tree from the `mod` declarations; an `impl` in another file is an
+implementation part; every name the compiler resolves is a use (bodies, calls, constants, macros); macro arguments
+read as expressions; `#[cfg(test)]` only with `--include-tests`. Decisions 7–15 derived (re-exports, items in bodies,
+crates without dependency, method calls, variants, two crate roots, editions, impl for a library type, copies by crate).
+
+1. [x] spec page
+2. [ ] probes under `sample-projects/regression/rust/spec-*`, each compiled with rustc
+3. [ ] implementation, one commit per group of gaps (list announced after the probes)
+
 ## Steps
 
 - [x] Ask Christian which language comes next: C# (2026-10-22)
@@ -458,4 +473,5 @@ edges FINDINGS expects): `git stash` "php-prototype", copy in the scratchpad `ph
   2026-10-26
 - [x] Next language: C and C++ (Christian, 2026-10-26), done 2026-10-26
 - [x] Next language: PHP (by the order above, 2026-10-26), done 2026-10-26
+- [ ] Next language: Rust (by the order above, 2026-10-26)
 - [ ] For each language: spec, probes, implementation commits, acceptance
