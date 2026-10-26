@@ -571,6 +571,31 @@ class PhpDependencyTest {
         }
 
         @Test
+        fun `should extract the class of an instanceof, an attribute and a static property`() {
+            // Arrange
+            val code = """
+                #[Cached]
+                class Spotter {
+                    #[\Ann\Transactional]
+                    function spot(${'$'}candidate) {
+                        return ${'$'}candidate instanceof Centaur ? Counter::${'$'}count : 0;
+                    }
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "Spotter")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(
+                UsedType("Counter"),
+                UsedType("Cached"),
+                UsedType("Transactional", namespacePrefix = listOf("Ann")),
+                UsedType("Centaur")
+            )
+        }
+
+        @Test
         fun `should extract the nullable return type of a method and of a function`() {
             // Arrange
             val code = """
