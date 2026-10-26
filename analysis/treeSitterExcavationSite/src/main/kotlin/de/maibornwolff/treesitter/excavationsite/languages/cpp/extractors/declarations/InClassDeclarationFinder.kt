@@ -1,5 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations
 
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes.CppLocalNames
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes.UsedTypeExtractor
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
@@ -28,7 +29,7 @@ internal object InClassDeclarationFinder {
 
     private fun toDeclaration(node: SyntaxNode, nameByStartByte: Map<Int, String?>): Declaration? {
         // Forward declarations have no body — DC legacy emits no Declaration for them.
-        if (!hasBody(node)) return null
+        if (!hasBody(node) || CppLocalNames.isInFunction(node)) return null
         val name = nameByStartByte[node.startByte] ?: return null
         return Declaration(
             name = name,

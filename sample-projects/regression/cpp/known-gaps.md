@@ -26,14 +26,6 @@ missing file Creature.cpp -> Creature.hpp
 missing leaf Creature.cpp#Creature -> Creature.hpp#Creature
 ```
 
-## spec-local-type
-
-A class declared in a function is a declaration of the class around it, so `Node` finds it there.
-
-```text
-extra leaf user.hpp#User -> user.hpp#Node
-```
-
 ## spec-member-of-type
 
 `SpeedType::WALKING` in an initializer expression is not reported as a use.
@@ -60,15 +52,6 @@ missing file pool_impl.hpp -> pool.hpp
 missing leaf pool_impl.hpp#Pool -> counter.hpp#Counter
 missing leaf pool_impl.hpp#Pool -> pool.hpp#Pool
 extra leaf pool_impl.hpp#Pool<T> -> counter.hpp#Counter
-```
-
-## spec-template-parameter
-
-A template parameter does not hide a project class of its name.
-
-```text
-extra file box.hpp -> creature.hpp
-extra leaf box.hpp#Box -> creature.hpp#Creature
 ```
 
 ## spec-template-specialization
