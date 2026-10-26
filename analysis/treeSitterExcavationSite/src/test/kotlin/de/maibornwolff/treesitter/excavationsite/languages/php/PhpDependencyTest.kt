@@ -537,7 +537,41 @@ class PhpDependencyTest {
         }
 
         @Test
-        fun `should extract the nullable return type of a method but not of a function`() {
+        fun `should extract every type of a parameter, a property and a catch clause`() {
+            // Arrange
+            val code = """
+                class Svc {
+                    public ?H ${'$'}h = null;
+                    function __construct(private G ${'$'}g) {}
+                    function take(?A ${'$'}a, B|C ${'$'}bc, D&E ${'$'}de, F ...${'$'}fs) {
+                        try {} catch (NotFound | Gone ${'$'}failure) {}
+                        return fn (I ${'$'}i): J => ${'$'}i;
+                    }
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "Svc")
+
+            // Assert
+            assertThat(usedTypes.map { it.name to it.usage }).containsExactly(
+                "J" to TypeUsage.RETURN_VALUE,
+                "G" to TypeUsage.ARGUMENT,
+                "A" to TypeUsage.ARGUMENT,
+                "B" to TypeUsage.ARGUMENT,
+                "C" to TypeUsage.ARGUMENT,
+                "D" to TypeUsage.ARGUMENT,
+                "E" to TypeUsage.ARGUMENT,
+                "F" to TypeUsage.ARGUMENT,
+                "I" to TypeUsage.ARGUMENT,
+                "H" to TypeUsage.USAGE,
+                "NotFound" to TypeUsage.USAGE,
+                "Gone" to TypeUsage.USAGE
+            )
+        }
+
+        @Test
+        fun `should extract the nullable return type of a method and of a function`() {
             // Arrange
             val code = """
                 class Orders {
@@ -552,11 +586,11 @@ class PhpDependencyTest {
 
             // Assert
             assertThat(typesOfClass).containsExactly(UsedType("Order", usage = TypeUsage.RETURN_VALUE))
-            assertThat(typesOfFunction).isEmpty()
+            assertThat(typesOfFunction).containsExactly(UsedType("Invoice", usage = TypeUsage.RETURN_VALUE))
         }
 
         @Test
-        fun `should extract a base class written as a qualified name but leave out a nullable parameter type`() {
+        fun `should extract a base class written as a qualified name and a nullable parameter type`() {
             // Arrange
             val code = "class Order extends \\App\\Entity {\n    function pay(?Gateway ${'$'}gateway) {}\n}"
 
@@ -564,7 +598,10 @@ class PhpDependencyTest {
             val usedTypes = usedTypesOf(code, "Order")
 
             // Assert
-            assertThat(usedTypes).containsExactly(UsedType("Entity", namespacePrefix = listOf("App"), usage = TypeUsage.INHERITANCE))
+            assertThat(usedTypes).containsExactly(
+                UsedType("Entity", namespacePrefix = listOf("App"), usage = TypeUsage.INHERITANCE),
+                UsedType("Gateway", usage = TypeUsage.ARGUMENT)
+            )
         }
 
         @Test

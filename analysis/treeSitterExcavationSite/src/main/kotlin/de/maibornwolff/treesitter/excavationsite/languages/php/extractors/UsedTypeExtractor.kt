@@ -9,15 +9,13 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
  * The names a PHP declaration uses and how, in the order of [Role], each as the full path of the class, function or
  * constant it means by the rules of `php.md`: the last segment as name, the namespace as prefix, and for a function or
  * constant PHP may look up globally the global name as fallback. Read are return, parameter and property types, base
- * classes, interfaces, instantiations, static calls, constant accesses, traits, function calls and constant reads;
- * left out are a union type, a nullable parameter type, the nullable return type of a function and `self`, `static`,
- * `parent` and the type keywords.
+ * classes, interfaces, instantiations, static calls, constant accesses, traits, function calls, constant reads and
+ * every type (parameter, return, property, `catch`); left out are `self`, `static`, `parent` and the type keywords.
  */
 internal object UsedTypeExtractor {
     private const val NAME = "name"
     private const val QUALIFIED_NAME = "qualified_name"
     private const val NAMED_TYPE = "named_type"
-    private const val OPTIONAL_TYPE = "optional_type"
     private const val CLASS_DECLARATION = "class_declaration"
     private const val DECLARATION_LIST = "declaration_list"
     private const val PROPERTY_DECLARATION = "property_declaration"
@@ -27,10 +25,9 @@ internal object UsedTypeExtractor {
     private const val OBJECT_CREATION_EXPRESSION = "object_creation_expression"
     private const val SCOPED_CALL_EXPRESSION = "scoped_call_expression"
     private const val CLASS_CONSTANT_ACCESS_EXPRESSION = "class_constant_access_expression"
-    private const val FUNCTION_DEFINITION = "function_definition"
-    private const val METHOD_DECLARATION = "method_declaration"
-    private const val FORMAL_PARAMETERS = "formal_parameters"
-    private const val SIMPLE_PARAMETER = "simple_parameter"
+    private const val RETURN_TYPE_FIELD = "return_type"
+    private val TYPE_COMPOSITIONS = setOf("optional_type", "union_type", "intersection_type", "disjunctive_normal_form_type", "type_list")
+    private val PARAMETERS = setOf("simple_parameter", "property_promotion_parameter", "variadic_parameter")
     private const val SCOPE_FIELD = "scope"
     private const val FUNCTION_FIELD = "function"
     private const val FUNCTION_CALL_EXPRESSION = "function_call_expression"
@@ -50,6 +47,7 @@ internal object UsedTypeExtractor {
         PARAMETER_TYPE(TypeUsage.ARGUMENT),
         INSTANTIATED(TypeUsage.INSTANTIATION),
         PROPERTY_TYPE(TypeUsage.USAGE),
+        OTHER_TYPE(TypeUsage.USAGE),
         STATIC_CALL_OWNER(TypeUsage.USAGE),
         USED_TRAIT(TypeUsage.USAGE),
         CALLED_FUNCTION(TypeUsage.USAGE, Kind.FUNCTION)
@@ -83,7 +81,7 @@ internal object UsedTypeExtractor {
 
     private fun rolesOf(node: SyntaxNode): List<Pair<Role, SyntaxNode>> = when (node.type) {
         NAME, QUALIFIED_NAME -> listOfNotNull(roleOfName(node)?.let { it to node })
-        NAMED_TYPE -> listOfNotNull(roleOfNamedType(node)?.let { it to node })
+        NAMED_TYPE -> listOf(roleOfNamedType(node) to node)
         else -> ownersOfReadConstants(node).map { Role.CONSTANT_OWNER to it }
     }
 
@@ -100,16 +98,16 @@ internal object UsedTypeExtractor {
         }
     }
 
-    private fun roleOfNamedType(namedType: SyntaxNode): Role? {
-        val parent = namedType.parent
-        val isOptional = parent.type == OPTIONAL_TYPE
-        val typedNode = if (isOptional) parent.parent else parent
-        return when (typedNode.type) {
-            PROPERTY_DECLARATION -> Role.PROPERTY_TYPE.takeIf { isMemberOfClass(typedNode) }
-            METHOD_DECLARATION -> Role.RETURN_TYPE
-            FUNCTION_DEFINITION -> Role.RETURN_TYPE.takeUnless { isOptional }
-            SIMPLE_PARAMETER -> Role.PARAMETER_TYPE.takeIf { !isOptional && typedNode.parent.type == FORMAL_PARAMETERS }
-            else -> null
+    // The node a type belongs to, above the nullable, union and intersection types it is part of
+    private fun roleOfNamedType(namedType: SyntaxNode): Role {
+        var type = namedType
+        while (type.parent.type in TYPE_COMPOSITIONS) type = type.parent
+        val typedNode = type.parent
+        return when {
+            typedNode.type in PARAMETERS -> Role.PARAMETER_TYPE
+            typedNode.getChildByFieldName(RETURN_TYPE_FIELD) == type -> Role.RETURN_TYPE
+            typedNode.type == PROPERTY_DECLARATION -> Role.PROPERTY_TYPE
+            else -> Role.OTHER_TYPE
         }
     }
 

@@ -124,7 +124,7 @@ the expected meaning of each name, except the absolute and the computed include 
 | A function name means no class | `spec-function-not-class` | ok |
 | Constant name 3: `use const` | `spec-use-const` | ok |
 | Constant name 1: fully qualified | `spec-constant-fully-qualified` | ok |
-| Decision 4: parameter, property and return types | `spec-type-positions` | gap |
+| Decision 4: parameter, property and return types | `spec-type-positions` | ok |
 | Decision 4: `catch` and `instanceof` | `spec-catch-instanceof` | gap |
 | Decision 4: attributes | `spec-attribute` | gap |
 | Decision 4: interface `extends` | `spec-interface-extends` | gap |
