@@ -343,7 +343,7 @@ name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these a
    clang (`compile-probes.sh` and `mkprobes.py` in the scratchpad generate and check them)
 3. [x] refactor: C and C++ get name rules of their own (`CppNameRules`), the default
    ones for now; `CppCopyRules` comes with step 5
-4. [ ] `CppIncludes`: an include path means the file of the include rules, a file sees its include closure (project
+4. [x] `CppIncludes`: an include path means the file of the include rules, a file sees its include closure (project
    scan, cached per analysis root, as `CSharpProjects`)
 5. [ ] copies: no merge of C++ nodes of one path (`ProcessingPipeline.mergeIdenticalTypes` goes); a use means the copy
    its include closure holds, else the nearest (closes `spec-closure-over-nearest`, part of
