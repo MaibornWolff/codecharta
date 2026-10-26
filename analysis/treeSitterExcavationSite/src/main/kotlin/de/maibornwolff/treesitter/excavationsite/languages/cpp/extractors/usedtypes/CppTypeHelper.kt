@@ -1,5 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes
 
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.syntax.CppForwardDeclarations
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.syntax.CppNamespaceWalker
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
@@ -21,11 +23,13 @@ internal object CppTypeHelper {
 
     private val TYPE_NODE_TYPES =
         setOf(TYPE_IDENTIFIER, TEMPLATE_TYPE, QUALIFIED_IDENTIFIER, PRIMITIVE_TYPE, SIZED_TYPE_SPECIFIER)
+    private val TAG_SPECIFIERS = setOf("class_specifier", "struct_specifier", "union_specifier", "enum_specifier")
+    private val TAG_BODIES = setOf("field_declaration_list", "enumerator_list")
     private val LEAF_TYPE_NODES = setOf(TYPE_IDENTIFIER, IDENTIFIER, PRIMITIVE_TYPE, SIZED_TYPE_SPECIFIER)
     private val TEMPLATE_LIKE_TYPES = setOf(TEMPLATE_TYPE, TEMPLATE_FUNCTION)
     private val TEMPLATE_NAME_TYPES = setOf(TYPE_IDENTIFIER, IDENTIFIER)
 
-    fun isTypeNode(node: SyntaxNode): Boolean = node.type in TYPE_NODE_TYPES
+    fun isTypeNode(node: SyntaxNode): Boolean = node.type in TYPE_NODE_TYPES || isElaborated(node)
 
     fun extractType(typeNode: SyntaxNode): UsedType? {
         if (typeNode.isNull) return null
@@ -33,8 +37,25 @@ internal object CppTypeHelper {
             in LEAF_TYPE_NODES -> extractLeafName(typeNode)
             in TEMPLATE_LIKE_TYPES -> extractTemplateLike(typeNode)
             QUALIFIED_IDENTIFIER -> extractRightmostSegment(typeNode)
+            in TAG_SPECIFIERS -> extractElaborated(typeNode)
             else -> null
         }
+    }
+
+    private fun isElaborated(node: SyntaxNode): Boolean = node.type in TAG_SPECIFIERS && node.children().none { it.type in TAG_BODIES }
+
+    // struct Roost *held; names Roost, and declares it in the namespace around it if no visible declaration does
+    private fun extractElaborated(specifier: SyntaxNode): UsedType? {
+        if (!isElaborated(specifier) || CppForwardDeclarations.isForwardDeclaration(specifier)) return null
+        val qualified = specifier.children().firstOrNull { it.type == QUALIFIED_IDENTIFIER }
+        if (qualified != null) return extractRightmostSegment(qualified)
+        val name = specifier.children().firstOrNull { it.type == TYPE_IDENTIFIER }?.text?.trim() ?: return null
+        val implicitDeclaration = UsedType(
+            name = name,
+            namespacePrefix =
+                listOf(GLOBAL_SCOPE) + CppNamespaceWalker.walkAncestorsFrom(specifier)
+        )
+        return UsedType(name = name, fallbacks = listOf(implicitDeclaration))
     }
 
     private fun extractLeafName(node: SyntaxNode): UsedType? =
