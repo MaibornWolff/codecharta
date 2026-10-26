@@ -5,15 +5,6 @@ The probes of this folder whose output deviates from their `expected.txt` today,
 expected line the parser does not draw yet and `extra <line>` a wrong line it draws; `ProbeRegressionTest` fails once a
 gap closes, and the closed lines are deleted here.
 
-## spec-implementation-part
-
-The implementation part names its own logical path, which the shared self rule drops.
-
-```text
-missing file Creature.cpp -> Creature.hpp
-missing leaf Creature.cpp#Creature -> Creature.hpp#Creature
-```
-
 ## spec-member-of-type
 
 `SpeedType::WALKING` in an initializer expression is not reported as a use.
@@ -21,14 +12,6 @@ missing leaf Creature.cpp#Creature -> Creature.hpp#Creature
 ```text
 missing file mover.hpp -> speed.hpp
 missing leaf mover.hpp#Mover -> speed.hpp#SpeedType
-```
-
-## spec-out-of-line-lookup
-
-The implementation part names its own logical path, which the shared self rule drops.
-
-```text
-missing leaf Creature.cpp#Creature -> Creature.hpp#Creature
 ```
 
 ## spec-template-out-of-line-member

@@ -71,4 +71,20 @@ class CppCopyRulesTest {
         // Assert
         assertThat(files).containsExactly(file("a/roost.h"))
     }
+
+    @Test
+    fun `should point at the class body rather than the implementation part of the using file`(
+        @TempDir root: File
+    ) {
+        // Arrange
+        root.withFile("Creature.hpp").withFile("Creature.cpp", "#include \"Creature.hpp\"\n")
+        val copies =
+            listOf(DeclaringCopy(file("Creature.cpp"), isFileScoped = true), DeclaringCopy(file("Creature.hpp"), isFileScoped = false))
+
+        // Act
+        val files = CppCopyRules(CppIncludes.of(root)).filesFor(copies, file("Creature.cpp"))
+
+        // Assert
+        assertThat(files).containsExactly(file("Creature.hpp"))
+    }
 }

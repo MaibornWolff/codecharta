@@ -300,4 +300,18 @@ class CppAnalyzerTest {
         // Assert
         assertThat(usedTypes.map { it.name }).containsExactlyInAnyOrder("game.Roost", "Config")
     }
+
+    @Test
+    fun `should make the member functions defined outside the file of their class an implementation part that uses the class`() {
+        // Arrange
+        val code = "namespace game { struct Logger {}; void Creature::hit() { Logger logger; } }"
+
+        // Act
+        val part = analyze(code, "game/Creature.cpp").nodes.single { it.name() == "Creature" }
+
+        // Assert
+        assertThat(part.isImplementationPart).isTrue()
+        assertThat(part.isFileScoped).isTrue()
+        assertThat(part.usedTypes.map { it.name }).containsExactlyInAnyOrder("game.Creature", "game.Logger")
+    }
 }
