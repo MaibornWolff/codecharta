@@ -215,7 +215,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Binding, decision 3: a side-effect import | `spec-side-effect-import` | ok |
 | Binding, decision 4: a dynamic import read by name | `spec-dynamic-import` | ok |
 | Binding, decision 4: a dynamic import not read | `spec-dynamic-import-unread` | ok |
-| Binding, decision 15: an import type `import('./m').A` | `spec-import-type-expression` | gap |
+| Binding, decision 15: an import type `import('./m').A` | `spec-import-type-expression` | ok |
 | 1. a local class | `spec-local-declaration` | gap |
 | 1. a parameter | `spec-parameter-shadows-import` | gap |
 | 1. a type parameter | `spec-type-parameter` | gap |

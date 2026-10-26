@@ -16,14 +16,26 @@ internal object DynamicImports {
     /** The name the module of the dynamic import [importCall] is bound to: unique in its file by the call's position. */
     fun bindingNameOf(importCall: SyntaxNode): String = BINDING_PREFIX + importCall.startByte
 
-    /** The module an expression reads as `(await import('./m'))`, null for any other expression. */
+    /**
+     * The module an expression reads as `(await import('./m'))`, or as `import('./m')` in an import type
+     * (`import('./m').A`, decision 15); null for any other expression.
+     */
     fun moduleReadBy(expression: SyntaxNode): String? {
-        val awaited = expression.takeIf { it.type == PARENTHESIZED_EXPRESSION }?.namedChildren()?.singleOrNull()
-        val importCall = awaited
-            ?.takeIf { it.type == AWAIT_EXPRESSION }
-            ?.namedChildren()
-            ?.singleOrNull()
-            ?.takeIf { call -> call.type == CALL_EXPRESSION && call.children().any { it.type == IMPORT_KEYWORD } }
+        val importCall = expression.takeIf { isImportCall(it) && isImportType(it) } ?: awaitedImportCallIn(expression)
         return importCall?.let { bindingNameOf(it) }
     }
+
+    // In code the result of `import('./m')` is a promise, whose members are only called (`then`); an import type never is
+    private fun isImportType(importCall: SyntaxNode): Boolean = importCall.parent.parent.type != CALL_EXPRESSION
+
+    private fun awaitedImportCallIn(expression: SyntaxNode): SyntaxNode? = expression
+        .takeIf { it.type == PARENTHESIZED_EXPRESSION }
+        ?.namedChildren()
+        ?.singleOrNull()
+        ?.takeIf { it.type == AWAIT_EXPRESSION }
+        ?.namedChildren()
+        ?.singleOrNull()
+        ?.takeIf { isImportCall(it) }
+
+    private fun isImportCall(node: SyntaxNode): Boolean = node.type == CALL_EXPRESSION && node.children().any { it.type == IMPORT_KEYWORD }
 }

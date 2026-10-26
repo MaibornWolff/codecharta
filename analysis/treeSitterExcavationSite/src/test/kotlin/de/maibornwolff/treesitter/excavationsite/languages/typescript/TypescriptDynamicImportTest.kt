@@ -61,4 +61,20 @@ class TypescriptDynamicImportTest {
             bindingOf(code, "./render") + ".render"
         )
     }
+
+    @Test
+    fun `should report the name an import type reads through the binding of its module`() {
+        // Arrange
+        val code = """
+            export class Limit {
+              fastest?: import('./speed').Speed
+            }
+        """.trimIndent()
+
+        // Act
+        val limit = usesOf(code, "Limit")
+
+        // Assert
+        assertThat(limit).containsExactly(bindingOf(code, "./speed") + ".Speed")
+    }
 }
