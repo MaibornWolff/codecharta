@@ -1,6 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
 internal object SignatureTypeExtractor {
@@ -19,7 +20,7 @@ internal object SignatureTypeExtractor {
             baseClause
                 .namedChildren()
                 .filter { CppTypeHelper.isTypeNode(it) }
-                .mapNotNull { CppTypeHelper.extractType(it) }
+                .mapNotNull { CppTypeHelper.extractType(it)?.copy(usage = TypeUsage.INHERITANCE) }
                 .toList()
         }
 
