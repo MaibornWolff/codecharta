@@ -4,6 +4,7 @@ import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.AliasDeclarationFinder.ALIAS
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.ForwardDeclarationFinder.FORWARD_DECLARATION
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.ImplementationParts.IMPLEMENTATION
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
@@ -193,6 +194,25 @@ class CppDependencyDeclarationTest {
     }
 
     @Test
+    fun `should keep member functions defined in the file of their class in the class declaration`() {
+        // Arrange
+        val code = "struct Foo { void bar(); };\nvoid Foo::bar() { Helper helper; }"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations).containsExactly(
+            Declaration(
+                name = "Foo",
+                type = DeclarationType.CLASS,
+                usedTypes = setOf(UsedType("void"), UsedType("Helper")),
+                parentPath = emptyList()
+            )
+        )
+    }
+
+    @Test
     fun `should report no forward declaration for a class named in the type of a field`() {
         // Arrange
         val code = "struct Nest { struct Roost *held; };"
@@ -349,7 +369,7 @@ class CppDependencyDeclarationTest {
                 name = "Foo",
                 type = DeclarationType.CLASS,
                 usedTypes = setOf(UsedType(name = "void")),
-                parentPath = emptyList()
+                parentPath = listOf(IMPLEMENTATION)
             )
         )
     }
@@ -371,7 +391,7 @@ class CppDependencyDeclarationTest {
                 name = "Foo",
                 type = DeclarationType.CLASS,
                 usedTypes = setOf(UsedType(name = "void"), UsedType(name = "int"), UsedType(name = "double")),
-                parentPath = emptyList()
+                parentPath = listOf(IMPLEMENTATION)
             )
         )
     }
@@ -410,7 +430,7 @@ class CppDependencyDeclarationTest {
                 name = "Pattern",
                 type = DeclarationType.CLASS,
                 usedTypes = setOf(UsedType(name = "string", namespacePrefix = listOf("std"))),
-                parentPath = listOf("Catch", "TestSpec")
+                parentPath = listOf(IMPLEMENTATION, "Catch", "TestSpec")
             )
         )
     }

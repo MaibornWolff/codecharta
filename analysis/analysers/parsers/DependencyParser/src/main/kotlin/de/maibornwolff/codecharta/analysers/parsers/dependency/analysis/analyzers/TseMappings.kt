@@ -29,6 +29,9 @@ const val TSE_MODULE_SCRIPT_NAME = "MODULE_SCRIPT"
 // The first namespace prefix segment TSE gives a C++ type written with a leading ::, the global namespace
 const val TSE_CPP_GLOBAL_SCOPE = "::"
 
+// The first parent path segment TSE gives the member functions of a C++ class defined outside the file of its body
+const val TSE_IMPLEMENTATION_SEGMENT = "IMPLEMENTATION"
+
 // The first parent path segment TSE gives a C or C++ type alias, which names the type it uses
 const val TSE_ALIAS_SEGMENT = "ALIAS"
 

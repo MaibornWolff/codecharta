@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_ALIAS_SEGMENT
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_CPP_GLOBAL_SCOPE
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_FORWARD_DECLARATION_SEGMENT
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_IMPLEMENTATION_SEGMENT
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toNodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toTypeOfUsage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.splitNameToParts
@@ -37,7 +38,7 @@ class CppAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
 
     // A type alias is a leaf of its own; what it names is looked up in the scope around it
     private fun toNode(declaration: Declaration, names: CppVisibleNames): Node {
-        val path = (if (declaration.isAlias()) declaration.parentPath.drop(1) else declaration.parentPath) + declaration.name
+        val path = (if (declaration.isMarked()) declaration.parentPath.drop(1) else declaration.parentPath) + declaration.name
         val scope = if (declaration.isAlias()) path.dropLast(1) else path
         return Node(
             pathWithName = Path(path),
@@ -65,6 +66,8 @@ class CppAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     private fun Declaration.isForwardDeclaration(): Boolean = parentPath.firstOrNull() == TSE_FORWARD_DECLARATION_SEGMENT
 
     private fun Declaration.isAlias(): Boolean = parentPath.firstOrNull() == TSE_ALIAS_SEGMENT
+
+    private fun Declaration.isMarked(): Boolean = parentPath.firstOrNull() in setOf(TSE_ALIAS_SEGMENT, TSE_IMPLEMENTATION_SEGMENT)
 
     companion object {
         private const val CURRENT_FOLDER = "."
