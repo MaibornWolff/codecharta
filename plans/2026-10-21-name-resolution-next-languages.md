@@ -54,7 +54,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
    of `java.md`: declarations and their logical path; where a simple name is looked up, in order, first match wins,
    from the language's specification; qualified names; what is not supported; open questions. Ask Christian every
    open question (AskUserQuestion, with a drawn example when it is about modelling), write the answers into the page
-   as decisions. Christian reviews the page before any code.
+   as decisions. Points derived from earlier decisions or other languages go into the page as decisions too, without a
+   separate review round (Christian, 2026-10-26).
 2. **Probes.** One per rule and per collision of two rules, under `sample-projects/regression/<language>/spec-<rule>/`
    (`src/`, `expected.txt` whose first line names the rule). The expected edges come from the rule, never from the
    parser's output; keep probes free of cycles unless a rule is about cycles. Run them; every deviation becomes a
@@ -325,6 +326,21 @@ Steps, one commit each:
   a heuristic can unmask another (lower-case members of every import counted as namespace members; split the step and
   add the missing distinction first). Commit messages: commitlint warns on a body line that starts like a footer
   (`Edges: …` after a blank line), harmless.
+
+## C and C++ (in progress, 2026-10-26)
+
+Branch `fix/dependency-name-resolution-c-cpp`, cut from the pushed `-typescript-bindings`; comparison build of the
+first commit `ccsh-b13`. Christian: "do it like the compiler does it, else like the other languages". Ground truth:
+clang from zig in the session scratchpad (`pip install --target <dir> ziglang`, `zig c++ -fsyntax-only -Xclang
+-ast-dump`). Spec `docs/name-resolution/cpp.md`, decisions 1–7 chosen by Christian on 2026-10-26: include closure
+only; include path own folder, then path suffix, nearest; `.cpp` implementation part as leaf that uses the header's
+class; types and aliases (no functions); forward declaration means the body anywhere; global-namespace path is the
+name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these and Java/Go, written into the page
+(Christian, 2026-10-26: no separate spec review, follow the plan and write such points down).
+
+1. [x] spec page
+2. [ ] probes under `sample-projects/regression/{c,cpp}/spec-*`, `known-gaps.md`
+3. [ ] implementation, one commit per gap group (to be listed after the probes)
 
 ## Steps
 
