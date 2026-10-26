@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_ALIAS_SEGMENT
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_CPP_GLOBAL_SCOPE
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_FORWARD_DECLARATION_SEGMENT
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toNodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toTypeOfUsage
@@ -51,9 +52,15 @@ class CppAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     // A use that means nothing visible still holds its template arguments, which are uses of their own
     private fun resolve(used: UsedType, scope: List<String>, names: CppVisibleNames): List<Type> {
         val genericTypes = used.genericTypes.flatMap { resolve(it, scope, names) }
-        val target = names.resolve(used.namespacePrefix + used.name, scope) ?: return genericTypes
+        val target = names.resolve(used.namespacePrefix + used.name, scope)
+            ?: used.fallbacks.firstOrNull()?.let { implicitDeclarationOf(it) }
+            ?: return genericTypes
         return listOf(Type.generic(Path(target).withDots(), genericTypes, used.usage.toTypeOfUsage()))
     }
+
+    // A class tag nothing visible declares declares the class at the path TSE writes as fallback, from ::
+    private fun implicitDeclarationOf(fallback: UsedType): List<String> =
+        fallback.namespacePrefix.filterNot { it == TSE_CPP_GLOBAL_SCOPE } + fallback.name
 
     private fun Declaration.isForwardDeclaration(): Boolean = parentPath.firstOrNull() == TSE_FORWARD_DECLARATION_SEGMENT
 
