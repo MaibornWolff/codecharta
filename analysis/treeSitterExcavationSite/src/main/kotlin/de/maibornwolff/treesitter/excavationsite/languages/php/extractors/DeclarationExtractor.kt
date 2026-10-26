@@ -7,7 +7,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.fieldOfType
 
 /**
- * The declarations of a PHP file wherever they stand, grouped by kind. A file without any is one
+ * The declarations of a PHP file wherever they stand, grouped by kind, each with the namespace of the block it stands
+ * in as parent path (a `define` has none). A file without any is one
  * [DeclarationType.SCRIPT] that uses what the whole file uses.
  *
  * A trait and a constant are searched for used types in their name only, so they use nothing but an imported
@@ -46,12 +47,16 @@ internal object DeclarationExtractor {
         val nodesByType = TreeTraversal.findAllDescendantsGroupedByType(rootNode, DECLARING_TYPES)
         val nodesOfType = { type: String -> nodesByType[type].orEmpty() }
         val importedNames = NamespaceUses.importedNames(nodesOfType(NamespaceUses.NAMESPACE_USE_DECLARATION))
-        val declarations = nodesOfType(CLASS_DECLARATION).mapNotNull { namedByField(it, DeclarationType.CLASS, importedNames) } +
-            nodesOfType(TRAIT_DECLARATION).mapNotNull { trait(it, importedNames) } +
-            nodesOfType(FUNCTION_DEFINITION).mapNotNull { function(it, importedNames) } +
-            nodesOfType(INTERFACE_DECLARATION).mapNotNull { namedByField(it, DeclarationType.INTERFACE, importedNames) } +
-            nodesOfType(ENUM_DECLARATION).mapNotNull { namedByField(it, DeclarationType.ENUM, importedNames) } +
-            nodesOfType(CONST_DECLARATION).flatMap { topLevelConstants(it, importedNames) } +
+        val blocks = NamespaceBlocks.of(rootNode)
+        val inBlocks = { type: String, declare: (SyntaxNode) -> List<Declaration> ->
+            nodesOfType(type).flatMap { node -> declare(node).map { it.copy(parentPath = NamespaceBlocks.namespaceOf(node, blocks)) } }
+        }
+        val declarations = inBlocks(CLASS_DECLARATION) { listOfNotNull(namedByField(it, DeclarationType.CLASS, importedNames)) } +
+            inBlocks(TRAIT_DECLARATION) { listOfNotNull(trait(it, importedNames)) } +
+            inBlocks(FUNCTION_DEFINITION) { listOfNotNull(function(it, importedNames)) } +
+            inBlocks(INTERFACE_DECLARATION) { listOfNotNull(namedByField(it, DeclarationType.INTERFACE, importedNames)) } +
+            inBlocks(ENUM_DECLARATION) { listOfNotNull(namedByField(it, DeclarationType.ENUM, importedNames)) } +
+            inBlocks(CONST_DECLARATION) { topLevelConstants(it, importedNames) } +
             nodesOfType(FUNCTION_CALL_EXPRESSION).mapNotNull { definedConstant(it, importedNames) }
         return declarations.ifEmpty { listOf(script(rootNode, importedNames)) }
     }
