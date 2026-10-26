@@ -349,11 +349,15 @@ name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these a
    them (reordered 2026-10-26: dropping the merge first let the default rules draw C++ headers into the C sample, a
    bad regression; the parked work is `step-copies.patch` in the scratchpad)
 6. [x] TSE marks a C++ base class as a use of kind inheritance, as Java does (rule 2 needs the bases)
-6b. [ ] `CppDeclarations`: the paths every C and C++ file declares, with its forward declarations and using
-   directives/declarations (project scan, cached per root)
-7. [ ] the analyzer writes each use as the exact path of the first visible candidate (class scopes with direct bases,
-   enclosing namespaces, using-declarations, using-directives at their level, qualified names from their first
-   segment); a name nothing visible declares is dropped; `CppNameRules` takes a path only as written
+6b. [x] TSE reports the tag of `typedef struct Stable Stable;`, namespace aliases, type aliases (`ALIAS` segment) and
+   the class of an unqualified `friend class X;` (forward, its namespace); `CppIncludes` follows includes through a file
+   of any extension (decision 13) and joins continued lines; each its own commit without output change, found when the
+   switch below lost checkpoint lines
+7. [x] the switch: `CppDeclarations` (facts of every file, cached per root), `CppVisibleNames` (lookup of cpp.md over
+   the include closure: class scopes with direct bases, enclosing namespaces, using-declarations, using-directives at
+   their landing level, namespace and type aliases as qualifiers, ambiguity), `CppTargets` (a global declaration's node
+   path still starts with the file that has its body), the analyzer writes uses exactly or leaves them out,
+   `CppNameRules` exact; 17 gaps left
 8. [ ] copies: no merge of C++ nodes of one path, `CppCopyRules` picks the copy of the include closure, else the
    nearest (the parked patch)
 9. [ ] decision 6: a global declaration's path is its name

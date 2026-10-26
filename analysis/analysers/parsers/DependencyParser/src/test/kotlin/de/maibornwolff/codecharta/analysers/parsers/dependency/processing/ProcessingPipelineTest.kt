@@ -426,8 +426,7 @@ class ProcessingPipelineTest {
             cppNode(
                 "cpp/example/MyType",
                 "cpp/example/MyType.cpp",
-                dependencies = setOf(Dependency.simple("cpp", "different", "UsedType_h")),
-                usedTypes = setOf(Type.simple("UsedType"))
+                usedTypes = setOf(Type.simple("cpp.different.UsedType"))
             )
         val declaration = cppNode("cpp/example/MyType", "cpp/example/MyType.h")
         val usedType = cppNode("cpp/different/UsedType", "cpp/different/UsedType.h")
