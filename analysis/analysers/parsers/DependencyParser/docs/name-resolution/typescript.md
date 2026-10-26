@@ -208,6 +208,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Binding: `import { A as B }` beside an import of another `A` | `spec-import-alias-namesake` | ok |
 | Binding: `import type` | `spec-import-type` | ok |
 | Binding: `import * as ns` | `spec-namespace-import` | gap |
+| Qualified: `ns.A` through `import * as Ns` written upper case | `spec-namespace-import-upper-case` | ok |
 | Binding: an import alone draws no edge | `spec-unused-import` | ok |
 | Binding, decision 3: a side-effect import | `spec-side-effect-import` | ok |
 | Binding, decision 4: a dynamic import read by name | `spec-dynamic-import` | ok |

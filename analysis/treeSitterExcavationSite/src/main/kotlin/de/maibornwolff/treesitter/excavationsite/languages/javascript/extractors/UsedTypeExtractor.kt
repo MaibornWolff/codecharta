@@ -129,9 +129,9 @@ internal object UsedTypeExtractor {
         buckets[MEMBER_EXPRESSION].orEmpty().mapNotNull { node ->
             val root = findLeftmostIdentifier(node)
             if (root != null && scopes.hides(root)) return@mapNotNull null
+            NamespaceMembers.useOf(node, names, scopes)?.let { return@mapNotNull it }
             val isUpperCaseRoot = root != null && root.text.firstOrNull()?.isUpperCase() == true
-            if (isUpperCaseRoot && names.dynamicImports.exportOf(root) == null) return@mapNotNull UsedType(name = root.text.trim())
-            NamespaceMembers.useOf(node, names, scopes)
+            if (isUpperCaseRoot && names.dynamicImports.exportOf(root) == null) UsedType(name = root.text.trim()) else null
         }
 
     private fun extractMethodCalls(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =

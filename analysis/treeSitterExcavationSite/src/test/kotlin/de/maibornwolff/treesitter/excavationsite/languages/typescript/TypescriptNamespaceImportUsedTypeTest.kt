@@ -61,6 +61,24 @@ class TypescriptNamespaceImportUsedTypeTest {
     }
 
     @Test
+    fun `should report a member chain read through an upper-case namespace import as one name`() {
+        // Arrange
+        val code = """
+            import * as Types from './types'
+            export class Consumer {
+                create() { return Types.Animal.create() }
+            }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+        // Assert
+        val usedTypeNames = result.declarations.first { it.name == "Consumer" }.usedTypes.map { it.name }
+        assertThat(usedTypeNames).containsExactlyInAnyOrder("Types", "Types.Animal.create")
+    }
+
+    @Test
     fun `should report a member read through a namespace import, not one of a named import`() {
         // Arrange
         val code = """
