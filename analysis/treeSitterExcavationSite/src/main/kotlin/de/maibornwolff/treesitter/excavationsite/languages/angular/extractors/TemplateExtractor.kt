@@ -5,6 +5,7 @@ import de.maibornwolff.treesitter.excavationsite.languages.angular.PIPE_CALL
 import de.maibornwolff.treesitter.excavationsite.languages.angular.SELF_CLOSING_TAG
 import de.maibornwolff.treesitter.excavationsite.languages.angular.START_TAG
 import de.maibornwolff.treesitter.excavationsite.languages.angular.TAG_NAME
+import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularDeclaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
@@ -16,7 +17,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
  * it names, in source order: every element except Angular's own `ng-container`, `ng-template` and `ng-content`, as a
  * selector needs no hyphen (`selector: 'creature'`), and the name of every pipe. A template knows them only by their
  * selector and pipe name, so these are its used types; which of them a component or pipe declares, the consumer finds
- * out.
+ * out. Its elements, as the compiler matches selectors against them, are its Angular declaration, see [TemplateElements].
  */
 internal object TemplateExtractor {
     private val ANGULAR_ELEMENTS = setOf("ng-container", "ng-template", "ng-content")
@@ -27,7 +28,8 @@ internal object TemplateExtractor {
             .findAllDescendantsOfType(rootNode, START_TAG, SELF_CLOSING_TAG, PIPE_CALL)
             .mapNotNull { usedName(it) }
             .mapTo(LinkedHashSet()) { UsedType(it) }
-        return listOf(Declaration(name = NO_NAME, type = DeclarationType.SCRIPT, usedTypes = usedNames))
+        val angular = AngularDeclaration(elements = TemplateElements.of(rootNode))
+        return listOf(Declaration(name = NO_NAME, type = DeclarationType.SCRIPT, usedTypes = usedNames, angular = angular))
     }
 
     private fun usedName(node: SyntaxNode): String? {
