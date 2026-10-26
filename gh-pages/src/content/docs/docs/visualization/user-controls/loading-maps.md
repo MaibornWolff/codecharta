@@ -38,28 +38,9 @@ To see the difference between two maps instead, switch to [Compare](/docs/visual
 
 ## Open maps from a URL
 
-The Web Studio loads maps named in its URL. This is how the online demo starts, and how you link a teammate straight
-to a map on a server:
-
-```text
-https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true
-```
-
-| Parameter                         | Effect                                                                                                         |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `file=<url>`                      | Loads the map at this URL, relative to the Web Studio or absolute. Repeat it to load several maps.            |
-| `area=<metric>`                   | Area metric to start with.                                                                                     |
-| `height=<metric>`                 | Height metric to start with.                                                                                   |
-| `color=<metric>`                  | Color metric to start with.                                                                                    |
-| `edge=<metric>`                   | Edge metric to start with.                                                                                     |
-| `mode=Delta`                      | Opens [Compare](/docs/visualization/user-controls/compare) with the first two maps. Needs at least two `file`s. |
-| `currentFilesAreSampleFiles=true` | Treats the maps as samples: the first map the user opens replaces them.                                        |
-
-- A metric the map does not contain is ignored.
-- While a `file` parameter is present, the Web Studio keeps `area`, `height`, `color` and `edge` in the address bar up
-  to date, so the URL always reproduces the metrics on screen.
-- The browser fetches the files itself. A map on another server needs that server to allow cross-origin requests
-  (CORS).
+The Web Studio can load maps directly from a URL, with parameters to choose files, metrics and comparisons.
+See [Visualization URL Parameters](/docs/integrations/visualization-url-params) in the Integrations guide for the parameter reference
+and an example.
 
 ## Related
 
