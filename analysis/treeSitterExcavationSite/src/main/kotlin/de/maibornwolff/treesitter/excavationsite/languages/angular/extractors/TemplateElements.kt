@@ -21,7 +21,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
  * and its attributes without their namespace, the values and the classes of its `class` attribute in lower case, and
  * the names of its property bindings (`[x]`, `bind-x`), events (`(x)`, `on-x`) and two-way bindings (`[(x)]`,
  * `bindon-x`), which are the input `x` and the event `xChange`. A reference (`#map`, `ref-map`), a template variable
- * (`let-cave`), an i18n marker, an animation and an attribute, class or style binding (`[attr.x]`) are none.
+ * (`let-cave`), an i18n marker, an animation and an attribute, class or style binding (`[attr.x]`) are none. A
+ * structural directive is an element of its own, see [StructuralDirectives].
  */
 internal object TemplateElements {
     private val NOT_ATTRIBUTE_PREFIXES = listOf("#", "@", "ref-", "let-", "i18n-")
@@ -37,7 +38,7 @@ internal object TemplateElements {
 
     fun of(rootNode: SyntaxNode): List<AngularSelector> = TreeTraversal
         .findAllDescendantsOfType(rootNode, START_TAG, SELF_CLOSING_TAG)
-        .mapNotNull { selectorOf(it) }
+        .flatMap { tag -> StructuralDirectives.templatesOf(tag) + listOfNotNull(selectorOf(tag)) }
         .distinct()
 
     private fun selectorOf(tag: SyntaxNode): AngularSelector? {

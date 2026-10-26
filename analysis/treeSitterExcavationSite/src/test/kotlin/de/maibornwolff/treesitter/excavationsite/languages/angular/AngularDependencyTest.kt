@@ -239,5 +239,39 @@ class AngularDependencyTest {
             // Assert
             assertThat(elements).containsExactly(AngularSelector(element = "div"))
         }
+
+        @Test
+        fun `should report a structural directive as an ng-template with the directive and its microsyntax keys`() {
+            // Arrange
+            val code = """<li *appRepeat="let cave of caves; trackBy: byDepth; index as i; let odd = odd" class="cave"></li>"""
+
+            // Act
+            val elements = elementsOf(code)
+
+            // Assert
+            assertThat(elements).containsExactly(
+                AngularSelector(
+                    element = "ng-template",
+                    attributes = mapOf("appRepeat" to "", "appRepeatOf" to "", "appRepeatTrackBy" to "")
+                ),
+                AngularSelector(element = "li", attributes = mapOf("class" to "cave"), classNames = setOf("cave"))
+            )
+        }
+
+        @Test
+        fun `should read the keys of a microsyntax that starts with an expression`() {
+            // Arrange
+            val code = """<p *appShow="lit; else dark"></p><p *appOutlet="map; context: cave"></p><p *appTorch></p>"""
+
+            // Act
+            val templates = elementsOf(code).filter { it.element == "ng-template" }
+
+            // Assert
+            assertThat(templates.map { it.attributes.keys }).containsExactly(
+                setOf("appShow", "appShowElse"),
+                setOf("appOutlet", "appOutletContext"),
+                setOf("appTorch")
+            )
+        }
     }
 }
