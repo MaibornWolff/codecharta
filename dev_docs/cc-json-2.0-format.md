@@ -41,7 +41,10 @@ backend and a frontend built separately, or a coverage report rooted by package)
 ```
 
 - **`files`** is the identity layer: exactly one root folder, nested `children`, each node carrying a
-  stable `id` and an optional `contentHash`. No metrics live on the node.
+  stable `id` and an optional `contentHash`. No metrics live on the node. CodeCharta represents the
+  project root `/` as `/root` for compatibility with the legacy 1.x format: `/hello.ts` appears as
+  `/root/hello.ts`. The JSON root node has `"name": "root"`, with project files and folders in its
+  `children`; the project display name belongs in `meta.projectName`.
 - **`lenses`** are additive overlays joined to `files` by `id`. `metrics`, `dependency` and `domain`
   are concrete; `clusters` is optional and fully defined by the schema but has no producer or
   visualization support yet — see [the `clusters` lens](cc-json-2.0-clusters-lens.md) for its full
@@ -53,8 +56,15 @@ backend and a frontend built separately, or a coverage report rooted by package)
   envelope keeps room for lens-wide data beside `nodes` and per-node data beside `words`, and an unused
   lens slot stays `{}`; `security` is reserved. **Unknown top-level lenses
   are preserved verbatim** on round-trip, so a newer tool's lens survives an older tool.
-- **`meta.checksum`** is an MD5 over the serialized `files` + `lenses` payload (folded into `meta`,
-  unlike the 1.5 `{ checksum, data }` wrapper). `commitHash` is an optional short git SHA.
+- **`metrics.attributes`** maps file or folder node IDs, not paths, to metric values.
+  `metrics.attributeTypes` describes aggregation: `absolute` values such as line counts are additive,
+  while `relative` values are not.
+- **`meta.checksum`** is an MD5 over the UTF-8 serialized body `{"files":...,"lenses":...}`, with
+  `files` first and `lenses` second, using compact JSON rather than the whole document or its
+  pretty-printed text. Recompute it when changing the body. See
+  [`ProjectToCcJsonV2Mapper.serializeBody`](../analysis/model/src/main/kotlin/de/maibornwolff/codecharta/serialization/ProjectToCcJsonV2Mapper.kt)
+  for the writer's serialization details. The checksum is folded into `meta`, unlike the 1.5
+  `{ checksum, data }` wrapper. `commitHash` is an optional short git SHA.
 
 ## The dependency graph in the `dependency` lens
 
@@ -166,7 +176,7 @@ Both are correct for their own tree.
 
 ## Identity: the `id` and the canonical path
 
-A node's `id` is the first **16 hex chars** of `sha-256(type.name + canonicalPath)`, computed by the
+A node's `id` is the first **16 lowercase hex chars** of `sha-256(type.name + canonicalPath)`, computed by the
 single `NodeId` owner in `model`. The identity is the node's **tree position and its `NodeType`**. The
 canonical path is the tree position:
 
@@ -186,7 +196,11 @@ renders edge-endpoint strings and error messages.
 `NodeId.fromEndpoint("/root/src/App.kt")` strips the synthetic `root` and applies the same rules; an
 endpoint carries no type on the wire, so it defaults to **`File`** (a producer whose edge targets a
 non-File node resolves that node's real type from the tree). An edge endpoint and the file node it
-points at therefore resolve to the same `id`.
+points at therefore resolve to the same `id`. For example, the root hashes `Folder/` and a file at
+`/root/hello.ts` hashes `File/hello.ts`, not `File/root/hello.ts`.
+
+See the [NodeId tests](../analysis/model/src/test/kotlin/de/maibornwolff/codecharta/model/NodeIdTest.kt)
+for ID calculation examples and explicit checks that the synthetic `/root` prefix is excluded.
 
 **What the `id` can and cannot promise.** The canonicalizer removes *spurious* divergence (separator,
 root name, leading slash, `.`/`..`, Unicode form, trailing slash): the same tree position ⇒ the same

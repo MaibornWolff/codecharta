@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "projectName": "Hello",
+    "apiVersion": "2.1",
+    "checksum": "a27742273fea0f455807fa68b3462052"
+  },
+  "files": [
+    {
+      "id": "164ddff4bb1345e1",
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "id": "225cc9d293c8fed0",
+          "name": "hello.ts",
+          "type": "File"
+        },
+        {
+          "id": "a4a37106220d6798",
+          "name": "helper.ts",
+          "type": "File"
+        }
+      ]
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "225cc9d293c8fed0": {
+          "rloc": 10
+        },
+        "a4a37106220d6798": {
+          "rloc": 5
+        }
+      },
+      "attributeTypes": {
+        "rloc": "absolute"
+      }
+    },
+    "dependency": {
+      "edges": [
+        {
+          "fromId": "225cc9d293c8fed0",
+          "toId": "a4a37106220d6798",
+          "attributes": {
+            "dependencies": 1
+          }
+        }
+      ],
+      "nodes": {
+        "164ddff4bb1345e1": {
+          "level": 0
+        },
+        "225cc9d293c8fed0": {
+          "level": 1
+        },
+        "a4a37106220d6798": {
+          "level": 0
+        }
+      },
+      "attributeTypes": {
+        "dependencies": "absolute"
+      }
+    }
+  }
+}

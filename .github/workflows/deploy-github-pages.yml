@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - 'gh-pages/**'
+      - 'analysis/model/src/main/kotlin/de/maibornwolff/codecharta/model/Project.kt'
       # Changes to the deploy step itself must republish, otherwise a fixed workflow
       # only takes effect on the next unrelated docs change.
       - '.github/workflows/deploy-github-pages.yml'
@@ -32,6 +33,16 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Setup Java for example validation
+        uses: actions/setup-java@v5.2.0
+        with:
+          distribution: 'temurin'
+          java-version: 25
+
+      - name: Validate documentation example
+        working-directory: analysis
+        run: ./gradlew :ccsh:run --args="check ../../gh-pages/src/assets/examples/minimal.cc.json"
 
       - name: Build site
         run: npm run build
