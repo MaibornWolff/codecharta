@@ -614,4 +614,16 @@ void Creature::SetSpeed(SpeedType speedType, const Speed& speed) {
             .`as`("header and implementation files must produce the same pathWithName so ProcessingPipeline.mergeDuplicates can unite them")
             .isEqualTo(headerExecutor.pathWithName)
     }
+
+    @Test
+    fun `should make no node of a forward declaration`() {
+        // Arrange
+        val code = "namespace game { class Creature; }\nstruct Fightable { game::Creature *self; };"
+
+        // Act
+        val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "fightable.hpp", code)).analyze()
+
+        // Assert
+        assertThat(report.nodes.map { it.name() }).containsExactly("Fightable")
+    }
 }
