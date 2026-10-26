@@ -18,7 +18,7 @@ import de.maibornwolff.treesitter.excavationsite.api.AngularDeclaration
  * imports, or else the one in that file.
  */
 internal class AngularTemplateReferences private constructor(nodes: List<Node>) {
-    private val angularNodes = nodes.filter { it.angular != null }
+    private val angularNodes = nodes.filter { it.angular != null && it.language != SupportedLanguage.ANGULAR }
     private val declarationsByTemplateName: Map<String, List<Node>> = angularNodes
         .flatMap { node -> node.angularDeclaration().templateNames.map { templateName -> templateName to node } }
         .groupBy({ it.first }, { it.second })
