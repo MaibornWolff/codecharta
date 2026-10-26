@@ -1,0 +1,6 @@
+# rust.md, declarations, decision 7: `pub use m::*` re-exports each name
+file src/arena.rs -> src/model/mod.rs
+file src/model/mod.rs -> src/model/creature.rs
+leaf src/arena.rs#Arena -> src/model/mod.rs#Creature
+leaf src/model/mod.rs#Creature -> src/model/creature.rs#Creature
+leaf src/model/mod.rs#Speed -> src/model/creature.rs#Speed

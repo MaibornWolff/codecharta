@@ -1,0 +1,5 @@
+# rust.md, paths: a qualified path means its own target, not the imported name
+file src/facade.rs -> src/domain.rs
+file src/facade.rs -> src/dto.rs
+leaf src/facade.rs#map -> src/domain.rs#Creature
+leaf src/facade.rs#map -> src/dto.rs#Creature

@@ -461,7 +461,9 @@ read as expressions; `#[cfg(test)]` only with `--include-tests`. Decisions 7–1
 crates without dependency, method calls, variants, two crate roots, editions, impl for a library type, copies by crate).
 
 1. [x] spec page
-2. [ ] probes under `sample-projects/regression/rust/spec-*`, each compiled with rustc
+2. [x] probes: 62 under `sample-projects/regression/rust/spec-*`, 36 gaps at the start; each compiles with rustc 1.99
+   except the two rustc rejects on purpose (tools `rust/mkprobes.py` writes them, `rust/check-probes.sh` compiles them,
+   `rust/regen-gaps.py` rewrites known-gaps.md and the spec table from `scratch/pc-rust/`)
 3. [ ] implementation, one commit per group of gaps (list announced after the probes)
 
 ## Steps

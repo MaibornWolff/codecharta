@@ -1,0 +1,3 @@
+# rust.md, paths, decision 13: in edition 2015 a `use` path starts at the crate root
+file src/app.rs -> src/model.rs
+leaf src/app.rs#App -> src/model.rs#Creature

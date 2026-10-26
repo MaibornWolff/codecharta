@@ -1,0 +1,4 @@
+# rust.md, which file, decision 15: a path library and binary both declare means the own crate's
+file src/main.rs -> src/lib.rs
+leaf src/main.rs#run -> src/lib.rs#Config
+leaf src/main.rs#run -> src/main.rs#Config

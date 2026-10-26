@@ -1,0 +1,3 @@
+# rust.md, macros: `pub(crate) use m;` makes the macro an item of its module
+file src/report.rs -> src/macros.rs
+leaf src/report.rs#count -> src/macros.rs#creature_count

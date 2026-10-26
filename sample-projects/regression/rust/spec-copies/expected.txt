@@ -1,0 +1,3 @@
+# Shared rule 2: a path two packages declare means the nearest copy
+file one/src/arena.rs -> one/src/model.rs
+leaf one/src/arena.rs#Arena -> one/src/model.rs#Creature

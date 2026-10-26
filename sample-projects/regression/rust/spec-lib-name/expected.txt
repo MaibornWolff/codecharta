@@ -1,0 +1,3 @@
+# rust.md, crates, decision 1: `[lib] name` names the library crate
+file tests/arena.rs -> src/model.rs
+leaf tests/arena.rs#spawn -> src/model.rs#Creature

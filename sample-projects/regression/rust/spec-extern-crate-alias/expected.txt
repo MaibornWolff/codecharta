@@ -1,0 +1,3 @@
+# rust.md, simple name 4: `extern crate x as y` binds `y`
+file crates/app/src/lib.rs -> crates/model/src/lib.rs
+leaf crates/app/src/lib.rs#Arena -> crates/model/src/lib.rs#Creature

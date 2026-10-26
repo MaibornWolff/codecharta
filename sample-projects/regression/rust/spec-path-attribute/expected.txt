@@ -1,0 +1,3 @@
+# rust.md, modules, decision 2: `#[path]` loads another file
+file src/report.rs -> src/app/creature_naming.rs
+leaf src/report.rs#Report -> src/app/creature_naming.rs#Naming
