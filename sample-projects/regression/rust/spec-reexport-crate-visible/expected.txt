@@ -1,0 +1,5 @@
+# rust.md, declarations, decision 7: `pub(crate) use` is a re-export
+file src/arena.rs -> src/model/mod.rs
+file src/model/mod.rs -> src/model/lair.rs
+leaf src/arena.rs#Arena -> src/model/mod.rs#Lair
+leaf src/model/mod.rs#Lair -> src/model/lair.rs#Lair

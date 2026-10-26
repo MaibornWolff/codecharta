@@ -128,6 +128,68 @@ confirmed the meaning of each name. "Gap" means the parser does not follow the r
 
 | Rule | Probe | Today |
 | --- | --- | --- |
+| Crates, decision 1: the name from Cargo.toml | `spec-crate-name` | gap |
+| Crates, decision 1: `[lib] name` | `spec-lib-name` | gap |
+| Crates: a crate root without Cargo.toml | `spec-no-cargo` | ok |
+| Crates, decision 15: a library and a binary declare one path | `spec-binary-copy` | gap |
+| Modules, decision 2: `m.rs` and `m/mod.rs` | `spec-module-files` | ok |
+| Modules, decision 2: `#[path]` | `spec-path-attribute` | gap |
+| Modules: `mod m;` inside an inline module | `spec-module-in-inline-module` | ok |
+| Modules: an inline module | `spec-inline-module` | ok |
+| Modules, decision 2: a file no `mod` reaches | `spec-unreached-file` | ok |
+| Modules, decision 12: a file two crate roots load | `spec-two-crate-roots` | gap |
+| Modules, decision 6: `#[cfg(test)]` with --include-tests | `spec-cfg-test` | ok |
+| Declarations, decision 4: a function | `spec-function` | gap |
+| Declarations, decision 4: a const and a static | `spec-const-static` | gap |
+| Declarations: a type alias | `spec-type-alias` | ok |
+| Declarations, decision 3: an `impl` in the type's file | `spec-impl-same-file` | ok |
+| Declarations, decision 3: an implementation part | `spec-impl-part` | gap |
+| Declarations, decision 14: an `impl` for a library type | `spec-impl-trait-for-foreign-type` | gap |
+| Declarations, decision 4: types in a body | `spec-body-types` | gap |
+| Declarations, decision 4: a struct literal and pattern | `spec-struct-literal` | gap |
+| Declarations, decision 8: an item in a body | `spec-local-item` | gap |
+| Declarations, decision 7: a re-export | `spec-reexport` | gap |
+| Declarations, decision 7: a glob re-export | `spec-reexport-glob` | gap |
+| Declarations, decision 7: `pub(crate) use` | `spec-reexport-crate-visible` | gap |
+| Declarations, decision 7: a chain of re-exports | `spec-reexport-chain` | gap |
+| Use declarations: an alias | `spec-use-alias` | gap |
+| Use declarations: a group with `self` | `spec-use-group-self` | ok |
+| Use declarations: an unused import, `as _` | `spec-unused-use` | ok |
+| Simple name 1: a generic parameter | `spec-generic-parameter` | gap |
+| Simple name 1: a local variable | `spec-local-variable` | ok |
+| Simple name 1: a `use` in a block | `spec-use-in-block` | gap |
+| Simple name 2: an item of the current module | `spec-own-module-item` | ok |
+| Simple name 2 and 3: an explicit `use` over a glob | `spec-explicit-over-glob` | ok |
+| Simple name 2 and 3: an own item over a glob | `spec-item-over-glob` | ok |
+| Simple name 3: a glob import | `spec-glob` | ok |
+| Simple name 3: a name two globs offer | `spec-glob-ambiguous` | gap |
+| Simple name 3: a glob binds only visible names | `spec-glob-private` | gap |
+| Simple name 3 and 5: a glob over the prelude | `spec-glob-over-prelude` | ok |
+| Simple name 4: a workspace crate | `spec-workspace` | gap |
+| Simple name 4, decision 9: a crate that is no dependency | `spec-crate-not-dependency` | gap |
+| Simple name 4: a renamed dependency | `spec-dependency-rename` | gap |
+| Simple name 4: `extern crate x as y` | `spec-extern-crate-alias` | gap |
+| Simple name 5: the prelude | `spec-prelude` | ok |
+| Simple name: an identifier pattern | `spec-identifier-pattern` | gap |
+| Paths: `crate`, `self`, `super` | `spec-crate-self-super` | ok |
+| Paths: `::x` | `spec-leading-colons` | gap |
+| Paths, decision 13: edition 2015 | `spec-edition-2015` | ok |
+| Paths: a module a `use` binds | `spec-module-through-import` | ok |
+| Paths: a qualified path next to an import | `spec-qualified-beats-import` | gap |
+| Paths, decision 11: an enum variant | `spec-enum-variant` | gap |
+| Paths, decision 11: an associated function | `spec-associated-function` | gap |
+| Paths: a trait method by path, `<T as Trait>` | `spec-trait-path` | gap |
+| Paths: through a `use` without visibility | `spec-private-use-through-super` | gap |
+| Paths: a library path | `spec-library-crate` | ok |
+| Decision 10: a method call on a value | `spec-method-call` | ok |
+| Macros: textual scope | `spec-macro-textual` | gap |
+| Macros: `#[macro_export]` | `spec-macro-export` | gap |
+| Macros: `pub(crate) use m;` | `spec-macro-use` | gap |
+| Macros, decision 5: the arguments | `spec-macro-arguments` | gap |
+| Macros: a `macro_rules!` body | `spec-macro-body` | ok |
+| Shared rule 1, name scope | `spec-name-scope` | ok |
+| Shared rule 2, copies | `spec-copies` | ok |
+| Shared rule 4, self | `spec-self` | ok |
 
 ## Not supported
 

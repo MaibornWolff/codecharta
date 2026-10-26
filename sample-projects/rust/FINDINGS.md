@@ -115,6 +115,8 @@ Rounds 1 and 2, re-verified on the fresh output:
   the module path from the file system (works for `mod.rs`, 2018-style and `super::` / `crate::`), but
   does not read `Cargo.toml` (crate name), `#[path]`, `use … as`, nested re-exports, or anything inside
   a function body. The body is skipped on purpose: `UsedTypeExtractor` stops at every `block`.
+- Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/rust.md`): listed
+  per probe in `regression/rust/known-gaps.md`.
 
 ## Unified parser
 - `unifiedparser -nc … -e "output,FINDINGS.md"`: exit 0, 37 `.rs` files analysed, including

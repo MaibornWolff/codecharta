@@ -1,0 +1,2 @@
+# rust.md, simple name 2: an item of the current module
+leaf src/a.rs#Holder -> src/a.rs#Creature

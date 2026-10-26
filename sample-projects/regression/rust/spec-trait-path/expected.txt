@@ -1,0 +1,9 @@
+# rust.md, paths: a trait method called by path and a qualified path are uses of trait and type
+file src/creature.rs -> src/fightable.rs
+file src/fight.rs -> src/creature.rs
+file src/fight.rs -> src/fightable.rs
+leaf src/creature.rs#Creature -> src/fightable.rs#Fightable
+leaf src/fight.rs#first -> src/creature.rs#Creature
+leaf src/fight.rs#first -> src/fightable.rs#Fightable
+leaf src/fight.rs#second -> src/creature.rs#Creature
+leaf src/fight.rs#second -> src/fightable.rs#Fightable

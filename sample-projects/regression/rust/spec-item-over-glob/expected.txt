@@ -1,0 +1,2 @@
+# rust.md, simple name 2 and 3: an own item wins over a glob
+leaf src/user.rs#Holder -> src/user.rs#Creature

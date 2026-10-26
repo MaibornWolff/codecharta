@@ -1,0 +1,1 @@
+# rust.md, simple name 3: a name two globs offer is ambiguous, no edge (rustc: E0659)

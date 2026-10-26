@@ -1,0 +1,1 @@
+# rust.md, simple name 5: a prelude name draws no edge though the project declares it elsewhere
