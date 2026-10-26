@@ -13,8 +13,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 ## Resume here (for a fresh agent)
 
 - **State:** Java, Kotlin, C#, Go, Python, TypeScript, JavaScript, Vue and Angular templates are done and pushed (last:
-  `fix/dependency-name-resolution-typescript-bindings`). C and C++ in progress on `fix/dependency-name-resolution-c-cpp`,
-  see "C and C++" and "Resume C/C++ here" below.
+  `fix/dependency-name-resolution-typescript-bindings`). C and C++ are done on `fix/dependency-name-resolution-c-cpp`
+  (not pushed yet), see "C and C++" and "Resume C/C++ here" below. Next language by the order below: PHP.
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -96,7 +96,7 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 ## Order and state
 
 - Done: Java, Kotlin (see the plan above), C#, Go, Python, TypeScript and JavaScript (with Vue and Angular
-  templates). Next, by Christian's choice when asked: C and C++, PHP, Rust, Delphi, SQL.
+  templates), C and C++. Next, by Christian's choice when asked: PHP, Rust, Delphi, SQL.
 - Material: the checkpoint branch `fix/nearest-file-for-shared-logical-path` holds an earlier, unreviewed attempt and
   its reviewer probes; use them for ideas and as the regression net, not as code to copy.
 
@@ -326,7 +326,7 @@ Steps, one commit each:
   add the missing distinction first). Commit messages: commitlint warns on a body line that starts like a footer
   (`Edges: …` after a blank line), harmless.
 
-## C and C++ (in progress, 2026-10-26)
+## C and C++ (done, 2026-10-26)
 
 Branch `fix/dependency-name-resolution-c-cpp`, cut from the pushed `-typescript-bindings`; comparison build of the
 first commit `ccsh-b13`. Christian: "do it like the compiler does it, else like the other languages". Ground truth:
@@ -337,10 +337,18 @@ class; types and aliases (no functions); forward declaration means the body anyw
 name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these and Java/Go, written into the page
 (Christian, 2026-10-26: no separate spec review, follow the plan and write such points down).
 
-### Resume C/C++ here (2026-10-26, after step 9)
+### Resume C/C++ here (2026-10-26, C and C++ done)
 
-- **Last build** `ccsh-cc13` (head); the next chain is `chain.sh cc13 cc14`. Checkpoint probes: the nine known, 90
-  better than the release. 15 gaps left (`regression/{c,cpp}/known-gaps.md`).
+- **Branch** `fix/dependency-name-resolution-c-cpp`, waiting for Christian's review and push; **last build** `ccsh-cc29`
+  (head before the docs commit), the next language's first chain is `chain.sh cc29 <tag>`. No gap left. Checkpoint
+  probes worse than the release: the nine known plus three by decision (`cpp/r1-cpp1` decision 4, `c/r2-csrc`
+  decision 5, `cpp/r3-p3-cpp` decision 3); 101 better.
+- **Open, left to `plans/2026-10-23-cycles-per-declaration-copy.md`** (Christian, 2026-10-26): header and
+  implementation part, and two programs' global structs, are copies of one path, and the cycle search keeps one copy's
+  dependencies; C++ loses the flag of `Creature.hpp -> ArmorClass.hpp`, C the cycle `creature.h <-> fightable.h`.
+- **Not done, by decision 4 or Not supported:** functions, prototypes, variables and macros as declarations; function
+  pointer typedefs; the build's include directories; preprocessor conditions; `using enum`, lambda parameters,
+  temporaries, constraints (extraction coverage in the C++ FINDINGS).
 - **How it is built:** `CppIncludes` (include lines as text, any file below the root, depth-first closure),
   `CppDeclarations` (TSE facts per C/C++ file, `visibleNamesOf(file)`), `CppFileFacts` (classes, forward declarations
   and aliases by path; using-declarations, -directives, namespace aliases), `CppVisibleNames` (the lookup),
@@ -386,7 +394,7 @@ name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these a
 13. [x] implementation parts (`Node.isImplementationPart`, shared, approved by Christian 2026-10-26), out-of-line
     template members and specializations. Checkpoint probe worse by decision 3: `cpp/r3-p3-cpp` (`a/Foo.cpp -> a/Foo.h`)
 14. [x] `SpeedType::WALKING` in an expression is a use of `SpeedType`
-15. [ ] changelog, README, gh-pages, spec table, FINDINGS, plan
+15. [x] changelog, README, gh-pages, the extractor's README, spec table (no gap left), FINDINGS of both samples, plan
 
 ## Steps
 
@@ -395,4 +403,5 @@ name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these a
 - [x] Next language: Python (left to Claude by Christian, 2026-10-23), done 2026-10-23
 - [x] Next language: TypeScript, JavaScript, Vue and Angular templates (left to Claude by Christian, 2026-10-23), done
   2026-10-26
+- [x] Next language: C and C++ (Christian, 2026-10-26), done 2026-10-26
 - [ ] For each language: spec, probes, implementation commits, acceptance

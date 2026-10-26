@@ -67,7 +67,8 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
 - **`namespace`** is written only where the language has packages apart from its files — Java, Kotlin,
   C#, PHP and C++ — and there only for a declaration that sits in one. Everywhere else the logical
   path is the re-encoded file path, so the leaf carries no `namespace` and no namespace is listed: the
-  file tree already is that hierarchy. A nested declaration is a leaf of its own in the package of the
+  file tree already is that hierarchy. A C or C++ declaration outside every namespace has its name alone as logical
+  path, as the compiler names it (`::Point`). A nested declaration is a leaf of its own in the package of the
   declaration around it, with only its own uses as dependencies; the schema's `parent` is not written yet.
 - **`namespaces`** lists the packages with their level and their `parent`, the package containing them.
   The hierarchy comes from `parent`, never from the dots of a key.
@@ -79,8 +80,8 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
   rule DependaCharta applies, and why a pair weighs 1 at declaration level unless the source is declared
   more than once in its file, when each declaration that references the target counts once. **Only PHP reports
   every kind today**: its extractor in `TreeSitterExcavationSite` classifies a type by the clause it
-  appears in and says so in `UsedType.usage`. Java, Kotlin and C# report `inheritance` and `implementation`,
-  which their name resolution needs for inherited member types; C# writes a base class and interfaces in one
+  appears in and says so in `UsedType.usage`. Java, Kotlin and C# report `inheritance` and `implementation`, C++
+  `inheritance`, which their name resolution needs for inherited member types; C# writes a base class and interfaces in one
   list, so its extractor reports `inheritance` and the resolver turns it into `implementation` where a class
   names an interface. The extractors of Java, Kotlin and C# make the other
   distinctions internally — separate `extractInheritanceTypes`, `extractParameterTypes`, `extractReturnTypes`,
@@ -91,7 +92,10 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
   *on* the name points at the file that shares the longest folder path with the file using it, and among
   equally near files at the first as the scan lists them (path order); for SQL at the latest migration, and
   for C# at every file of the nearest project (the folder of a `.csproj`) that declares it, the parts of a
-  partial class; for Go at every file of the package that declares it, its build-tag variants. A Kotlin `private` top-level copy or a C# `file` type counts only for the file it is written in.
+  partial class; for Go at every file of the package that declares it, its build-tag variants; for C and C++ at the
+  copy the include closure of the using file holds, else the nearest. A Kotlin `private` top-level copy, a C# `file`
+  type or a C++ implementation part (the member functions a source file defines for a class of a header) counts only
+  for the file it is written in, which the implementation part's own dependency on its class leaves for the header.
 - `kind` is the declaration kind: `class`, `valueclass`, `interface`, `annotation`, `enum`, `function`,
   `variable`, `reexport`, `script` or `unknown`.
 - `leafEdges` is a list of its own rather than a widened `Edge`, because `edges` is what the edge-metric
@@ -119,16 +123,17 @@ Both tools run over the three contract samples in
 | -------- | ------------------------ | ----------------- | ------------ | --------------------- |
 | `java`   | 16 / 16                  | 30 / 29           | 6 / 6        | 3 / 2                 |
 | `csharp` | 16 / 16                  | 29 / 28           | 6 / 6        | 3 / 2                 |
-| `cpp`    | 16 / 16                  | 29 / 28           | 6 / 6        | 3 / 2                 |
+| `cpp`    | 16 / 21                  | 29 / 48           | 6 / 9        | 3 / 2                 |
 
-Every declaration and every declaration pair matches exactly. The single difference in each sample is
+In `java` and `csharp` every declaration and every declaration pair matches exactly. The single difference is
 one **self-edge** (`HitPoints` → `HitPoints`), which DependaCharta keeps and flags as upward-pointing
 and this parser drops: an edge from a declaration to itself says nothing about the architecture, and the
 file-level projection has never carried one either.
 
-On the `cpp` sample the *file* edges also differ in name only: DependaCharta labels a merged
-header/source pair `Creature.cpp/.h` under the logical package path, while this parser keeps the
-physical path of the first file of the pair, `src/.../Creature.cpp`; the pairs themselves are the same.
+The `cpp` sample differs by design (`docs/name-resolution/cpp.md`): DependaCharta merges a class's header and
+source file into one declaration, while this parser keeps the class body in the header and makes the member
+functions of the source file an implementation part of their own that depends on the header, so each header draws
+its own edges and every use points at the header the using file includes.
 
 Beyond the self-edge, the parser deliberately deviates from DependaCharta where the original loses
 edges on common project layouts; every item below is a bug in DependaCharta that this port fixes:
