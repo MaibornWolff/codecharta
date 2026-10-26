@@ -17,8 +17,10 @@ internal object AliasConstraintExtractor {
 
     val nodeTypes: Set<String> = setOf(TYPE_DEFINITION, ALIAS_DECLARATION)
 
+    // An alias outside a function body is a declaration of its own, which uses what it names
     fun extractAliasTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         (buckets[TYPE_DEFINITION].orEmpty() + buckets[ALIAS_DECLARATION].orEmpty())
+            .filter { CppLocalNames.isInFunction(it) }
             .mapNotNull { CppTypeHelper.extractTypeFromTypeField(it) }
 
     fun extractConstraintTypes(declaration: SyntaxNode): List<UsedType> {
