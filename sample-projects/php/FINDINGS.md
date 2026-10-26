@@ -144,7 +144,15 @@ Round 3 in numbers: 9 of the 16 expected new file edges are found (EncounterReso
   convention. Leaves are matched by namespace name, `composer.json` is not read, and it works although `src/Domain/Model`
   and `De\Sots\CellarsAndCentaurs\Domain\Model` differ. Group use `use ...\Model\{ArmorClass, Creature, ...}` resolves.
 - Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/php.md`): listed
-  per probe in `regression/php/known-gaps.md`.
+  per probe in `regression/php/known-gaps.md`, none left.
+- After the name rules (branch `fix/dependency-name-resolution-php`, 2026-10-26): 73 file edges and 79 leaf edges
+  (79 and 85 with `--include-tests`). Every "missing" and "wrong target" row of the table above is drawn as expected,
+  except three by decision of `php.md`: the `.phtml` template is not analysed (Not supported), docblock types draw no
+  edge (decision 9), and the includes of `bootstrap.php` and `helpers.php` name files without top-level code, which
+  draw nothing (decision 2); `PersistedCreatures.php -> bootstrap.php` is drawn from its script leaf. The 3-cycle
+  through CreatureService and the cycle `ArmorClass -> CreatureUtil -> Creature -> ArmorClass` are reported now;
+  `EncounterEdgeCases -> Transactional` is flagged upward (Domain to Application). Traits are still written as
+  `class`.
 
 ## Unified parser
 

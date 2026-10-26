@@ -13,8 +13,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 ## Resume here (for a fresh agent)
 
 - **State:** Java, Kotlin, C#, Go, Python, TypeScript, JavaScript, Vue and Angular templates, C and C++ are done and
-  pushed (last: `fix/dependency-name-resolution-c-cpp`). PHP is in progress on `fix/dependency-name-resolution-php`,
-  see "PHP" below.
+  pushed (last: `fix/dependency-name-resolution-c-cpp`). PHP is done on `fix/dependency-name-resolution-php` (not
+  pushed yet), see "PHP" below. Next language by the order below: Rust.
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -96,7 +96,7 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 ## Order and state
 
 - Done: Java, Kotlin (see the plan above), C#, Go, Python, TypeScript and JavaScript (with Vue and Angular
-  templates), C and C++. Next, by Christian's choice when asked: PHP, Rust, Delphi, SQL.
+  templates), C and C++, PHP. Next, by Christian's choice when asked: Rust, Delphi, SQL.
 - Material: the checkpoint branch `fix/nearest-file-for-shared-logical-path` holds an earlier, unreviewed attempt and
   its reviewer probes; use them for ideas and as the regression net, not as code to copy.
 
@@ -396,7 +396,7 @@ name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these a
 14. [x] `SpeedType::WALKING` in an expression is a use of `SpeedType`
 15. [x] changelog, README, gh-pages, the extractor's README, spec table (no gap left), FINDINGS of both samples, plan
 
-## PHP (in progress, 2026-10-26)
+## PHP (done, 2026-10-26)
 
 Branch `fix/dependency-name-resolution-php`, cut from the pushed `-c-cpp`; comparison build of the first commit
 `ccsh-cc29`. Christian: "do it like the compiler does it, else like the other languages". Ground truth: PHP 8.4.25
@@ -425,7 +425,26 @@ derived (global namespace path, declarations in blocks, script leaf, docblocks).
 12. [x] decision 4: trait bodies; the names of a nested declaration are its own
 13. [x] decision 8: top-level code is a script leaf at the file's path, also next to declarations
 14. [x] decisions 2 and 3: an include uses the included file's script leaf (old include imports go)
-15. [ ] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
+15. [x] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
+
+### Resume after PHP here (2026-10-26)
+
+- **Branch** `fix/dependency-name-resolution-php`, waiting for Christian's review and push; **last build** `ccsh-php11`
+  (head before the docs commit), the next language's first chain is `chain.sh php11 <tag>`. No gap left in
+  `regression/php/`. Checkpoint probes worse than the release: the twelve known (C, C++, C#, Go, Java, Python,
+  TypeScript), no PHP one; the PHP ones and `mixed/r1-self2` are better.
+- **How it is built:** TSE `NamespaceBlocks` (blocks and their statements), `PhpImports` (what the `use` declarations of
+  a block bind, by kind, exact case), `PhpNames` (class path; function or constant path with the global fallback),
+  `UsedTypeExtractor` (roles by grammar position, names inside nested declarations left to them), `ConstantReads`,
+  `IncludePaths` (include as a use named `MODULE_SCRIPT`, path as prefix), `TopLevelCode` (script declaration),
+  `DefineCalls`. Analyzer: `PhpAnalyzer` writes declarations at `parentPath + name`, the script leaf at the file's
+  path, uses as full paths with fallbacks, includes relative to the file's folder; `PhpNameRules` exact.
+- **Tools** in the tools folder `php/`: `mkprobes.py`, `check-probes.sh` + `check.php` (PHP 8.4 from php-wasm,
+  `PHPWASM=<dir with php.mjs>`; the scratchpad one is gone with the session: `npm i --ignore-scripts
+  @php-wasm/node@3.1.56` and the four-line `php.mjs` runner in the tools README of `php/`), `regen-gaps.py`.
+- **Not supported:** names in strings and computed names, `class_alias`, docblock types, `composer.json` and
+  `include_path`, files not analysed as PHP (`.phtml`), a name in another case than its declaration (decision 5).
+- The prototype of steps 5–14 is still `git stash` "php-prototype"; it can be dropped.
 
 Prototype of steps 5–14 (all probes but the case one green, no checkpoint probe worse, the sample gains the 24 file
 edges FINDINGS expects): `git stash` "php-prototype", copy in the scratchpad `php-prototype.patch`.
@@ -438,5 +457,5 @@ edges FINDINGS expects): `git stash` "php-prototype", copy in the scratchpad `ph
 - [x] Next language: TypeScript, JavaScript, Vue and Angular templates (left to Claude by Christian, 2026-10-23), done
   2026-10-26
 - [x] Next language: C and C++ (Christian, 2026-10-26), done 2026-10-26
-- [ ] Next language: PHP (by the order above, 2026-10-26)
+- [x] Next language: PHP (by the order above, 2026-10-26), done 2026-10-26
 - [ ] For each language: spec, probes, implementation commits, acceptance
