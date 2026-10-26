@@ -273,14 +273,19 @@ class CppAnalyzerTest {
     }
 
     @Test
-    fun `should make no node of a type alias`() {
+    fun `should make a node of a type alias that uses the type it names`() {
         // Arrange
-        val code = "struct CreatureEntity {};\nusing Entity = CreatureEntity;\ntypedef int Meters;"
+        val code = "namespace repo {\nstruct CreatureEntity {};\nusing Entity = CreatureEntity;\ntypedef int Meters;\n}"
 
         // Act
         val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "repo.hpp", code)).analyze()
 
         // Assert
-        assertThat(report.nodes.map { it.name() }).containsExactly("CreatureEntity")
+        assertThat(report.nodes.map { it.pathWithName }).containsExactlyInAnyOrder(
+            Path("repo", "CreatureEntity"),
+            Path("repo", "Entity"),
+            Path("repo", "Meters")
+        )
+        assertThat(report.nodes.single { it.name() == "Entity" }.usedTypes).containsExactly(Type.simple("repo.CreatureEntity"))
     }
 }

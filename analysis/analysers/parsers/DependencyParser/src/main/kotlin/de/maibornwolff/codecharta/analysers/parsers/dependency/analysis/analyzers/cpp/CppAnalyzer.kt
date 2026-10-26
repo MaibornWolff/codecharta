@@ -28,16 +28,18 @@ class CppAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         val result = TreeSitterDependencies.analyze(fileInfo.content, Language.CPP)
         val project = fileInfo.analysisRoot?.let { CppDeclarations.of(it) }
         val names = project?.visibleNamesOf(file) ?: CppVisibleNames(listOf(CppFileFacts.of(result)))
-        val nodes = result.declarations.filterNot { it.isForwardDeclaration() || it.isAlias() }.map { declaration ->
+        val nodes = result.declarations.filterNot { it.isForwardDeclaration() }.map { declaration ->
             toNode(declaration, names)
         }
         return FileReport(nodes)
     }
 
+    // A type alias is a leaf of its own; what it names is looked up in the scope around it
     private fun toNode(declaration: Declaration, names: CppVisibleNames): Node {
-        val scope = declaration.parentPath + declaration.name
+        val path = (if (declaration.isAlias()) declaration.parentPath.drop(1) else declaration.parentPath) + declaration.name
+        val scope = if (declaration.isAlias()) path.dropLast(1) else path
         return Node(
-            pathWithName = Path(scope),
+            pathWithName = Path(path),
             physicalPath = fileInfo.physicalPath,
             language = SupportedLanguage.CPP,
             nodeType = declaration.type.toNodeType(),
