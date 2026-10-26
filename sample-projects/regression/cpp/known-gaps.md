@@ -5,18 +5,6 @@ The probes of this folder whose output deviates from their `expected.txt` today,
 expected line the parser does not draw yet and `extra <line>` a wrong line it draws; `ProbeRegressionTest` fails once a
 gap closes, and the closed lines are deleted here.
 
-## spec-alias-using
-
-An alias declaration `using Entity = CreatureEntity;` is no declaration.
-
-```text
-missing file repo.hpp -> entity.hpp
-missing file user.hpp -> repo.hpp
-missing leaf repo.hpp#Entity -> entity.hpp#CreatureEntity
-missing leaf repo.hpp#Repo -> repo.hpp#Entity
-missing leaf user.hpp#User -> repo.hpp#Entity
-```
-
 ## spec-implementation-part
 
 The implementation part names its own logical path, which the shared self rule drops.

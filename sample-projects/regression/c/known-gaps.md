@@ -31,14 +31,3 @@ A tag reference `struct Roost *` in a field is not reported as a use.
 missing file nest.h -> roost.h
 missing leaf nest.h#Nest -> roost.h#Roost
 ```
-
-## spec-typedef-alias
-
-A typedef is no declaration.
-
-```text
-missing file room.h -> size.h
-missing leaf room.h#Room -> size.h#Area
-missing leaf room.h#Room -> size.h#Meters
-missing leaf size.h#Area -> size.h#Size
-```
