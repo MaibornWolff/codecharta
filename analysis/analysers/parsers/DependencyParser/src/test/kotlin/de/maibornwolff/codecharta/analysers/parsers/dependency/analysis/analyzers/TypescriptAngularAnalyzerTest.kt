@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
+import de.maibornwolff.treesitter.excavationsite.api.AngularSelector
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -87,5 +88,22 @@ class TypescriptAngularAnalyzerTest {
         assertThat(usedNamesByTemplate).isEqualTo(
             mapOf("TorchComponent" to listOf("app-flame"), "LanternComponent" to listOf("app-wick", "litres"))
         )
+    }
+
+    @Test
+    fun `should carry the elements of an inline template for matching selectors`() {
+        // Arrange
+        val typescriptCode = """
+            @Component({ selector: 'app-torch', template: `<p appGlow>lit</p>` })
+            export class TorchComponent {}
+        """.trimIndent()
+
+        // Act
+        val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "torch.component.ts", typescriptCode)).analyze()
+
+        // Assert
+        val template = report.nodes.single { it.language == SupportedLanguage.ANGULAR }
+        assertThat(template.angular?.declaration?.elements)
+            .containsExactly(AngularSelector(element = "p", attributes = mapOf("appGlow" to "")))
     }
 }
