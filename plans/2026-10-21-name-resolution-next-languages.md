@@ -12,10 +12,9 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 ## Resume here (for a fresh agent)
 
-- **State:** Java, Kotlin, C#, Go, Python, TypeScript, JavaScript, Vue and Angular templates are done. TypeScript, Vue
-  and Angular are pushed (`fix/dependency-name-resolution-typescript`, `-vue`, `-angular`); steps 19 and 25 are on
-  `fix/dependency-name-resolution-typescript-bindings` (cut from the Angular branch, not pushed yet), see "Resume after
-  TypeScript here" below. Next language by the order below: C and C++.
+- **State:** Java, Kotlin, C#, Go, Python, TypeScript, JavaScript, Vue and Angular templates are done and pushed (last:
+  `fix/dependency-name-resolution-typescript-bindings`). C and C++ in progress on `fix/dependency-name-resolution-c-cpp`,
+  see "C and C++" and "Resume C/C++ here" below.
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -337,6 +336,23 @@ only; include path own folder, then path suffix, nearest; `.cpp` implementation 
 class; types and aliases (no functions); forward declaration means the body anywhere; global-namespace path is the
 name alone; one leaf per typedef'd struct. Decisions 8–12 derived from these and Java/Go, written into the page
 (Christian, 2026-10-26: no separate spec review, follow the plan and write such points down).
+
+### Resume C/C++ here (2026-10-26, after step 9)
+
+- **Last build** `ccsh-cc13` (head); the next chain is `chain.sh cc13 cc14`. Checkpoint probes: the nine known, 90
+  better than the release. 15 gaps left (`regression/{c,cpp}/known-gaps.md`).
+- **How it is built:** `CppIncludes` (include lines as text, any file below the root, depth-first closure),
+  `CppDeclarations` (TSE facts per C/C++ file, `visibleNamesOf(file)`), `CppFileFacts` (classes, forward declarations
+  and aliases by path; using-declarations, -directives, namespace aliases), `CppVisibleNames` (the lookup),
+  `CppAnalyzer` (exact paths, unresolved uses left out, template arguments kept), `CppNameRules` exact,
+  `CppCopyRules` (closure copy, else nearest). TSE markers: `FORWARD_DECLARATION`, `ALIAS` first parent segments;
+  namespace alias = import with `bindingName`.
+- **Helpers** (scratchpad of this session, gone with it; rebuild if needed): `mkprobes.py` writes the probes,
+  `compile-probes.sh` compiles them with `zig c++` (pip `ziglang` into a target dir); tools folder
+  `scratch/regen-gaps.py [lang/probe=cause]` rewrites both known-gaps.md and the spec table from `scratch/pc-<lang>/`,
+  filled by `probecheck.sh` (clear `scratch/pc` first, it keeps stale files). `lines.py` now prints usage and flags.
+- **Lesson:** a switch to exact names loses every line the old heuristics found by accident; run the checkpoint
+  probes on a prototype first, land what it needs (TSE facts) as commits without output change, then the switch.
 
 1. [x] spec page
 2. [x] probes: 44 under `sample-projects/regression/{c,cpp}/spec-*`, 27 gaps at the start; every probe compiles in
