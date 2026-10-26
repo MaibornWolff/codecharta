@@ -17,33 +17,13 @@ missing leaf repo.hpp#Repo -> repo.hpp#Entity
 missing leaf user.hpp#User -> repo.hpp#Entity
 ```
 
-## spec-closure-over-nearest
-
-Includes do not limit what a name means: the nearest copy of `game::Config` wins, not the included one.
-
-```text
-missing file app/app.hpp -> far/config.hpp
-missing leaf app/app.hpp#App -> far/config.hpp#Config
-extra file app/app.hpp -> app/config.hpp
-extra leaf app/app.hpp#App -> app/config.hpp#Config
-```
-
 ## spec-implementation-part
 
-The out-of-line member functions and the class body are one declaration of the path, which the copy rule puts into one
-of the two files; other files' names point at the `.cpp`, and the header draws no edge.
+The implementation part names its own logical path, which the shared self rule drops.
 
 ```text
 missing file Creature.cpp -> Creature.hpp
-missing file Creature.hpp -> Dice.hpp
-missing file User.cpp -> Creature.hpp
 missing leaf Creature.cpp#Creature -> Creature.hpp#Creature
-missing leaf Creature.hpp#Creature -> Dice.hpp#Dice
-missing leaf User.cpp#User -> Creature.hpp#Creature
-extra file Creature.cpp -> Dice.hpp
-extra file User.cpp -> Creature.cpp
-extra leaf Creature.cpp#Creature -> Dice.hpp#Dice
-extra leaf User.cpp#User -> Creature.cpp#Creature
 ```
 
 ## spec-local-type

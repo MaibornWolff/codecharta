@@ -419,9 +419,8 @@ class ProcessingPipelineTest {
     }
 
     @Test
-    fun `should fold a C++ type declared in a header and defined in a source file into one declaration`() {
-        // Arrange: MyType arrives twice, once per translation unit; only the source half uses UsedType.
-        val root = cppNode("cpp/example/Root", "cpp/example/Root.cpp", usedTypes = setOf(Type.simple("MyType")))
+    fun `should keep the C++ declarations of one path in a header and a source file apart`() {
+        // Arrange: MyType arrives twice, once per file; only the source part uses UsedType.
         val definition =
             cppNode(
                 "cpp/example/MyType",
@@ -430,22 +429,20 @@ class ProcessingPipelineTest {
             )
         val declaration = cppNode("cpp/example/MyType", "cpp/example/MyType.h")
         val usedType = cppNode("cpp/different/UsedType", "cpp/different/UsedType.h")
-        val fileReports = listOf(FileReport(listOf(root, definition)), FileReport(listOf(declaration, usedType)))
+        val fileReports = listOf(FileReport(listOf(definition)), FileReport(listOf(declaration, usedType)))
 
         // Act
         val graph = ProcessingPipeline.run(fileReports, omitGraphAnalysis = false)
 
-        // Assert: one leaf, in the source file (first in path order), keeping the source half's dependency.
-        val myType = DeclarationAddress(listOf("cpp", "example", "MyType.cpp"), "MyType")
+        // Assert: one leaf per file, and the source part's dependency stays with the source file.
+        val definitionAddress = DeclarationAddress(listOf("cpp", "example", "MyType.cpp"), "MyType")
         assertThat(graph.declarations.map { it.address }).containsExactlyInAnyOrder(
-            DeclarationAddress(listOf("cpp", "example", "Root.cpp"), "Root"),
-            myType,
+            definitionAddress,
+            DeclarationAddress(listOf("cpp", "example", "MyType.h"), "MyType"),
             DeclarationAddress(listOf("cpp", "different", "UsedType.h"), "UsedType")
         )
         assertThat(graph.declarationEdges.map { it.from to it.to })
-            .contains(myType to DeclarationAddress(listOf("cpp", "different", "UsedType.h"), "UsedType"))
-        assertThat(graph.edges.map { it.fromPath to it.toPath })
-            .doesNotContain(listOf("cpp", "example", "MyType.cpp") to listOf("cpp", "example", "MyType.h"))
+            .containsExactly(definitionAddress to DeclarationAddress(listOf("cpp", "different", "UsedType.h"), "UsedType"))
     }
 
     @Test

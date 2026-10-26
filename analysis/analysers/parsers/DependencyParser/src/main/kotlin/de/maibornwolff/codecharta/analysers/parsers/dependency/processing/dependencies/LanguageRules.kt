@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.cpp.CppCopyRules
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.cpp.CppIncludes
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.cpp.CppNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpNameRules
@@ -33,6 +35,7 @@ internal object LanguageRules {
         SupportedLanguage.C_SHARP -> CSharpCopyRules(CSharpProjects(analysisRoot))
         SupportedLanguage.SQL -> SqlCopyRules
         SupportedLanguage.GO -> GoCopyRules
+        SupportedLanguage.CPP -> CppCopyRules(analysisRoot?.let { CppIncludes.of(it) })
         else -> NearestCopy
     }
 }
