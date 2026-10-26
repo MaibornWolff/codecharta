@@ -638,4 +638,16 @@ void Creature::SetSpeed(SpeedType speedType, const Speed& speed) {
         // Assert
         assertThat(report.nodes.single().dependencies).noneMatch { it.path == Path("game", "model") }
     }
+
+    @Test
+    fun `should make no node of a type alias`() {
+        // Arrange
+        val code = "struct CreatureEntity {};\nusing Entity = CreatureEntity;\ntypedef int Meters;"
+
+        // Act
+        val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "repo.hpp", code)).analyze()
+
+        // Assert
+        assertThat(report.nodes.map { it.name() }).containsExactly("CreatureEntity")
+    }
 }
