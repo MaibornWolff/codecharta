@@ -141,10 +141,10 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 | Qualified, decision 10: the qualifying class is no dependency | `cpp/spec-qualified-member-type` | ok |
 | Qualified: a member below a declaration | `cpp/spec-member-of-type` | gap |
 | Which file 1, decision 6: the included copy | `cpp/spec-closure-over-nearest` | ok |
-| Which file 2, decision 5: forward declaration, a cycle | `c/spec-forward-declaration` | gap |
+| Which file 2, decision 5: forward declaration, a cycle | `c/spec-forward-declaration` | ok |
 | Which file 2, decision 5: forward declaration in a namespace | `cpp/spec-forward-declaration` | ok |
 | Which file 2, decision 5: opaque pointer | `c/spec-opaque-pointer` | ok |
-| Which file 2: nearest of several bodies | `c/spec-forward-nearest` | gap |
+| Which file 2: nearest of several bodies | `c/spec-forward-nearest` | ok |
 | Which file 1, decision 11: two bodies in one closure | none: does not compile | - |
 | C and C++, shared rule 1 | `cpp/spec-uses-c` | ok |
 | Shared rule 1, name scope | `c/spec-name-scope` | ok |

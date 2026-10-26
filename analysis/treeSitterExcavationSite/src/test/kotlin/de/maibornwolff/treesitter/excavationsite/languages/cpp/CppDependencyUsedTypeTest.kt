@@ -73,6 +73,21 @@ class CppDependencyUsedTypeTest {
         ).containsExactlyInAnyOrder("RowEntity", "void")
     }
 
+    @Test
+    fun `should report a class tag without a body as a use that declares it in its namespace if nothing visible does`() {
+        // Arrange
+        val code = "namespace g { struct Nest { struct Roost *held; enum Kind kind; }; }"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.single().usedTypes).containsExactlyInAnyOrder(
+            UsedType(name = "Roost", fallbacks = listOf(UsedType(name = "Roost", namespacePrefix = listOf("::", "g")))),
+            UsedType(name = "Kind", fallbacks = listOf(UsedType(name = "Kind", namespacePrefix = listOf("::", "g"))))
+        )
+    }
+
     @Nested
     inner class Inheritance {
         @Test
