@@ -4,6 +4,7 @@ package de.maibornwolff.treesitter.excavationsite.api
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AliasPathStart
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularDeclaration
+import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularSelector
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ComponentRegistration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
@@ -27,4 +28,5 @@ typealias BundlerAlias = BundlerAlias
 typealias ComponentRegistration = ComponentRegistration
 typealias AliasPathStart = AliasPathStart
 typealias AngularDeclaration = AngularDeclaration
+typealias AngularSelector = AngularSelector
 typealias EmbeddedDeclarations = EmbeddedDeclarations
