@@ -1,0 +1,3 @@
+# Shared rule 2: a path several files declare means the nearest copy
+file a/App/Lair.php -> a/Model/Creature.php
+leaf a/App/Lair.php#Lair -> a/Model/Creature.php#Creature

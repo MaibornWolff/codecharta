@@ -1,0 +1,3 @@
+# php.md, decision 5: class and namespace names match ignoring case
+file App/Den.php -> Model/Creature.php
+leaf App/Den.php#Den -> Model/Creature.php#Creature usage=instantiation

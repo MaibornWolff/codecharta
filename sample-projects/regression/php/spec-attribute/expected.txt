@@ -1,0 +1,5 @@
+# php.md, decision 4: an attribute names a class
+file App/Facade.php -> Ann/Cached.php
+file App/Facade.php -> Ann/Transactional.php
+leaf App/Facade.php#Facade -> Ann/Cached.php#Cached
+leaf App/Facade.php#Facade -> Ann/Transactional.php#Transactional

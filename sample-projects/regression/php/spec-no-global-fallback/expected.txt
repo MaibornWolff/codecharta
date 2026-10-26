@@ -1,0 +1,1 @@
+# php.md, class name 5: a class name does not fall back to the global namespace

@@ -1,0 +1,3 @@
+# php.md, class name 1: `self` and `static` are the own class, `parent` the base class
+file Feat/Horse.php -> Base/Animal.php
+leaf Feat/Horse.php#Horse -> Base/Animal.php#Animal usage=inheritance

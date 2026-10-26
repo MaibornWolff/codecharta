@@ -1,0 +1,3 @@
+# php.md, declarations, decision 1: a function is a declaration, a call a use
+file app/Fight.php -> lib/dice.php
+leaf app/Fight.php#Fight -> lib/dice.php#roll

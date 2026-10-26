@@ -1,0 +1,3 @@
+# php.md, declarations: the logical path is the namespace plus the name, not the folder
+file a/Centaur.php -> b/Creature.php
+leaf a/Centaur.php#Centaur -> b/Creature.php#Creature

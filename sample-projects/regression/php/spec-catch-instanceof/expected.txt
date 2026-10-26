@@ -1,0 +1,5 @@
+# php.md, decision 4: `catch` and `instanceof` name classes
+file App/Spotter.php -> Model/Centaur.php
+file App/Spotter.php -> Model/NotFound.php
+leaf App/Spotter.php#Spotter -> Model/Centaur.php#Centaur
+leaf App/Spotter.php#Spotter -> Model/NotFound.php#NotFound

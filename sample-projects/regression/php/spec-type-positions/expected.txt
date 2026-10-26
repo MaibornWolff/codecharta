@@ -1,0 +1,10 @@
+# php.md, decision 4: nullable, union, intersection, variadic and promoted parameter types are uses
+file App/Svc.php -> Model/types.php
+leaf App/Svc.php#Svc -> Model/types.php#A usage=argument
+leaf App/Svc.php#Svc -> Model/types.php#B usage=argument
+leaf App/Svc.php#Svc -> Model/types.php#C usage=argument
+leaf App/Svc.php#Svc -> Model/types.php#D usage=argument
+leaf App/Svc.php#Svc -> Model/types.php#E usage=argument
+leaf App/Svc.php#Svc -> Model/types.php#F usage=argument
+leaf App/Svc.php#Svc -> Model/types.php#G usage=argument
+leaf App/Svc.php#Svc -> Model/types.php#H

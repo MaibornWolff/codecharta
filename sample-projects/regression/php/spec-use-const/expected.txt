@@ -1,0 +1,3 @@
+# php.md, constant name 3: `use const` beats the current namespace
+file App/Cap.php -> lib/limits.php
+leaf App/Cap.php#Cap -> lib/limits.php#MAX usage=constant_access

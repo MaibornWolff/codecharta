@@ -1,0 +1,3 @@
+# php.md, includes: an include in a method is a use of its class
+file app/Loader.php -> plugins/plugin.php
+leaf app/Loader.php#Loader -> plugins/plugin.php#plugin_script
