@@ -88,6 +88,23 @@ class CppDependencyUsedTypeTest {
         )
     }
 
+    @Test
+    fun `should report a qualified name in an expression as a use with its qualifier`() {
+        // Arrange
+        val code = "struct Mover : game::Base { int pace = static_cast<int>(SpeedType::WALKING); int f() { return Speed::MAX; } };"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.single().usedTypes).containsExactlyInAnyOrder(
+            UsedType(name = "Base", namespacePrefix = listOf("game"), usage = TypeUsage.INHERITANCE),
+            UsedType(name = "WALKING", namespacePrefix = listOf("SpeedType")),
+            UsedType(name = "MAX", namespacePrefix = listOf("Speed")),
+            UsedType(name = "int")
+        )
+    }
+
     @Nested
     inner class Inheritance {
         @Test
@@ -712,7 +729,8 @@ class CppDependencyUsedTypeTest {
             "Namespace",
             "helper",
             "Sized",
-            "Init"
+            "Init",
+            "Value"
         )
     }
 }

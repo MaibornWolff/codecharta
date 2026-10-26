@@ -16,7 +16,8 @@ internal object UsedTypeExtractor {
             CallExpressionTypeExtractor.nodeTypes +
             ClassScopeExtractor.nodeTypes +
             SignatureTypeExtractor.nodeTypes +
-            AliasConstraintExtractor.nodeTypes
+            AliasConstraintExtractor.nodeTypes +
+            QualifiedExpressionExtractor.nodeTypes
 
     fun extract(declaration: SyntaxNode): Set<UsedType> {
         val buckets = groupDescendantsStoppingAtNestedDeclarations(declaration, ALL_NODE_TYPES)
@@ -31,7 +32,8 @@ internal object UsedTypeExtractor {
                 SignatureTypeExtractor.extractMethodReturnAndParamTypes(buckets) +
                 SignatureTypeExtractor.extractDeclaratorParamTypes(buckets) +
                 AliasConstraintExtractor.extractAliasTypes(buckets) +
-                AliasConstraintExtractor.extractConstraintTypes(declaration)
+                AliasConstraintExtractor.extractConstraintTypes(declaration) +
+                QualifiedExpressionExtractor.extractQualifiedExpressionTypes(buckets)
         ).toSet()
     }
 
