@@ -11,14 +11,13 @@ import java.io.File
 /**
  * The imports of one file that name a member of a project module, by "What an import binds" of
  * `docs/name-resolution/typescript.md`: `import D from './m'` binds `D` to the default export of `m`, `import { A }` to
- * the declaration `m` exports as `A`, so a use is written as the full path of that declaration where it is not the
- * module path plus the imported name.
+ * the declaration `m` exports as `A`, so a use is written as the full path of that declaration.
  */
 internal class MemberImports(private val analysisRoot: File) {
     private val exports = ModuleExports.of(analysisRoot)
     private val targetByBinding = HashMap<String, Target>()
 
-    /** The declaration a member import of [moduleFile] means, null where it is the module path plus the imported name. */
+    /** The declaration a member import of [moduleFile] means; null for an import that binds the module or no name of it. */
     fun targetOf(import: ImportDeclaration, moduleFile: File, module: Path): Path? {
         val boundModule = boundModuleOf(import, moduleFile)
         if (boundModule != null) {
@@ -35,9 +34,7 @@ internal class MemberImports(private val analysisRoot: File) {
             return target
         }
         val ownName = exports.nameOf(moduleFile, importedName)
-        val boundName = boundNameOf(import, importedName)
-        if (ownName == importedName && boundName == importedName) return null
-        return (module + ownName).also { targetByBinding[boundName] = Target(it, moduleFile = null) }
+        return (module + ownName).also { targetByBinding[boundNameOf(import, importedName)] = Target(it, moduleFile = null) }
     }
 
     // `import { Model as Base }` binds `Base`; a re-export binds no name, its use is the name it re-exports

@@ -511,7 +511,7 @@ class VueAnalyzerTest {
         val node = VueAnalyzer(fileInfo).analyze().nodes.single()
 
         // Assert
-        assertThat(node.usedTypes.map { it.name }).containsExactlyInAnyOrder("defaults", "format", "Date")
+        assertThat(node.usedTypes.map { it.name }).containsExactlyInAnyOrder("fmt.defaults", "fmt.format", "Date")
     }
 
     @Test

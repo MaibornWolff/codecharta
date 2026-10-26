@@ -57,6 +57,23 @@ class MemberImportsTest {
     }
 
     @Test
+    fun `should write a use of a named import as the path of the export it names`() {
+        // Arrange
+        val model = File(analysisRoot, "model.ts").apply { writeText("export class Model {}") }
+        val memberImports = MemberImports(analysisRoot)
+        val import =
+            ImportDeclaration(path = listOf(".", "model", "Model"), isWildcard = false, kind = ImportKind.MEMBER, bindingName = "Model")
+
+        // Act
+        val target = memberImports.targetOf(import, model, Path(listOf("model")))
+        val nodes = memberImports.rewrite(listOf(node("Model", "Model.create")))
+
+        // Assert
+        assertThat(target).isEqualTo(Path(listOf("model", "Model")))
+        assertThat(nodes.single().usedTypes.map { it.name }).containsExactly("model.Model", "model.Model.create")
+    }
+
+    @Test
     fun `should write a use of a renamed import under its local name as the path of the export it names`() {
         // Arrange
         val model = File(analysisRoot, "model.ts").apply { writeText("export class Model {}") }
