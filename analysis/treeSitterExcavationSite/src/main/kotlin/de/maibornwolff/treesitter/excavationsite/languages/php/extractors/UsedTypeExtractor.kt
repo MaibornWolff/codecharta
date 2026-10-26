@@ -6,12 +6,11 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
 /**
- * The types a PHP declaration uses and how, imported constants first, then in the order of [Role]. A type is taken
- * as written where a type is declared (return, parameter, property). Where a class is named (base class, interface,
- * instantiation, static call, constant access, trait) only a plain name counts, a qualified one is left out. Also
- * left out: a union type, a nullable parameter type and the nullable return type of a function. An alias is replaced
- * by the name it stands for. Each carries the namespace of the class or constant it means, by the rules of `php.md`,
- * as prefix.
+ * The types a PHP declaration uses and how, imported constants first, then in the order of [Role], each as the full
+ * path of the class or constant it means by the rules of `php.md`: the last segment as name, the namespace as prefix.
+ * Read are return, parameter and property types, base classes, interfaces, instantiations, static calls, constant
+ * accesses and traits; left out are a union type, a nullable parameter type, the nullable return type of a function
+ * and `self`, `static`, `parent` and the type keywords.
  *
  * An imported constant counts as used as soon as its name occurs anywhere in the text of the declaration.
  */
@@ -20,6 +19,7 @@ internal object UsedTypeExtractor {
     class FileNames(val importedNames: ImportedNames, val blocks: List<NamespaceBlock>)
 
     private const val NAME = "name"
+    private const val QUALIFIED_NAME = "qualified_name"
     private const val NAMED_TYPE = "named_type"
     private const val OPTIONAL_TYPE = "optional_type"
     private const val CLASS_DECLARATION = "class_declaration"
@@ -37,7 +37,8 @@ internal object UsedTypeExtractor {
     private const val SIMPLE_PARAMETER = "simple_parameter"
     private const val SCOPE_FIELD = "scope"
 
-    private val RELEVANT_TYPES = arrayOf(NAME, NAMED_TYPE, CLASS_CONSTANT_ACCESS_EXPRESSION)
+    private val RELEVANT_TYPES = arrayOf(NAME, QUALIFIED_NAME, NAMED_TYPE, CLASS_CONSTANT_ACCESS_EXPRESSION)
+    private val CLASS_NAMES = setOf(NAME, QUALIFIED_NAME)
 
     // The order of the entries is the order of the used types
     private enum class Role(val usage: TypeUsage) {
@@ -60,24 +61,15 @@ internal object UsedTypeExtractor {
             .flatMap { node -> rolesOf(node) }
             .groupBy({ (role, _) -> role }, { (_, name) -> name })
         val usedTypes = Role.entries.flatMap { role ->
-            namesByRole[role].orEmpty().map { name ->
-                UsedType(
-                    importedNames.namesByAlias[name.text.trim()] ?: name.text,
-                    namespacePrefix = namespaceOf(name, blocks),
-                    usage = role.usage
-                )
+            namesByRole[role].orEmpty().mapNotNull { name ->
+                pathOf(name, blocks)?.let { path -> UsedType(path.last(), namespacePrefix = path.dropLast(1), usage = role.usage) }
             }
         }
         return (usedConstants(declaration, importedNames.constants, blocks) + usedTypes).toCollection(LinkedHashSet())
     }
 
-    // The namespace of the class a name means; the name itself stays as written until the analyzer reads it
-    private fun namespaceOf(name: SyntaxNode, blocks: List<NamespaceBlock>): List<String> = NamespaceBlocks
-        .blockOf(name, blocks)
-        ?.names
-        ?.classPath(name.text.trim())
-        ?.dropLast(1)
-        .orEmpty()
+    private fun pathOf(name: SyntaxNode, blocks: List<NamespaceBlock>): List<String>? =
+        NamespaceBlocks.blockOf(name, blocks)?.names?.classPath(name.text.trim())
 
     private fun usedConstants(declaration: SyntaxNode, importedConstants: List<String>, blocks: List<NamespaceBlock>): List<UsedType> {
         val declarationText = declaration.text
@@ -88,7 +80,7 @@ internal object UsedTypeExtractor {
     }
 
     private fun rolesOf(node: SyntaxNode): List<Pair<Role, SyntaxNode>> = when (node.type) {
-        NAME -> listOfNotNull(roleOfName(node)?.let { it to node })
+        NAME, QUALIFIED_NAME -> listOfNotNull(roleOfName(node)?.let { it to node })
         NAMED_TYPE -> listOfNotNull(roleOfNamedType(node)?.let { it to node })
         else -> ownersOfReadConstants(node).map { Role.CONSTANT_OWNER to it }
     }
@@ -123,7 +115,9 @@ internal object UsedTypeExtractor {
         return memberList.type == DECLARATION_LIST && memberList.parent.type == CLASS_DECLARATION
     }
 
-    // In `Order::LIMIT` both sides are names: every name but the last is an owner
-    private fun ownersOfReadConstants(constantAccess: SyntaxNode): List<SyntaxNode> =
-        constantAccess.children().filter { it.type == NAME }.toList().dropLast(1)
+    // In `Order::LIMIT` both sides are names: the first is the owner
+    private fun ownersOfReadConstants(constantAccess: SyntaxNode): List<SyntaxNode> {
+        val sides = constantAccess.namedChildren().toList()
+        return listOfNotNull(sides.first().takeIf { sides.size > 1 && it.type in CLASS_NAMES })
+    }
 }

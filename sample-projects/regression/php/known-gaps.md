@@ -83,18 +83,6 @@ missing file Model/Alignment.php -> Model/Describable.php
 missing leaf Model/Alignment.php#Alignment -> Model/Describable.php#Describable usage=implementation
 ```
 
-## spec-fully-qualified
-
-A fully qualified name is not resolved: a fully qualified base class is left out, and the global class `\Logger` has its
-file's path as logical path.
-
-```text
-missing file Feat/Log.php -> lib/Logger.php
-missing file Feat/User.php -> Base/User.php
-missing leaf Feat/Log.php#Log -> lib/Logger.php#Logger
-missing leaf Feat/User.php#User -> Base/User.php#User usage=inheritance
-```
-
 ## spec-function-global-fallback
 
 A function call is no use.
@@ -120,34 +108,6 @@ A function call is no use.
 ```text
 missing file app/Fight.php -> lib/dice.php
 missing leaf app/Fight.php#Fight -> lib/dice.php#roll
-```
-
-## spec-global-namespace
-
-A declaration outside every namespace has its file's path as logical path, so a name of the global namespace does not
-find it.
-
-```text
-missing file main/Main.php -> lib/Util.php
-missing leaf main/Main.php#Main -> lib/Util.php#Util
-```
-
-## spec-group-use
-
-An alias inside a group import is not bound.
-
-```text
-missing file App/Herd.php -> Model/Speed.php
-missing leaf App/Herd.php#Herd -> Model/Speed.php#Speed
-```
-
-## spec-import-alias
-
-An alias is replaced by the plain name it stands for, which the heuristics look up in the nearest file.
-
-```text
-missing file App/Facade.php -> Dto/Creature.php
-missing leaf App/Facade.php#Facade -> Dto/Creature.php#Creature
 ```
 
 ## spec-include-absolute
@@ -204,16 +164,6 @@ missing leaf Model/Boss.php#Boss -> Model/Describable.php#Describable usage=inhe
 missing leaf Model/Boss.php#Boss -> Model/Fightable.php#Fightable usage=inheritance
 ```
 
-## spec-namespace-blocks
-
-A file has the namespace of its first block, and each import counts for every block.
-
-```text
-missing file lib/two.php -> Admin/Item.php
-missing leaf lib/two.php#Panel -> Admin/Item.php#Item
-extra leaf lib/two.php#Panel -> Model/Item.php#Item
-```
-
 ## spec-namespace-constant
 
 A constant read is a use only through `use const`.
@@ -221,15 +171,6 @@ A constant read is a use only through `use const`.
 ```text
 missing file app/Cap.php -> lib/limits.php
 missing leaf app/Cap.php#Cap -> lib/limits.php#MAX usage=constant_access
-```
-
-## spec-namespace-keyword
-
-A name `namespace\A` is not resolved.
-
-```text
-missing file App/Box.php -> x/Tool.php
-missing leaf App/Box.php#Box -> x/Tool.php#Tool
 ```
 
 ## spec-qualified-function
@@ -241,24 +182,6 @@ missing file App/Fight.php -> Dice/dice.php
 missing leaf App/Fight.php#Fight -> Dice/dice.php#roll
 ```
 
-## spec-qualified-relative
-
-A qualified name is not resolved: its text is looked up by the heuristics.
-
-```text
-missing file App/Util.php -> x/Creature.php
-missing leaf App/Util.php#Util -> x/Creature.php#Creature
-```
-
-## spec-qualified-through-import
-
-A qualified name is not resolved: its text is looked up by the heuristics.
-
-```text
-missing file App/Util.php -> Domain/Model/Creature.php
-missing leaf App/Util.php#Util -> Domain/Model/Creature.php#Creature
-```
-
 ## spec-script-leaf
 
 Top-level code is a script leaf only in a file without declarations.
@@ -266,15 +189,6 @@ Top-level code is a script leaf only in a file without declarations.
 ```text
 missing file app/boot.php -> Model/Config.php
 missing leaf app/boot.php#boot_script -> Model/Config.php#Config usage=instantiation
-```
-
-## spec-self-parent-static
-
-A fully qualified base class is left out.
-
-```text
-missing file Feat/Horse.php -> Base/Animal.php
-missing leaf Feat/Horse.php#Horse -> Base/Animal.php#Animal usage=inheritance
 ```
 
 ## spec-trait
