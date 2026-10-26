@@ -6,18 +6,14 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
 /**
- * The types a PHP declaration uses and how, imported constants first, then in the order of [Role], each as the full
- * path of the class or constant it means by the rules of `php.md`: the last segment as name, the namespace as prefix.
- * Read are return, parameter and property types, base classes, interfaces, instantiations, static calls, constant
- * accesses and traits; left out are a union type, a nullable parameter type, the nullable return type of a function
- * and `self`, `static`, `parent` and the type keywords.
- *
- * An imported constant counts as used as soon as its name occurs anywhere in the text of the declaration.
+ * The names a PHP declaration uses and how, in the order of [Role], each as the full path of the class, function or
+ * constant it means by the rules of `php.md`: the last segment as name, the namespace as prefix, and for a function or
+ * constant PHP may look up globally the global name as fallback. Read are return, parameter and property types, base
+ * classes, interfaces, instantiations, static calls, constant accesses, traits, function calls and constant reads;
+ * left out are a union type, a nullable parameter type, the nullable return type of a function and `self`, `static`,
+ * `parent` and the type keywords.
  */
 internal object UsedTypeExtractor {
-    /** What the names of a file are looked up in: its imports as a whole and its namespace blocks. */
-    class FileNames(val importedNames: ImportedNames, val blocks: List<NamespaceBlock>)
-
     private const val NAME = "name"
     private const val QUALIFIED_NAME = "qualified_name"
     private const val NAMED_TYPE = "named_type"
@@ -36,12 +32,17 @@ internal object UsedTypeExtractor {
     private const val FORMAL_PARAMETERS = "formal_parameters"
     private const val SIMPLE_PARAMETER = "simple_parameter"
     private const val SCOPE_FIELD = "scope"
+    private const val FUNCTION_FIELD = "function"
+    private const val FUNCTION_CALL_EXPRESSION = "function_call_expression"
 
     private val RELEVANT_TYPES = arrayOf(NAME, QUALIFIED_NAME, NAMED_TYPE, CLASS_CONSTANT_ACCESS_EXPRESSION)
     private val CLASS_NAMES = setOf(NAME, QUALIFIED_NAME)
 
+    private enum class Kind { CLASS, FUNCTION, CONSTANT }
+
     // The order of the entries is the order of the used types
-    private enum class Role(val usage: TypeUsage) {
+    private enum class Role(val usage: TypeUsage, val kind: Kind = Kind.CLASS) {
+        CONSTANT_READ(TypeUsage.CONSTANT_ACCESS, Kind.CONSTANT),
         INHERITED(TypeUsage.INHERITANCE),
         IMPLEMENTED(TypeUsage.IMPLEMENTATION),
         CONSTANT_OWNER(TypeUsage.CONSTANT_ACCESS),
@@ -50,34 +51,35 @@ internal object UsedTypeExtractor {
         INSTANTIATED(TypeUsage.INSTANTIATION),
         PROPERTY_TYPE(TypeUsage.USAGE),
         STATIC_CALL_OWNER(TypeUsage.USAGE),
-        USED_TRAIT(TypeUsage.USAGE)
+        USED_TRAIT(TypeUsage.USAGE),
+        CALLED_FUNCTION(TypeUsage.USAGE, Kind.FUNCTION)
     }
 
-    fun extract(declaration: SyntaxNode, fileNames: FileNames): Set<UsedType> {
-        val importedNames = fileNames.importedNames
-        val blocks = fileNames.blocks
+    fun extract(declaration: SyntaxNode, blocks: List<NamespaceBlock>): Set<UsedType> {
         val namesByRole = TreeTraversal
             .findAllDescendantsOfType(declaration, *RELEVANT_TYPES)
             .flatMap { node -> rolesOf(node) }
             .groupBy({ (role, _) -> role }, { (_, name) -> name })
         val usedTypes = Role.entries.flatMap { role ->
-            namesByRole[role].orEmpty().mapNotNull { name ->
-                pathOf(name, blocks)?.let { path -> UsedType(path.last(), namespacePrefix = path.dropLast(1), usage = role.usage) }
-            }
+            namesByRole[role].orEmpty().mapNotNull { name -> usedTypeOf(name, role, blocks) }
         }
-        return (usedConstants(declaration, importedNames.constants, blocks) + usedTypes).toCollection(LinkedHashSet())
+        return usedTypes.toCollection(LinkedHashSet())
     }
 
-    private fun pathOf(name: SyntaxNode, blocks: List<NamespaceBlock>): List<String>? =
-        NamespaceBlocks.blockOf(name, blocks)?.names?.classPath(name.text.trim())
-
-    private fun usedConstants(declaration: SyntaxNode, importedConstants: List<String>, blocks: List<NamespaceBlock>): List<UsedType> {
-        val declarationText = declaration.text
-        val imports = NamespaceBlocks.blockOf(declaration, blocks)?.imports
-        return importedConstants.filter { declarationText.contains(it) }.map { constant ->
-            UsedType(constant, namespacePrefix = imports?.constantPath(constant)?.dropLast(1).orEmpty(), usage = TypeUsage.CONSTANT_ACCESS)
+    private fun usedTypeOf(name: SyntaxNode, role: Role, blocks: List<NamespaceBlock>): UsedType? {
+        val names = NamespaceBlocks.blockOf(name, blocks)?.names ?: return null
+        val written = name.text.trim()
+        return when (role.kind) {
+            Kind.CLASS -> names.classPath(written)?.let { usedType(it, role.usage) }
+            Kind.FUNCTION -> usedType(names.functionUse(written), role.usage)
+            Kind.CONSTANT -> usedType(names.constantUse(written), role.usage)
         }
     }
+
+    private fun usedType(use: PhpNames.Use, usage: TypeUsage): UsedType =
+        usedType(use.path, usage).copy(fallbacks = listOfNotNull(use.fallback?.let { usedType(it, usage) }))
+
+    private fun usedType(path: List<String>, usage: TypeUsage) = UsedType(path.last(), namespacePrefix = path.dropLast(1), usage = usage)
 
     private fun rolesOf(node: SyntaxNode): List<Pair<Role, SyntaxNode>> = when (node.type) {
         NAME, QUALIFIED_NAME -> listOfNotNull(roleOfName(node)?.let { it to node })
@@ -93,7 +95,8 @@ internal object UsedTypeExtractor {
             OBJECT_CREATION_EXPRESSION -> Role.INSTANTIATED
             SCOPED_CALL_EXPRESSION -> Role.STATIC_CALL_OWNER.takeIf { parent.getChildByFieldName(SCOPE_FIELD) == name }
             USE_DECLARATION -> Role.USED_TRAIT.takeIf { isMemberOfClass(parent) }
-            else -> null
+            FUNCTION_CALL_EXPRESSION -> Role.CALLED_FUNCTION.takeIf { parent.getChildByFieldName(FUNCTION_FIELD) == name }
+            else -> Role.CONSTANT_READ.takeIf { ConstantReads.isRead(name) }
         }
     }
 

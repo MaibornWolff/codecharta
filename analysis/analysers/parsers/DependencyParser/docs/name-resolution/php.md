@@ -96,10 +96,10 @@ the expected meaning of each name, except the absolute and the computed include 
 | --- | --- | --- |
 | Declarations: namespace plus name, not the folder | `spec-namespace-path` | ok |
 | Declarations, decision 6: the global namespace | `spec-global-namespace` | ok |
-| Declarations, decision 1: a function | `spec-function` | gap |
-| Declarations, decision 1: a namespace constant | `spec-namespace-constant` | gap |
-| Declarations: `define`, read through the global fallback | `spec-define` | gap |
-| Declarations, decision 7: a function declared in a block | `spec-declaration-in-block` | gap |
+| Declarations, decision 1: a function | `spec-function` | ok |
+| Declarations, decision 1: a namespace constant | `spec-namespace-constant` | ok |
+| Declarations: `define`, read through the global fallback | `spec-define` | ok |
+| Declarations, decision 7: a function declared in a block | `spec-declaration-in-block` | ok |
 | Declarations: an anonymous class | `spec-anonymous-class` | gap |
 | Declarations, decision 8: top-level code next to declarations | `spec-script-leaf` | gap |
 | Namespace blocks | `spec-namespace-blocks` | ok |
@@ -117,13 +117,13 @@ the expected meaning of each name, except the absolute and the computed include 
 | Class name: a library class | `spec-library-class` | ok |
 | Class name, decision 5: exact case | `spec-exact-case` | ok |
 | A name below a class | `spec-class-member-access` | gap |
-| Function name 3: the current namespace before the global one | `spec-function-own-namespace-first` | gap |
-| Function name 3: the global fallback | `spec-function-global-fallback` | gap |
-| Function name 3: `use function` | `spec-use-function` | gap |
-| Function name 2: qualified through a namespace import | `spec-qualified-function` | gap |
+| Function name 3: the current namespace before the global one | `spec-function-own-namespace-first` | ok |
+| Function name 3: the global fallback | `spec-function-global-fallback` | ok |
+| Function name 3: `use function` | `spec-use-function` | ok |
+| Function name 2: qualified through a namespace import | `spec-qualified-function` | ok |
 | A function name means no class | `spec-function-not-class` | ok |
 | Constant name 3: `use const` | `spec-use-const` | ok |
-| Constant name 1: fully qualified | `spec-constant-fully-qualified` | gap |
+| Constant name 1: fully qualified | `spec-constant-fully-qualified` | ok |
 | Decision 4: parameter, property and return types | `spec-type-positions` | gap |
 | Decision 4: `catch` and `instanceof` | `spec-catch-instanceof` | gap |
 | Decision 4: attributes | `spec-attribute` | gap |

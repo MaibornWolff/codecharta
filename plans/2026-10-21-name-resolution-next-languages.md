@@ -418,7 +418,7 @@ derived (global namespace path, declarations in blocks, script leaf, docblocks).
 6. [x] TSE: every name read today carries the namespace it resolves to (`PhpNames`) as prefix; no output change
 7. [x] the switch: declarations at namespace plus name (global: the name, decision 6), uses written as full paths,
    `PhpNameRules` exact; the old heuristics and import dependencies go
-8. [ ] functions and constants: calls and constant reads are uses with the global fallback; `define` with a namespace
+8. [x] functions and constants: calls and constant reads are uses with the global fallback; `define` with a namespace
 9. [ ] decision 4: every type position (nullable, union, intersection, variadic, promoted, closures)
 10. [ ] decision 4: `catch`, `instanceof`, attributes, `X::$property`
 11. [ ] decision 4: interface `extends`, enum `implements`, anonymous class headers
