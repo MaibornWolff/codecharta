@@ -59,6 +59,20 @@ class CppDependencyUsedTypeTest {
         assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactlyInAnyOrder("Node", "int")
     }
 
+    @Test
+    fun `should leave the type a member alias names to the alias and give a function alias to its declaration`() {
+        // Arrange
+        val code = "struct Repo { using Entity = CreatureEntity; void f() { using Row = RowEntity; } };"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(
+            result.declarations.single { it.name == "Repo" }.usedTypes.map { it.name }
+        ).containsExactlyInAnyOrder("RowEntity", "void")
+    }
+
     @Nested
     inner class Inheritance {
         @Test
@@ -178,7 +192,7 @@ class CppDependencyUsedTypeTest {
     @Nested
     inner class TypeAliases {
         @Test
-        fun `should extract aliased type from typedef`() {
+        fun `should give the type a member typedef names to the alias`() {
             // Arrange
             val code = """
                 class Container {
@@ -191,11 +205,13 @@ class CppDependencyUsedTypeTest {
 
             // Assert
             val container = result.declarations.single { it.name == "Container" }
-            assertThat(container.usedTypes).containsExactly(UsedType(name = "Foo"))
+            val alias = result.declarations.single { it.name == "Bar" }
+            assertThat(container.usedTypes).isEmpty()
+            assertThat(alias.usedTypes).containsExactly(UsedType(name = "Foo"))
         }
 
         @Test
-        fun `should extract template aliased type from typedef`() {
+        fun `should give the template type a member typedef names to the alias`() {
             // Arrange
             val code = """
                 class Container {
@@ -208,13 +224,13 @@ class CppDependencyUsedTypeTest {
 
             // Assert
             val container = result.declarations.single { it.name == "Container" }
-            assertThat(container.usedTypes).containsExactly(
-                UsedType(name = "Vec", genericTypes = listOf(UsedType(name = "Foo")))
-            )
+            val alias = result.declarations.single { it.name == "Items" }
+            assertThat(container.usedTypes).isEmpty()
+            assertThat(alias.usedTypes).containsExactly(UsedType(name = "Vec", genericTypes = listOf(UsedType(name = "Foo"))))
         }
 
         @Test
-        fun `should extract aliased type from using alias declaration`() {
+        fun `should give the type a member using alias names to the alias`() {
             // Arrange
             val code = """
                 class Container {
@@ -227,11 +243,13 @@ class CppDependencyUsedTypeTest {
 
             // Assert
             val container = result.declarations.single { it.name == "Container" }
-            assertThat(container.usedTypes).containsExactly(UsedType(name = "Foo"))
+            val alias = result.declarations.single { it.name == "Bar" }
+            assertThat(container.usedTypes).isEmpty()
+            assertThat(alias.usedTypes).containsExactly(UsedType(name = "Foo"))
         }
 
         @Test
-        fun `should extract template aliased type from using alias declaration`() {
+        fun `should give the template type a member using alias names to the alias`() {
             // Arrange
             val code = """
                 class Container {
@@ -244,9 +262,9 @@ class CppDependencyUsedTypeTest {
 
             // Assert
             val container = result.declarations.single { it.name == "Container" }
-            assertThat(container.usedTypes).containsExactly(
-                UsedType(name = "Vec", genericTypes = listOf(UsedType(name = "Foo")))
-            )
+            val alias = result.declarations.single { it.name == "Items" }
+            assertThat(container.usedTypes).isEmpty()
+            assertThat(alias.usedTypes).containsExactly(UsedType(name = "Vec", genericTypes = listOf(UsedType(name = "Foo"))))
         }
     }
 
@@ -669,8 +687,6 @@ class CppDependencyUsedTypeTest {
         val widget = result.declarations.single { it.name == "Widget" }
         assertThat(widget.usedTypes.map { it.name }.toSet()).containsExactlyInAnyOrder(
             "Base",
-            "Wrapped",
-            "Counter",
             "Field",
             "Friend",
             "Result",
