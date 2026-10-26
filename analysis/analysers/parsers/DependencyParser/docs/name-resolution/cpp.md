@@ -38,7 +38,8 @@ global namespace. The rules shared by every language are in [README.md](README.m
    path with the including file, the first in path order of equally near ones (decision 2).
 3. None: a library or system header, such as `<vector>` or `<stdio.h>`. Nothing it declares is a project declaration.
 
-`#include <p>` skips step 1.
+`#include <p>` skips step 1. A file of any extension can be included, a header without one (`<mylib/Widget>`) or a
+fragment such as `.inc`, and its includes are followed; only C and C++ files declare anything (decision 13).
 
 ## Visibility
 
@@ -156,7 +157,7 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 - Preprocessor conditions: every `#include` and all code count, under `#if`, `#ifdef` and `#if 0` alike. Macros are
   not expanded; a type a macro writes is not seen.
 - Declaration order: a declaration later in the include closure, or later in the same file, counts as well.
-- Includes of files the run does not analyse, such as `.inc` fragments: their own includes are not followed.
+- Declarations in files that are no C or C++ file, such as `.inc` fragments or headers without an extension.
 - Argument-dependent lookup, dependent names in templates (`typename T::Value`), C++20 modules (`import`).
 
 ## Decisions
@@ -183,3 +184,5 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
     (derived 2026-10-26).
 12. An include path matches a file path ending in one segment already (`"config.h"`), unlike Go and Python, as C code
     includes headers by bare file name through `-I` (derived 2026-10-26).
+13. An include may name a file of any extension, and its includes are followed; declarations are read from C and C++
+    files only, as the run analyses no other (derived 2026-10-26).

@@ -128,19 +128,55 @@ class CppIncludesTest {
     }
 
     @Test
-    fun `should read only C and C++ files`(
+    fun `should follow includes through a file of any extension`(
         @TempDir root: File
     ) {
         // Arrange
         root
             .withFile("creature_types.inc", "#include \"speed.h\"\n")
             .withFile("speed.h")
-            .withFile("creature.h", "#include \"creature_types.inc\"\n")
+            .withFile("include/mylib/Widget", "#include \"widget.h\"\n")
+            .withFile("include/mylib/widget.h")
+            .withFile("creature.h", "#include \"creature_types.inc\"\n#include <mylib/Widget>\n")
 
         // Act
         val closure = CppIncludes.of(root).closureOf(path("creature.h"))
 
         // Assert
-        assertThat(closure).containsExactly(path("creature.h"))
+        assertThat(closure).containsExactlyInAnyOrder(
+            path("creature.h"),
+            path("creature_types.inc"),
+            path("speed.h"),
+            path("include/mylib/Widget"),
+            path("include/mylib/widget.h")
+        )
+    }
+
+    @Test
+    fun `should list only the C and C++ files as files`(
+        @TempDir root: File
+    ) {
+        // Arrange
+        root.withFile("creature_types.inc").withFile("include/mylib/Widget").withFile("speed.h").withFile("main.C")
+
+        // Act
+        val files = CppIncludes.of(root).files
+
+        // Assert
+        assertThat(files).containsExactly(path("main.C"), path("speed.h"))
+    }
+
+    @Test
+    fun `should read an include line continued with a backslash`(
+        @TempDir root: File
+    ) {
+        // Arrange
+        root.withFile("dir/subdir/Repository.h").withFile("app.h", "#include \"dir/\\\n    subdir/Repository.h\"\n")
+
+        // Act
+        val closure = CppIncludes.of(root).closureOf(path("app.h"))
+
+        // Assert
+        assertThat(closure).containsExactlyInAnyOrder(path("app.h"), path("dir/subdir/Repository.h"))
     }
 }
