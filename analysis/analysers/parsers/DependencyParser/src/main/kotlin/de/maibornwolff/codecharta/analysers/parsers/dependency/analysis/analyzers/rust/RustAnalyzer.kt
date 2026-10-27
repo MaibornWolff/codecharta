@@ -11,6 +11,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLa
 import de.maibornwolff.treesitter.excavationsite.api.RustImpl
 import de.maibornwolff.treesitter.excavationsite.api.RustItem
 import de.maibornwolff.treesitter.excavationsite.api.RustItemKind
+import de.maibornwolff.treesitter.excavationsite.api.RustModule
 import de.maibornwolff.treesitter.excavationsite.api.RustNamespace
 import de.maibornwolff.treesitter.excavationsite.api.RustPath
 import de.maibornwolff.treesitter.excavationsite.api.RustUse
@@ -30,8 +31,9 @@ class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     private val lookup by lazy { RustLookup(project.tree, project.crates) }
 
     override fun analyze(): FileReport {
-        if (file.isEmpty()) return FileReport(emptyList())
-        val facts = project.factsOf(file)
+        val fileScope = scopeOf(emptyList())
+        if (fileScope == null || !project.tree.isCounted(fileScope, false)) return FileReport(emptyList())
+        val facts = countedFacts(fileScope)
         val implsByOwner = facts.impls.mapNotNull { impl -> ownerOf(impl)?.let { it to impl } }.groupBy({ it.first }, { it.second })
         val ownImpls = implsByOwner.filterKeys { it.isInThisFile }.mapKeys { it.key.path }
         val items = facts.items.mapNotNull { item -> scopeOf(item.inlinePath)?.let { itemNode(item, it, ownImpls) } }
@@ -41,6 +43,16 @@ class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     }
 
     private fun scopeOf(inlinePath: List<String>): RustModuleScope? = project.tree.scopeOf(file, inlinePath)
+
+    // What `#[cfg(test)]` marks counts only in a run with tests (decision 6)
+    private fun countedFacts(fileScope: RustModuleScope): RustModule {
+        val all = project.factsOf(file)
+        return all.copy(
+            items = all.items.filter { project.tree.isCounted(fileScope, it.isTest) },
+            impls = all.impls.filter { project.tree.isCounted(fileScope, it.isTest) },
+            uses = all.uses.filter { project.tree.isCounted(fileScope, it.isTest) }
+        )
+    }
 
     private fun itemNode(item: RustItem, scope: RustModuleScope, ownImpls: Map<List<String>, List<RustImpl>>): Node {
         val path = scope.pathOf(item.name)

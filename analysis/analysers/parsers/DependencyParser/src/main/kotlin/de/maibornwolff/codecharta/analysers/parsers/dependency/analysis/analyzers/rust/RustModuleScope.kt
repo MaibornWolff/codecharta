@@ -7,7 +7,8 @@ import de.maibornwolff.treesitter.excavationsite.api.RustVisibility
 /**
  * One module of the module tree (`rust.md`, "Modules"): its logical path, the crate it belongs to, the file and inline
  * modules it stands in, and the names it binds. [childFolder] is the folder its `mod m;` lines load `m.rs` or
- * `m/mod.rs` from; [inheritedMacros] are the `macro_rules!` in textual scope where the module is declared.
+ * `m/mod.rs` from; [inheritedMacros] are the `macro_rules!` in textual scope where the module is declared; [isTest] marks
+ * a module that `#[cfg(test)]` declares, or one inside such a module.
  */
 internal class RustModuleScope(
     val path: List<String>,
@@ -17,7 +18,8 @@ internal class RustModuleScope(
     val inlinePath: List<String>,
     val parent: RustModuleScope?,
     val childFolder: List<String>,
-    val inheritedMacros: List<MacroBinding> = emptyList()
+    val inheritedMacros: List<MacroBinding> = emptyList(),
+    val isTest: Boolean = false
 ) {
     val modules = LinkedHashMap<String, RustModuleScope>()
     val moduleVisibilities = HashMap<String, RustVisibility>()

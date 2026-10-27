@@ -478,7 +478,8 @@ crates without dependency, method calls, variants, two crate roots, editions, im
    decision: `rust/r2-rs1`, `r2-rs2` (`other::helper()` is a call, decision 4), `r3-p3-rust` (through the barrels,
    decisions 7 and 16)
 8. [x] `impl` parts (decisions 3, 14), `RustCopyRules` (a declaration before an implementation part, else the nearest)
-9. [ ] `#[cfg(test)]` (decision 6)
+9. [x] `#[cfg(test)]` (decision 6); Christian chose to infer the flag (a run that analyses a Rust file in a test folder
+   has tests) over a shared `FileInfo` field; `spec-cfg-test` got a `tests/smoke.rs`
 10. [ ] copies by crate (decision 15)
 11. [ ] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
 
