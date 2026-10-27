@@ -19,6 +19,14 @@ import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustNamesp
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustPath
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustUse
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustVisibility
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlMember
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlMemberKind
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlName
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlNameKind
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlObject
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlObjectKind
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlScript
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlStatements
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AliasPathStart
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularDeclaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularSelector
@@ -64,3 +72,11 @@ typealias RustExternCrate = RustExternCrate
 typealias RustPath = RustPath
 typealias RustNamespace = RustNamespace
 typealias RustVisibility = RustVisibility
+typealias SqlScript = SqlScript
+typealias SqlObject = SqlObject
+typealias SqlObjectKind = SqlObjectKind
+typealias SqlMember = SqlMember
+typealias SqlMemberKind = SqlMemberKind
+typealias SqlStatements = SqlStatements
+typealias SqlName = SqlName
+typealias SqlNameKind = SqlNameKind
