@@ -36,6 +36,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Leaves of Delphi files**: the dependency map shows every Delphi type, free routine, constant and variable as a
   leaf, and a program's main block and a unit's `initialization` and `finalization` as a leaf `<unit>_script`.
 
+- **Leaves of SQL files**: the dependency map shows SQL sequences, types and domains as leaves, what an Oracle package
+  specification declares as leaves below the package, and a package body, an object type body or an `ALTER TABLE` of
+  another file's table as leaves of their own file that point at what they implement or change.
+
 ### Fixed 🐞
 
 - **Same name in several places**: `dependencyparser` links a class that several files declare under one name to the
@@ -89,6 +93,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   class and of the class's ancestors, the own unit and the units of the `uses` clauses, the last listed first, and
   reads method bodies, so it tells two units' `TCreature` apart, sees only the interface of another unit and no longer
   links a parameter or a local variable to a type of the same name.
+
+- **Schemas in SQL**: `dependencyparser` resolves a SQL name as the databases do, through the object's own schema, the
+  schema `SET search_path` sets and the package it is written in, tells a table from a function of the same name, and
+  no longer links a variable, a temporary table or a trigger's `inserted` rows to a table of the same name.
 
 - **Using directives in C#**: `dependencyparser` looks a C# name up in each enclosing namespace before the using
   directives written around it, so a class of the namespace wins over a using at the top of the file, a name two
