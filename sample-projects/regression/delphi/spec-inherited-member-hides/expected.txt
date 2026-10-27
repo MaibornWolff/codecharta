@@ -1,0 +1,5 @@
+# delphi.md, simple name 2, decision 4: a member inherited from another unit hides a unit routine
+file Game.Child.pas -> Game.Base.pas
+file Game.Child.pas -> Game.Util.pas
+leaf Game.Child.pas#TChild -> Game.Base.pas#TBase
+leaf Game.Child.pas#TChild -> Game.Util.pas#Other

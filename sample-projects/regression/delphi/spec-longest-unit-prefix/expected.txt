@@ -1,0 +1,3 @@
+# delphi.md, qualified: the longest prefix that names a unit in scope wins
+file Game.User.pas -> Game.Model.Extra.pas
+leaf Game.User.pas#Picked -> Game.Model.Extra.pas#Who

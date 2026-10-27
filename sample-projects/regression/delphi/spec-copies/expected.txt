@@ -1,0 +1,3 @@
+# Shared rule 2: a unit two folders declare means the nearest copy
+file one/Game.Arena.pas -> one/Game.Model.pas
+leaf one/Game.Arena.pas#TArena -> one/Game.Model.pas#TCreature

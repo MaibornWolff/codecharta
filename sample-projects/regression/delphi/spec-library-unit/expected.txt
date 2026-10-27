@@ -1,0 +1,3 @@
+# delphi.md, simple name 5: a library unit's name draws no edge; a project unit in uses beats System
+file Game.User.pas -> Game.Text.pas
+leaf Game.User.pas#TUser -> Game.Text.pas#Length
