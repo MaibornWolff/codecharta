@@ -65,16 +65,6 @@ missing file Game.Child.pas -> Game.Util.pas
 missing leaf Game.Child.pas#TChild -> Game.Util.pas#Other
 ```
 
-## spec-inherited-member-type
-
-Members are not looked up yet (decision 4): the uses entry's `TInner` wins over the inherited member type.
-
-```text
-missing leaf Game.Child.pas#TChild -> Game.Base.pas#TInner
-extra file Game.Child.pas -> Game.Util.pas
-extra leaf Game.Child.pas#TChild -> Game.Util.pas#TInner
-```
-
 ## spec-inline-variable
 
 Variables are no declarations today (decision 1).

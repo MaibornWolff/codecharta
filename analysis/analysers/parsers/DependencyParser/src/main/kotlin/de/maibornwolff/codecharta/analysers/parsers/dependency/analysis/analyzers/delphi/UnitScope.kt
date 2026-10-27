@@ -4,10 +4,10 @@ import de.maibornwolff.treesitter.excavationsite.api.DelphiDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.DelphiDeclarationKind
 
 /**
- * A declaration a written name found at [path], and whether every segment on the way was written in its declared case
- * (decision 3).
+ * A declaration a written name found in the unit [unitName] at [path], and whether every segment on the way was written in
+ * its declared case (decision 3).
  */
-internal data class Found(val declaration: DelphiDeclaration, val path: List<String>, val isExactCase: Boolean)
+internal data class Found(val declaration: DelphiDeclaration, val unitName: List<String>, val path: List<String>, val isExactCase: Boolean)
 
 /**
  * What a unit offers by name, ignoring case as the compiler does: its top-level declarations and the values of its
@@ -25,15 +25,15 @@ internal class UnitScope(val name: List<String>, declarations: List<DelphiDeclar
     private val byPath = declarations.groupBy { key(it.outerTypes + it.name) }
 
     fun find(written: String): Found? {
-        byName[written.lowercase()]?.let { return Found(it, pathOf(it), it.name == written) }
+        byName[written.lowercase()]?.let { return Found(it, name, pathOf(it), it.name == written) }
         val (value, enum) = enumsByValue[written.lowercase()] ?: return null
-        return Found(enum, pathOf(enum), value == written)
+        return Found(enum, name, pathOf(enum), value == written)
     }
 
     /** The member type [written] of [outer], declared below it in this unit. */
     fun memberTypeOf(outer: DelphiDeclaration, written: String): Found? {
         val memberType = memberTypes[key(outer.outerTypes + outer.name + written)]?.first() ?: return null
-        return Found(memberType, pathOf(memberType), memberType.name == written)
+        return Found(memberType, name, pathOf(memberType), memberType.name == written)
     }
 
     /** The type of this unit at [path] below the unit, a member type included. */

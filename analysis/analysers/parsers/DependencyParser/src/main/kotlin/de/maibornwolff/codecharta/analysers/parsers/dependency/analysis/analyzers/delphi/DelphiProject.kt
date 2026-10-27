@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 internal class DelphiProject private constructor(private val files: Set<String>, private val sourceOf: (String) -> String) {
     private val units = ConcurrentHashMap<String, DelphiUnit>()
+    private val unitsByName by lazy { unitsByName() }
     private val exportedScopes by lazy { exportedScopesByName() }
 
     /** What a file declares and writes, read once. */
@@ -21,13 +22,17 @@ internal class DelphiProject private constructor(private val files: Set<String>,
     /** What the unit of [name], written in any case, offers to the units that use it: its interface section. */
     fun exportedScopeOf(name: List<String>): UnitScope? = exportedScopes[keyOf(name)]
 
-    private fun exportedScopesByName(): Map<String, UnitScope> = files
+    /** The unit of [name], written in any case; the first copy of a unit that several files declare. */
+    fun unitNamed(name: List<String>): DelphiUnit? = unitsByName[keyOf(name)]?.first()
+
+    private fun unitsByName(): Map<String, List<DelphiUnit>> = files
         .map { unitOf(it) }
         .filter { it.kind == DelphiUnitKind.UNIT && it.name.isNotEmpty() }
         .groupBy { keyOf(it.name) }
-        .mapValues { (_, copies) ->
-            UnitScope(copies.first().name, copies.flatMap { copy -> copy.declarations.filter { it.section == DelphiSection.INTERFACE } })
-        }
+
+    private fun exportedScopesByName(): Map<String, UnitScope> = unitsByName.mapValues { (_, copies) ->
+        UnitScope(copies.first().name, copies.flatMap { copy -> copy.declarations.filter { it.section == DelphiSection.INTERFACE } })
+    }
 
     companion object {
         private val projectsByRun = ConcurrentHashMap<Pair<String, Set<String>>, DelphiProject>()
