@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.rust
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.scan.TestFileDetector
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.readInParallel
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.splitNameToParts
 import de.maibornwolff.treesitter.excavationsite.api.RustModule
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
@@ -18,6 +19,12 @@ internal class RustProject private constructor(
     private val sourceOf: (List<String>) -> String
 ) {
     private val facts = ConcurrentHashMap<List<String>, RustModule>()
+
+    // The tree reads every file one after the other, while the other files of the run wait for it
+    init {
+        readInParallel(rustFiles) { factsOf(it) }
+    }
+
     val tree = RustModuleTree(crates, rustFiles, includesTests, ::factsOf)
 
     /** What a file declares and writes, read once. */
