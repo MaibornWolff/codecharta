@@ -1,7 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.sql
 
-import de.maibornwolff.treesitter.excavationsite.api.SqlMember
 import de.maibornwolff.treesitter.excavationsite.api.SqlMemberKind
+import de.maibornwolff.treesitter.excavationsite.api.SqlName
+import de.maibornwolff.treesitter.excavationsite.api.SqlNameKind
 import de.maibornwolff.treesitter.excavationsite.api.SqlObjectKind
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import org.assertj.core.api.Assertions.assertThat
@@ -11,6 +12,10 @@ import org.junit.jupiter.api.Test
 
 class SqlScriptTest {
     private fun objectsOf(code: String) = TreeSitterDependencies.sqlScript(code.trimIndent()).objects
+
+    private fun namesOf(code: String) = objectsOf(code).single().names
+
+    private fun name(written: String, kind: SqlNameKind) = SqlName(written.split("."), kind)
 
     @Nested
     inner class Objects {
@@ -158,13 +163,13 @@ class SqlScriptTest {
 
             // Assert
             assertThat(specification.kind).isEqualTo(SqlObjectKind.PACKAGE)
-            assertThat(specification.members).containsExactly(
-                SqlMember("c_max", SqlMemberKind.CONSTANT),
-                SqlMember("g_calls", SqlMemberKind.VARIABLE),
-                SqlMember("t_rec", SqlMemberKind.TYPE),
-                SqlMember("c_orders", SqlMemberKind.CURSOR),
-                SqlMember("e_too_big", SqlMemberKind.EXCEPTION),
-                SqlMember("total", SqlMemberKind.ROUTINE)
+            assertThat(specification.members).extracting({ it.name }, { it.kind }).containsExactly(
+                tuple("c_max", SqlMemberKind.CONSTANT),
+                tuple("g_calls", SqlMemberKind.VARIABLE),
+                tuple("t_rec", SqlMemberKind.TYPE),
+                tuple("c_orders", SqlMemberKind.CURSOR),
+                tuple("e_too_big", SqlMemberKind.EXCEPTION),
+                tuple("total", SqlMemberKind.ROUTINE)
             )
         }
 
@@ -191,6 +196,179 @@ class SqlScriptTest {
             assertThat(objects).extracting({ it.kind }, { it.name }, { it.members.map { member -> member.name } }).containsExactly(
                 tuple(SqlObjectKind.PACKAGE_BODY, listOf("pricing"), listOf("helper")),
                 tuple(SqlObjectKind.TYPE_BODY, listOf("point_t"), listOf("len"))
+            )
+        }
+    }
+
+    @Nested
+    inner class Names {
+        @Test
+        fun `should ask a relation, a routine, a type or a sequence by the position of a name`() {
+            // Arrange
+            val code = """
+                CREATE FUNCTION report(r orders, m mood) RETURNS money_amount AS $$
+                BEGIN
+                    PERFORM warm_up();
+                    INSERT INTO order_log SELECT id, nextval('order_seq') FROM recent_orders(7) JOIN dbo.customers c ON c.id = id;
+                    RETURN ROW(1)::money_amount;
+                END $$ LANGUAGE plpgsql;
+            """
+
+            // Act
+            val names = namesOf(code)
+
+            // Assert
+            assertThat(names).containsExactly(
+                name("orders", SqlNameKind.TYPE),
+                name("mood", SqlNameKind.TYPE),
+                name("money_amount", SqlNameKind.TYPE),
+                name("warm_up", SqlNameKind.ROUTINE),
+                name("order_log", SqlNameKind.RELATION),
+                name("order_seq", SqlNameKind.SEQUENCE),
+                name("nextval", SqlNameKind.ROUTINE),
+                name("recent_orders", SqlNameKind.ROUTINE),
+                name("dbo.customers", SqlNameKind.RELATION),
+                name("c.id", SqlNameKind.MEMBER),
+                name("row", SqlNameKind.ROUTINE)
+            )
+        }
+
+        @Test
+        fun `should read EXEC, NEXT VALUE FOR, NEXTVAL and a package member`() {
+            // Arrange
+            val code = """
+                CREATE PROCEDURE dbo.add_order AS
+                BEGIN
+                    EXEC dbo.reset_dice;
+                    SELECT NEXT VALUE FOR dbo.order_seq;
+                    SELECT order_seq.NEXTVAL, pricing.c_max, warehouse.dbo.orders.id;
+                END
+            """
+
+            // Act
+            val names = namesOf(code)
+
+            // Assert
+            assertThat(names).containsExactly(
+                name("dbo.reset_dice", SqlNameKind.ROUTINE),
+                name("dbo.order_seq", SqlNameKind.SEQUENCE),
+                name("order_seq", SqlNameKind.SEQUENCE),
+                name("pricing.c_max", SqlNameKind.MEMBER),
+                name("dbo.orders.id", SqlNameKind.MEMBER)
+            )
+        }
+
+        @Test
+        fun `should leave out the names locals hide`() {
+            // Arrange
+            val code = """
+                CREATE FUNCTION report(scratch_id INT) RETURNS INT AS $$
+                DECLARE
+                    v_count INT;
+                BEGIN
+                    CREATE TEMP TABLE scratch AS SELECT id FROM orders;
+                    WITH totals AS (SELECT id FROM scratch)
+                    SELECT count(*) INTO v_count FROM totals;
+                    RETURN v_count;
+                END $$ LANGUAGE plpgsql;
+            """
+
+            // Act
+            val names = namesOf(code)
+
+            // Assert
+            assertThat(names.map { it.parts.single() }).containsExactly("int", "orders", "count")
+        }
+
+        @Test
+        fun `should leave out the rows a trigger sees`() {
+            // Arrange
+            val code = "CREATE TRIGGER logged ON dbo.orders AFTER UPDATE AS BEGIN INSERT INTO log SELECT id FROM inserted; END"
+
+            // Act
+            val names = namesOf(code)
+
+            // Assert
+            assertThat(names).containsExactly(name("dbo.orders", SqlNameKind.RELATION), name("log", SqlNameKind.RELATION))
+        }
+
+        @Test
+        fun `should let a synonym stand for an object of any kind`() {
+            // Arrange
+            val code = "CREATE SYNONYM dice FOR roll;"
+
+            // Act
+            val names = namesOf(code)
+
+            // Assert
+            assertThat(names).containsExactly(name("roll", SqlNameKind.ANY))
+        }
+
+        @Test
+        fun `should read a plain identifier inside a package as a possible member`() {
+            // Arrange
+            val code = """
+                CREATE OR REPLACE PACKAGE BODY pricing AS
+                    FUNCTION helper RETURN NUMBER IS
+                        v NUMBER;
+                    BEGIN
+                        v := c_max;
+                        RETURN v;
+                    END helper;
+                END pricing;
+                /
+            """
+
+            // Act
+            val helper = objectsOf(code).single().members.single()
+
+            // Assert
+            assertThat(helper.names).containsExactly(
+                name("return", SqlNameKind.BARE),
+                name("number", SqlNameKind.TYPE),
+                name("c_max", SqlNameKind.BARE)
+            )
+        }
+
+        @Test
+        fun `should read the type of a package variable and the query of a cursor`() {
+            // Arrange
+            val code = """
+                CREATE OR REPLACE PACKAGE pricing AS
+                    g_mood mood;
+                    CURSOR c_orders IS SELECT id FROM orders;
+                END pricing;
+                /
+            """
+
+            // Act
+            val members = objectsOf(code).single().members
+
+            // Assert
+            assertThat(members[0].names).containsExactly(name("mood", SqlNameKind.TYPE))
+            assertThat(members[1].names).containsExactly(name("id", SqlNameKind.BARE), name("orders", SqlNameKind.RELATION))
+        }
+
+        @Test
+        fun `should read what an ALTER adds and the statements outside every object with their default schema`() {
+            // Arrange
+            val code = """
+                ALTER TABLE orders ADD FOREIGN KEY (customer_id) REFERENCES customers (id);
+                INSERT INTO orders SELECT * FROM staging;
+                SET search_path TO sales;
+                CALL refresh();
+            """
+
+            // Act
+            val script = TreeSitterDependencies.sqlScript(code.trimIndent())
+
+            // Assert
+            assertThat(
+                script.objects.single().names
+            ).containsExactly(name("key", SqlNameKind.ROUTINE), name("customers", SqlNameKind.RELATION))
+            assertThat(script.statements).extracting({ it.defaultSchema }, { it.names }).containsExactly(
+                tuple(null, listOf(name("orders", SqlNameKind.RELATION), name("staging", SqlNameKind.RELATION))),
+                tuple("sales", listOf(name("refresh", SqlNameKind.ROUTINE)))
             )
         }
     }
