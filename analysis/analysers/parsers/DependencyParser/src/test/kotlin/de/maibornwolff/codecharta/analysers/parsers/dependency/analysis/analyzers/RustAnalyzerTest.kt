@@ -12,6 +12,8 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLa
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies.DependencyResolverService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
+import java.io.File
 
 class RustAnalyzerTest {
     private fun analyze(code: String, physicalPath: String = "src/lib.rs"): FileReport =
@@ -77,6 +79,25 @@ class RustAnalyzerTest {
 
         // Assert — the crate dir before src ("core") is prepended so cross-crate imports can resolve
         assertThat(report.node("Foo").pathWithName.parts).containsExactly("core", "domain", "model", "Foo")
+    }
+
+    @Test
+    fun `should prefix the node path with the crate name of Cargo toml and the module path of the mod declarations`(
+        @TempDir root: File
+    ) {
+        // Arrange
+        root.resolve("game/src/app").mkdirs()
+        root.resolve("game/Cargo.toml").writeText("[package]\nname = \"my-game\"\nedition = \"2021\"\n")
+        root.resolve("game/src/lib.rs").writeText("pub mod app;")
+        root.resolve("game/src/app/mod.rs").writeText("#[path = \"creature_naming.rs\"]\npub mod naming;")
+        val code = "pub struct Naming;"
+        root.resolve("game/src/app/creature_naming.rs").writeText(code)
+
+        // Act
+        val report = RustAnalyzer(FileInfo(SupportedLanguage.RUST, "game/src/app/creature_naming.rs", code, root)).analyze()
+
+        // Assert
+        assertThat(report.node("Naming").pathWithName.parts).containsExactly("my_game", "app", "naming", "Naming")
     }
 
     @Test

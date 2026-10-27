@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toNodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toType
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.splitNameToParts
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
@@ -20,21 +19,32 @@ import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
 
 /**
- * A `.rs` file's module path is not written in its source but follows from where the file lies, so it is derived
- * from the physical path and prefixed to the inline `mod` chain of each declaration.
+ * A `.rs` file's module path is the one the module tree gives it (`rust.md`, "Modules"), prefixed to the inline `mod`
+ * chain of each declaration; it starts with the crate name.
  *
  * A `pub use module::Type` becomes a [NodeType.REEXPORT] carrier at `crate::Type`, because a crate flattens its
  * public API at `lib.rs` and consumers import the short path. The dependency resolver folds it into an alias.
  */
 class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
+    private val file = RustProject.segmentsOf(fileInfo.physicalPath)
+
     override fun analyze(): FileReport {
         val result = TreeSitterDependencies.analyze(fileInfo.content, Language.RUST)
-        val crateRoot = deriveCrateRoot(fileInfo.physicalPath)
-        val fileModulePath = crateRoot + deriveInCrateModulePath(fileInfo.physicalPath)
+        val project =
+            fileInfo.analysisRoot?.let { RustProject.of(it, fileInfo.analysedFiles) } ?: RustProject.ofSingleFile(file, fileInfo.content)
+        val fileScope = project.tree.scopeOf(file)
+        val crateRoot = fileScope?.crateRootPath.orEmpty()
+        val fileModulePath = fileScope?.path.orEmpty()
 
         val (reexportImports, regularImports) = result.imports.partition { it.kind == ImportKind.REEXPORT }
-        val imports = regularImports.map {
-            Dependency(path = Path(normalizePath(it.path, fileModulePath, crateRoot)), isWildcard = it.isWildcard)
+        val isEdition2015 = (fileScope?.crate?.edition ?: RustCrate.EDITION_2021) < RustCrate.EDITION_2018
+        val imports = regularImports.flatMap { import ->
+            importPaths(
+                import.path,
+                fileModulePath,
+                crateRoot,
+                isEdition2015
+            ).map { Dependency(path = Path(it), isWildcard = import.isWildcard) }
         }
 
         val declarationNodes = result.declarations.map { declaration ->
@@ -42,6 +52,17 @@ class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         }
         val reexportNodes = reexportImports.mapNotNull { toReexportNode(it, fileModulePath, crateRoot) }
         return FileReport(declarationNodes + reexportNodes)
+    }
+
+    // In edition 2015 a `use` path starts at the crate root, where `extern crate` puts the other crates too
+    private fun importPaths(
+        path: List<String>,
+        fileModulePath: List<String>,
+        crateRoot: List<String>,
+        isEdition2015: Boolean
+    ): List<List<String>> {
+        val normalized = normalizePath(path, fileModulePath, crateRoot)
+        return if (isEdition2015 && normalized == path) listOf(crateRoot + path, path) else listOf(normalized)
     }
 
     private fun toReexportNode(import: ImportDeclaration, fileModulePath: List<String>, crateRoot: List<String>): Node? {
@@ -122,43 +143,9 @@ class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         return base + path.drop(index)
     }
 
-    // Node paths carry the crate name, `crates/domain/src/workshop.rs` → `[domain]`, because a Rust path is always
-    // rooted at a crate and cross-crate imports like `use domain::workshop::Workshop` must match them
-    private fun deriveCrateRoot(physicalPath: String): List<String> {
-        val parts = splitNameToParts(physicalPath).filter { it != CURRENT_DIR }
-        val srcIndex = parts.lastIndexOf(SRC_DIR)
-        return if (srcIndex > 0) listOf(parts[srcIndex - 1]) else emptyList()
-    }
-
-    // Rust 2018: `mod.rs` marks a directory module at any depth, while `lib.rs` and `main.rs` are the crate root
-    // only directly below `src` and an ordinary module anywhere else
-    private fun deriveInCrateModulePath(physicalPath: String): List<String> {
-        val parts = splitNameToParts(physicalPath).filter { it != CURRENT_DIR }
-        val relativeParts = stripToCrateRoot(parts)
-        if (relativeParts.isEmpty()) return emptyList()
-
-        val fileName = relativeParts.last()
-        val directories = relativeParts.dropLast(1)
-        return when {
-            fileName == MOD_FILE -> directories
-            fileName in CRATE_ROOT_FILES && directories.isEmpty() -> emptyList()
-            else -> directories + fileName.removeSuffix(RUST_EXTENSION)
-        }
-    }
-
-    private fun stripToCrateRoot(parts: List<String>): List<String> {
-        val srcIndex = parts.lastIndexOf(SRC_DIR)
-        return if (srcIndex in 0 until parts.lastIndex) parts.drop(srcIndex + 1) else parts
-    }
-
     companion object {
         private const val CRATE = "crate"
         private const val SELF = "self"
         private const val SUPER = "super"
-        private const val SRC_DIR = "src"
-        private const val CURRENT_DIR = "."
-        private const val RUST_EXTENSION = ".rs"
-        private const val MOD_FILE = "mod.rs"
-        private val CRATE_ROOT_FILES = setOf("lib.rs", "main.rs")
     }
 }
