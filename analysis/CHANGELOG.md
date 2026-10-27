@@ -42,6 +42,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- **SQL functions in other languages**: `dependencyparser` no longer links the body of a PostgreSQL function written in
+  Perl, Python or C to SQL objects of the same name.
+
 - **C++ classes with an export macro**: `dependencyparser` reads `class LIB_EXPORT Widget` as the class `Widget`, so
   the code using it links to its header.
 
