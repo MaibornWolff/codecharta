@@ -42,4 +42,36 @@ class CppDeclarationsTest {
         // Assert
         assertThat(found).isNull()
     }
+
+    @Test
+    fun `should hand out the parse of the file's include closure for the same text`(
+        @TempDir root: File
+    ) {
+        // Arrange
+        root.withFile("creature.h", "struct Creature {};")
+        val declarations = CppDeclarations.of(root)
+        declarations.visibleNamesOf(listOf("creature.h"))
+
+        // Act
+        val first = declarations.parseOf(listOf("creature.h"), "struct Creature {};")
+        val second = declarations.parseOf(listOf("creature.h"), "struct Creature {};")
+
+        // Assert
+        assertThat(second).isSameAs(first)
+        assertThat(first.declarations.map { it.name }).containsExactly("Creature")
+    }
+
+    @Test
+    fun `should parse the given text when it differs from the file`(
+        @TempDir root: File
+    ) {
+        // Arrange
+        root.withFile("creature.h", "﻿struct Creature {};")
+
+        // Act
+        val parse = CppDeclarations.of(root).parseOf(listOf("creature.h"), "struct Speed {};")
+
+        // Assert
+        assertThat(parse.declarations.map { it.name }).containsExactly("Speed")
+    }
 }

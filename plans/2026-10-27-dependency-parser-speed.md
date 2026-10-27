@@ -39,7 +39,7 @@ Branch `fix/dependency-parser-speed`, cut from `fix/dependency-name-resolution-s
 - [x] 2. SQL: parse the run's files in parallel before the name index is built
 - [x] 3. Delphi: parse the run's files in parallel before the unit index is built
 - [x] 4. C++: build the lookup without bases once per closure
-- [ ] 5. C++: reuse the closure's parse of the analyzed file
+- [x] 5. C++: reuse the closure's parse of the analyzed file
 - [ ] 6. TS/JS/Vue: cache the module files and canonical paths an import looks up
 - [ ] 7. TS/JS/Vue: read the files of the global declarations and components in parallel
 
