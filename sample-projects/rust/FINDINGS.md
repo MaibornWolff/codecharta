@@ -116,7 +116,18 @@ Rounds 1 and 2, re-verified on the fresh output:
   does not read `Cargo.toml` (crate name), `#[path]`, `use … as`, nested re-exports, or anything inside
   a function body. The body is skipped on purpose: `UsedTypeExtractor` stops at every `block`.
 - Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/rust.md`): listed
-  per probe in `regression/rust/known-gaps.md`.
+  per probe in `regression/rust/known-gaps.md`; one left, Not supported by decision 15 (an item `lib.rs` and
+  `main.rs` both declare).
+- After the name rules (branch `fix/dependency-name-resolution-rust`, 2026-10-27): 87 file edges and 103 leaf edges
+  (97 and 123 with `--include-tests`). Every "missing" row of the tables above is drawn: the function bodies (typed
+  locals, turbofish, struct literals and patterns, closure parameters, constructors, variants, calls, constants), the
+  aliased import, the `#[path]` module, the `creature_count!` invocation, `impl Iterator<Item = Creature>`, the barrel
+  imports, `dto::Creature` beside the imported domain `Creature`, and the test crate through `cellars_and_centaurs::`.
+  The inline test modules count only with `--include-tests` (decision 6). A use through a `mod.rs` barrel points at the
+  barrel's re-export leaf (decision 7), so `domain/model/mod.rs` and `application/mod.rs` are hubs
+  (`creature_util.rs -> domain/model/mod.rs -> creature.rs`). Both expected cycles are reported, through
+  `application/mod.rs`, and five file edges are flagged upward. The name-only fallback and its false positives are
+  gone. Leaves still carry no namespace.
 
 ## Unified parser
 - `unifiedparser -nc … -e "output,FINDINGS.md"`: exit 0, 37 `.rs` files analysed, including
