@@ -269,6 +269,50 @@ class SqlAnalyzerTest {
     }
 
     @Test
+    fun `should make a change of an object another file creates an implementation part of it`() {
+        // Arrange
+        withFiles(
+            "db/V1__orders.sql" to "CREATE TABLE orders (id INT, customer_id INT);\nCREATE TABLE customers (id INT);",
+            "db/V2__foreign_key.sql" to """
+                ALTER TABLE orders ADD FOREIGN KEY (customer_id) REFERENCES customers (id);
+                ALTER TABLE staging ADD FOREIGN KEY (customer_id) REFERENCES customers (id);
+            """
+        )
+
+        // Act
+        val report = analyze("db/V2__foreign_key.sql")
+
+        // Assert
+        assertThat(report.nodes)
+            .extracting({ it.pathWithName.parts.last() }, { it.isImplementationPart }, {
+                it.usedTypes.map { type ->
+                    type.name
+                }
+            })
+            .containsExactly(
+                tuple("orders", true, listOf("orders", "customers")),
+                tuple("V2__foreign_key_script", false, listOf("customers"))
+            )
+    }
+
+    @Test
+    fun `should make a change in the file that creates the object part of its leaf`() {
+        // Arrange
+        withFiles(
+            "db/customers.sql" to "CREATE TABLE customers (id INT);",
+            "db/orders.sql" to "CREATE TABLE orders (id INT);\nALTER TABLE orders ADD FOREIGN KEY (id) REFERENCES customers (id);"
+        )
+
+        // Act
+        val report = analyze("db/orders.sql")
+
+        // Assert
+        assertThat(report.nodes)
+            .extracting({ it.pathWithName.withDots() }, { it.usedTypes.map { type -> type.name } })
+            .containsExactly(tuple("orders", listOf("customers")))
+    }
+
+    @Test
     fun `should name the statements outside any definition after their file`() {
         // Arrange
         withFiles(
