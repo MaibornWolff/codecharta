@@ -480,7 +480,8 @@ crates without dependency, method calls, variants, two crate roots, editions, im
 8. [x] `impl` parts (decisions 3, 14), `RustCopyRules` (a declaration before an implementation part, else the nearest)
 9. [x] `#[cfg(test)]` (decision 6); Christian chose to infer the flag (a run that analyses a Rust file in a test folder
    has tests) over a shared `FileInfo` field; `spec-cfg-test` got a `tests/smoke.rs`
-10. [ ] copies by crate (decision 15)
+10. [x] decision 15 changed to the nearest copy (Christian, 2026-10-27: the copy step cannot know the crate a use
+    resolved in; no shared change); `spec-binary-copy` stays a known gap, Not supported
 11. [ ] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
 
 The prototype of steps 5–10 is `git stash` "rust-prototype" (copy `rust-prototype.patch` in the scratchpad): all

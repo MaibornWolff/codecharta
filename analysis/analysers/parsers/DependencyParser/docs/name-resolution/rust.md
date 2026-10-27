@@ -120,10 +120,10 @@ static, a unit struct or variant makes it a path); the two differ only for code 
 
 ## Which file
 
-A path that several files declare means the copy of the crate the use was resolved in, else the nearest copy (shared
-rule 2): a library and a binary of one package both have the crate name, so `crate::Config` in `main.rs` means the
-binary's own `Config`, `cellars_and_centaurs::Config` the library's (decision 15). Two `#[cfg]` variants of one item
-in one file are one declaration.
+A path that several files declare means the nearest copy (shared rule 2), a declaration before an implementation part
+of its path. A library and a binary of one package both have the crate name, so an item that `lib.rs` and `main.rs`
+both declare is two copies of one path, and both `crate::Config` and `cellars_and_centaurs::Config` in `main.rs` mean
+the nearest (decision 15). Two `#[cfg]` variants of one item in one file are one declaration.
 
 ## Probes
 
@@ -202,6 +202,8 @@ confirmed the meaning of each name. "Gap" means the parser does not follow the r
   inference (decision 10). A trait method called by path (`Fightable::attack(&c)`) is a use of the trait.
 - Names in a `macro_rules!` body, procedural macros and derives (`#[derive(Serialize)]`), and code that macros or a
   build script generate (`include!`, `OUT_DIR`).
+- An item that `lib.rs` and `main.rs` of one package both declare: a use means the nearest copy, not the one of the
+  crate it resolved in (decision 15).
 - `--include-tests` over Rust code without a test folder: `#[cfg(test)]` code is left out, as the run cannot tell it
   includes tests (decision 6).
 - `#[cfg]` conditions other than `test`: every variant counts. Cargo features, `[patch]` and whether a crate is a
@@ -241,8 +243,9 @@ confirmed the meaning of each name. "Gap" means the parser does not follow the r
     `Cargo.toml` that names none as 2015, as Cargo does (derived 2026-10-26).
 14. An `impl` of a project trait for a type the project does not declare is an implementation part of the trait, by
     decision 3 (derived 2026-10-26).
-15. A path that two crates of one package declare means the copy of the crate the use resolved in, as the C++ include
-    closure picks its copy (cpp.md decision 6, derived 2026-10-26).
+15. A path that two crates of one package declare means the nearest copy, as anywhere else: which crate a use resolved
+    in does not reach the step that picks the copy, and only items written in both crate roots collide (Christian
+    chose this on 2026-10-27 over a shared change, replacing the derived rule of the copy of the crate).
 16. A declaration that names itself through a re-export (`crate::model::Foo` inside `model/foo.rs`) points at the
     re-export, which points back: a cycle between the file and its `mod.rs`, as Python and TypeScript draw it today
     (decided 2026-10-27).
