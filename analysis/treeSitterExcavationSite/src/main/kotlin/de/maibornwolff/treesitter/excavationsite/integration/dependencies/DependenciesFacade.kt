@@ -5,6 +5,8 @@ import de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors.Uni
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiUnit
 import de.maibornwolff.treesitter.excavationsite.languages.rust.extractors.ModuleReader
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustModule
+import de.maibornwolff.treesitter.excavationsite.languages.sql.extractors.ScriptReader
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlScript
 import de.maibornwolff.treesitter.excavationsite.languages.vue.VueDependencyMapping
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ComponentRegistration
@@ -61,6 +63,12 @@ object DependenciesFacade {
     fun delphiUnit(content: String): DelphiUnit {
         val grammar = NativeTreeSitter.grammar(LanguageRegistry.getGrammarLibrary(Language.DELPHI))
         return FfmSyntaxTree.parse(content, grammar).use { it.readReleasingReachedNodes(UnitReader::read) }
+    }
+
+    /** What a SQL file creates, changes and names, for the name lookup of `sql.md`. */
+    fun sqlScript(content: String): SqlScript {
+        val grammar = NativeTreeSitter.grammar(LanguageRegistry.getGrammarLibrary(Language.SQL))
+        return FfmSyntaxTree.parse(content, grammar).use { it.readReleasingReachedNodes(ScriptReader::read) }
     }
 
     fun bundlerAliases(

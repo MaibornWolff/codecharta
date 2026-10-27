@@ -5,6 +5,7 @@ import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiUnit
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.JavascriptDependencyMapping
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustModule
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlScript
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ComponentRegistration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DependencyResult
@@ -45,6 +46,12 @@ object TreeSitterDependencies {
      * with its section, the types around it, its members and its base types.
      */
     fun delphiUnit(content: String): DelphiUnit = DependenciesFacade.delphiUnit(content)
+
+    /**
+     * What a SQL file creates and changes, each object with its schema, its members and the names it writes with the
+     * kind of object they ask for, and the names of the statements outside every object with their default schema.
+     */
+    fun sqlScript(content: String): SqlScript = DependenciesFacade.sqlScript(content)
 
     fun isDependencyAnalysisSupported(language: Language): Boolean {
         val definition = LanguageRegistry.getLanguageDefinition(language)
