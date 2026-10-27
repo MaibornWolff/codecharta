@@ -152,6 +152,9 @@ edges on common project layouts; every item below is a bug in DependaCharta that
 - A Rust name is resolved as the compiler does, through the module tree of its crate: crate names from `Cargo.toml`,
   modules from the `mod` declarations and `#[path]`, function bodies and macro calls included; a `pub use` is a leaf of
   its own that the code importing through it points at, rather than an alias folded onto the declaration.
+- A Delphi name is resolved as the compiler does, through the units of the run by their unit name: the members of its
+  class and the class's project ancestors, the own unit, then the units of the `uses` clauses, the last listed first;
+  free routines, constants, variables and the main code are leaves of their own.
 - A Module Federation producer is looked up in name order, preferring a federation-name match over a
   directory-name match, so the result does not depend on how the file system lists directories.
 - A file that fails to parse or exceeds `--file-timeout` is reported in a warning per cause naming the files;
@@ -163,8 +166,9 @@ edges on common project layouts; every item below is a bug in DependaCharta that
    types they use. Imports are resolved through the language's own rules, plus tsconfig/jsconfig path
    aliases, bundler aliases (webpack, vite, vue.config), Module Federation remotes, workspace packages and
    `package.json` entry files, Go's `go.mod` files and `vendor/` folders, the folders above Python's top-level
-   packages, and Rust's `Cargo.toml` files and `mod` declarations. TypeScript, JavaScript and Vue write every name as the full path of what its binding names, so the
-   resolve step only looks that path up.
+   packages, Rust's `Cargo.toml` files and `mod` declarations, and the unit names of Delphi's files. TypeScript,
+   JavaScript and Vue write every name as the full path of what its binding names, so the resolve step only looks that
+   path up.
 2. **Resolve.** Used types are matched against the declarations the whole project offers, with a
    per-language standard-library filter so `java.util.List` does not become a project dependency. A name is
    matched only against languages that can refer to each other by name (`SupportedLanguage.nameScope`): Java
