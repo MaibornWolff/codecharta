@@ -28,6 +28,9 @@ global namespace. The rules shared by every language are in [README.md](README.m
   class body belong to the class's leaf. An explicit specialization `template <> class Repository<Centaur> { … }` and
   an out-of-line member of a template (`int Pool<T>::size()`) are implementation parts of the template `Repository`
   or `Pool`.
+- An export macro between `class`, `struct` or `union` and the name of a class with a body (`class LIB_EXPORT Widget
+  {`, `struct API Centaur final : Creature {`), an upper-case name, is no part of the class: the class is `Widget`
+  (decision 15).
 - A function defined with the name of a namespace (`bool log::shouldLog(int category) { … }`) is a free function of
   that namespace when a file of the include closure opens it, as the compiler requires: no declaration, no
   implementation part (decisions 4 and 14). Only a qualifier the closure does not know as a namespace is read as a
@@ -119,6 +122,7 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 | Declarations, decision 8: explicit specialization | `cpp/spec-template-specialization` | ok |
 | Declarations, decision 8: out-of-line template member | `cpp/spec-template-out-of-line-member` | ok |
 | Declarations, decision 14: a function defined with its namespace | `cpp/spec-namespace-qualified-function` | ok |
+| Declarations, decision 15: an export macro before the class name | `cpp/spec-export-macro` | ok |
 | Declarations: unnamed namespace | `cpp/spec-unnamed-namespace` | ok |
 | Include paths 1: relative to the including file | `c/spec-include-relative` | ok |
 | Include paths 2: path ending | `c/spec-include-path-suffix` | ok |
@@ -161,8 +165,8 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 
 - The build's include directories (`-I`, `compile_commands.json`, CMake): rule 2 of the include paths stands in.
 - Preprocessor conditions: every `#include` and all code count, under `#if`, `#ifdef` and `#if 0` alike. Macros are
-  not expanded; a type a macro writes is not seen, and a typedef a macro keeps the parser from reading
-  (`typedef Foo *FooPtr DEPRECATED;`) declares nothing.
+  not expanded, apart from export macros before a class name (decision 15); a type a macro writes is not seen, and a
+  typedef a macro keeps the parser from reading (`typedef Foo *FooPtr DEPRECATED;`) declares nothing.
 - Declaration order: a declaration later in the include closure, or later in the same file, counts as well.
 - Declarations in files that are no C or C++ file, such as `.inc` fragments or headers without an extension.
 - Argument-dependent lookup, dependent names in templates (`typename T::Value`), C++20 modules (`import`).
@@ -197,3 +201,6 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
     qualifier up there; otherwise it is a member function of the class `Q`, also when the closure shows neither
     (Christian chose the lookup in the closure on 2026-10-27, after the edge check found a class `log` made of
     `bool util::log::ShouldDebugLog()`).
+15. An upper-case name between `class`, `struct` or `union` and the name of a class with a body is an export macro,
+    which the compiler sees as nothing or an attribute, so the class is the name after it; the dependency extraction
+    reads it so, metrics read the file as it is (Christian, 2026-10-27).

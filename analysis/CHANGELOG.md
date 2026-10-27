@@ -42,6 +42,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- **C++ classes with an export macro**: `dependencyparser` reads `class LIB_EXPORT Widget` as the class `Widget`, so
+  the code using it links to its header.
+
 - **Same name in several places**: `dependencyparser` links a class that several files declare under one name to the
   copy nearest to the file that uses it, instead of to whichever copy it read first, a C# partial class to every
   file of its project that holds a part of it, and a Go function written once per platform to each of its files.
