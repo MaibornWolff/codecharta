@@ -15,6 +15,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.rust.RustCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.rust.RustNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlCopyRules
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.TypescriptNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.CopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.DefaultNameRules
@@ -34,6 +35,7 @@ internal object LanguageRules {
         SupportedLanguage.PHP -> PhpNameRules
         SupportedLanguage.PYTHON -> PythonNameRules
         SupportedLanguage.RUST -> RustNameRules
+        SupportedLanguage.SQL -> SqlNameRules
         SupportedLanguage.TYPESCRIPT, SupportedLanguage.JAVASCRIPT, SupportedLanguage.VUE -> TypescriptNameRules
         else -> DefaultNameRules
     }
