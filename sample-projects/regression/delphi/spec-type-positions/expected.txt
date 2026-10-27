@@ -1,0 +1,13 @@
+# delphi.md, declarations: parameter, return, field, property, local, typed constant, generic argument and constraint, base types
+file Game.Arena.pas -> Game.Model.pas
+leaf Game.Arena.pas#NoName -> Game.Model.pas#TName
+leaf Game.Arena.pas#TArena -> Game.Arena.pas#TList
+leaf Game.Arena.pas#TArena -> Game.Model.pas#IStrong
+leaf Game.Arena.pas#TArena -> Game.Model.pas#TArmor
+leaf Game.Arena.pas#TArena -> Game.Model.pas#TBase
+leaf Game.Arena.pas#TArena -> Game.Model.pas#THp
+leaf Game.Arena.pas#TArena -> Game.Model.pas#TLoot
+leaf Game.Arena.pas#TArena -> Game.Model.pas#TSpeed
+leaf Game.Arena.pas#TArena -> Game.Model.pas#TTrap
+leaf Game.Arena.pas#TPool -> Game.Model.pas#TRule
+leaf Game.Model.pas#IStrong -> Game.Model.pas#IFight

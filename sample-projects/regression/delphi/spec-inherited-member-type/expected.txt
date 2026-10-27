@@ -1,0 +1,4 @@
+# delphi.md, simple name 2: an inherited member type means the ancestor's
+file Game.Child.pas -> Game.Base.pas
+leaf Game.Child.pas#TChild -> Game.Base.pas#TBase
+leaf Game.Child.pas#TChild -> Game.Base.pas#TInner

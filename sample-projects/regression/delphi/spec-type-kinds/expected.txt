@@ -1,0 +1,15 @@
+# delphi.md, declarations, decision 1: an alias, a pointer, a class reference, a procedural, a set and an array type
+file Game.Types.pas -> Game.Model.pas
+file Game.User.pas -> Game.Types.pas
+leaf Game.Types.pas#PCreature -> Game.Model.pas#TCreature
+leaf Game.Types.pas#TColors -> Game.Model.pas#TColor
+leaf Game.Types.pas#TCreatureClass -> Game.Model.pas#TCreature
+leaf Game.Types.pas#TCreatureProc -> Game.Model.pas#TCreature
+leaf Game.Types.pas#TCreatures -> Game.Model.pas#TCreature
+leaf Game.Types.pas#TEntity -> Game.Model.pas#TCreature
+leaf Game.User.pas#TUser -> Game.Types.pas#PCreature
+leaf Game.User.pas#TUser -> Game.Types.pas#TColors
+leaf Game.User.pas#TUser -> Game.Types.pas#TCreatureClass
+leaf Game.User.pas#TUser -> Game.Types.pas#TCreatureProc
+leaf Game.User.pas#TUser -> Game.Types.pas#TCreatures
+leaf Game.User.pas#TUser -> Game.Types.pas#TEntity

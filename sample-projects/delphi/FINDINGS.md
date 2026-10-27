@@ -401,6 +401,9 @@ identifiers, or include files. A `uses` entry becomes an edge only when a type o
 inside a class, record or interface declaration or inside one of their method bodies; unused `uses`,
 enum-value-, function-, constant-only usages and everything at unit level leave no trace.
 
+Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/delphi.md`): listed per
+probe in `regression/delphi/known-gaps.md`.
+
 ## Domain language parser
 
 ```

@@ -1,0 +1,6 @@
+# delphi.md, declarations, decision 5: a member type is a leaf of its own; `TOuter.TInner` names it
+file Game.Model.pas -> Game.Base.pas
+file Game.User.pas -> Game.Model.pas
+leaf Game.Model.pas#TInner -> Game.Base.pas#TStat
+leaf Game.Model.pas#TOuter -> Game.Model.pas#TInner
+leaf Game.User.pas#TUser -> Game.Model.pas#TInner

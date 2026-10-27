@@ -1,0 +1,5 @@
+# delphi.md, qualified: `U.N` means N of the unit U, whatever a later uses entry offers
+file Game.Facade.pas -> domain/Game.Domain.Creature.pas
+file Game.Facade.pas -> dto/Game.Dto.Creature.pas
+leaf Game.Facade.pas#TFacade -> domain/Game.Domain.Creature.pas#TCreature
+leaf Game.Facade.pas#TFacade -> dto/Game.Dto.Creature.pas#TCreature
