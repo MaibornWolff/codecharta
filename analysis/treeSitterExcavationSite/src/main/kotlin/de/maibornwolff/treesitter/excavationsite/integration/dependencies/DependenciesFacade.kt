@@ -1,6 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.integration.dependencies
 
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors.UnitReader
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiUnit
 import de.maibornwolff.treesitter.excavationsite.languages.rust.extractors.ModuleReader
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustModule
 import de.maibornwolff.treesitter.excavationsite.languages.vue.VueDependencyMapping
@@ -53,6 +55,12 @@ object DependenciesFacade {
     fun rustModule(content: String): RustModule {
         val grammar = NativeTreeSitter.grammar(LanguageRegistry.getGrammarLibrary(Language.RUST))
         return FfmSyntaxTree.parse(content, grammar).use { it.readReleasingReachedNodes(ModuleReader::read) }
+    }
+
+    /** What a Delphi source declares, for the name lookup of `delphi.md`. */
+    fun delphiUnit(content: String): DelphiUnit {
+        val grammar = NativeTreeSitter.grammar(LanguageRegistry.getGrammarLibrary(Language.DELPHI))
+        return FfmSyntaxTree.parse(content, grammar).use { it.readReleasingReachedNodes(UnitReader::read) }
     }
 
     fun bundlerAliases(
