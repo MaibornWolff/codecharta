@@ -17,7 +17,7 @@ where a written name is looked up; the first place that holds a declaration of t
    TypeScript with JavaScript, Vue and Angular templates, C with C++; every other language alone.
 2. **Copies.** A logical path that several files declare (two projects with the same package) means the copy in the
    file that shares the longest folder path with the using file, the first of equally near ones; SQL takes the latest
-   migration, C# every file of the nearest project that declares it, as a partial class is one class over several
+   migration, a declaration before an implementation part (sql.md), C# every file of the nearest project that declares it, as a partial class is one class over several
    files (csharp.md, decision 2), and Go every file of the package, as only one build-tag variant compiles at a time
    (go.md, decision 3), and C and C++ the copy their include closure holds (cpp.md, decision 6). A copy that only its
    own file can name (Kotlin `private`, a C# `file` type) counts only for that file.
