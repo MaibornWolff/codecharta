@@ -97,9 +97,9 @@ static, a unit struct or variant makes it a path); the two differ only for code 
   `SpeedType`, `Creature`, and `Creature` and `Fightable`).
 - A path through a re-export means the re-export declaration, which uses what it names (decision 7):
   `model::Creature` with `pub use creature::Creature;` in `model/mod.rs` means `….model.Creature`, the re-export, not
-  `….model.creature.Creature`; so does `crate::model::Creature` written inside `model/creature.rs` itself, which makes a
-  cycle between the file and its `mod.rs` (decision 16). A path through a `use` without a visibility (`super::Helper` where the parent imports
-  `Helper`) means what that `use` names.
+  `….model.creature.Creature`. Written inside the re-exporting module or below it (`crate::model::Creature` in
+  `model/arena.rs` or in `model/creature.rs` itself), it means what the re-export names (decision 16). A path through a
+  `use` without a visibility (`super::Helper` where the parent imports `Helper`) means what that `use` names.
 - In a `use` declaration the path is resolved the same way (edition 2018 and later); in edition 2015 a `use` path
   starts at the crate root.
 - The path means the project declaration of exactly the path found, or none: `std::collections::HashMap` or
@@ -157,6 +157,7 @@ confirmed the meaning of each name. "Gap" means the parser does not follow the r
 | Declarations, decision 7: a glob re-export | `spec-reexport-glob` | ok |
 | Declarations, decision 7: `pub(crate) use` | `spec-reexport-crate-visible` | ok |
 | Declarations, decision 7: a chain of re-exports | `spec-reexport-chain` | ok |
+| A path, decision 16: a re-export used inside its module | `spec-reexport-inside-module` | ok |
 | Use declarations: an alias | `spec-use-alias` | ok |
 | Use declarations: a group with `self` | `spec-use-group-self` | ok |
 | Use declarations: an unused import, `as _` | `spec-unused-use` | ok |
@@ -246,6 +247,8 @@ confirmed the meaning of each name. "Gap" means the parser does not follow the r
 15. A path that two crates of one package declare means the nearest copy, as anywhere else: which crate a use resolved
     in does not reach the step that picks the copy, and only items written in both crate roots collide (Christian
     chose this on 2026-10-27 over a shared change, replacing the derived rule of the copy of the crate).
-16. A declaration that names itself through a re-export (`crate::model::Foo` inside `model/foo.rs`) points at the
-    re-export, which points back: a cycle between the file and its `mod.rs`, as Python and TypeScript draw it today
-    (decided 2026-10-27).
+16. Inside the re-exporting module or below it, a path through a re-export means what it names, so neither a sibling
+    (`crate::engine::EngineState` in `engine/stack.rs`) nor the declaration itself goes through `mod.rs`: a Rust `use`
+    only resolves names and a module has no load order, so the cycle with `mod.rs` would be none the code has. Python
+    and TypeScript keep the barrel, as importing their package runs it (Christian, 2026-10-27, replacing the cycle
+    decided earlier that day after the edge check counted 134 such edges in nushell).
