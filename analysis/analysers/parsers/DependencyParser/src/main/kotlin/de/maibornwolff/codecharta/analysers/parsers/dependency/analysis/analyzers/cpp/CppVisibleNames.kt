@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_CPP_GLOBAL_SCOPE
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * The lookup of "A simple name" and "A qualified name" of `docs/name-resolution/cpp.md` over what the include closure of
@@ -22,6 +23,8 @@ internal class CppVisibleNames(
     private val aliases: Map<List<String>, UsedType> = closure
         .flatMap { facts -> facts.declarations.mapNotNull { declared -> declared.aliasOf?.let { declared.path to it } } }
         .toMap()
+    private val withoutBases by lazy { CppVisibleNames(closure, followsBases = false) }
+    private val visibleBasesByClass = ConcurrentHashMap<List<String>, List<List<String>>>()
 
     /** The path [written] means, written as `Q::N` segments inside the declaration of path [scope]. */
     fun resolve(written: List<String>, scope: List<String>): List<String>? = when {
@@ -103,12 +106,13 @@ internal class CppVisibleNames(
         return resolve(target.namespacePrefix + target.name, path.dropLast(1))?.let { unaliased(it, depth + 1) }
     }
 
-    private fun basesOfVisible(classPath: List<String>): List<List<String>> =
-        if (followsBases) (visibleNamesOfBody(classPath) ?: this).basesOf(classPath) else emptyList()
+    private fun basesOfVisible(classPath: List<String>): List<List<String>> {
+        if (!followsBases) return emptyList()
+        return visibleBasesByClass.getOrPut(classPath) { (visibleNamesOfBody(classPath) ?: this).basesOf(classPath) }
+    }
 
     // The bases of a class are looked up without bases of their own, as java.md's rule 3 looks at direct supertypes only
-    private fun lookupOnly(written: List<String>, scope: List<String>): List<String>? =
-        CppVisibleNames(closure, followsBases = false).resolve(written, scope)
+    private fun lookupOnly(written: List<String>, scope: List<String>): List<String>? = withoutBases.resolve(written, scope)
 
     private fun nominatedOf(directive: CppUsing): List<String> =
         chainOf(directive.scope).map { it + directive.path }.firstOrNull { it in scopes } ?: directive.path
