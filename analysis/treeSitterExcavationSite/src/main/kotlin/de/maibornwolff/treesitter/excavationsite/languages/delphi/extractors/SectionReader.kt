@@ -6,6 +6,9 @@ import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiSe
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 
+/** What one section declares, and the method bodies it holds, by the types they belong to (`TOuter.TInner.Get`). */
+internal data class SectionContents(val declarations: List<DelphiDeclaration>, val methodBodies: List<MethodBody>)
+
 /**
  * The declarations one section of a unit, or a program, makes at its top level: types (with the types declared inside
  * them), routines, constants and variables. A method body (`procedure TCreature.Attack;`) declares nothing, and a
@@ -41,24 +44,33 @@ internal object SectionReader {
     private const val HEADER_FIELD = "header"
     private const val ARGS_FIELD = "args"
 
-    fun read(section: SyntaxNode, sectionKind: DelphiSection): List<DelphiDeclaration> =
-        section.children().flatMap { declarationsOf(it, sectionKind) }.toList()
+    fun read(section: SyntaxNode, sectionKind: DelphiSection): SectionContents = SectionContents(
+        declarations = section.children().flatMap { declarationsOf(it, sectionKind) }.toList(),
+        methodBodies = section.children().filter { it.type == DEF_PROC }.mapNotNull { MethodBodies.of(it, sectionKind) }.toList()
+    )
 
     private fun declarationsOf(child: SyntaxNode, sectionKind: DelphiSection): Sequence<DelphiDeclaration> = when (child.type) {
         DECL_TYPES -> typesOf(child).flatMap { typeDeclarations(it, emptyList(), sectionKind) }
-        DECL_CONSTS -> simpleDeclarations(namesOf(child, DECL_CONST), DelphiDeclarationKind.CONSTANT, sectionKind)
-        DECL_VARS -> simpleDeclarations(namesOf(child, DECL_VAR), DelphiDeclarationKind.VARIABLE, sectionKind)
-        DECL_PROC -> routineOf(child, sectionKind)
-        DEF_PROC -> child.getChildByFieldName(HEADER_FIELD).orNull()?.let { routineOf(it, sectionKind) }.orEmpty()
+        DECL_CONSTS -> valueDeclarations(child, DECL_CONST, DelphiDeclarationKind.CONSTANT, sectionKind)
+        DECL_VARS -> valueDeclarations(child, DECL_VAR, DelphiDeclarationKind.VARIABLE, sectionKind)
+        DECL_PROC -> routineOf(child, child, sectionKind)
+        DEF_PROC -> child.getChildByFieldName(HEADER_FIELD).orNull()?.let { routineOf(it, child, sectionKind) }.orEmpty()
         else -> emptySequence()
     }
 
-    private fun simpleDeclarations(names: List<String>, kind: DelphiDeclarationKind, sectionKind: DelphiSection) =
-        names.asSequence().map { DelphiDeclaration(it, kind, sectionKind) }
+    // `var A, B: TCreature;` declares two variables that write the same names.
+    private fun valueDeclarations(group: SyntaxNode, type: String, kind: DelphiDeclarationKind, sectionKind: DelphiSection) = group
+        .children()
+        .filter { it.type == type }
+        .flatMap { node ->
+            val names = NameCollector.namesIn(node, NamePlace(sectionKind, emptyList(), emptySet()))
+            declaredNamesOf(node).asSequence().map { DelphiDeclaration(it, kind, sectionKind, names = names) }
+        }
 
-    private fun routineOf(heading: SyntaxNode, sectionKind: DelphiSection): Sequence<DelphiDeclaration> {
+    private fun routineOf(heading: SyntaxNode, text: SyntaxNode, sectionKind: DelphiSection): Sequence<DelphiDeclaration> {
         val name = heading.getChildByFieldName(NAME_FIELD).orNull()?.takeIf { it.type == IDENTIFIER } ?: return emptySequence()
-        return sequenceOf(DelphiDeclaration(name.text, DelphiDeclarationKind.ROUTINE, sectionKind))
+        val names = NameCollector.namesIn(text, NamePlace(sectionKind, emptyList(), LocalNames.of(text)))
+        return sequenceOf(DelphiDeclaration(name.text, DelphiDeclarationKind.ROUTINE, sectionKind, names = names))
     }
 
     private fun typesOf(declTypes: SyntaxNode): Sequence<SyntaxNode> = declTypes.children().filter { it.type == DECL_TYPE }
@@ -67,6 +79,7 @@ internal object SectionReader {
         val name = extractDelphiDeclTypeName(declType)?.takeIf { it.isNotBlank() } ?: return emptySequence()
         val type = declType.getChildByFieldName(TYPE_FIELD).orNull() ?: return emptySequence()
         val kind = kindOf(type) ?: return emptySequence()
+        val genericParameters = genericParametersOf(declType)
         val declaration = DelphiDeclaration(
             name = name,
             kind = kind,
@@ -74,7 +87,8 @@ internal object SectionReader {
             outerTypes = outerTypes,
             members = membersOf(type),
             baseTypes = baseTypesOf(type),
-            genericParameters = genericParametersOf(declType)
+            genericParameters = genericParameters,
+            names = TypeDeclarationNames.of(declType, outerTypes + name, NamePlace(sectionKind, outerTypes, lowercased(genericParameters)))
         )
         val memberTypes = memberDeclarationsOf(type)
             .filter { it.type == DECL_TYPES }
@@ -132,12 +146,14 @@ internal object SectionReader {
         return arguments.children().filter { it.type == GENERIC_ARG }.mapNotNull { nameOf(it) }.toList()
     }
 
+    private fun namesOf(declarations: SyntaxNode, type: String): List<String> =
+        declarations.children().filter { it.type == type }.flatMap { declaredNamesOf(it) }.toList()
+
     // `var A, B: Integer;` lists several names in one declaration; a constant or an enum value has one.
-    private fun namesOf(declarations: SyntaxNode, type: String): List<String> {
-        val nodes = declarations.children().filter { it.type == type }
-        if (type == DECL_VAR) return nodes.flatMap { extractDelphiMultipleNames(it) }.toList()
-        return nodes.mapNotNull { nameOf(it) }.toList()
-    }
+    private fun declaredNamesOf(declaration: SyntaxNode): List<String> =
+        if (declaration.type == DECL_VAR) extractDelphiMultipleNames(declaration) else listOfNotNull(nameOf(declaration))
+
+    private fun lowercased(names: List<String>): Set<String> = names.map { it.lowercase() }.toSet()
 
     private fun nameOf(node: SyntaxNode): String? = node.getChildByFieldName(NAME_FIELD).orNull()?.text
 }
