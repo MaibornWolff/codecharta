@@ -433,4 +433,55 @@ class DelphiAnalyzerTest {
             assertThat(report.usesOf("TEntity")).containsExactly("Game.Mapping.TableAttribute", "Game.Mapping.Column")
         }
     }
+
+    @Nested
+    inner class Script {
+        @Test
+        fun `should make the main block of a program a script leaf below the program (decision 2)`(
+            @TempDir root: File
+        ) {
+            // Arrange
+            val model = unit("Game.Model", "function Spawn: TObject;", "function Spawn: TObject; begin Result := nil; end;")
+            val program = "program Arena;\nuses Game.Model;\nprocedure Configure; begin end;\nbegin\n  Configure;\n  Spawn.Free;\nend."
+            root.withFiles("Game.Model.pas" to model, "Arena.dpr" to program)
+
+            // Act
+            val report = analyzeIn(root, "Arena.dpr")
+
+            // Assert
+            val script = report.nodes.single { it.nodeType == NodeType.SCRIPT }
+            assertThat(script.pathWithName.parts).containsExactly("Arena", "Arena_script")
+            assertThat(script.usedTypes.map { it.name }).containsExactly("Arena.Configure", "Game.Model.Spawn")
+        }
+
+        @Test
+        fun `should make the initialization and finalization of a unit one script leaf in the implementation scope`() {
+            // Arrange
+            val code = unit(
+                "Game.Bootstrap",
+                "procedure Register;",
+                "procedure Register; begin end;\nprocedure Unregister; begin end;\ninitialization\n  Register;\nfinalization\n  Unregister;"
+            )
+
+            // Act
+            val report = analyze(code, "Game.Bootstrap.pas")
+
+            // Assert
+            val script = report.nodes.single { it.nodeType == NodeType.SCRIPT }
+            assertThat(script.pathWithName.parts).containsExactly("Game", "Bootstrap", "Bootstrap_script")
+            assertThat(script.usedTypes.map { it.name }).containsExactly("Game.Bootstrap.Register", "Game.Bootstrap.Unregister")
+        }
+
+        @Test
+        fun `should give a unit without code in its initialization no script leaf`() {
+            // Arrange
+            val code = unit("Game.Bootstrap", "procedure Register;", "procedure Register; begin end;\ninitialization")
+
+            // Act
+            val report = analyze(code, "Game.Bootstrap.pas")
+
+            // Assert
+            assertThat(report.nodes.map { it.nodeType }).containsExactly(NodeType.FUNCTION)
+        }
+    }
 }

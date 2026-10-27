@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Pa
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.treesitter.excavationsite.api.DelphiDeclarationKind
+import de.maibornwolff.treesitter.excavationsite.api.DelphiName
 
 /**
  * The declarations of a Delphi unit or program at the unit name plus their own (`docs/name-resolution/delphi.md`), each
@@ -24,13 +25,17 @@ class DelphiAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     override fun analyze(): FileReport {
         val unit = project.unitOf(fileInfo.physicalPath)
         val lookup = DelphiLookup(project, unit)
-        val nodes = unit.declarations.mapNotNull { declaration ->
+        val declarations = unit.declarations.mapNotNull { declaration ->
             val nodeType = NODE_TYPES[declaration.kind] ?: return@mapNotNull null
-            val path = unit.name + declaration.outerTypes + declaration.name
-            val uses = declaration.names.mapNotNull { lookup.resolve(it) }.filter { it != path }.distinct()
-            node(path, nodeType, uses)
+            node(unit.name + declaration.outerTypes + declaration.name, nodeType, declaration.names, lookup)
         }
-        return FileReport(nodes)
+        val script = unit.script?.let { node(unit.name + (unit.name.last() + SCRIPT_SUFFIX), NodeType.SCRIPT, it.names, lookup) }
+        return FileReport(declarations + listOfNotNull(script))
+    }
+
+    private fun node(path: List<String>, nodeType: NodeType, names: List<DelphiName>, lookup: DelphiLookup): Node {
+        val uses = names.mapNotNull { lookup.resolve(it) }.filter { it != path }.distinct()
+        return node(path, nodeType, uses)
     }
 
     private fun node(path: List<String>, nodeType: NodeType, uses: List<List<String>>) = Node(
@@ -43,6 +48,7 @@ class DelphiAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     )
 
     companion object {
+        private const val SCRIPT_SUFFIX = ".script"
         private val NODE_TYPES = mapOf(
             DelphiDeclarationKind.CLASS to NodeType.CLASS,
             DelphiDeclarationKind.RECORD to NodeType.CLASS,
