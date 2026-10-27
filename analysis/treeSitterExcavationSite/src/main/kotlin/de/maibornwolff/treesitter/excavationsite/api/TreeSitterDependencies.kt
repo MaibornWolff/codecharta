@@ -3,6 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.api
 import de.maibornwolff.treesitter.excavationsite.integration.dependencies.DependenciesFacade
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.JavascriptDependencyMapping
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustModule
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ComponentRegistration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DependencyResult
@@ -31,6 +32,12 @@ object TreeSitterDependencies {
      */
     fun vueComponentRegistrations(content: String, language: Language): List<ComponentRegistration> =
         DependenciesFacade.componentRegistrations(content, language)
+
+    /**
+     * What a Rust source declares and writes at module level: `mod` lines, items with the paths they write, `use`
+     * declarations, `impl` blocks and `extern crate`, each at the inline modules around it.
+     */
+    fun rustModule(content: String): RustModule = DependenciesFacade.rustModule(content)
 
     fun isDependencyAnalysisSupported(language: Language): Boolean {
         val definition = LanguageRegistry.getLanguageDefinition(language)
