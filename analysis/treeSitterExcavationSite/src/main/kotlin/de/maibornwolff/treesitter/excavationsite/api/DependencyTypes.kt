@@ -2,6 +2,11 @@
 
 package de.maibornwolff.treesitter.excavationsite.api
 
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiDeclaration
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiDeclarationKind
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiSection
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiUnit
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiUnitKind
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustExternCrate
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustImpl
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustItem
@@ -40,6 +45,11 @@ typealias AliasPathStart = AliasPathStart
 typealias AngularDeclaration = AngularDeclaration
 typealias AngularSelector = AngularSelector
 typealias EmbeddedDeclarations = EmbeddedDeclarations
+typealias DelphiUnit = DelphiUnit
+typealias DelphiUnitKind = DelphiUnitKind
+typealias DelphiSection = DelphiSection
+typealias DelphiDeclaration = DelphiDeclaration
+typealias DelphiDeclarationKind = DelphiDeclarationKind
 typealias RustModule = RustModule
 typealias RustModDeclaration = RustModDeclaration
 typealias RustItem = RustItem

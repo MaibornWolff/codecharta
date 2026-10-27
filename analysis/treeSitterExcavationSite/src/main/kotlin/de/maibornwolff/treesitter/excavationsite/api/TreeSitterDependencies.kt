@@ -2,6 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.api
 
 import de.maibornwolff.treesitter.excavationsite.integration.dependencies.DependenciesFacade
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiUnit
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.JavascriptDependencyMapping
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustModule
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
@@ -38,6 +39,12 @@ object TreeSitterDependencies {
      * declarations, `impl` blocks and `extern crate`, each at the inline modules around it.
      */
     fun rustModule(content: String): RustModule = DependenciesFacade.rustModule(content)
+
+    /**
+     * What a Delphi unit, program or library declares: its name, the entries of its `uses` clauses, and each declaration
+     * with its section, the types around it, its members and its base types.
+     */
+    fun delphiUnit(content: String): DelphiUnit = DependenciesFacade.delphiUnit(content)
 
     fun isDependencyAnalysisSupported(language: Language): Boolean {
         val definition = LanguageRegistry.getLanguageDefinition(language)

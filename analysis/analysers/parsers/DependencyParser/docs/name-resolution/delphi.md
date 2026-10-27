@@ -25,7 +25,7 @@ type of a value would tell. The rules shared by every language are in [README.md
 
 - Every type is a declaration (decision 1): a class, record, interface, enum, class or record helper, and an alias
   (`TEntity = TCreatureEntity`), a pointer type (`PTreasure = ^TTreasure`), a class reference (`TFormClass = class of
-  TForm`), a procedural type, a set, an array or a subrange type. So are a free routine (procedure or function), a
+  TForm`), a procedural type, a set or an array type. So are a free routine (procedure or function), a
   constant, a resource string, a variable and a thread variable declared at unit level (decision 1).
 - A type declared inside a class or record (`TOuter.TInner`) is a declaration of its own, below its outer type:
   `Game.Model.TOuter.TInner`, as a Java member type.
@@ -153,6 +153,8 @@ it deviates.
   their declarations are unknown. Both branches of an `{$IFDEF}` count, as both are in the source.
 - Declare before use: Pascal lets a name mean only what stands before it, so before the own unit declares `N`, `N`
   means a used unit's `N`; rule 3 takes the own `N` everywhere in the unit.
+- A subrange type (`TLevel = 1..20;`): tree-sitter-pascal 0.10.2 cannot read it, and the declaration after it is
+  lost with it.
 - Names in strings (`FindClass('TCreature')`, RTTI by name).
 
 ## Decisions
