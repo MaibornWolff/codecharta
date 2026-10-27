@@ -1,6 +1,6 @@
 ---
 name: dependency-parser-speed
-state: progress
+state: complete
 version: 2.2.0
 ---
 
@@ -41,7 +41,7 @@ Branch `fix/dependency-parser-speed`, cut from `fix/dependency-name-resolution-s
 - [x] 4. C++: build the lookup without bases once per closure
 - [x] 5. C++: reuse the closure's parse of the analyzed file
 - [x] 6. TS/JS/Vue: cache the module files and canonical paths an import looks up
-- [ ] 7. TS/JS/Vue: read the files of the global declarations and components in parallel
+- [x] 7. TS/JS/Vue: read the files of the global declarations and components in parallel
 
 ## Notes
 
@@ -49,3 +49,6 @@ Branch `fix/dependency-parser-speed`, cut from `fix/dependency-name-resolution-s
   dependency output of the new build compared byte for byte with the HEAD build of `fix/dependency-name-resolution-sql`
   on the sample projects, the regression probes and the clones of three.js, bitcoin, nushell, HeidiSQL, postgres, grafana
 - No changelog entry: the slowdown was never released
+- Result, `ccsh dependencyparser` on the clones, HEAD of `fix/dependency-name-resolution-sql` -> this branch (one run
+  each, a few seconds of noise): three.js 47.0s -> 14.6s, grafana 69.2s -> 47.5s, bitcoin 29.2s -> 10.3s, postgres
+  10.3s -> 5.1s, nushell 9.9s -> 4.8s, HeidiSQL 5.9s -> 2.1s; 519 outputs byte-identical after every commit
