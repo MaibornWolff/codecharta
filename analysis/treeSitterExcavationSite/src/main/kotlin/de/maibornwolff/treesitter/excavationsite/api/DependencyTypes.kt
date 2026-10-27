@@ -4,6 +4,8 @@ package de.maibornwolff.treesitter.excavationsite.api
 
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiDeclaration
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiDeclarationKind
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiName
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiScript
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiSection
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiUnit
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiUnitKind
@@ -50,6 +52,8 @@ typealias DelphiUnitKind = DelphiUnitKind
 typealias DelphiSection = DelphiSection
 typealias DelphiDeclaration = DelphiDeclaration
 typealias DelphiDeclarationKind = DelphiDeclarationKind
+typealias DelphiName = DelphiName
+typealias DelphiScript = DelphiScript
 typealias RustModule = RustModule
 typealias RustModDeclaration = RustModDeclaration
 typealias RustItem = RustItem
