@@ -578,7 +578,7 @@ leaf. Decisions 8-12 derived.
    no output change
 5. [x] TSE: the names each object and statement writes, with the kind their position asks for, locals hidden; no output
    change
-6. [ ] refactor (shared, approved by Christian 2026-10-27): a kind on nodes, uses and copies; the file choice keeps the
+6. [x] refactor (shared, approved by Christian 2026-10-27): a kind on nodes, uses and copies; the file choice keeps the
    copies of the kinds a use asks for; no output change
 7. [ ] the switch: lookup over all SQL files of the run (`SqlProject`, `SqlLookup`), exact rules, kinds, schemas,
    `search_path`, locals; packages and changes as before

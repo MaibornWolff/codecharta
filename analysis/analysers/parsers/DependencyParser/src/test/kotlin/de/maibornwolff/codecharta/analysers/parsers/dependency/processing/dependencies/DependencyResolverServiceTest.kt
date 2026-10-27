@@ -408,6 +408,22 @@ class DependencyResolverServiceTest {
         assertThat(targets).containsExactly("app.second.Node")
     }
 
+    @Test
+    fun `should carry the kinds of declaration a use can mean into its dependency`() {
+        // Arrange
+        val audit = Type.simple("app.second.Node").copy(kinds = setOf("routine"))
+        val nodes = listOf(pythonFunction(listOf("app", "tree", "grow"), setOf(audit)), pythonFunction(listOf("app", "second", "Node")))
+
+        // Act
+        val dependencies = DependencyResolverService
+            .resolveNodes(listOf(FileReport(nodes)))
+            .first { it.name() == "grow" }
+            .resolvedNodeDependencies.internalDependencies
+
+        // Assert
+        assertThat(dependencies.map { it.kinds }).containsExactly(setOf("routine"))
+    }
+
     private fun pythonFunction(pathWithName: List<String>, usedTypes: Set<Type> = emptySet()) = Node.build(
         pathWithName = Path(pathWithName),
         physicalPath = pathWithName.dropLast(1).joinToString("/") + ".py",
