@@ -148,6 +148,7 @@ the probes of other dialects follow their manuals. "Gap" means the parser does n
 | Declarations: the script leaf | `spec-script-leaf` | ok |
 | Declarations, decision 9: what a routine declares inside itself | `spec-local-declarations` | ok |
 | Declarations, decision 10: overloads | `spec-overloads` | ok |
+| Declarations, decision 14: a body in another language | `spec-foreign-language-body` | ok |
 | Declarations: `%ROWTYPE`, `%TYPE` | `spec-anchored-types` | ok |
 | Kinds, decision 6: a table and a function of one name | `spec-kind-relation-routine` | ok |
 | Kinds, decision 6: a type, else a row type | `spec-kind-row-type` | ok |
@@ -183,6 +184,9 @@ the probes of other dialects follow their manuals. "Gap" means the parser does n
 - A table and a routine of one name in one file and schema share one leaf.
 - `USE x`, and every other way a session chooses its default schema (the login user, the connection string).
 - Database links (`orders@remote`) and linked servers: their objects are of another database.
+- The body of a routine whose `LANGUAGE` clause names a language other than SQL and PL/pgSQL (`plperl`,
+  `plpython3u`, `C`) names no object: the database keeps it as text for that language (decision 14). Its parameter and
+  return types are uses as for any routine.
 - Members of a value: `v.total` of a record variable, a method `p.len()` of an object instance.
 
 ## Decisions
@@ -213,3 +217,6 @@ the probes of other dialects follow their manuals. "Gap" means the parser does n
 13. A package body whose specification is not in the run is the package's declaration, as Oracle cannot compile a body
     without one, so the specification lies outside the analysed files; as a C++ class body without a header (derived
     2026-10-27).
+14. Only a routine body in SQL or PL/pgSQL, or one without a `LANGUAGE` clause, has uses: PostgreSQL hands a body in
+    `plperl`, `plpython3u` or `C` to that language as text (Christian, 2026-10-27, after the edge check found Perl's
+    `defined()` linked to an extension's function).

@@ -1,0 +1,4 @@
+# sql.md, declarations, decision 14: the body of a routine in another language (plperl, plpython) names no SQL object
+file pl/checks.sql -> ext/hstore.sql
+leaf pl/checks.sql#plpgsql_sort -> ext/hstore.sql#sort
+leaf pl/checks.sql#sql_check -> ext/hstore.sql#defined
