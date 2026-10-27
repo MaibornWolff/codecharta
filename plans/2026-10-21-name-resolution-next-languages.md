@@ -572,7 +572,7 @@ leaf. Decisions 8-12 derived.
 2. [x] probes: 46 under `sample-projects/regression/sql/spec-*`, 21 gaps at the start; the 22 PostgreSQL ones run in
    PostgreSQL 18.6 (tools `sql/mkprobes.py` writes them and `probe-meta.json`, `sql/check-probes.mjs` runs them in PGlite,
    `sql/regen-gaps.py` rewrites known-gaps.md and the spec table from `scratch/pc-sql/`)
-3. [ ] refactor: SQL gets name rules of its own (`SqlNameRules`), the default ones for now
+3. [x] refactor: SQL gets name rules of its own (`SqlNameRules`), the default ones for now
 4. [ ] implementation steps, one per group of gaps (listed once the probes show the gaps)
 5. [ ] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
 
