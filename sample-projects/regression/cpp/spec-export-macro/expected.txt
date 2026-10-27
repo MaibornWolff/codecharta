@@ -1,0 +1,7 @@
+# cpp.md, declarations, decision 15: an export macro between `class` and the name is no part of the class
+file Creature.hpp -> Dice.hpp
+file User.cpp -> Creature.hpp
+leaf Creature.hpp#Centaur -> Creature.hpp#Creature usage=inheritance
+leaf Creature.hpp#Centaur -> Dice.hpp#Dice
+leaf Creature.hpp#Creature -> Dice.hpp#Dice
+leaf User.cpp#User -> Creature.hpp#Centaur
