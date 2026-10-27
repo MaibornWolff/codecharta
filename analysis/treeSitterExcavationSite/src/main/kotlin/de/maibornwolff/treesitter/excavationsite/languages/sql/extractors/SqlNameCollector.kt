@@ -37,10 +37,13 @@ internal class SqlNameCollector(private val locals: Set<String>, private val inP
                 index = sequence.second
                 continue
             }
-            if (positionOf(child) != ownName) visitChild(parent, children, index)
+            if (positionOf(child) != ownName && !isForeignBody(parent, child)) visitChild(parent, children, index)
             index++
         }
     }
+
+    private fun isForeignBody(parent: SyntaxNode?, child: SyntaxNode): Boolean =
+        child.type == ROUTINE_BODY && parent != null && parent.type in ROUTINE_HEADERS && RoutineLanguage.isForeign(parent)
 
     private fun visitChild(parent: SyntaxNode?, children: List<SyntaxNode>, index: Int) =
         visit(children[index], children.getOrNull(index - 1), children.getOrNull(index + 1), isTypeAfter(parent, children, index))
