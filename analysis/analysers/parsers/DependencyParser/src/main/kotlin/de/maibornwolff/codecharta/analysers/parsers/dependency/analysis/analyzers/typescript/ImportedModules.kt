@@ -6,6 +6,8 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Pa
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.ImportKind
 import java.io.File
+import java.util.Optional
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * The project file an import names, by "Module specifiers" of `docs/name-resolution/typescript.md`: a relative
@@ -15,6 +17,10 @@ import java.io.File
 internal object ImportedModules {
     private const val SEPARATOR = "/"
     private val RELATIVE_STARTS = setOf(".", "..")
+
+    // Every declaration of a file asks for every import of it, so the disk is asked once per path, as for the export tables
+    private val moduleFileByPath = ConcurrentHashMap<String, Optional<File>>()
+    private val canonicalFileByPath = ConcurrentHashMap<String, File>()
 
     fun fileOf(import: ImportDeclaration, fileInfo: FileInfo): File? {
         val analysisRoot = fileInfo.analysisRoot ?: return null
@@ -27,18 +33,23 @@ internal object ImportedModules {
             AliasPathResolver.resolveFile(bareSpecifier, fileInfo) ?: WorkspacePackages.of(analysisRoot).pathOf(bareSpecifier)
                 ?: return null
         }
-        return ModuleFiles.fileAt(target.normalize())?.takeIf { it.canonicalFile.startsWith(analysisRoot.canonicalFile) }
+        return moduleFileAt(target.normalize())?.takeIf { canonicalOf(it).startsWith(canonicalOf(analysisRoot)) }
     }
 
     /** The logical path of a module file: its path below the analysis root without its last ending. */
     fun logicalPathOf(moduleFile: File, analysisRoot: File): Path {
-        val relativePath = moduleFile.canonicalFile.relativeTo(analysisRoot.canonicalFile).invariantSeparatorsPath
+        val relativePath = canonicalOf(moduleFile).relativeTo(canonicalOf(analysisRoot)).invariantSeparatorsPath
         return Path(relativePath.substringBeforeLast('.').split(SEPARATOR))
     }
 
     /** Whether the import ends with the name it imports out of the module, after its specifier. */
     fun namesMember(import: ImportDeclaration): Boolean =
         !import.isWildcard && (import.kind == ImportKind.MEMBER || import.kind == ImportKind.REEXPORT)
+
+    private fun moduleFileAt(path: File): File? =
+        moduleFileByPath.computeIfAbsent(path.absolutePath) { Optional.ofNullable(ModuleFiles.fileAt(path)) }.orElse(null)
+
+    private fun canonicalOf(file: File): File = canonicalFileByPath.computeIfAbsent(file.absolutePath) { file.canonicalFile }
 
     private fun specifierOf(import: ImportDeclaration): List<String> =
         (if (namesMember(import)) import.path.dropLast(1) else import.path).filter { it.isNotEmpty() }
