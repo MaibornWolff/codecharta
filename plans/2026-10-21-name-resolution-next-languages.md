@@ -573,8 +573,22 @@ leaf. Decisions 8-12 derived.
    PostgreSQL 18.6 (tools `sql/mkprobes.py` writes them and `probe-meta.json`, `sql/check-probes.mjs` runs them in PGlite,
    `sql/regen-gaps.py` rewrites known-gaps.md and the spec table from `scratch/pc-sql/`)
 3. [x] refactor: SQL gets name rules of its own (`SqlNameRules`), the default ones for now
-4. [ ] implementation steps, one per group of gaps (listed once the probes show the gaps)
-5. [ ] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
+4. [ ] TSE: `TreeSitterDependencies.sqlScript()`: objects with kind, name as written and default schema (`SET
+   search_path`, `CURRENT_SCHEMA`), package and type body members, changes (`ALTER`, `CREATE INDEX ON`, `COMMENT ON`);
+   no output change
+5. [ ] TSE: the names each object and statement writes, with the kind their position asks for, locals hidden; no output
+   change
+6. [ ] refactor (shared, approved by Christian 2026-10-27): a kind on nodes, uses and copies; the file choice keeps the
+   copies of the kinds a use asks for; no output change
+7. [ ] the switch: lookup over all SQL files of the run (`SqlProject`, `SqlLookup`), exact rules, kinds, schemas,
+   `search_path`, locals; packages and changes as before
+8. [ ] decision 5: sequences, types and domains are declarations
+9. [ ] decisions 1, 5, 8: package specification members, body routines and object type bodies as implementation parts
+10. [ ] decision 2: changes of an object another file creates are implementation parts
+11. [ ] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
+
+The prototype of steps 4-10 is `git stash` "sql-prototype" (copy `sql-prototype.patch` in the tools folder `scratch/sql/`):
+all 46 probes green, no other language changed, checkpoint probe `sql/r3-sqlpkg` worse by decision 1.
 
 ## Steps
 
