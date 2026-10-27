@@ -402,7 +402,19 @@ inside a class, record or interface declaration or inside one of their method bo
 enum-value-, function-, constant-only usages and everything at unit level leave no trace.
 
 Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/delphi.md`): listed per
-probe in `regression/delphi/known-gaps.md`.
+probe in `regression/delphi/known-gaps.md`; none left.
+
+After the name rules (branch `fix/dependency-name-resolution-delphi`, 2026-10-27): 76 file edges, 61 leaves and 98 leaf
+edges (82, 64 and 108 with `--include-tests`). Every "missing" row of the tables above is drawn but those the rules
+leave out: the short unit name `uses SpeedType;` (unit scope names), the include files and the `.dpk`, `.pp` and `.lpr`
+files. `Api.pas` and `CellarsAndCentaurs.dpr` are in the tree, the aliases, pointer, class reference and set types,
+free routines, constants and variables are leaves, and the main block and `initialization` sections are leaves
+`<unit>_script`. The program reaches `Api` and `dto.Creature` rather than `CreatureFacade` and the domain `Creature`
+the table expects: both stand later in its `uses`, so the compiler takes their `TCreatureFacade` and `TCreature`, as
+it does for `CreatureFacade -> dto.Creature`. Both expected cycles are reported, through `Api` (5 cycles between
+declarations), and three file edges are flagged upward (`Creature -> Api`, `ArmorClass -> Api`,
+`EncounterEdgeCases -> CreatureForm`); `PersistedCreatures -> Api` points from `adapter` to `application`, which the
+levels do not count as upward. A name in another case than its declaration draws no edge (decision 3).
 
 ## Domain language parser
 
