@@ -270,4 +270,207 @@ class RustModuleTest {
             )
         }
     }
+
+    @Nested
+    inner class Paths {
+        private fun pathsOf(code: String, item: String) =
+            moduleOf(code).items.single { it.name == item }.paths.map { it.segments.joinToString("::") to it.namespace }
+
+        @Test
+        fun `should write the types of a signature and leave out generic parameters and Self`() {
+            // Arrange
+            val code = """
+                pub fn hit<T: Fightable>(target: &T, dice: Vec<model::Dice>) -> Option<Self> where T: Copy { None }
+            """
+
+            // Act
+            val paths = pathsOf(code, "hit")
+
+            // Assert
+            assertThat(paths).containsExactlyInAnyOrder(
+                "Fightable" to RustNamespace.TYPE,
+                "Vec" to RustNamespace.TYPE,
+                "model::Dice" to RustNamespace.TYPE,
+                "Option" to RustNamespace.TYPE,
+                "Copy" to RustNamespace.TYPE,
+                "None" to RustNamespace.VALUE
+            )
+        }
+
+        @Test
+        fun `should write the paths of a body by the namespace they are looked up in`() {
+            // Arrange
+            val code = """
+                fn fight() {
+                    let dice: Dice = roll_d20();
+                    let boss = Creature::new();
+                    let den = Den { depth: MAX };
+                    let speeds = Vec::<Speed>::new();
+                    boss.attack();
+                    dice.sides;
+                }
+            """
+
+            // Act
+            val paths = pathsOf(code, "fight")
+
+            // Assert
+            assertThat(paths).containsExactlyInAnyOrder(
+                "Dice" to RustNamespace.TYPE,
+                "roll_d20" to RustNamespace.VALUE,
+                "Creature::new" to RustNamespace.VALUE,
+                "Den" to RustNamespace.TYPE,
+                "MAX" to RustNamespace.VALUE,
+                "Vec" to RustNamespace.TYPE,
+                "Speed" to RustNamespace.TYPE,
+                "Vec::new" to RustNamespace.VALUE
+            )
+        }
+
+        @Test
+        fun `should leave out the names that parameters, let, closures, match arms and for loops bind`() {
+            // Arrange
+            val code = """
+                fn rule(roll: u8, herd: Vec<u8>) -> u8 {
+                    let total = roll + 1;
+                    let check = |value: u8| value + total;
+                    for creature in herd.iter() { check(*creature); }
+                    match roll {
+                        MAX => 1,
+                        other => other,
+                    }
+                }
+            """
+
+            // Act
+            val paths = pathsOf(code, "rule")
+
+            // Assert
+            assertThat(paths).containsExactlyInAnyOrder("Vec" to RustNamespace.TYPE, "MAX" to RustNamespace.VALUE)
+        }
+
+        @Test
+        fun `should read a destructuring pattern as the struct or variant it names and bind its fields`() {
+            // Arrange
+            val code = """
+                fn dig(outcome: u8) -> u8 {
+                    let Den { depth } = make();
+                    if let Outcome::Slain(id) = outcome { return id; }
+                    depth
+                }
+            """
+
+            // Act
+            val paths = pathsOf(code, "dig")
+
+            // Assert
+            assertThat(paths).containsExactlyInAnyOrder(
+                "make" to RustNamespace.VALUE,
+                "Den" to RustNamespace.TYPE,
+                "Outcome::Slain" to RustNamespace.VALUE
+            )
+        }
+
+        @Test
+        fun `should leave out the items of a block and write a name a block use imports as its path`() {
+            // Arrange
+            val code = """
+                fn spawn() {
+                    use crate::model::Creature;
+                    use crate::dice::*;
+                    struct Local;
+                    fn pace(_speed: Speed) {}
+                    let _boss = Creature;
+                    let _local = Local;
+                    pace(roll());
+                }
+            """
+
+            // Act
+            val paths = moduleOf(code).items.single().paths
+
+            // Assert
+            assertThat(paths.map { it.segments }).containsExactlyInAnyOrder(
+                listOf("Speed"),
+                listOf("crate", "model", "Creature"),
+                listOf("roll")
+            )
+            assertThat(paths.single { it.segments == listOf("roll") }.blockGlobs).containsExactly(listOf("crate", "dice"))
+        }
+
+        @Test
+        fun `should write a macro invocation as a macro path and read the paths of its arguments`() {
+            // Arrange
+            val code = """
+                fn check(herd: Vec<u8>) {
+                    let count = 3;
+                    assert_eq!(roll_d20(), MAX + count);
+                    let boss = vec![Creature::new(), herd.len()];
+                    crate::log!("{}", self.name);
+                }
+            """
+
+            // Act
+            val paths = pathsOf(code, "check")
+
+            // Assert
+            assertThat(paths).containsExactlyInAnyOrder(
+                "Vec" to RustNamespace.TYPE,
+                "assert_eq" to RustNamespace.MACRO,
+                "roll_d20" to RustNamespace.ANY,
+                "MAX" to RustNamespace.ANY,
+                "vec" to RustNamespace.MACRO,
+                "Creature::new" to RustNamespace.ANY,
+                "crate::log" to RustNamespace.MACRO
+            )
+        }
+
+        @Test
+        fun `should write the paths of a qualified path and of a trait method called by path`() {
+            // Arrange
+            val code = """
+                fn first() -> u8 { <Creature as Fightable>::attack(&Creature) + Fightable::attack(&Creature) }
+            """
+
+            // Act
+            val paths = pathsOf(code, "first")
+
+            // Assert
+            assertThat(paths).containsExactlyInAnyOrder(
+                "Creature" to RustNamespace.TYPE,
+                "Fightable" to RustNamespace.TYPE,
+                "Creature" to RustNamespace.VALUE,
+                "Fightable::attack" to RustNamespace.VALUE,
+                "Creature" to RustNamespace.VALUE
+            )
+        }
+
+        @Test
+        fun `should write what an impl names in its header and its methods`() {
+            // Arrange
+            val code = """
+                impl<T: Identified> Fightable for Repository<T> {
+                    fn attack(&self) -> Speed { Speed::new() }
+                }
+            """
+
+            // Act
+            val paths = moduleOf(code).impls.single().paths.map { it.segments.joinToString("::") }
+
+            // Assert
+            assertThat(paths).containsExactlyInAnyOrder("Identified", "Fightable", "Repository", "Speed", "Speed::new")
+        }
+
+        @Test
+        fun `should write no path for a macro_rules body`() {
+            // Arrange
+            val code = "macro_rules! spawn { () => { crate::model::Creature } }"
+
+            // Act
+            val paths = moduleOf(code).items.single().paths
+
+            // Assert
+            assertThat(paths).isEmpty()
+        }
+    }
 }
