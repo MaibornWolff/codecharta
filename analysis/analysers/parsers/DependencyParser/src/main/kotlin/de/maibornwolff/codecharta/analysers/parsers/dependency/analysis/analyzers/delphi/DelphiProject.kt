@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.delphi
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.readInParallel
 import de.maibornwolff.treesitter.excavationsite.api.DelphiSection
 import de.maibornwolff.treesitter.excavationsite.api.DelphiUnit
 import de.maibornwolff.treesitter.excavationsite.api.DelphiUnitKind
@@ -25,10 +26,14 @@ internal class DelphiProject private constructor(private val files: Set<String>,
     /** The unit of [name], written in any case; the first copy of a unit that several files declare. */
     fun unitNamed(name: List<String>): DelphiUnit? = unitsByName[keyOf(name)]?.first()
 
-    private fun unitsByName(): Map<String, List<DelphiUnit>> = files
-        .map { unitOf(it) }
-        .filter { it.kind == DelphiUnitKind.UNIT && it.name.isNotEmpty() }
-        .groupBy { keyOf(it.name) }
+    // The index reads every file one after the other, while the other files of the run wait for it
+    private fun unitsByName(): Map<String, List<DelphiUnit>> {
+        readInParallel(files) { unitOf(it) }
+        return files
+            .map { unitOf(it) }
+            .filter { it.kind == DelphiUnitKind.UNIT && it.name.isNotEmpty() }
+            .groupBy { keyOf(it.name) }
+    }
 
     private fun exportedScopesByName(): Map<String, UnitScope> = unitsByName.mapValues { (_, copies) ->
         UnitScope(copies.first().name, copies.flatMap { copy -> copy.declarations.filter { it.section == DelphiSection.INTERFACE } })
