@@ -11,14 +11,15 @@ import de.maibornwolff.treesitter.excavationsite.api.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
 
 /**
- * What one C or C++ file declares for the lookup of `cpp.md`: classes and type aliases by their path, and its
- * using-declarations, using-directives and namespace aliases.
+ * What one C or C++ file declares for the lookup of `cpp.md`: classes and type aliases by their path, the namespaces
+ * it opens, and its using-declarations, using-directives and namespace aliases.
  */
 internal data class CppFileFacts(
     val declarations: List<CppDeclared>,
     val usingDirectives: List<CppUsing>,
     val usingDeclarations: List<CppUsing>,
-    val namespaceAliases: List<CppNamespaceAlias> = emptyList()
+    val namespaceAliases: List<CppNamespaceAlias> = emptyList(),
+    val namespaces: List<List<String>> = emptyList()
 ) {
     companion object {
         fun of(result: DependencyResult): CppFileFacts {
@@ -29,7 +30,8 @@ internal data class CppFileFacts(
                 usingDeclarations = usings.filterNot { it.isWildcard }.map { CppUsing(it.namespacePath, it.path) },
                 namespaceAliases = result.imports.mapNotNull { alias ->
                     alias.bindingName?.let { CppNamespaceAlias(alias.namespacePath, it, alias.path) }
-                }
+                },
+                namespaces = result.declarations.filter { it.isNamespace() }.map { it.parentPath.drop(1) + it.name }
             )
         }
 
