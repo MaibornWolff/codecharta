@@ -27,8 +27,8 @@ class CppAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     private val file = splitNameToParts(fileInfo.physicalPath).filter { it != CURRENT_FOLDER }
 
     override fun analyze(): FileReport {
-        val result = TreeSitterDependencies.analyze(fileInfo.content, Language.CPP)
         val project = fileInfo.analysisRoot?.let { CppDeclarations.of(it) }
+        val result = project?.parseOf(file, fileInfo.content) ?: TreeSitterDependencies.analyze(fileInfo.content, Language.CPP)
         val names = project?.visibleNamesOf(file) ?: CppVisibleNames(listOf(CppFileFacts.of(result)))
         val nodes = result.declarations.filterNot { it.isForwardDeclaration() }.map { declaration ->
             toNode(declaration, names)

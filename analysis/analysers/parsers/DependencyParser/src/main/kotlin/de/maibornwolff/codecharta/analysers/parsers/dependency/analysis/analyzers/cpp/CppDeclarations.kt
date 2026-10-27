@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.cpp
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
+import de.maibornwolff.treesitter.excavationsite.api.DependencyResult
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import java.io.File
@@ -12,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 internal class CppDeclarations private constructor(private val analysisRoot: File, private val includes: CppIncludes) {
     private val factsByFile = ConcurrentHashMap<List<String>, CppFileFacts>()
+    private val parsesByFile = ConcurrentHashMap<List<String>, ParsedFile>()
     private val visibleNamesByFile = ConcurrentHashMap<List<String>, CppVisibleNames>()
 
     /** The names [file] sees, with the bases of a class looked up in the file that declares its body. */
@@ -25,6 +27,15 @@ internal class CppDeclarations private constructor(private val analysisRoot: Fil
         visibleNamesByFile.putIfAbsent(file, names) ?: names
     }
 
+    /**
+     * The parse of [file] with the text [text]: the one its include closure reads from the file, unless the text differs
+     * from the file, as without the byte order mark the scanner drops.
+     */
+    fun parseOf(file: List<String>, text: String): DependencyResult {
+        val parsed = runCatching { parsedFileOf(file) }.getOrNull()
+        return if (parsed != null && parsed.hasText(text)) parsed.result else parse(text)
+    }
+
     private fun bodyFileIn(closureFiles: Set<List<String>>, classPath: List<String>): List<String>? =
         closureFiles.firstOrNull { closureFile -> factsOf(closureFile).declarations.any { it.path == classPath && it.hasBody } }
 
@@ -34,12 +45,20 @@ internal class CppDeclarations private constructor(private val analysisRoot: Fil
         factsByFile.putIfAbsent(file, facts) ?: facts
     }
 
-    private fun readFacts(file: List<String>): CppFileFacts {
-        val source = analysisRoot.resolve(file.joinToString(File.separator))
-        return CppFileFacts.of(TreeSitterDependencies.analyze(source.readText(), Language.CPP))
+    private fun readFacts(file: List<String>): CppFileFacts = CppFileFacts.of(parsedFileOf(file).result)
+
+    private fun parsedFileOf(file: List<String>): ParsedFile = parsesByFile.computeIfAbsent(file) {
+        val text = analysisRoot.resolve(file.joinToString(File.separator)).readText()
+        ParsedFile(text.length, text.hashCode(), parse(text))
     }
 
+    private fun parse(text: String): DependencyResult = TreeSitterDependencies.analyze(text, Language.CPP)
+
     private fun isCppFile(file: List<String>): Boolean = SupportedLanguage.ofFileName(file.last()) == SupportedLanguage.CPP
+
+    private class ParsedFile(private val textLength: Int, private val textHash: Int, val result: DependencyResult) {
+        fun hasText(text: String): Boolean = text.length == textLength && text.hashCode() == textHash
+    }
 
     companion object {
         private val NO_FACTS = CppFileFacts(emptyList(), emptyList(), emptyList())
