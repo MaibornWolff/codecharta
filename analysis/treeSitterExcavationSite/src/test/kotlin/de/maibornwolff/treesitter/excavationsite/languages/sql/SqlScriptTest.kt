@@ -203,6 +203,24 @@ class SqlScriptTest {
     @Nested
     inner class Names {
         @Test
+        fun `should read no name in the body of a routine in another language, before or after its LANGUAGE clause`() {
+            // Arrange
+            val code = """
+                CREATE FUNCTION perl_check(value text) RETURNS boolean AS $$ return defined(${"$"}_[0]); $$ LANGUAGE plperl;
+                CREATE FUNCTION python_sort(numbers int[]) RETURNS ranked LANGUAGE 'plpython3u' AS $$ numbers.sort() $$;
+            """
+
+            // Act
+            val objects = objectsOf(code)
+
+            // Assert
+            assertThat(objects.map { it.names }).containsExactly(
+                listOf(name("text", SqlNameKind.TYPE), name("boolean", SqlNameKind.TYPE)),
+                listOf(name("int", SqlNameKind.TYPE), name("ranked", SqlNameKind.TYPE))
+            )
+        }
+
+        @Test
         fun `should ask a relation, a routine, a type or a sequence by the position of a name`() {
             // Arrange
             val code = """
