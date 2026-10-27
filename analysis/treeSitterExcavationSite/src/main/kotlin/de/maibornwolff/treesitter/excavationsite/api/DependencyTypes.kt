@@ -2,6 +2,16 @@
 
 package de.maibornwolff.treesitter.excavationsite.api
 
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustExternCrate
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustImpl
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustItem
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustItemKind
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustModDeclaration
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustModule
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustNamespace
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustPath
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustUse
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustVisibility
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AliasPathStart
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularDeclaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularSelector
@@ -30,3 +40,13 @@ typealias AliasPathStart = AliasPathStart
 typealias AngularDeclaration = AngularDeclaration
 typealias AngularSelector = AngularSelector
 typealias EmbeddedDeclarations = EmbeddedDeclarations
+typealias RustModule = RustModule
+typealias RustModDeclaration = RustModDeclaration
+typealias RustItem = RustItem
+typealias RustItemKind = RustItemKind
+typealias RustUse = RustUse
+typealias RustImpl = RustImpl
+typealias RustExternCrate = RustExternCrate
+typealias RustPath = RustPath
+typealias RustNamespace = RustNamespace
+typealias RustVisibility = RustVisibility

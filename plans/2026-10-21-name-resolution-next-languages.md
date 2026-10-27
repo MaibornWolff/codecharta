@@ -464,7 +464,22 @@ crates without dependency, method calls, variants, two crate roots, editions, im
 2. [x] probes: 62 under `sample-projects/regression/rust/spec-*`, 36 gaps at the start; each compiles with rustc 1.99
    except the two rustc rejects on purpose (tools `rust/mkprobes.py` writes them, `rust/check-probes.sh` compiles them,
    `rust/regen-gaps.py` rewrites known-gaps.md and the spec table from `scratch/pc-rust/`)
-3. [ ] implementation, one commit per group of gaps (list announced after the probes)
+3. [x] refactor: Rust gets name rules of its own (`RustNameRules`), the default ones for now
+4. [x] TSE: `TreeSitterDependencies.rustModule()` (Christian chose a Rust-only result type over markers in the shared
+   types): `mod` lines, items with kind, visibility and variants, `use` bindings, `impl` headers, `extern crate`; types
+   in `languages/rust/model` (a package of their own, the architecture test forbids `rust` <-> `rust.extractors`)
+5. [ ] crates from `Cargo.toml`, module tree from the `mod` declarations (decisions 1, 2, 12, 13), old lookup
+6. [ ] TSE: the paths each item and `impl` writes, bodies included, local names hidden, macro arguments read
+7. [ ] the switch: exact lookup (scopes, globs, crates, prelude, macros), re-export declarations (decisions 4, 5, 7, 8,
+   10, 11, 16), `RustNameRules` exact; the heuristics and the re-export alias folding go
+8. [ ] `impl` parts (decisions 3, 14), `RustCopyRules`
+9. [ ] `#[cfg(test)]` (decision 6)
+10. [ ] copies by crate (decision 15)
+11. [ ] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
+
+The prototype of steps 5–10 is `git stash` "rust-prototype" (copy `rust-prototype.patch` in the scratchpad): all
+probes but `spec-binary-copy` green; decision 16 (a declaration naming itself through a barrel points at the
+re-export, as Python and TypeScript) was asked after it.
 
 ## Steps
 

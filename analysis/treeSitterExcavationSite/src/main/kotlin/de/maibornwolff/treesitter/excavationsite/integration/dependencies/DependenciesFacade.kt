@@ -1,6 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.integration.dependencies
 
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
+import de.maibornwolff.treesitter.excavationsite.languages.rust.extractors.ModuleReader
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustModule
 import de.maibornwolff.treesitter.excavationsite.languages.vue.VueDependencyMapping
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ComponentRegistration
@@ -45,6 +47,12 @@ object DependenciesFacade {
             tree.readReleasingReachedNodes(VueDependencyMapping.extractComponentRegistrations) +
                 sources.flatMap { componentRegistrations(it.content, it.language) }
         }
+    }
+
+    /** What a Rust source declares and writes, for the name lookup of `rust.md`. */
+    fun rustModule(content: String): RustModule {
+        val grammar = NativeTreeSitter.grammar(LanguageRegistry.getGrammarLibrary(Language.RUST))
+        return FfmSyntaxTree.parse(content, grammar).use { it.readReleasingReachedNodes(ModuleReader::read) }
     }
 
     fun bundlerAliases(
