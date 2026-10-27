@@ -1,0 +1,3 @@
+# typescript.md, qualified, decision 16: p.N on a project namespace that does not declare N draws no edge
+file app/format.ts -> types/intl.d.ts
+leaf app/format.ts#duration -> types/intl.d.ts#Intl

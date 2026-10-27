@@ -110,6 +110,8 @@ A lower-case JSX tag (`<div>`) is an element of the platform: no edge.
 - If `p` is bound to a module (namespace import, `require`, a dynamic import's result), `p.N` is the export `N` of that
   module; when that export is itself a namespace or a re-exported module (`export * as m`), a longer chain walks on.
 - If `p` is a namespace of the project and declares `N`, `p.N` is that declaration and `p` is no dependency of its own.
+  If the namespace declares no `N` at all, `p.N` is a member of a library declaration it augments (`Intl.Collator`
+  with a project `declare global { namespace Intl { … } }`): no edge (decision 16).
 - If `p` is any other project declaration (a class, an enum, a variable), `p.N` is a member of it (a static method,
   an enum member): a use of `p`.
 - Otherwise `p` is a value (`this`, a parameter, a call result): `p.N` is a member of its type, which the parser does
@@ -223,6 +225,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | 2 and 3: a module binding over a global | `spec-module-shadows-global` | ok |
 | 3, decision 9: globals of one name in several files | `spec-global-alternatives` | ok |
 | 4. a global of the runtime | `spec-builtin-global` | ok |
+| Qualified, decision 16: a runtime member of an augmented global namespace | `spec-global-namespace-runtime-member` | gap |
 | Simple name: JSX tags | `spec-jsx-tag` | ok |
 | Simple name: the type a type predicate names | `spec-type-predicate` | ok |
 | Simple name: a shorthand property | `spec-shorthand-property` | ok |
@@ -324,3 +327,6 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
     every match draws an edge, a selector declared by several classes the one the scope decides (decided 2026-10-26).
 15. An import type `import('./m').A` in code is a use of the export `A` of `m`, as the compiler resolves it, like
     `ns.A` behind `import * as ns` (decided 2026-10-26).
+16. `p.N` on a project namespace that declares no `N` draws no edge, as the compiler finds `N` in the library declaration
+    the namespace merges with (`Intl.Collator`); the parser cannot tell yet for a namespace in `declare global`, whose
+    members TSE reads as hidden (Christian, 2026-10-27; `known-gaps.md`).
