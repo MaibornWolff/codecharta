@@ -42,6 +42,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- **Delphi routines with conditional declarations**: `dependencyparser` reads a Delphi routine whose local declarations
+  stand between `{$IFDEF}` and `{$ENDIF}`, and the routines after it, instead of losing the rest of the unit.
+
 - **SQL functions in other languages**: `dependencyparser` no longer links the body of a PostgreSQL function written in
   Perl, Python or C to SQL objects of the same name.
 
