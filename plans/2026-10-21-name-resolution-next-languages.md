@@ -477,7 +477,7 @@ crates without dependency, method calls, variants, two crate roots, editions, im
    10, 11, 16), `RustNameRules` exact; the heuristics and the re-export alias folding go. Checkpoint probes worse by
    decision: `rust/r2-rs1`, `r2-rs2` (`other::helper()` is a call, decision 4), `r3-p3-rust` (through the barrels,
    decisions 7 and 16)
-8. [ ] `impl` parts (decisions 3, 14), `RustCopyRules`
+8. [x] `impl` parts (decisions 3, 14), `RustCopyRules` (a declaration before an implementation part, else the nearest)
 9. [ ] `#[cfg(test)]` (decision 6)
 10. [ ] copies by crate (decision 15)
 11. [ ] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
