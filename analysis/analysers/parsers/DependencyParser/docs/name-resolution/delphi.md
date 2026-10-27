@@ -123,7 +123,7 @@ it deviates.
 | Simple name 1: an inline variable | `spec-inline-variable` | gap |
 | Simple name 2, decision 4: a member of the own class | `spec-member-hides` | gap |
 | Simple name 2, decision 4: a member inherited from another unit | `spec-inherited-member-hides` | gap |
-| Simple name 2: an inherited member type | `spec-inherited-member-type` | gap |
+| Simple name 2: an inherited member type | `spec-inherited-member-type` | ok |
 | Simple name 2: the members of the enclosing class | `spec-enclosing-class-member` | gap |
 | Simple name 2: a class helper and the type it extends | `spec-helper-members` | gap |
 | Simple name 3: the own unit first | `spec-own-unit-first` | ok |
