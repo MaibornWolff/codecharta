@@ -29,6 +29,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   also beside the file's classes, which an `include` or `require` of the file uses, and a class outside every
   namespace under its name alone.
 
+- **Leaves of Rust files**: the dependency map shows a `pub use` of a Rust module as a leaf that the code importing
+  through it points at, an `impl` block in another file than its type as a leaf of that file, and code under
+  `#[cfg(test)]` only when the run includes tests.
+
 ### Fixed 🐞
 
 - **Same name in several places**: `dependencyparser` links a class that several files declare under one name to the
@@ -72,6 +76,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   its namespace, aliases, groups and fully qualified names, and links function calls and constants with PHP's fallback
   to the global ones, so it tells `Dto\Creature` from `Model\Creature` and finds a class in nullable, union and
   promoted parameter types, `catch`, `instanceof`, attributes and traits.
+
+- **Imports in Rust**: `dependencyparser` resolves a Rust name as the compiler does, with crates named by `Cargo.toml`,
+  modules where the `mod` declarations and `#[path]` put them, and names found through `use`, globs and re-exports, and
+  reads function bodies, calls, constants and macros, so it tells `dto::Creature` from `domain::Creature` and no longer
+  links a name to a type of the same name elsewhere.
 
 - **Using directives in C#**: `dependencyparser` looks a C# name up in each enclosing namespace before the using
   directives written around it, so a class of the namespace wins over a using at the top of the file, a name two

@@ -13,8 +13,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 ## Resume here (for a fresh agent)
 
 - **State:** Java, Kotlin, C#, Go, Python, TypeScript, JavaScript, Vue and Angular templates, C and C++, PHP are done
-  and pushed (last: `fix/dependency-name-resolution-php`). Rust is in progress on `fix/dependency-name-resolution-rust`,
-  see "Rust" below.
+  and pushed (last: `fix/dependency-name-resolution-php`). Rust is done on `fix/dependency-name-resolution-rust` (not
+  pushed yet), see "Rust" below. Next language by the order below: Delphi.
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -449,7 +449,7 @@ derived (global namespace path, declarations in blocks, script leaf, docblocks).
 Prototype of steps 5–14 (all probes but the case one green, no checkpoint probe worse, the sample gains the 24 file
 edges FINDINGS expects): `git stash` "php-prototype", copy in the scratchpad `php-prototype.patch`.
 
-## Rust (in progress, 2026-10-26)
+## Rust (done, 2026-10-27)
 
 Branch `fix/dependency-name-resolution-rust`, cut from the pushed `-php`; comparison build of the first commit
 `ccsh-php11`. Christian: "do it like the compiler does it, else like the other languages". Ground truth: rustc 1.99.1
@@ -482,7 +482,26 @@ crates without dependency, method calls, variants, two crate roots, editions, im
    has tests) over a shared `FileInfo` field; `spec-cfg-test` got a `tests/smoke.rs`
 10. [x] decision 15 changed to the nearest copy (Christian, 2026-10-27: the copy step cannot know the crate a use
     resolved in; no shared change); `spec-binary-copy` stays a known gap, Not supported
-11. [ ] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
+11. [x] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
+
+### Resume after Rust here (2026-10-27)
+
+- **Branch** `fix/dependency-name-resolution-rust`, waiting for Christian's review and push; **last build** `ccsh-rs7`
+  (head before the docs commits), the next language's first chain is `chain.sh rs7 <tag>`. One gap left in
+  `regression/rust/` (`spec-binary-copy`, Not supported by decision 15). Checkpoint probes worse than the release: the
+  twelve known plus three by decision (`rust/r2-rs1`, `r2-rs2` decision 4, `r3-p3-rust` decisions 7 and 16).
+- **How it is built:** TSE `rustModule()` (`ModuleReader`, `PathCollector` with `LocalScopes`, `PatternBindings`,
+  `MacroTokens`, `UseTree`, `TypePaths`; types in `languages/rust/model`). Analyzer: `CargoManifestReader`,
+  `RustCrates` (crate roots and names as Cargo finds them), `RustModuleTree` (the `mod` tree, bindings per module,
+  textual macros, test code), `RustLookup` + `ModuleBindings` (the lookup, `Meaning`), `RustAnalyzer` (items, impl
+  parts, re-export leaves, exact paths), `RustNameRules` exact, `RustCopyRules` (a declaration before an impl part).
+  The old Rust `analyze()` extractors stay in TSE for other consumers; the parser no longer calls them.
+- **Tools** in the tools folder `rust/`: `mkprobes.py` (+ `no-compile.json`), `check-probes.sh` (rustc and cargo from
+  `rustup-init --profile minimal` in the scratchpad, `RUST=<dir>`; the session's one is gone with the session),
+  `regen-gaps.py`.
+- **Not supported:** method calls and fields on values, `macro_rules!` bodies, proc macros, `#[cfg]` other than test,
+  items `lib.rs` and `main.rs` both declare (decision 15), `--include-tests` over code without a test folder.
+- The prototype is `git stash` "rust-prototype"; it can be dropped.
 
 The prototype of steps 5–10 is `git stash` "rust-prototype" (copy `rust-prototype.patch` in the scratchpad): all
 probes but `spec-binary-copy` green; decision 16 (a declaration naming itself through a barrel points at the
@@ -497,5 +516,5 @@ re-export, as Python and TypeScript) was asked after it.
   2026-10-26
 - [x] Next language: C and C++ (Christian, 2026-10-26), done 2026-10-26
 - [x] Next language: PHP (by the order above, 2026-10-26), done 2026-10-26
-- [ ] Next language: Rust (by the order above, 2026-10-26)
+- [x] Next language: Rust (by the order above, 2026-10-26), done 2026-10-27
 - [ ] For each language: spec, probes, implementation commits, acceptance
