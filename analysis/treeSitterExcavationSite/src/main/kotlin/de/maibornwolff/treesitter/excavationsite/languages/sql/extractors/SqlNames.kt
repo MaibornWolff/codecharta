@@ -26,6 +26,9 @@ internal object SqlNames {
      */
     fun comparablePartsOf(name: SyntaxNode): List<String> = namePartTexts(name).map { comparable(it) }
 
+    /** One name part as written, as the database compares it, see [comparablePartsOf]. */
+    fun comparablePartOf(text: String): String = comparable(text)
+
     // A SQL*Plus substitution variable (`&schema.`) is no part of a name
     private fun namePartTexts(name: SyntaxNode): List<String> {
         if (name.type != OBJECT_NAME) return listOf(name.text)
