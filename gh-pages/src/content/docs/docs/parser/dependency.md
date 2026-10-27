@@ -204,6 +204,17 @@ as `Creature::new()` or `SpeedType::Walking`, is a use of the type. Function bod
 the arguments of a macro read as the expressions they almost always are; a method called on a variable draws no edge.
 Code under `#[cfg(test)]` counts only in a run that analyses a Rust file in a test folder, so with `--include-tests`.
 
+Delphi resolves a name as the compiler does, through the units of the analysed folder by their unit name, wherever the
+file lies. A name means a local declaration, a parameter or `Result` first, then a member of its class, of the class's
+ancestors in the project and of the classes around it, then a declaration of the own unit, then of the units of the
+`uses` clauses, the last listed first; the implementation section sees its own `uses` before those of the interface,
+and another unit only offers what its interface declares. `Unit.Name` means the declaration of the unit the longest
+prefix names, and `[Table]` means `TableAttribute` before `Table`. Every type, free routine, constant and variable is a
+leaf, a member type below its outer type, while an enum value, a field or a method is a use of its type; a program's
+main block and a unit's `initialization` and `finalization` are a leaf `<unit>_script`. A name matches only in the case
+of its declaration, as written in the `uses` entry too; library units such as `System.SysUtils`, unit scope names from
+the `.dproj`, include files and members of a value or a `with` draw no edge.
+
 TypeScript and JavaScript find an imported module where the compiler would: a relative path from the importing file,
 or a bare specifier through the `paths` and `baseUrl` of the nearest `tsconfig.json` or `jsconfig.json`, a bundler
 alias, a Module Federation remote, a workspace package of that `package.json` name or a `declare module` block; each

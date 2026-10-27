@@ -218,6 +218,22 @@ parameter, a local variable, a pattern or an item of an enclosing block binds is
 is written as its path, and the globs of enclosing blocks come along as `blockGlobs`. A field or method on a value is no
 path, nor is the body of a `macro_rules!`. A lower-case identifier pattern binds a name, an upper-case one is a path.
 
+### Delphi unit facts
+
+`TreeSitterDependencies.delphiUnit(content)` returns a `DelphiUnit` (types in `languages/delphi/model`), what the
+Delphi name lookup of the dependency parser (`docs/name-resolution/delphi.md`) needs from one file; the parser reads
+Delphi only through it, `analyze()` stays for other consumers:
+
+- the kind (unit, program, library), the unit name as its segments, and the interface and implementation `uses`; a
+  program's or library's single `uses` counts as its implementation `uses`.
+- `declarations`: every type (class, record, interface, helper, enum, any other type), free routine, constant and
+  variable, with its section, the outer types of a member type, its members, base types and generic parameters.
+- `names` per declaration and in `script` (a program's main block, a unit's `initialization` and `finalization`): each
+  name as written, up to the first call or index, with the section it stands in and the type whose members it sees
+  first. A method body counts for its type; what a routine declares inside itself (parameters, `Result`, `Self`, local
+  constants, variables, types and routines, inline and loop variables) is left out, ignoring case as the compiler does.
+  An attribute is marked, so `[Table]` can mean `TableAttribute`.
+
 ### Bundler aliases
 
 `TreeSitterDependencies.bundlerAliases(configuration)` reads `resolve.alias` of a webpack, vite or vue-cli
@@ -357,7 +373,7 @@ A different concatenation order with the same types produces identical dependenc
 | **JavaScript** | Same as TypeScript (shared `UsedTypeExtractor`): typeIdentifiers, constructorCalls, memberAccesses, extensions, relevantIdentifiers, constraintTypes, typeAliasRhsTypes, jsxComponents. DC legacy was imports-only; TSE adds full used-type extraction. | `JavascriptAnalyzer.kt` |
 | **Vue** | the template's tags in source order, marked `COMPONENT_TAG`; `<script setup>` and the template's expressions are an embedded source of the component | `VueAnalyzer.kt` |
 | **Angular template** | pipes in source order; the elements are `AngularDeclaration.elements` | N/A — TSE-native, no DC legacy |
-| **Delphi** | inheritance, parameters, returnTypes, fieldTypes, propertyTypes, constTypes, variableTypes, constructorCalls, methodCalls, castTypes, attributeTypes, genericConstraintTypes | N/A — TSE-native, no DC legacy |
+| **Delphi** | in `analyze()`: inheritance, parameters, returnTypes, fieldTypes, propertyTypes, constTypes, variableTypes, constructorCalls, methodCalls, castTypes, attributeTypes, genericConstraintTypes. The dependency parser reads Delphi through `delphiUnit()` instead, see "Delphi unit facts" | N/A — TSE-native, no DC legacy |
 | **Rust** | supertraits, fields (named + tuple), parameters, returnTypes, genericBounds, whereBounds, associatedBounds, typeAliasRhs, constStaticTypes; then per-target `impl` folding appends the impl'd trait followed by the impl method-signature types | N/A — TSE-native, no DC legacy |
 | **SQL** | the objects referenced (`FROM`, `JOIN`, `INTO`, `UPDATE`, `DELETE`, `MERGE`, `USING`, `INSERT`, `TRUNCATE`, `REFERENCES`, `EXEC`, `CALL`, `PERFORM`, the table of a trigger) and the routines called, in source order | N/A — TSE-native, no DC legacy |
 
@@ -382,7 +398,7 @@ One namespace per file. `packagePath` is authoritative; `parentPath` carries onl
 | Kotlin | `package_header` | parent class chain only (package not duplicated) |
 | Go | names of the package clauses, not a path; the adapter depends on them as the own package of the file and takes the directory of the file as its package path, where there is one | empty |
 | Python / JavaScript / Vue | always empty; the adapter uses the file path | empty |
-| Delphi | `unit` declaration | empty (top-level types only in v1) |
+| Delphi | `unit` declaration | empty in `analyze()` (top-level types only); `delphiUnit()` gives a member type its `outerTypes` |
 | SQL | always empty: an object is used by its name alone, without imports | the schema an object is created in, or the package of a routine of a PL/SQL package body |
 
 DC adapters for Class 1 build the node path as `packagePath + parentPath + name` (Kotlin) or `packagePath + name` (Java). The self-wildcard import is emitted once per file from `packagePath`.

@@ -33,6 +33,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   through it points at, an `impl` block in another file than its type as a leaf of that file, and code under
   `#[cfg(test)]` only when the run includes tests.
 
+- **Leaves of Delphi files**: the dependency map shows every Delphi type, free routine, constant and variable as a
+  leaf, and a program's main block and a unit's `initialization` and `finalization` as a leaf `<unit>_script`.
+
 ### Fixed 🐞
 
 - **Same name in several places**: `dependencyparser` links a class that several files declare under one name to the
@@ -81,6 +84,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   modules where the `mod` declarations and `#[path]` put them, and names found through `use`, globs and re-exports, and
   reads function bodies, calls, constants and macros, so it tells `dto::Creature` from `domain::Creature` and no longer
   links a name to a type of the same name elsewhere.
+
+- **Units in Delphi**: `dependencyparser` resolves a Delphi name as the compiler does, through the members of its
+  class and of the class's ancestors, the own unit and the units of the `uses` clauses, the last listed first, and
+  reads method bodies, so it tells two units' `TCreature` apart, sees only the interface of another unit and no longer
+  links a parameter or a local variable to a type of the same name.
 
 - **Using directives in C#**: `dependencyparser` looks a C# name up in each enclosing namespace before the using
   directives written around it, so a class of the namespace wins over a using at the top of the file, a name two
