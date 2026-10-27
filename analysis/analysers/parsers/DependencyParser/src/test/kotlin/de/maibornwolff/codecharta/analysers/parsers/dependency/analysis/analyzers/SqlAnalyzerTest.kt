@@ -48,6 +48,31 @@ class SqlAnalyzerTest {
     }
 
     @Test
+    fun `should declare sequences, types and domains and resolve the names that use them`() {
+        // Arrange
+        withFiles(
+            "db/schema.sql" to """
+                CREATE SEQUENCE order_seq;
+                CREATE TYPE mood AS ENUM ('calm', 'angry');
+                CREATE DOMAIN positive_int AS INT CHECK (VALUE > 0);
+            """,
+            "db/orders.sql" to "CREATE TABLE orders (id INT DEFAULT nextval('order_seq'), quantity positive_int, buyer_mood mood);"
+        )
+
+        // Act
+        val schema = analyze("db/schema.sql")
+        val uses = usesOf("db/orders.sql", "orders")
+
+        // Assert
+        assertThat(schema.nodes).extracting({ it.pathWithName.withDots() }, { it.nodeType }, { it.kind }).containsExactly(
+            tuple("order_seq", NodeType.VARIABLE, "sequence"),
+            tuple("mood", NodeType.CLASS, "type"),
+            tuple("positive_int", NodeType.CLASS, "domain")
+        )
+        assertThat(uses).containsExactly("order_seq", "positive_int", "mood")
+    }
+
+    @Test
     fun `should give the objects after SET search_path that schema`() {
         // Arrange
         withFiles("schema/orders.sql" to "SET search_path TO sales, public;\nCREATE TABLE orders (id INT);")
