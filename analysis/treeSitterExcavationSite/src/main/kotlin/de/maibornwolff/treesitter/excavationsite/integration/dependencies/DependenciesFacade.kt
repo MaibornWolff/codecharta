@@ -27,7 +27,8 @@ object DependenciesFacade {
         val definition = LanguageRegistry.getLanguageDefinition(language)
         val mapping = checkNotNull(definition.dependencyMapping) { "No dependency mapping for ${language.name}" }
         val wholeFileGrammar = mapping.grammarOfWholeFile
-        val processedContent = if (wholeFileGrammar == null) definition.preprocessor?.invoke(content) ?: content else content
+        val ofLanguage = if (wholeFileGrammar == null) definition.preprocessor?.invoke(content) ?: content else content
+        val processedContent = mapping.preprocessor?.invoke(ofLanguage) ?: ofLanguage
         val grammar = NativeTreeSitter.grammar(wholeFileGrammar ?: LanguageRegistry.getGrammarLibrary(language))
         val embeddedSources = mapping.embeddedSources ?: definition.embeddedSources
         val collected = DependencyCollector(grammar, mapping, embeddedSources).collectDependencies(processedContent)
