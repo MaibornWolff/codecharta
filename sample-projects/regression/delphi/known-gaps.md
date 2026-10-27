@@ -13,33 +13,6 @@ A procedural type written `reference to` is no declaration today.
 missing leaf Game.Rules.pas#TRules -> Game.Rules.pas#TIdFactory
 ```
 
-## spec-attribute
-
-The attribute suffix rule is missing: `[Table]` means `Table` even when the scope offers `TableAttribute`.
-
-```text
-missing leaf Game.Entity.pas#TEntity -> Game.Mapping.pas#TableAttribute
-extra leaf Game.Entity.pas#TEntity -> Game.Mapping.pas#Table
-```
-
-## spec-casts-handlers
-
-The type of a hard cast without a member access and of an exception handler is not extracted.
-
-```text
-missing leaf Game.Rules.pas#TRules -> Game.Model.pas#EFail
-missing leaf Game.Rules.pas#TRules -> Game.Model.pas#TLair
-```
-
-## spec-class-without-body
-
-A class without a body (`EFail = class(TObject);`) is no declaration today.
-
-```text
-missing file Game.User.pas -> Game.Errors.pas
-missing leaf Game.User.pas#TUser -> Game.Errors.pas#EFail
-```
-
 ## spec-const-var
 
 Constants, resource strings and variables are no declarations today (decision 1).
@@ -58,7 +31,7 @@ missing leaf Game.User.pas#TUser -> Game.Limits.pas#SName
 
 ## spec-enclosing-class-member
 
-Free routines and constants are no declarations today, so the use beside the enclosing member draws no edge.
+Constants are no declarations today (decision 1), so the use beside the enclosing member draws no edge.
 
 ```text
 missing file Game.Model.pas -> Game.Util.pas
@@ -74,14 +47,6 @@ missing file Game.User.pas -> Game.Model.pas
 missing leaf Game.User.pas#TUser -> Game.Model.pas#Spawn
 ```
 
-## spec-generic-parameter
-
-A generic parameter does not hide a unit type of the same name.
-
-```text
-extra leaf Game.Box.pas#TBox -> Game.Util.pas#T
-```
-
 ## spec-helper-members
 
 Free routines are no declarations today (decision 1).
@@ -89,15 +54,6 @@ Free routines are no declarations today (decision 1).
 ```text
 missing file Game.Helper.pas -> Game.Util.pas
 missing leaf Game.Helper.pas#TCreatureHelper -> Game.Util.pas#Upper
-```
-
-## spec-implementation-uses-first
-
-The first uses entry that declares a name wins today, and the implementation uses do not come first.
-
-```text
-missing file Game.User.pas -> Game.B.pas
-missing leaf Game.User.pas#TUser -> Game.B.pas#TItem
 ```
 
 ## spec-inherited-member-hides
@@ -111,7 +67,7 @@ missing leaf Game.Child.pas#TChild -> Game.Util.pas#Other
 
 ## spec-inherited-member-type
 
-Members inherited from another unit are not looked up: the uses entry wins.
+Members are not looked up yet (decision 4): the uses entry's `TInner` wins over the inherited member type.
 
 ```text
 missing leaf Game.Child.pas#TChild -> Game.Base.pas#TInner
@@ -121,22 +77,10 @@ extra leaf Game.Child.pas#TChild -> Game.Util.pas#TInner
 
 ## spec-inline-variable
 
-The declared type of an inline variable is not extracted, and variables are no declarations (decision 1).
+Variables are no declarations today (decision 1).
 
 ```text
-missing leaf Game.Arena.pas#TArena -> Game.Model.pas#TStat
 missing leaf Game.Model.pas#Boss -> Game.Model.pas#TCreature
-```
-
-## spec-last-uses-wins
-
-The first uses entry that declares a name wins today; the compiler takes the last.
-
-```text
-missing file Game.User.pas -> Game.B.pas
-missing leaf Game.User.pas#TUser -> Game.B.pas#TItem
-extra file Game.User.pas -> Game.A.pas
-extra leaf Game.User.pas#TUser -> Game.A.pas#TItem
 ```
 
 ## spec-library-unit
@@ -146,15 +90,6 @@ Free routines are no declarations today (decision 1).
 ```text
 missing file Game.User.pas -> Game.Text.pas
 missing leaf Game.User.pas#TUser -> Game.Text.pas#Length
-```
-
-## spec-local-declarations
-
-A record declared inside a routine becomes a declaration of its own.
-
-```text
-extra leaf Game.Arena.pas#TArena -> Game.Arena.pas#TLocal
-extra leaf Game.Arena.pas#TLocal -> Game.Model.pas#TCreature
 ```
 
 ## spec-local-hides
@@ -182,16 +117,6 @@ Free routines are no declarations today (decision 1).
 ```text
 missing file Game.Child.pas -> Game.Util.pas
 missing leaf Game.Child.pas#TChild -> Game.Util.pas#Other
-```
-
-## spec-nested-type
-
-A qualified `TOuter.TInner` keeps only its last segment, and the outer type takes the uses of its member type.
-
-```text
-missing file Game.User.pas -> Game.Model.pas
-missing leaf Game.User.pas#TUser -> Game.Model.pas#TInner
-extra leaf Game.Model.pas#TOuter -> Game.Base.pas#TStat
 ```
 
 ## spec-program
@@ -264,15 +189,6 @@ Typed constants are no declarations today (decision 1).
 
 ```text
 missing leaf Game.Arena.pas#NoName -> Game.Model.pas#TName
-```
-
-## spec-unit-qualified
-
-A unit-qualified name keeps only its last segment, so both fields mean the first uses entry's `TCreature`.
-
-```text
-missing file Game.Facade.pas -> dto/Game.Dto.Creature.pas
-missing leaf Game.Facade.pas#TFacade -> dto/Game.Dto.Creature.pas#TCreature
 ```
 
 ## spec-unused-uses
