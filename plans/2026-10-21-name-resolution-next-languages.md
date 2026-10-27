@@ -13,8 +13,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 ## Resume here (for a fresh agent)
 
 - **State:** Java, Kotlin, C#, Go, Python, TypeScript, JavaScript, Vue and Angular templates, C and C++, PHP are done
-  and pushed (last: `fix/dependency-name-resolution-php`). Rust is done on `fix/dependency-name-resolution-rust` (not
-  pushed yet), see "Rust" below. Next language by the order below: Delphi.
+  and pushed (last: `fix/dependency-name-resolution-php`). Rust is done and pushed (`fix/dependency-name-resolution-rust`).
+  Delphi is in progress on `fix/dependency-name-resolution-delphi`, see "Delphi" below. After it: SQL.
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -507,6 +507,30 @@ The prototype of steps 5–10 is `git stash` "rust-prototype" (copy `rust-protot
 probes but `spec-binary-copy` green; decision 16 (a declaration naming itself through a barrel points at the
 re-export, as Python and TypeScript) was asked after it.
 
+## Delphi (in progress, 2026-10-27)
+
+Branch `fix/dependency-name-resolution-delphi`, cut from the pushed `-rust`; comparison build of the first commit
+`ccsh-rs7`. Christian: "do it like the compiler does it, else like the other languages". Ground truth: Free Pascal
+3.2.2 in Delphi mode (`-Mdelphi`) from the Ubuntu packages `fp-compiler-3.2.2`, `fp-units-rtl-3.2.2` and
+`binutils-aarch64-linux-gnu` (+ libs) unpacked with `dpkg -x` into the session scratchpad; it compiles, links and runs,
+so a probe can print what a name meant. It lacks attributes and inline variables (Delphi 10.3+). Spec
+`docs/name-resolution/delphi.md`, decisions 1–4 chosen by Christian on 2026-10-27: routines, constants and variables
+are declarations; main code is a script leaf, a `uses` entry draws no edge; exact case stays (the lookup ignores case,
+an edge needs the declared case); members hide unit names across units. Decisions 5–9 derived (member types, members
+belong to their type, routine-local declarations, attribute suffix, no unit scope names).
+
+1. [x] spec page
+2. [ ] probes under `sample-projects/regression/delphi/spec-*`, each compiled by FPC; known-gaps.md, spec table
+3. [ ] refactor: Delphi gets name rules of its own (`DelphiNameRules`), the default ones for now
+4. [ ] TSE: the unit structure (`delphiUnit()`): unit or program name, both `uses` lists, declarations with kind,
+   section, members, bases; no output change
+5. [ ] TSE: the names each declaration and script part writes, locals hidden; no output change
+6. [ ] the switch: the lookup of the spec over all units of a run (`DelphiProject`), exact rules (decision 3)
+7. [ ] decision 1: routines, constants, variables, every type kind
+8. [ ] decision 2: script leaves
+9. [ ] decision 4: members across units
+10. [ ] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
+
 ## Steps
 
 - [x] Ask Christian which language comes next: C# (2026-10-22)
@@ -517,4 +541,5 @@ re-export, as Python and TypeScript) was asked after it.
 - [x] Next language: C and C++ (Christian, 2026-10-26), done 2026-10-26
 - [x] Next language: PHP (by the order above, 2026-10-26), done 2026-10-26
 - [x] Next language: Rust (by the order above, 2026-10-26), done 2026-10-27
+- [ ] Next language: Delphi (by the order above, 2026-10-27)
 - [ ] For each language: spec, probes, implementation commits, acceptance
