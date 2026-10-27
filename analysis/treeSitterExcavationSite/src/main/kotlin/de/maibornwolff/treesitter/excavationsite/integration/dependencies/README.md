@@ -98,7 +98,7 @@ data class UsedType(
 |---|---|---|
 | `STANDARD` (default) | Java `import`, Kotlin `import`, C# `using`, C++ `using namespace` / `using X::Y`, Rust `use` | Consumed as-is — the `path` is already the canonical reference |
 | `INCLUDE` | C++ `#include "…"` or `#include <…>` | The adapter reads the include lines of the files itself (`CppIncludes`), as its include rules need `"…"` apart from `<…>`, which this triple drops. A PHP `require` or `include` is no import but a use, see "Namespace-prefix handling" |
-| `REEXPORT` | Rust `pub use module::Type` (incl. `pub(crate) use`) | Adapter models it as a forwarding node — a crate flattens its public API via `pub use`, so consumers import the short `crate::Type` path; the forwarding node `crate::Type` points at the real `crate::module::Type` so the consumer's reference resolves transitively |
+| `REEXPORT` | Rust `pub use module::Type` (incl. `pub(crate) use`) in `analyze()` | DC's legacy adapter models it as a forwarding node. The dependency parser reads Rust through `rustModule()` instead, see "Rust module facts" |
 | `MEMBER` | Python `from module import name` and `from module import *` | The last path segment is the imported name (none for a wildcard). A relative module starts with one `.` segment per leading dot, which the adapter resolves against the module path of the file. The adapter makes the names a package's `__init__.py` imports re-export leaves; the uses of a declaration need no import, as the extractor reports each with the module it binds |
 
 Without the `INCLUDE` tag, a C++ DC adapter cannot tell `#include "foo"` (needs path normalization) from `using foo;` (must not be normalized) — both produce the same `(path, isWildcard, namespacePath)` triple. TSE extractors tag the AST source; adapters branch on `kind`.
@@ -119,7 +119,7 @@ Java, Kotlin, C#, TypeScript, JavaScript, Go, PHP, Delphi and Vue leave the fiel
 | TypeScript, JavaScript, Vue | A name means the binding the compiler sees: a local one hides it, else an import or a declaration of the module, else a global. | Only as a marker — the extractor leaves out what a local binding hides and reports a name through a module binding as that binding plus the members read behind it (`ns.Shapes.Circle`, `dynamic_import_<offset>.A`), a renamed import under its local name. The prefix is `GLOBAL` for a name no module binding binds, `COMPONENT_TAG` for a tag of a Vue template, and the specifier for a side-effect import (name `MODULE_SCRIPT`) and for `export { default as B } from` (name `DEFAULT_EXPORT`). |
 | Python | A name means whatever binds it where it is used: a declaration of the module, an import, a wildcard import. | Yes — the extractor finds the binding Python sees for each name and reports the use with the module the name is looked up in as prefix (empty for the own module, one `.` per leading dot for a relative import, a last `*` for a wildcard import) and the name with the attribute names behind it as `name` (`Order.Line`); `fallbacks` hold what the use means when a wildcard import does not bind the name. |
 | PHP | Names are resolved per file, through the `use` imports of the namespace block, the current namespace, `namespace\` and fully qualified names. | Yes — the extractor resolves every name as the compiler does and reports it as its namespace plus its name; a function or constant PHP may look up globally carries the global name in `fallbacks`. An include is a use named `MODULE_SCRIPT` with the path it names as prefix, relative to the including file, a first empty segment for an absolute path. |
-| Rust | A `use` brings most types into scope, but fully-qualified inline references (`crate::a::Foo`, `super::B`) without a `use` are legal and common. | Yes — populated for `scoped_type_identifier` references (the scope segments before the final name, verbatim incl. `crate`/`self`/`super`). |
+| Rust | A `use` brings most types into scope, but fully-qualified inline references (`crate::a::Foo`, `super::B`) without a `use` are legal and common. | In `analyze()`, populated for `scoped_type_identifier` references (the scope segments before the final name, verbatim incl. `crate`/`self`/`super`). `rustModule()` writes each path whole, see "Rust module facts". |
 
 **How an adapter consumes it:** the C++ adapter looks the written name, prefix included, up as the compiler does
 (`docs/name-resolution/cpp.md` of the dependency parser). DC's legacy adapters instead, when building a node's `dependencies` set, emit a synthetic `Dependency(Path(namespacePrefix), isWildcard = true)` per `UsedType` that has a non-empty prefix. This mirrors what DC's legacy C++ analyzer did implicitly via `TypeExtractionService.extractTypeWithFoundNamespacesAsDependencies`: for every qualified usage, add a wildcard pointing at the type's neighborhood so the resolver can match the short name against classes declared there.
@@ -194,6 +194,29 @@ a preprocessor. `DependenciesFacade` analyses each source in its own language:
 Metrics and text extraction parse only the script of a Vue file, with the JavaScript grammar and a preprocessor that
 cuts the script out. Dependency extraction needs the template as well, so `VueDependencyMapping` sets
 `grammarOfWholeFile` to the Vue grammar: the whole, unprocessed file is then parsed with it.
+
+### Rust module facts
+
+`TreeSitterDependencies.rustModule(content)` returns a `RustModule` (types in `languages/rust/model`), what the Rust
+name lookup of the dependency parser (`docs/name-resolution/rust.md`) needs from one file; the parser reads Rust only
+through it, `analyze()` stays for other consumers. Every fact carries the chain of inline modules it stands in
+(`inlinePath`) and whether `#[cfg(test)]` marks it, on itself or on an inline module around it:
+
+- `modDeclarations`: `mod m;` and `mod m { … }`, with `#[path]` and `#[macro_use]`.
+- `items`: structs (a tuple or unit struct also in the value namespace), enums with their variants, unions, traits,
+  type aliases, functions, consts, statics, `macro_rules!` (with `#[macro_export]`), with their visibility and the
+  `paths` they write.
+- `uses`: one entry per name a `use` binds (`binding` null for a glob or `as _`), `self` in a group naming the group's
+  path, a leading `::` as an empty first segment.
+- `impls`: the base path of the type and of the trait an `impl` names, and the `paths` it writes.
+- `externCrates`: `extern crate x as y;`.
+
+A `RustPath` is a path as written, in the namespace the compiler looks it up in: `TYPE` for a type position, `VALUE`
+for an expression or pattern, `MACRO` for `m!`, `ANY` for the tokens of a macro's arguments, which tree-sitter does not
+parse and which are read as the expressions they almost always are. Signature and body count alike; what a generic
+parameter, a local variable, a pattern or an item of an enclosing block binds is left out, a name a block `use` imports
+is written as its path, and the globs of enclosing blocks come along as `blockGlobs`. A field or method on a value is no
+path, nor is the body of a `macro_rules!`. A lower-case identifier pattern binds a name, an upper-case one is a path.
 
 ### Bundler aliases
 
@@ -374,7 +397,7 @@ Multiple top-level namespaces per file are legal, and nested namespaces scope th
 | C++ | first declared namespace (informational only) | full namespace chain + parent class chain, after a marker segment for a forward declaration, alias or implementation part |
 | PHP | first declared namespace (informational only) | the namespace of the block a declaration stands in; for a `define`, the namespace its name gives |
 | TypeScript ambient modules (planned) | file path | ambient module path per declaration |
-| Rust | always empty (file-module path is filesystem-derived; DC derives it from `physicalPath`) | in-file inline-`mod` chain (`mod a { mod b { … } }`) |
+| Rust | always empty (the module path follows from the `mod` declarations; the dependency parser builds the module tree from `rustModule()`) | in-file inline-`mod` chain (`mod a { mod b { … } }`) |
 
 DC's C# adapter (`CSharpAnalyzer` on `feat/tse-csharp-integration`) **ignores `result.packagePath`** and derives everything from `declaration.parentPath`: the node's `pathWithName` is `parentPath + name`, scoped imports match on `parentPath`, and the self-wildcard import is emitted **per declaration** from its own `parentPath`. The C++ and PHP adapters (`CppAnalyzer`, `PhpAnalyzer`) do the same.
 
