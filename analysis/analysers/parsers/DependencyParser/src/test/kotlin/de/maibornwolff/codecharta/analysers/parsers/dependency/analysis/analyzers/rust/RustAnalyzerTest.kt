@@ -324,6 +324,38 @@ class RustAnalyzerTest {
     }
 
     @Test
+    fun `should leave out cfg test code in a run that analyses no Rust test file`(
+        @TempDir root: File
+    ) {
+        // Arrange
+        root.withFiles(
+            "Cargo.toml" to "[package]\nname = \"demo\"\nedition = \"2021\"\n",
+            "src/lib.rs" to "pub mod model;\n#[cfg(test)]\nmod fixtures;",
+            "src/model.rs" to "pub struct Creature;\n#[cfg(test)]\nmod tests { pub struct Fake { boss: super::Creature } }",
+            "src/fixtures.rs" to "pub struct Fixture;",
+            "tests/smoke.rs" to ""
+        )
+        val withoutTests = setOf("src/lib.rs", "src/model.rs", "src/fixtures.rs")
+
+        fun analyzeRun(file: String, analysedFiles: Set<String>) =
+            RustAnalyzer(FileInfo(SupportedLanguage.RUST, file, root.resolve(file).readText(), root, analysedFiles)).analyze()
+
+        // Act
+        val model = analyzeRun("src/model.rs", withoutTests)
+        val fixtures = analyzeRun("src/fixtures.rs", withoutTests)
+        val modelWithTests = analyzeRun("src/model.rs", withoutTests + "tests/smoke.rs")
+
+        // Assert
+        assertThat(model.nodes.map { it.pathWithName.withDots() }).containsExactly("demo.model.Creature")
+        assertThat(fixtures.nodes).isEmpty()
+        assertThat(
+            modelWithTests.nodes.map {
+                it.pathWithName.withDots()
+            }
+        ).containsExactlyInAnyOrder("demo.model.Creature", "demo.model.tests.Fake")
+    }
+
+    @Test
     fun `should produce an empty report for an empty file`() {
         // Arrange
         val code = ""
