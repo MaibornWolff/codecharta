@@ -219,6 +219,67 @@ class DelphiAnalyzerTest {
     }
 
     @Nested
+    inner class Members {
+        @Test
+        fun `should mean a member type a project ancestor in another unit declares (decision 4)`(
+            @TempDir root: File
+        ) {
+            // Arrange
+            val base = unit("Game.Base", "type TBase = class public type TItem = class end; end;")
+            val child = unit("Game.Child", "type TChild = class(TBase) Item: TItem; end;", uses = "Game.Base, Game.A")
+            root.withFiles(itemOfA, "Game.Base.pas" to base, "Game.Child.pas" to child)
+
+            // Act
+            val report = analyzeIn(root, "Game.Child.pas")
+
+            // Assert
+            assertThat(report.usesOf("TChild")).containsExactly("Game.Base.TBase", "Game.Base.TBase.TItem")
+        }
+
+        @Test
+        fun `should let an inherited member hide a name of the used units in a method body (decision 4)`(
+            @TempDir root: File
+        ) {
+            // Arrange
+            val base = unit("Game.Base", "type TBase = class TItem: Integer; end;")
+            val child = unit(
+                "Game.Child",
+                "type TChild = class(TBase) procedure Run; end;",
+                "procedure TChild.Run; begin TItem := 1; end;",
+                uses = "Game.Base, Game.A"
+            )
+            root.withFiles(itemOfA, "Game.Base.pas" to base, "Game.Child.pas" to child)
+
+            // Act
+            val report = analyzeIn(root, "Game.Child.pas")
+
+            // Assert
+            assertThat(report.usesOf("TChild")).containsExactly("Game.Base.TBase")
+        }
+
+        @Test
+        fun `should let a helper see the members of the type it extends`(
+            @TempDir root: File
+        ) {
+            // Arrange
+            val model = unit("Game.Model", "type TCreature = class TItem: Integer; end;")
+            val helper = unit(
+                "Game.Helper",
+                "type THelper = class helper for TCreature procedure Run; end;",
+                "procedure THelper.Run; begin TItem := 1; end;",
+                uses = "Game.Model, Game.A"
+            )
+            root.withFiles(itemOfA, "Game.Model.pas" to model, "Game.Helper.pas" to helper)
+
+            // Act
+            val report = analyzeIn(root, "Game.Helper.pas")
+
+            // Assert
+            assertThat(report.usesOf("THelper")).containsExactly("Game.Model.TCreature")
+        }
+    }
+
+    @Nested
     inner class QualifiedNames {
         @Test
         fun `should take the unit a name is qualified with, whatever a later uses entry offers`(
