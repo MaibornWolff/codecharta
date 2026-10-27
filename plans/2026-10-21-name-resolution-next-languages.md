@@ -520,7 +520,10 @@ an edge needs the declared case); members hide unit names across units. Decision
 belong to their type, routine-local declarations, attribute suffix, no unit scope names).
 
 1. [x] spec page
-2. [ ] probes under `sample-projects/regression/delphi/spec-*`, each compiled by FPC; known-gaps.md, spec table
+2. [x] probes: 38 under `sample-projects/regression/delphi/spec-*`, 29 gaps at the start; each compiles with FPC in
+   Delphi mode except the three that use syntax FPC lacks (tools `delphi/mkprobes.py` writes them,
+   `delphi/check-probes.py` compiles them, `delphi/run-probes.sh <tag>` runs them, `delphi/regen-gaps.py` rewrites
+   known-gaps.md and the spec table from `scratch/pc-delphi/`)
 3. [ ] refactor: Delphi gets name rules of its own (`DelphiNameRules`), the default ones for now
 4. [ ] TSE: the unit structure (`delphiUnit()`): unit or program name, both `uses` lists, declarations with kind,
    section, members, bases; no output change

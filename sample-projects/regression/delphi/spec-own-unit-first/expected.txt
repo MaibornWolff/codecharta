@@ -1,0 +1,2 @@
+# delphi.md, simple name 3: the own unit before every used unit
+leaf Game.Mine.pas#TUser -> Game.Mine.pas#TItem

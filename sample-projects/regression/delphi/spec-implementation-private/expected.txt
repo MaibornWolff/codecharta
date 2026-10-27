@@ -1,0 +1,4 @@
+# delphi.md, units: what the implementation section declares only the unit itself can name
+file Game.User.pas -> Game.A.pas
+leaf Game.B.pas#TOwner -> Game.B.pas#TItem
+leaf Game.User.pas#TUser -> Game.A.pas#TItem

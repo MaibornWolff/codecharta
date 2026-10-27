@@ -1,0 +1,7 @@
+# delphi.md, qualified: a member below a type means the type, below a value nothing more
+file Game.User.pas -> Game.Kinds.pas
+file Game.User.pas -> Game.Model.pas
+leaf Game.Model.pas#Boss -> Game.Model.pas#TCreature
+leaf Game.User.pas#TUser -> Game.Kinds.pas#TKind
+leaf Game.User.pas#TUser -> Game.Model.pas#Boss
+leaf Game.User.pas#TUser -> Game.Model.pas#TCreature

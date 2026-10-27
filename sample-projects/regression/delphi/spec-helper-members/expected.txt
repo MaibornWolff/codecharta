@@ -1,0 +1,5 @@
+# delphi.md, simple name 2: a class helper sees the members of the type it extends
+file Game.Helper.pas -> Game.Model.pas
+file Game.Helper.pas -> Game.Util.pas
+leaf Game.Helper.pas#TCreatureHelper -> Game.Model.pas#TCreature
+leaf Game.Helper.pas#TCreatureHelper -> Game.Util.pas#Upper

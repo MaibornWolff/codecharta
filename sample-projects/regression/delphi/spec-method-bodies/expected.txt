@@ -1,0 +1,3 @@
+# delphi.md, declarations: a method body in the implementation section is a use of its class
+file Game.Arena.pas -> Game.Model.pas
+leaf Game.Arena.pas#TArena -> Game.Model.pas#TCreature

@@ -1,0 +1,4 @@
+# delphi.md, declarations: the names inside an anonymous method are uses of the declaration around it
+file Game.Rules.pas -> Game.Model.pas
+leaf Game.Rules.pas#TRules -> Game.Model.pas#TCreatureId
+leaf Game.Rules.pas#TRules -> Game.Rules.pas#TIdFactory
