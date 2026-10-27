@@ -14,7 +14,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 - **State:** Java, Kotlin, C#, Go, Python, TypeScript, JavaScript, Vue and Angular templates, C and C++, PHP are done
   and pushed (last: `fix/dependency-name-resolution-php`). Rust is done and pushed (`fix/dependency-name-resolution-rust`).
-  Delphi is done on `fix/dependency-name-resolution-delphi` (unpushed), see "Resume after Delphi here". Next: SQL.
+  Delphi is done and pushed (`fix/dependency-name-resolution-delphi`). SQL is in progress on
+  `fix/dependency-name-resolution-sql`, see "SQL".
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -554,6 +555,25 @@ belong to their type, routine-local declarations, attribute suffix, no unit scop
   include files and `.dpk/.lpr/.pp/.inc`, declare-before-use, subrange types (grammar), names in strings, a library
   unit listed after a project unit, `{$SCOPEDENUMS ON}`.
 
+## SQL (in progress, 2026-10-27)
+
+Branch `fix/dependency-name-resolution-sql`, cut from the pushed `-delphi`; comparison build of the first commit
+`ccsh-dl11`. Christian: "do it like the compiler does it, else like the other languages". Ground truth: PostgreSQL
+18.6 in node through PGlite (`npm i --ignore-scripts @electric-sql/pglite@0.5.9` in the scratchpad, runner `pg.mjs`);
+Oracle, SQL Server and MySQL from their manuals. The grammar is CodeCharta's island grammar 0.8.0: it names tables,
+views, synonyms, packages, routines and triggers, everything else (sequences, types, `ALTER`, `SET`) is a flat
+token list the extractor has to read. Spec `docs/name-resolution/sql.md`, decisions 1-7 chosen by Christian on
+2026-10-27: package spec declares, body routines are implementation parts; `ALTER TABLE`/`CREATE INDEX ON` in another
+file is an implementation part; another schema only if unique; `SET search_path`/`CURRENT_SCHEMA` followed, `USE`
+not; sequences, types, domains, package members are declarations; the position tells the kind; a trigger is its own
+leaf. Decisions 8-12 derived.
+
+1. [x] spec page
+2. [ ] probes under `sample-projects/regression/sql/spec-*`, PostgreSQL ones run in PGlite
+3. [ ] refactor: SQL gets name rules of its own (`SqlNameRules`), the default ones for now
+4. [ ] implementation steps, one per group of gaps (listed once the probes show the gaps)
+5. [ ] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
+
 ## Steps
 
 - [x] Ask Christian which language comes next: C# (2026-10-22)
@@ -565,5 +585,5 @@ belong to their type, routine-local declarations, attribute suffix, no unit scop
 - [x] Next language: PHP (by the order above, 2026-10-26), done 2026-10-26
 - [x] Next language: Rust (by the order above, 2026-10-26), done 2026-10-27
 - [x] Next language: Delphi (by the order above, 2026-10-27), done 2026-10-27
-- [ ] Next language: SQL (by the order above)
+- [ ] Next language: SQL (by the order above, 2026-10-27), in progress
 - [ ] For each language: spec, probes, implementation commits, acceptance
