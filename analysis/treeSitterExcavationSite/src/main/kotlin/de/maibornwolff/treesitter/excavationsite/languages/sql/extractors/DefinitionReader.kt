@@ -1,5 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.sql.extractors
 
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlNameKind
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlObject
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlObjectKind
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
@@ -35,7 +36,10 @@ internal object DefinitionReader {
             ?: return null
         val kind = kindOf(node)
         if (node.type == PACKAGE_DEFINITION) return PackageReader.read(node, kind, name, defaultSchema)
-        return SqlObject(kind, name, defaultSchema)
+        val locals = SqlLocals.of(node, isTrigger = kind == SqlObjectKind.TRIGGER)
+        val names = SqlNameCollector(locals, inPackage = false).namesOf(node)
+        val namesAsAsked = if (kind == SqlObjectKind.SYNONYM) names.map { it.copy(kind = SqlNameKind.ANY) } else names
+        return SqlObject(kind, name, defaultSchema, names = namesAsAsked)
     }
 
     // CREATE TRIGGER t, not CREATE FUNCTION f() RETURNS TRIGGER
