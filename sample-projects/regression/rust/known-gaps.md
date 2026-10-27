@@ -7,8 +7,8 @@ gap closes, and the closed lines are deleted here.
 
 ## spec-binary-copy
 
-The binary's own Config has the same logical path as the library's; the copy rule picks the nearest, not the copy of the
-crate the use resolved in (decision 15).
+Not supported (decision 15): the binary's own Config has the same logical path as the library's, and both uses mean the
+nearest copy, not the copy of the crate the use resolved in.
 
 ```text
 missing leaf src/main.rs#run -> src/main.rs#Config
