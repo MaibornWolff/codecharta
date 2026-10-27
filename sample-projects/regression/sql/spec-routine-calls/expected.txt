@@ -1,0 +1,5 @@
+# sql.md, declarations: calls, EXEC, CALL and PERFORM use the routine
+file app/game.sql -> db/routines.sql
+leaf app/game.sql#play -> db/routines.sql#reset_dice
+leaf app/game.sql#play -> db/routines.sql#roll
+leaf app/game.sql#play -> db/routines.sql#warm_up

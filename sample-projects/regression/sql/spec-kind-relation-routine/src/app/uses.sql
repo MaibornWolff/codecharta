@@ -1,0 +1,2 @@
+CREATE VIEW audit_rows AS SELECT id FROM audit;
+CREATE TRIGGER order_audited AFTER INSERT ON orders FOR EACH ROW EXECUTE FUNCTION audit();

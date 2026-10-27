@@ -1,0 +1,5 @@
+CREATE PROCEDURE dbo.report AS
+BEGIN
+    SELECT id FROM [dbo].[ORDERS];
+END
+GO

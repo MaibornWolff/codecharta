@@ -1,0 +1,2 @@
+CREATE SCHEMA hr;
+CREATE TABLE hr.orders (id INT);

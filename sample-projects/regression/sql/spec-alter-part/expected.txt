@@ -1,0 +1,4 @@
+# sql.md, declarations, decision 2: ALTER TABLE and CREATE INDEX in another file are an implementation part
+file db/V2__foreign_key.sql -> db/V1__orders.sql
+leaf db/V2__foreign_key.sql#orders -> db/V1__orders.sql#customers
+leaf db/V2__foreign_key.sql#orders -> db/V1__orders.sql#orders

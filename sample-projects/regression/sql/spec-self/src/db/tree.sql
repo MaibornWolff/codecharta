@@ -1,0 +1,2 @@
+CREATE TABLE node (id INT PRIMARY KEY, parent_id INT REFERENCES node (id));
+CREATE FUNCTION depth(n INT) RETURNS INT AS $$ SELECT CASE WHEN n = 0 THEN 0 ELSE depth(n - 1) + 1 END $$ LANGUAGE sql;

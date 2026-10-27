@@ -1,0 +1,5 @@
+# sql.md, declarations, decision 5: NEXTVAL and CURRVAL use the sequence
+file app/insert.sql -> db/orders.sql
+file app/insert.sql -> db/sequences.sql
+leaf app/insert.sql#add_order -> db/orders.sql#orders
+leaf app/insert.sql#add_order -> db/sequences.sql#order_seq

@@ -1,0 +1,5 @@
+# sql.md, kinds, decision 6: a type position means a type, else the row type of a table
+file app/report.sql -> db/orders.sql
+file app/report.sql -> db/types.sql
+leaf app/report.sql#report -> db/orders.sql#orders
+leaf app/report.sql#report -> db/types.sql#money_amount

@@ -1,0 +1,3 @@
+# sql.md, case: a name quoted in mixed case only matches the same spelling
+file app/report.sql -> db/customers.sql
+leaf app/report.sql#report -> db/customers.sql#orders

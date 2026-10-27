@@ -1,0 +1,9 @@
+# sql.md, declarations, decision 5: the members of a package specification are declarations
+file app/report.sql -> db/pricing.pks
+file db/pricing.pks -> db/orders.sql
+leaf app/report.sql#report -> db/pricing.pks#c_max
+leaf app/report.sql#report -> db/pricing.pks#c_orders
+leaf app/report.sql#report -> db/pricing.pks#e_too_big
+leaf app/report.sql#report -> db/pricing.pks#g_calls
+leaf app/report.sql#report -> db/pricing.pks#t_rec
+leaf db/pricing.pks#c_orders -> db/orders.sql#orders
