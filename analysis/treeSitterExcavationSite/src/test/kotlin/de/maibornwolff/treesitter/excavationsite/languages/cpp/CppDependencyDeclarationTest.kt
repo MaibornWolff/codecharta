@@ -525,6 +525,19 @@ class CppDependencyDeclarationTest {
         )
     }
 
+    @Test
+    fun `should read a class with an export macro before its name as that class with its base and uses`() {
+        // Arrange
+        val code = "class LIB_EXPORT Widget : public Base { Dice dice; };"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.map { it.name }).containsExactly("Widget")
+        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactlyInAnyOrder("Base", "Dice")
+    }
+
     private fun namespaceMarker(name: String, vararg enclosing: String) =
         Declaration(name = name, type = DeclarationType.UNKNOWN, usedTypes = emptySet(), parentPath = listOf(NAMESPACE) + enclosing)
 }
