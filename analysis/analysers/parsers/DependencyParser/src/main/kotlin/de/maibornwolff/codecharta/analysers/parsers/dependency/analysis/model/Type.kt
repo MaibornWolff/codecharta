@@ -4,6 +4,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model
  * @property alternativeName a second name the same use may mean, as `NameAttribute` for a C# attribute written `[Name]`
  * @property fallbacks what the use means, in order, when its own name names nothing, as a Python name a wildcard import
  *   may or may not bind
+ * @property kinds the kinds of declaration the use can mean (`Node.kind`); empty for any
  */
 data class Type(
     val name: String,
@@ -11,7 +12,8 @@ data class Type(
     val genericTypes: List<Type>,
     val resolvedPath: Path? = null,
     val alternativeName: String? = null,
-    val fallbacks: List<Type> = emptyList()
+    val fallbacks: List<Type> = emptyList(),
+    val kinds: Set<String> = emptySet()
 ) {
     companion object {
         fun generic(name: String, genericTypes: List<Type>) = Type(name.trim(), TypeOfUsage.USAGE, genericTypes)
@@ -40,6 +42,7 @@ data class Type(
         if (resolvedPath != other.resolvedPath) return false
         if (alternativeName != other.alternativeName) return false
         if (fallbacks != other.fallbacks) return false
+        if (kinds != other.kinds) return false
 
         return true
     }
@@ -50,6 +53,7 @@ data class Type(
         result = 31 * result + (resolvedPath?.hashCode() ?: 0)
         result = 31 * result + (alternativeName?.hashCode() ?: 0)
         result = 31 * result + fallbacks.hashCode()
+        result = 31 * result + kinds.hashCode()
         return result
     }
 
