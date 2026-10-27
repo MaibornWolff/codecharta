@@ -1,0 +1,3 @@
+# sql.md, objects, decision 4: ALTER SESSION SET CURRENT_SCHEMA sets the schema of the rest of the file
+file reports/report.sql -> db/orders.sql
+leaf reports/report.sql#report -> db/orders.sql#orders
