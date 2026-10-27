@@ -314,4 +314,20 @@ class CppAnalyzerTest {
         assertThat(part.isFileScoped).isTrue()
         assertThat(part.usedTypes.map { it.name }).containsExactlyInAnyOrder("game.Creature", "game.Logger")
     }
+
+    @Test
+    fun `should read a function defined with the name of a namespace the file opens as a free function without a leaf`() {
+        // Arrange
+        val code = """
+            namespace game::log { bool shouldLog(int category); }
+            struct Logger {};
+            bool game::log::shouldLog(int category) { Logger logger; return true; }
+        """.trimIndent()
+
+        // Act
+        val nodes = analyze(code, "game/Log.cpp").nodes
+
+        // Assert
+        assertThat(nodes.map { it.name() }).containsExactly("Logger")
+    }
 }

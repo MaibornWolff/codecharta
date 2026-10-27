@@ -20,6 +20,7 @@ internal class CppVisibleNames(
     private val usingDirectives = closure.flatMap { it.usingDirectives }
     private val usingDeclarations = closure.flatMap { it.usingDeclarations }
     private val namespaceAliases = closure.flatMap { it.namespaceAliases }
+    private val namespaces: Set<List<String>> = closure.flatMapTo(HashSet()) { it.namespaces }
     private val aliases: Map<List<String>, UsedType> = closure
         .flatMap { facts -> facts.declarations.mapNotNull { declared -> declared.aliasOf?.let { declared.path to it } } }
         .toMap()
@@ -32,6 +33,9 @@ internal class CppVisibleNames(
         written.size == 1 -> resolveSimple(written.single(), scope)
         else -> resolveQualified(written, scope)
     }
+
+    /** Whether a file of the closure opens the namespace [path]. */
+    fun isNamespace(path: List<String>): Boolean = path in namespaces
 
     /** The direct base classes of the class [path], each looked up where the class is declared. */
     fun basesOf(path: List<String>): List<List<String>> {
