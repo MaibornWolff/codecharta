@@ -54,6 +54,9 @@ internal class SqlProject private constructor(private val files: Set<String>, pr
             SqlObjectKind.TABLE to SqlObjectKind.TABLE,
             SqlObjectKind.VIEW to SqlObjectKind.VIEW,
             SqlObjectKind.SYNONYM to SqlObjectKind.SYNONYM,
+            SqlObjectKind.SEQUENCE to SqlObjectKind.SEQUENCE,
+            SqlObjectKind.TYPE to SqlObjectKind.TYPE,
+            SqlObjectKind.DOMAIN to SqlObjectKind.DOMAIN,
             SqlObjectKind.ROUTINE to SqlObjectKind.ROUTINE,
             SqlObjectKind.PACKAGE to SqlObjectKind.PACKAGE,
             SqlObjectKind.PACKAGE_BODY to SqlObjectKind.PACKAGE
