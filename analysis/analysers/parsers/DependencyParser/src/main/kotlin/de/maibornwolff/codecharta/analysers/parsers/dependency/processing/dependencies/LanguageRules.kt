@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpProjects
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.delphi.DelphiNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.golang.GoCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.golang.GoNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.java.JavaNameRules
@@ -27,6 +28,7 @@ internal object LanguageRules {
     fun namesOf(language: SupportedLanguage): NameRules = when (language) {
         SupportedLanguage.C_SHARP -> CSharpNameRules
         SupportedLanguage.CPP -> CppNameRules
+        SupportedLanguage.DELPHI -> DelphiNameRules
         SupportedLanguage.JAVA, SupportedLanguage.KOTLIN -> JavaNameRules
         SupportedLanguage.GO -> GoNameRules
         SupportedLanguage.PHP -> PhpNameRules
