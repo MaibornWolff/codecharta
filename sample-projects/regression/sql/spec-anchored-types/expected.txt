@@ -1,0 +1,5 @@
+# sql.md, declarations: %ROWTYPE and %TYPE use the table
+file app/report.sql -> db/customers.sql
+file app/report.sql -> db/orders.sql
+leaf app/report.sql#report -> db/customers.sql#customers
+leaf app/report.sql#report -> db/orders.sql#orders

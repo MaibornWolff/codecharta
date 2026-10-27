@@ -1,0 +1,9 @@
+# sql.md, which file: an object several migrations create means the latest one
+file db/R__summary.sql -> db/V10__view.sql
+file db/V10__view.sql -> db/V1__orders.sql
+file db/V2__view.sql -> db/V1__orders.sql
+file db/V3__report.sql -> db/V10__view.sql
+leaf db/R__summary.sql#summary -> db/V10__view.sql#order_totals
+leaf db/V10__view.sql#order_totals -> db/V1__orders.sql#orders
+leaf db/V2__view.sql#order_totals -> db/V1__orders.sql#orders
+leaf db/V3__report.sql#report -> db/V10__view.sql#order_totals

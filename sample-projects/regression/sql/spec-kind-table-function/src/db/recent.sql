@@ -1,0 +1,2 @@
+CREATE TABLE recent (id INT);
+CREATE FUNCTION recent_orders(days INT) RETURNS SETOF INT AS $$ SELECT days $$ LANGUAGE sql;

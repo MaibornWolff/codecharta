@@ -1,0 +1,3 @@
+# sql.md, simple name 6: built-in and library objects draw no edge
+file app/report.sql -> db/dice.sql
+leaf app/report.sql#report -> db/dice.sql#roll

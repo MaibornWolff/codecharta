@@ -1,0 +1,3 @@
+# sql.md, simple name 1: temporary tables, table variables and variables name no object
+file app/report.sql -> db/orders.sql
+leaf app/report.sql#report -> db/orders.sql#orders

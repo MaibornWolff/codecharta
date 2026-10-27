@@ -81,6 +81,9 @@ public code moved (see the second round below).
   object created in several files (a `CREATE OR REPLACE VIEW` repeated by migrations, a package specification and
   its body) is one leaf per file, and a use points at the last of these files in path order, the latest migration.
 
+Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/sql.md`): listed per
+probe in `regression/sql/known-gaps.md`.
+
 ## Unified parser
 - `unifiedparser -nc … -e "output,FINDINGS.md"`: exit 0, all 23 files analysed including `.pks`, `.pkb`, `.pls`.
 - `EncounterResolver` (`encounter_resolver.pkb`), expected values written before the run by the counting rule of the

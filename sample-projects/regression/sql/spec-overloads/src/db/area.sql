@@ -1,0 +1,2 @@
+CREATE FUNCTION area(side INT) RETURNS INT AS $$ SELECT side * side $$ LANGUAGE sql;
+CREATE FUNCTION area(name TEXT) RETURNS INT AS $$ SELECT length(name) $$ LANGUAGE sql;

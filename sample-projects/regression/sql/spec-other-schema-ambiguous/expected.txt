@@ -1,0 +1,3 @@
+# sql.md, simple name 5, decision 3: several other schemas draw no edge
+file app/report.sql -> db/customers.sql
+leaf app/report.sql#report -> db/customers.sql#customers

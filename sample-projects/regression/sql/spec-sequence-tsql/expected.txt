@@ -1,0 +1,3 @@
+# sql.md, declarations, decision 5: NEXT VALUE FOR uses the sequence
+file app/insert.sql -> db/sequences.sql
+leaf app/insert.sql#add_order -> db/sequences.sql#order_seq
