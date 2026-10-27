@@ -234,6 +234,25 @@ Delphi only through it, `analyze()` stays for other consumers:
   constants, variables, types and routines, inline and loop variables) is left out, ignoring case as the compiler does.
   An attribute is marked, so `[Table]` can mean `TableAttribute`.
 
+### SQL script facts
+
+`TreeSitterDependencies.sqlScript(content)` returns a `SqlScript` (types in `languages/sql/model`), what the SQL name
+lookup of the dependency parser (`docs/name-resolution/sql.md`) needs from one file; the parser reads SQL only through
+it, `analyze()` stays for other consumers:
+
+- `objects`: every table, view, synonym, sequence, type, domain, routine, trigger, package specification, package body
+  and object type body a statement creates, with its name as written (without a database in front of the schema) and
+  the default schema `SET search_path`, `SET SCHEMA` or `ALTER SESSION SET CURRENT_SCHEMA` set before it; `ALTER`,
+  `CREATE INDEX … ON` and `COMMENT ON` as a change of the object they name. The grammar leaves sequences, types,
+  domains, changes and schema settings as plain tokens, which the readers spell out.
+- `members` of a package or object type body: its routines, and the constants, variables, types, cursors and
+  exceptions a package declares.
+- `names` per object, member and in `statements` (the statements outside every object, grouped by default schema):
+  each name in its comparable parts with the kind of object its position asks for, relation, routine, type, sequence,
+  a possible package member (`pricing.c_max`, or a plain identifier inside a package) or, for what a synonym stands
+  for, any. What a local hides is left out: parameters, variables, cursors, nested routines, loop variables, common
+  table expressions, temporary tables a routine creates and the rows a trigger sees.
+
 ### Bundler aliases
 
 `TreeSitterDependencies.bundlerAliases(configuration)` reads `resolve.alias` of a webpack, vite or vue-cli
@@ -375,7 +394,7 @@ A different concatenation order with the same types produces identical dependenc
 | **Angular template** | pipes in source order; the elements are `AngularDeclaration.elements` | N/A — TSE-native, no DC legacy |
 | **Delphi** | in `analyze()`: inheritance, parameters, returnTypes, fieldTypes, propertyTypes, constTypes, variableTypes, constructorCalls, methodCalls, castTypes, attributeTypes, genericConstraintTypes. The dependency parser reads Delphi through `delphiUnit()` instead, see "Delphi unit facts" | N/A — TSE-native, no DC legacy |
 | **Rust** | supertraits, fields (named + tuple), parameters, returnTypes, genericBounds, whereBounds, associatedBounds, typeAliasRhs, constStaticTypes; then per-target `impl` folding appends the impl'd trait followed by the impl method-signature types | N/A — TSE-native, no DC legacy |
-| **SQL** | the objects referenced (`FROM`, `JOIN`, `INTO`, `UPDATE`, `DELETE`, `MERGE`, `USING`, `INSERT`, `TRUNCATE`, `REFERENCES`, `EXEC`, `CALL`, `PERFORM`, the table of a trigger) and the routines called, in source order | N/A — TSE-native, no DC legacy |
+| **SQL** | in `analyze()`: the objects referenced (`FROM`, `JOIN`, `INTO`, `UPDATE`, `DELETE`, `MERGE`, `USING`, `INSERT`, `TRUNCATE`, `REFERENCES`, `EXEC`, `CALL`, `PERFORM`, the table of a trigger) and the routines called, in source order. The dependency parser reads SQL through `sqlScript()` instead, see "SQL script facts" | N/A — TSE-native, no DC legacy |
 
 ### Default exports of JavaScript and TypeScript
 
@@ -399,7 +418,7 @@ One namespace per file. `packagePath` is authoritative; `parentPath` carries onl
 | Go | names of the package clauses, not a path; the adapter depends on them as the own package of the file and takes the directory of the file as its package path, where there is one | empty |
 | Python / JavaScript / Vue | always empty; the adapter uses the file path | empty |
 | Delphi | `unit` declaration | empty in `analyze()` (top-level types only); `delphiUnit()` gives a member type its `outerTypes` |
-| SQL | always empty: an object is used by its name alone, without imports | the schema an object is created in, or the package of a routine of a PL/SQL package body |
+| SQL | always empty: an object is used by its name alone, without imports | in `analyze()` the schema an object is created in, or the package of a routine of a PL/SQL package body; `sqlScript()` gives the name as written and the default schema |
 
 DC adapters for Class 1 build the node path as `packagePath + parentPath + name` (Kotlin) or `packagePath + name` (Java). The self-wildcard import is emitted once per file from `packagePath`.
 
