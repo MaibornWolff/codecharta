@@ -1,0 +1,4 @@
+# delphi.md, attributes, decision 8: `[Table]` means `TableAttribute` before `Table`
+file Game.Entity.pas -> Game.Mapping.pas
+leaf Game.Entity.pas#TEntity -> Game.Mapping.pas#ColumnAttribute
+leaf Game.Entity.pas#TEntity -> Game.Mapping.pas#TableAttribute

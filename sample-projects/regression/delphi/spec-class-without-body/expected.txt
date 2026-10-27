@@ -1,0 +1,4 @@
+# delphi.md, declarations: a class without a body and a forward declaration are one declaration each
+file Game.User.pas -> Game.Errors.pas
+leaf Game.Errors.pas#TTree -> Game.Errors.pas#TNode
+leaf Game.User.pas#TUser -> Game.Errors.pas#EFail

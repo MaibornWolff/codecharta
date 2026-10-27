@@ -1,0 +1,3 @@
+# delphi.md, units: the unit name is the namespace, not the folder
+file app/Game.Arena.pas -> domain/model/Game.Model.pas
+leaf app/Game.Arena.pas#TArena -> domain/model/Game.Model.pas#TCreature

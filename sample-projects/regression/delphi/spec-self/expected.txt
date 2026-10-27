@@ -1,0 +1,1 @@
+# Shared rule 4: a declaration that names itself draws no edge

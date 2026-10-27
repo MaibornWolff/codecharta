@@ -1,0 +1,5 @@
+# delphi.md, simple name 4: the implementation uses before the interface uses, which the interface sees alone
+file Game.User.pas -> Game.A.pas
+file Game.User.pas -> Game.B.pas
+leaf Game.User.pas#TUser -> Game.A.pas#TItem
+leaf Game.User.pas#TUser -> Game.B.pas#TItem

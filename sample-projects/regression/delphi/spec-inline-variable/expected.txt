@@ -1,0 +1,5 @@
+# delphi.md, simple name 1: an inline variable is local; its type and value are uses
+file Game.Arena.pas -> Game.Model.pas
+leaf Game.Arena.pas#TArena -> Game.Model.pas#TCreature
+leaf Game.Arena.pas#TArena -> Game.Model.pas#TStat
+leaf Game.Model.pas#Boss -> Game.Model.pas#TCreature

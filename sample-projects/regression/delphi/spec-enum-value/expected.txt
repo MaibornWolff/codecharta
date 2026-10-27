@@ -1,0 +1,3 @@
+# delphi.md, declarations, decision 6: an enum value means its enum, also written below it
+file Game.User.pas -> Game.Kinds.pas
+leaf Game.User.pas#TUser -> Game.Kinds.pas#TKind
