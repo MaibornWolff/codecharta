@@ -531,7 +531,7 @@ belong to their type, routine-local declarations, attribute suffix, no unit scop
 6. [x] the switch: the lookup of the spec over all units of a run (`DelphiProject`), exact rules (decision 3); member types
    of the own and enclosing types already (else `spec-nested-type` lost `TOuter -> TInner`). Checkpoint probe worse by
    decision 3: `delphi/r4-unit-qualifier-case` (`app.base.models.TItem`); `r2-dl1`, `r2-dl2`, `r3-p3-delphi` better
-7. [ ] decision 1: routines, constants, variables, every type kind
+7. [x] decision 1: routines, constants, variables, every type kind; closes 15 probes, 4 script gaps left
 8. [ ] decision 2: script leaves
 9. [x] decision 4: members across units, done before step 7: once routines are declarations, a member must already
    hide a routine of the same name (else `spec-member-hides` and three more draw wrong edges)
