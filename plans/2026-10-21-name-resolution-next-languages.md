@@ -583,7 +583,7 @@ leaf. Decisions 8-12 derived.
 7. [x] the switch: lookup over all SQL files of the run (`SqlProject`, `SqlLookup`), exact rules, kinds, schemas,
    `search_path`, locals; packages and changes as before
 8. [x] decision 5: sequences, types and domains are declarations
-9. [ ] decisions 1, 5, 8: package specification members, body routines and object type bodies as implementation parts
+9. [x] decisions 1, 5, 8: package specification members, body routines and object type bodies as implementation parts
 10. [ ] decision 2: changes of an object another file creates are implementation parts
 11. [ ] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
 

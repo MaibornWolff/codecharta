@@ -35,7 +35,8 @@ differ, the parser follows the majority and says so. The rules shared by every l
   (decision 5). A routine of the specification that the body implements is an implementation part in the body: a
   leaf of the same path in the body's file, whose uses are those of the routine's body, and which uses the
   specification's routine (decision 1). The package body as a whole is an implementation part of the package. What
-  only the body declares is a declaration only the package can name.
+  only the body declares is a declaration only the package can name. A body whose specification no file of the run
+  holds stands for the package: its routines are declarations others can name (decision 13).
 - An Oracle object type works the same way: `CREATE TYPE point_t AS OBJECT (…)` is the declaration, `CREATE TYPE
   BODY point_t` its implementation part. Its methods and attributes belong to the type (decision 5).
 - Routines of one name and different parameter types (PostgreSQL overloads) are one declaration: a call is not
@@ -133,13 +134,13 @@ the probes of other dialects follow their manuals. "Gap" means the parser does n
 | Declarations: synonyms | `spec-synonym` | ok |
 | Declarations, decision 5: `NEXTVAL`, `CURRVAL` | `spec-sequence-oracle` | ok |
 | Declarations, decision 5: `NEXT VALUE FOR` | `spec-sequence-tsql` | ok |
-| Declarations, decisions 5 and 8: an object type and its body | `spec-object-type` | gap |
+| Declarations, decisions 5 and 8: an object type and its body | `spec-object-type` | ok |
 | Declarations: calls, `CALL`, `PERFORM` | `spec-routine-calls` | ok |
 | Declarations: `EXEC` | `spec-exec` | ok |
 | Declarations, decision 7: a trigger | `spec-trigger` | ok |
-| Declarations, decision 1: package specification and body | `spec-package-spec-body` | gap |
-| Declarations, decision 5: the members of a package specification | `spec-package-members` | gap |
-| Declarations: what only the package body declares | `spec-package-private` | gap |
+| Declarations, decision 1: package specification and body | `spec-package-spec-body` | ok |
+| Declarations, decision 5: the members of a package specification | `spec-package-members` | ok |
+| Declarations: what only the package body declares | `spec-package-private` | ok |
 | Declarations, decision 2: `ALTER TABLE`, `CREATE INDEX` in another file | `spec-alter-part` | gap |
 | Declarations, decision 2: `ALTER TABLE` in the creating file | `spec-alter-same-file` | gap |
 | Declarations, decision 2: `COMMENT ON` | `spec-comment-on` | gap |
@@ -154,14 +155,14 @@ the probes of other dialects follow their manuals. "Gap" means the parser does n
 | Simple name 1: the rows of a trigger | `spec-trigger-rows` | ok |
 | Simple name 1: a common table expression | `spec-cte` | ok |
 | Simple name 1: temporary tables, table variables, variables | `spec-temp-variables` | ok |
-| Simple name 2: the package's own members first | `spec-package-member-first` | gap |
+| Simple name 2: the package's own members first | `spec-package-member-first` | ok |
 | Simple name 3, decision 11: the own schema first | `spec-own-schema-first` | ok |
 | Simple name 4: the default schema before another | `spec-default-before-other` | ok |
 | Simple name 5: the one object in another schema | `spec-other-schema-unique` | ok |
 | Simple name 5, decision 3: several other schemas | `spec-other-schema-ambiguous` | ok |
 | Simple name 6: built-in objects | `spec-builtin` | ok |
 | Qualified, decision 12: `S.N` | `spec-qualified-schema` | ok |
-| Qualified: `S.P.N` through a package | `spec-qualified-package` | gap |
+| Qualified: `S.P.N` through a package | `spec-qualified-package` | ok |
 | Case: folded and quoted names | `spec-case` | ok |
 | Case: a mixed-case quoted name | `spec-case-mixed-quoted` | ok |
 | Case: brackets | `spec-case-brackets` | ok |
@@ -208,3 +209,6 @@ the probes of other dialects follow their manuals. "Gap" means the parser does n
     `search_path` (derived 2026-10-27).
 12. A qualified `S.N` falls back to an object created without a schema, as the default schema may be called `S`
     (kept from before, derived 2026-10-27).
+13. A package body whose specification is not in the run is the package's declaration, as Oracle cannot compile a body
+    without one, so the specification lies outside the analysed files; as a C++ class body without a header (derived
+    2026-10-27).

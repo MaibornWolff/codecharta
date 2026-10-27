@@ -185,6 +185,90 @@ class SqlAnalyzerTest {
     }
 
     @Test
+    fun `should make the routines a package body implements parts of the specification's routines`() {
+        // Arrange
+        withFiles(
+            "db/pricing.pks" to """
+                CREATE OR REPLACE PACKAGE pricing AS
+                    c_max CONSTANT NUMBER := 10;
+                    FUNCTION total(p_id NUMBER) RETURN NUMBER;
+                END pricing;
+            """,
+            "db/pricing.pkb" to """
+                CREATE OR REPLACE PACKAGE BODY pricing AS
+                    FUNCTION helper RETURN NUMBER IS BEGIN RETURN c_max; END helper;
+                    FUNCTION total(p_id NUMBER) RETURN NUMBER IS BEGIN RETURN helper(); END total;
+                END pricing;
+            """
+        )
+
+        // Act
+        val specification = analyze("db/pricing.pks")
+        val body = analyze("db/pricing.pkb")
+
+        // Assert
+        assertThat(specification.nodes.map { it.pathWithName.withDots() }).containsExactly("pricing", "pricing.c_max", "pricing.total")
+        assertThat(body.nodes)
+            .extracting(
+                { it.pathWithName.withDots() },
+                { it.isImplementationPart },
+                { it.isFileScoped },
+                { it.usedTypes.map { type -> type.name } }
+            ).containsExactly(
+                tuple("pricing", true, true, listOf("pricing")),
+                tuple("pricing.helper", false, true, listOf("pricing.c_max")),
+                tuple("pricing.total", true, true, listOf("pricing.total", "pricing.helper"))
+            )
+    }
+
+    @Test
+    fun `should resolve a call of a package routine to the specification and draw none to a routine only the body declares`() {
+        // Arrange
+        withFiles(
+            "db/pricing.pks" to "CREATE OR REPLACE PACKAGE pricing AS FUNCTION total RETURN NUMBER; END pricing;",
+            "db/pricing.pkb" to """
+                CREATE OR REPLACE PACKAGE BODY pricing AS
+                    FUNCTION helper RETURN NUMBER IS BEGIN RETURN 1; END helper;
+                    FUNCTION total RETURN NUMBER IS BEGIN RETURN 1; END total;
+                END pricing;
+            """,
+            "app/report.sql" to "CREATE PROCEDURE report IS v NUMBER; BEGIN v := pricing.total() + pricing.helper(); END;"
+        )
+
+        // Act
+        val uses = usesOf("app/report.sql", "report")
+
+        // Assert
+        assertThat(uses).containsExactly("pricing.total")
+    }
+
+    @Test
+    fun `should make an object type body an implementation part of the type`() {
+        // Arrange
+        withFiles(
+            "db/point_t.sql" to "CREATE OR REPLACE TYPE point_t AS OBJECT (x NUMBER, MEMBER FUNCTION len RETURN NUMBER);",
+            "db/point_t_body.sql" to """
+                CREATE OR REPLACE TYPE BODY point_t AS
+                    MEMBER FUNCTION len RETURN NUMBER IS BEGIN RETURN scale(x); END;
+                END;
+            """,
+            "db/scale.sql" to "CREATE OR REPLACE FUNCTION scale(p NUMBER) RETURN NUMBER IS BEGIN RETURN p; END;"
+        )
+
+        // Act
+        val body = analyze("db/point_t_body.sql")
+
+        // Assert
+        assertThat(body.nodes)
+            .extracting({ it.pathWithName.withDots() }, { it.isImplementationPart }, {
+                it.usedTypes.map { type ->
+                    type.name
+                }
+            })
+            .containsExactly(tuple("point_t", true, listOf("point_t", "scale")))
+    }
+
+    @Test
     fun `should name the statements outside any definition after their file`() {
         // Arrange
         withFiles(
