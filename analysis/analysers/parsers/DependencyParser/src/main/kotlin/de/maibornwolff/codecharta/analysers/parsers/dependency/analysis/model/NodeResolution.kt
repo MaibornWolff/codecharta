@@ -24,7 +24,7 @@ fun Node.resolveTypes(project: ProjectNames, nameRules: NameRules = DefaultNameR
         .filter { it.resolvedPath != null }
         .filter { !languageDictionary.containsValue(it.resolvedPath) }
         .filter { it.resolvedPath != pathWithName || isImplementationPart }
-        .map { Dependency(path = it.resolvedPath!!, type = it.usageSource) }
+        .map { Dependency(path = it.resolvedPath!!, type = it.usageSource, kinds = it.kinds) }
         .toSet()
 
     val nodeDependencies = NodeDependencies(
