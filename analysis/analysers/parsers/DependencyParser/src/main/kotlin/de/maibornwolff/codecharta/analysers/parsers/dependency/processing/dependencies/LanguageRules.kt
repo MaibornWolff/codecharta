@@ -11,6 +11,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.java.JavaNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.php.PhpNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.python.PythonNameRules
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.rust.RustCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.rust.RustNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.TypescriptNameRules
@@ -40,6 +41,7 @@ internal object LanguageRules {
         SupportedLanguage.SQL -> SqlCopyRules
         SupportedLanguage.GO -> GoCopyRules
         SupportedLanguage.CPP -> CppCopyRules(analysisRoot?.let { CppIncludes.of(it) })
+        SupportedLanguage.RUST -> RustCopyRules
         else -> NearestCopy
     }
 }

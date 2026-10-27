@@ -13,25 +13,3 @@ crate the use resolved in (decision 15).
 ```text
 missing leaf src/main.rs#run -> src/main.rs#Config
 ```
-
-## spec-impl-part
-
-An impl block in another file than its type folds onto no declaration (decision 3).
-
-```text
-missing file src/display.rs -> src/model/creature.rs
-missing file src/display.rs -> src/model/speed.rs
-missing leaf src/display.rs#Creature -> src/model/creature.rs#Creature
-missing leaf src/display.rs#Creature -> src/model/speed.rs#Speed
-```
-
-## spec-impl-trait-for-foreign-type
-
-An impl of a project trait for a library type folds onto no declaration (decision 14).
-
-```text
-missing file src/herd.rs -> src/creature.rs
-missing file src/herd.rs -> src/fightable.rs
-missing leaf src/herd.rs#Fightable -> src/creature.rs#Creature
-missing leaf src/herd.rs#Fightable -> src/fightable.rs#Fightable
-```

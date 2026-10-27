@@ -5,8 +5,8 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLa
 /**
  * @property angular what the Angular decorator of the class declares or the elements of a template, null for other nodes
  * @property isFileScoped whether only its own file can name it, as a Kotlin `private` top-level declaration
- * @property isImplementationPart whether it is the part of a C++ class another file implements, which depends on the
- *   class of its own path (`cpp.md`, decision 3)
+ * @property isImplementationPart whether it is the part of a C++ class or a Rust type another file implements, which
+ *   depends on the declaration of its own path (`cpp.md` and `rust.md`, decision 3)
  */
 data class Node(
     val pathWithName: Path,
