@@ -14,8 +14,8 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 - **State:** Java, Kotlin, C#, Go, Python, TypeScript, JavaScript, Vue and Angular templates, C and C++, PHP are done
   and pushed (last: `fix/dependency-name-resolution-php`). Rust is done and pushed (`fix/dependency-name-resolution-rust`).
-  Delphi is done and pushed (`fix/dependency-name-resolution-delphi`). SQL is in progress on
-  `fix/dependency-name-resolution-sql`, see "SQL".
+  Delphi is done and pushed (`fix/dependency-name-resolution-delphi`). SQL is done on
+  `fix/dependency-name-resolution-sql` (unpushed), see "Resume after SQL here". All languages of the order are done.
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -555,7 +555,7 @@ belong to their type, routine-local declarations, attribute suffix, no unit scop
   include files and `.dpk/.lpr/.pp/.inc`, declare-before-use, subrange types (grammar), names in strings, a library
   unit listed after a project unit, `{$SCOPEDENUMS ON}`.
 
-## SQL (in progress, 2026-10-27)
+## SQL (done, 2026-10-27)
 
 Branch `fix/dependency-name-resolution-sql`, cut from the pushed `-delphi`; comparison build of the first commit
 `ccsh-dl11`. Christian: "do it like the compiler does it, else like the other languages". Ground truth: PostgreSQL
@@ -585,10 +585,32 @@ leaf. Decisions 8-12 derived.
 8. [x] decision 5: sequences, types and domains are declarations
 9. [x] decisions 1, 5, 8: package specification members, body routines and object type bodies as implementation parts
 10. [x] decision 2: changes of an object another file creates are implementation parts
-11. [ ] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
+11. [x] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
 
 The prototype of steps 4-10 is `git stash` "sql-prototype" (copy `sql-prototype.patch` in the tools folder `scratch/sql/`):
 all 46 probes green, no other language changed, checkpoint probe `sql/r3-sqlpkg` worse by decision 1.
+
+### Resume after SQL here (2026-10-27)
+
+- **Branch** `fix/dependency-name-resolution-sql`, waiting for Christian's review and push; **last build** `ccsh-sql9`
+  (head before the docs commit). No gap left in `regression/sql/`. Checkpoint probes worse than the release: the
+  sixteen of Delphi plus `sql/r3-sqlpkg` (decision 1: a caller points at the specification).
+- **How it is built:** TSE `sqlScript()` (`ScriptReader` with `DefinitionReader`, `StatementReader`, `PackageReader`,
+  `NameTokens`; names by `SqlNameCollector` with `SqlLocals`; types in `languages/sql/model`). Analyzer: `SqlProject`
+  (all SQL files of a run, objects by name, package members, specifications), `SqlLookup` (rules 1-6, qualified
+  names, kinds per position), `SqlAnalyzer` (objects at schema plus name, package members, parts for bodies and
+  changes, the script leaf), `SqlNameRules` exact, `SqlCopyRules` (a declaration before a part, then the latest
+  migration). Shared, approved: `Node.kind`, `Type.kinds`, `Dependency.kinds`, `DeclaringCopy.kind`, and
+  `DeclaringFiles` keeps the copies of the kinds a use asks for. The old SQL `analyze()` extractor stays for other
+  consumers.
+- **Tools** in the tools folder `sql/`: `mkprobes.py` (+ `probe-meta.json`: dialect, file order, check query per
+  probe), `check-probes.mjs` (PostgreSQL 18.6 through PGlite, `PGLITE=<dir with node_modules/@electric-sql/pglite>`;
+  the session's one is gone with the session: `npm i --ignore-scripts @electric-sql/pglite@0.5.9`), `regen-gaps.py`;
+  `scratch/sql-script.sh` prints `sqlScript()` of files.
+- **Not supported:** dynamic SQL and names in strings other than `nextval('…')`, `DROP` and `RENAME`, project objects
+  named like built-ins, overload matching, a table and a routine of one name in one file, `USE`, database links,
+  members of a value.
+- The prototype is `git stash` "sql-prototype"; it can be dropped.
 
 ## Steps
 
@@ -601,5 +623,5 @@ all 46 probes green, no other language changed, checkpoint probe `sql/r3-sqlpkg`
 - [x] Next language: PHP (by the order above, 2026-10-26), done 2026-10-26
 - [x] Next language: Rust (by the order above, 2026-10-26), done 2026-10-27
 - [x] Next language: Delphi (by the order above, 2026-10-27), done 2026-10-27
-- [ ] Next language: SQL (by the order above, 2026-10-27), in progress
-- [ ] For each language: spec, probes, implementation commits, acceptance
+- [x] Next language: SQL (by the order above, 2026-10-27), done 2026-10-27
+- [x] For each language: spec, probes, implementation commits, acceptance

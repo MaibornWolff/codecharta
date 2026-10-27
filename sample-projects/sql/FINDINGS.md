@@ -44,7 +44,7 @@ public code moved (see the second round below).
 
 ## Dependency parser
 - `dependencyparser -nc … -e "output,FINDINGS.md"` with and without `--include-tests`: exit 0. Default run: 22 file
-  nodes, 30 file edges, 61 leaves, 46 leaf edges; `--include-tests`: 23 nodes, 32 edges, 62 leaves, 48 leaf edges.
+  nodes, 31 file edges, 68 leaves, 52 leaf edges; `--include-tests`: 23 nodes, 33 edges, 69 leaves, 54 leaf edges.
   One cycle.
 
 | construct | expected edge(s) | found | verdict |
@@ -55,13 +55,13 @@ public code moved (see the second round below).
 | 1 synonym `creature_entity FOR creature`, `UPDATE creature_entity` in `creature_repository_touch` | creature_repository.pls -> schema/creature.sql | found, through the leaf `creature_entity` | ok |
 | 3 view `creature_overview` reading `creature`, `creature_type`, `hit_points`, `dbo.ArmorClass`; CTE `strongest` | -> schema/creature.sql, hit_points.sql, armor_class.sql; no edge for the CTE | all three, x2 on creature.sql; the CTE is no used object | ok |
 | 3 cycle `creature_overview` -> `dbo.treasure_hoard` -> `creature_overview` | views ↔ application, cyclic, one of them upward | both edges `isCyclic`, views -> application `isPointingUpwards` | ok |
-| 6 `creature%ROWTYPE` in the specification `creatures.pks` (the only use there) | creatures.pks -> schema/creature.sql | found | ok |
+| 6 `creature%ROWTYPE` in the specification `creatures.pks` (the only use there) | creatures.pks -> schema/creature.sql | found, from the leaf `find_creature` it is the return type of | ok |
 | 7 `INSERT INTO dto.creature` next to the unqualified `creature` of every other file | -> dto/creature.sql only from the facade | dto/creature.sql 1 incoming edge, schema/creature.sql 21 | ok |
 | 8 schema-qualified names (`dbo.ArmorClass`, `public.touch`, `[dbo].[creature]`) | resolved like unqualified ones | resolved | ok |
 | procedure calls `EXEC create_creature` (T-SQL calling a MySQL procedure), `creature_repository_touch(…)` in a package body, `PERFORM dbo.treasure_hoard(…)` | -> creature_service.sql, -> creature_repository.pls, -> creature_util.sql | all three | ok |
 | PostgreSQL trigger `creature_changed … ON creature … EXECUTE FUNCTION audit_creature()` | trigger -> creature.sql, leaf edge -> `audit_creature` | both | ok |
 | package body routines `save_creature`, `find_creature` | leaves with the package as parent, edges from each routine | leaves with their own edges | ok |
-| package specification and body of `encounter_resolver` | one leaf in each file | `encounter_resolver` in .pks and .pkb, the routines only in .pkb | ok |
+| package specification and body of `encounter_resolver` | the routines as leaves of the .pks, the body and its routines as implementation parts in the .pkb that point at them | as expected, .pkb -> .pks | ok |
 | 10 `sys.objects`, `information_schema.tables`, `sp_executesql`, built-in functions | no edges | none | ok |
 | 11 test file | skipped by default; with tests -> creature_facade.sql, -> creature.sql | as expected | ok |
 | `migrations/V1__seed_types.sql`, only statements | one script leaf -> creature.sql, -> speed.sql | `V1__seed_types_script` with both edges | ok |
@@ -75,11 +75,13 @@ public code moved (see the second round below).
   so the parser does too. A name in double quotes in mixed case keeps it (`Zentaurenhöhle`) and only matches the
   same spelling, as in PostgreSQL; a quoted name all in one case (`"creature"`, `"CREATURE"`) is what an unquoted name
   folds to and matches it.
-- What SQL offers natively: no imports and no module system. CodeCharta resolves every name on its own: a name with
-  a schema finds the object of that schema, a name without one the object of the same schema, then one created
-  without a schema, then one of any schema. Two objects of one name in two schemas stay apart (construct 7). An
-  object created in several files (a `CREATE OR REPLACE VIEW` repeated by migrations, a package specification and
-  its body) is one leaf per file, and a use points at the last of these files in path order, the latest migration.
+- What SQL offers natively: no imports and no module system. CodeCharta reads the SQL files as one database and
+  resolves every name as `sql.md` says: a local name, a member of the own package, the object of the own schema, one
+  created without a schema, then the one object of that name in another schema; a name with a schema finds the object
+  of that schema, or else one created without one. The place of a name tells a table from a routine or a type. Two
+  objects of one name in two schemas stay apart (construct 7). An object created in several files (a `CREATE OR
+  REPLACE VIEW` repeated by migrations) is one leaf per file, and a use points at the last of these files in path
+  order, the latest migration; a package body is an implementation part that points at its specification.
 
 Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/sql.md`): listed per
 probe in `regression/sql/known-gaps.md`.
@@ -193,6 +195,12 @@ probe in `regression/sql/known-gaps.md`.
 - Test file: included; `[test should_save_creature_to_the_stable]` is split into its words.
 - German words: zentaurenhöhle 5, rüstungsklasse 5, höhle 4, kreatur 2, trefferpunkte 2, verlies 2, größe 1 all
   appear, umlauts intact. German stop words leak: die 2, unter 2, dem 2, und 2, jeder 2.
+
+## Changed by the name rules (2026-10-27)
+- Dependency parser: the name rules of `sql.md`. The routines of `encounter_resolver.pks` are leaves of their own, and
+  the body and its routines in `encounter_resolver.pkb` implementation parts that point at them (+1 file edge,
+  +6 leaf edges); `creature%ROWTYPE` in `creatures.pks` is a use of its routine `find_creature` instead of the package.
+  No other edge of the sample changes.
 
 ## Changed since 2026-10-16 (third round)
 - Grammar 0.4.0 to 0.8.0: `PROMPT`, `REMARK` and `DELIMITER` inside a statement stay names, `SHOW` statements stay
