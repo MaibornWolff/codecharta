@@ -126,8 +126,8 @@ the probes of other dialects follow their manuals. "Gap" means the parser does n
 | Objects: schema plus name, not the folder | `spec-schema-path` | ok |
 | Objects: an object without a schema | `spec-default-schema` | ok |
 | Objects: the database part is left out | `spec-database-part` | ok |
-| Objects, decision 4: `SET search_path` | `spec-search-path` | gap |
-| Objects, decision 4: `ALTER SESSION SET CURRENT_SCHEMA` | `spec-current-schema` | gap |
+| Objects, decision 4: `SET search_path` | `spec-search-path` | ok |
+| Objects, decision 4: `ALTER SESSION SET CURRENT_SCHEMA` | `spec-current-schema` | ok |
 | Objects, decision 4: `USE` is not read | `spec-use-ignored` | ok |
 | Declarations, decision 5: tables, views, sequences, types, domains, routines | `spec-object-kinds` | gap |
 | Declarations: synonyms | `spec-synonym` | ok |
@@ -144,21 +144,21 @@ the probes of other dialects follow their manuals. "Gap" means the parser does n
 | Declarations, decision 2: `ALTER TABLE` in the creating file | `spec-alter-same-file` | gap |
 | Declarations, decision 2: `COMMENT ON` | `spec-comment-on` | gap |
 | Declarations: the script leaf | `spec-script-leaf` | ok |
-| Declarations, decision 9: what a routine declares inside itself | `spec-local-declarations` | gap |
+| Declarations, decision 9: what a routine declares inside itself | `spec-local-declarations` | ok |
 | Declarations, decision 10: overloads | `spec-overloads` | ok |
 | Declarations: `%ROWTYPE`, `%TYPE` | `spec-anchored-types` | ok |
-| Kinds, decision 6: a table and a function of one name | `spec-kind-relation-routine` | gap |
+| Kinds, decision 6: a table and a function of one name | `spec-kind-relation-routine` | ok |
 | Kinds, decision 6: a type, else a row type | `spec-kind-row-type` | gap |
-| Kinds, decision 6: a table function | `spec-kind-table-function` | gap |
+| Kinds, decision 6: a table function | `spec-kind-table-function` | ok |
 | Kinds: a synonym fits every position | `spec-kind-synonym` | ok |
-| Simple name 1: the rows of a trigger | `spec-trigger-rows` | gap |
+| Simple name 1: the rows of a trigger | `spec-trigger-rows` | ok |
 | Simple name 1: a common table expression | `spec-cte` | ok |
 | Simple name 1: temporary tables, table variables, variables | `spec-temp-variables` | ok |
 | Simple name 2: the package's own members first | `spec-package-member-first` | gap |
 | Simple name 3, decision 11: the own schema first | `spec-own-schema-first` | ok |
 | Simple name 4: the default schema before another | `spec-default-before-other` | ok |
 | Simple name 5: the one object in another schema | `spec-other-schema-unique` | ok |
-| Simple name 5, decision 3: several other schemas | `spec-other-schema-ambiguous` | gap |
+| Simple name 5, decision 3: several other schemas | `spec-other-schema-ambiguous` | ok |
 | Simple name 6: built-in objects | `spec-builtin` | ok |
 | Qualified, decision 12: `S.N` | `spec-qualified-schema` | ok |
 | Qualified: `S.P.N` through a package | `spec-qualified-package` | gap |

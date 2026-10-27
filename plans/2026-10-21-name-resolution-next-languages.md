@@ -580,7 +580,7 @@ leaf. Decisions 8-12 derived.
    change
 6. [x] refactor (shared, approved by Christian 2026-10-27): a kind on nodes, uses and copies; the file choice keeps the
    copies of the kinds a use asks for; no output change
-7. [ ] the switch: lookup over all SQL files of the run (`SqlProject`, `SqlLookup`), exact rules, kinds, schemas,
+7. [x] the switch: lookup over all SQL files of the run (`SqlProject`, `SqlLookup`), exact rules, kinds, schemas,
    `search_path`, locals; packages and changes as before
 8. [ ] decision 5: sequences, types and domains are declarations
 9. [ ] decisions 1, 5, 8: package specification members, body routines and object type bodies as implementation parts
