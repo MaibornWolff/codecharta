@@ -108,8 +108,18 @@ class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
             .map { (name, _) -> node(scope.pathOf(name), NodeType.REEXPORT, listOf(typeOf(source.pathOf(name)))) }
     }
 
-    private fun usesOf(paths: List<RustPath>, scope: RustModuleScope): List<Type> =
-        paths.flatMap { path -> lookup.resolve(path, scope).mapNotNull { it.declarationPath } }.distinct().map { typeOf(it) }
+    private fun usesOf(paths: List<RustPath>, scope: RustModuleScope): List<Type> = paths
+        .flatMap { path -> lookup.resolve(path, scope).mapNotNull { seenFrom(it, scope).declarationPath } }
+        .distinct()
+        .map { typeOf(it) }
+
+    // Decision 16: inside the module that re-exports a declaration, or below it, the re-export means what it names
+    private fun seenFrom(meaning: Meaning, scope: RustModuleScope): Meaning {
+        if (meaning !is Meaning.Reexport || meaning.target is Meaning.Module) return meaning
+        val reexportingModule = meaning.path.dropLast(1)
+        val isInside = scope.path.size >= reexportingModule.size && scope.path.take(reexportingModule.size) == reexportingModule
+        return if (isInside) seenFrom(meaning.target, scope) else meaning
+    }
 
     private fun typeOf(path: List<String>): Type = Type.simple(Path(path).withDots())
 
