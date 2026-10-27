@@ -1,0 +1,2 @@
+#define GAME_EXPORT
+#define GAME_DEPRECATED
