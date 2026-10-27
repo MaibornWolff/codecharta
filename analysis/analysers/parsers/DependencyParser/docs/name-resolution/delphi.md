@@ -106,35 +106,35 @@ it deviates.
 | Units, decision 2: a program and its main block | `spec-program` | gap |
 | Units: `uses A in 'path'` | `spec-uses-in` | gap |
 | Units, decision 2: an unused uses entry | `spec-unused-uses` | gap |
-| Declarations, decision 1: alias, pointer, class reference, procedural, set and array types | `spec-type-kinds` | gap |
+| Declarations, decision 1: alias, pointer, class reference, procedural, set and array types | `spec-type-kinds` | ok |
 | Declarations: a class without a body, a forward declaration | `spec-class-without-body` | ok |
-| Declarations, decision 1: a free routine | `spec-routine` | gap |
-| Declarations, decision 1: constants, resource strings, variables, thread variables | `spec-const-var` | gap |
+| Declarations, decision 1: a free routine | `spec-routine` | ok |
+| Declarations, decision 1: constants, resource strings, variables, thread variables | `spec-const-var` | ok |
 | Declarations, decision 6: an enum value | `spec-enum-value` | ok |
 | Declarations, decision 5: a member type | `spec-nested-type` | ok |
 | Declarations: method bodies in the implementation section | `spec-method-bodies` | ok |
 | Declarations, decision 7: what a routine declares inside itself | `spec-local-declarations` | ok |
 | Declarations, decision 2: `initialization` and `finalization` | `spec-script-initialization` | gap |
-| Declarations: type positions and base types | `spec-type-positions` | gap |
+| Declarations: type positions and base types | `spec-type-positions` | ok |
 | Declarations: `is`, `as`, hard cast, `on E: X do`, `^T` | `spec-casts-handlers` | ok |
-| Declarations: an anonymous method | `spec-anonymous-method` | gap |
-| Simple name 1: parameters, local variables, `Result`, `for` variables | `spec-local-hides` | gap |
+| Declarations: an anonymous method | `spec-anonymous-method` | ok |
+| Simple name 1: parameters, local variables, `Result`, `for` variables | `spec-local-hides` | ok |
 | Simple name 1: a generic parameter | `spec-generic-parameter` | ok |
-| Simple name 1: an inline variable | `spec-inline-variable` | gap |
-| Simple name 2, decision 4: a member of the own class | `spec-member-hides` | gap |
-| Simple name 2, decision 4: a member inherited from another unit | `spec-inherited-member-hides` | gap |
+| Simple name 1: an inline variable | `spec-inline-variable` | ok |
+| Simple name 2, decision 4: a member of the own class | `spec-member-hides` | ok |
+| Simple name 2, decision 4: a member inherited from another unit | `spec-inherited-member-hides` | ok |
 | Simple name 2: an inherited member type | `spec-inherited-member-type` | ok |
-| Simple name 2: the members of the enclosing class | `spec-enclosing-class-member` | gap |
-| Simple name 2: a class helper and the type it extends | `spec-helper-members` | gap |
+| Simple name 2: the members of the enclosing class | `spec-enclosing-class-member` | ok |
+| Simple name 2: a class helper and the type it extends | `spec-helper-members` | ok |
 | Simple name 3: the own unit first | `spec-own-unit-first` | ok |
 | Simple name 4: the last uses entry wins | `spec-last-uses-wins` | ok |
 | Simple name 4: implementation uses before interface uses | `spec-implementation-uses-first` | ok |
-| Simple name 5: library units, a project unit before `System` | `spec-library-unit` | gap |
+| Simple name 5: library units, a project unit before `System` | `spec-library-unit` | ok |
 | Qualified: `U.N` through a unit | `spec-unit-qualified` | ok |
-| Qualified: the longest unit-name prefix | `spec-longest-unit-prefix` | gap |
+| Qualified: the longest unit-name prefix | `spec-longest-unit-prefix` | ok |
 | Qualified: the own unit's name | `spec-own-unit-qualified` | ok |
-| Qualified: a member below a type or a value | `spec-type-member-access` | gap |
-| Case, decision 3: exact case, the lookup ignoring case | `spec-exact-case` | gap |
+| Qualified: a member below a type or a value | `spec-type-member-access` | ok |
+| Case, decision 3: exact case, the lookup ignoring case | `spec-exact-case` | ok |
 | Attributes, decision 8: the `Attribute` suffix | `spec-attribute` | ok |
 | Shared rule 1, name scope | `spec-name-scope` | ok |
 | Shared rule 2, copies | `spec-copies` | ok |
