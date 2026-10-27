@@ -28,6 +28,10 @@ global namespace. The rules shared by every language are in [README.md](README.m
   class body belong to the class's leaf. An explicit specialization `template <> class Repository<Centaur> { … }` and
   an out-of-line member of a template (`int Pool<T>::size()`) are implementation parts of the template `Repository`
   or `Pool`.
+- A function defined with the name of a namespace (`bool log::shouldLog(int category) { … }`) is a free function of
+  that namespace when a file of the include closure opens it, as the compiler requires: no declaration, no
+  implementation part (decisions 4 and 14). Only a qualifier the closure does not know as a namespace is read as a
+  class.
 - A class or alias declared inside a function is no target: no other declaration can name it.
 
 ## Include paths
@@ -114,6 +118,7 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 | Declarations, decision 3: implementation part | `cpp/spec-implementation-part` | ok |
 | Declarations, decision 8: explicit specialization | `cpp/spec-template-specialization` | ok |
 | Declarations, decision 8: out-of-line template member | `cpp/spec-template-out-of-line-member` | ok |
+| Declarations, decision 14: a function defined with its namespace | `cpp/spec-namespace-qualified-function` | ok |
 | Declarations: unnamed namespace | `cpp/spec-unnamed-namespace` | ok |
 | Include paths 1: relative to the including file | `c/spec-include-relative` | ok |
 | Include paths 2: path ending | `c/spec-include-path-suffix` | ok |
@@ -188,3 +193,7 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
     includes headers by bare file name through `-I` (derived 2026-10-26).
 13. An include may name a file of any extension, and its includes are followed; declarations are read from C and C++
     files only, as the run analyses no other (derived 2026-10-26).
+14. `Q::f() { … }` is a free function when the include closure opens a namespace `Q`, as the compiler looks the
+    qualifier up there; otherwise it is a member function of the class `Q`, also when the closure shows neither
+    (Christian chose the lookup in the closure on 2026-10-27, after the edge check found a class `log` made of
+    `bool util::log::ShouldDebugLog()`).
