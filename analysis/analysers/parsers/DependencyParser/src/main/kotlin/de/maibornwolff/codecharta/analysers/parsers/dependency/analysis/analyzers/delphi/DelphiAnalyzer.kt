@@ -48,7 +48,11 @@ class DelphiAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
             DelphiDeclarationKind.RECORD to NodeType.CLASS,
             DelphiDeclarationKind.HELPER to NodeType.CLASS,
             DelphiDeclarationKind.INTERFACE to NodeType.INTERFACE,
-            DelphiDeclarationKind.ENUM to NodeType.ENUM
+            DelphiDeclarationKind.ENUM to NodeType.ENUM,
+            DelphiDeclarationKind.TYPE to NodeType.CLASS,
+            DelphiDeclarationKind.ROUTINE to NodeType.FUNCTION,
+            DelphiDeclarationKind.CONSTANT to NodeType.VARIABLE,
+            DelphiDeclarationKind.VARIABLE to NodeType.VARIABLE
         )
     }
 }
