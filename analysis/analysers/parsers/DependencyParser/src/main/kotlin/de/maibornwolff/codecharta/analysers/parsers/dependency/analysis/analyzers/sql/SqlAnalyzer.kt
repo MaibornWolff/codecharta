@@ -16,8 +16,9 @@ import de.maibornwolff.treesitter.excavationsite.api.SqlObjectKind
 /**
  * The objects a SQL file creates, at their schema plus their name (`docs/name-resolution/sql.md`), each name they write
  * looked up in all SQL files of the run as [SqlLookup] does and written as the exact path of what it finds, which
- * [SqlNameRules] takes only as written. A package is one leaf with what its specification names, and each routine of
- * its body a leaf of its own; what the statements outside every object name is the file's script leaf.
+ * [SqlNameRules] takes only as written. What a package specification declares are leaves below the package; a package
+ * body's routines that the specification declares, and an object type body, are implementation parts (decisions 1, 5
+ * and 8). What the statements outside every object name is the file's script leaf.
  */
 class SqlAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     private val project by lazy {
@@ -27,7 +28,7 @@ class SqlAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     private val nodes = LinkedHashMap<List<String>, NodeDraft>()
     private val scriptUses = LinkedHashSet<SqlLookup.Found>()
 
-    private class NodeDraft(val nodeType: NodeType, val kind: String?) {
+    private class NodeDraft(val nodeType: NodeType, val kind: String?, val isPart: Boolean, val isFileScoped: Boolean) {
         val uses = LinkedHashSet<SqlLookup.Found>()
     }
 
@@ -42,7 +43,9 @@ class SqlAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
 
     private fun addObject(created: SqlObject) {
         when (created.kind) {
-            SqlObjectKind.PACKAGE, SqlObjectKind.PACKAGE_BODY, SqlObjectKind.TYPE_BODY -> addPackage(created)
+            SqlObjectKind.PACKAGE -> addPackage(created)
+            SqlObjectKind.PACKAGE_BODY -> addPackageBody(created)
+            SqlObjectKind.TYPE_BODY -> addTypeBody(created)
             SqlObjectKind.CHANGE -> scriptUses += resolved(created.names, SqlLookup(project, created.defaultSchema, null))
             in NODE_TYPES -> {
                 val path = SqlProject.pathOf(created)
@@ -53,24 +56,55 @@ class SqlAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         }
     }
 
-    // A routine of a package body is a leaf of its own; whatever else a package declares belongs to the package
-    private fun addPackage(container: SqlObject) {
-        val path = SqlProject.pathOf(container)
-        val members = project.packageMembersOf(path) + container.members.filter { it.kind == SqlMemberKind.ROUTINE }.map { it.name }
-        val lookup = SqlLookup(project, schemaOf(path), SqlLookup.PackageScope(path, members))
-        val packageDraft = draft(path, NodeType.CLASS, PACKAGE_KIND)
-        packageDraft.uses += resolved(container.names, lookup)
-        container.members.forEach { member ->
-            val owner = if (member.kind == SqlMemberKind.ROUTINE && container.kind != SqlObjectKind.PACKAGE) {
-                draft(path + member.name, NodeType.FUNCTION, null)
-            } else {
-                packageDraft
-            }
-            owner.uses += resolved(member.names, lookup)
+    private fun addPackage(specification: SqlObject) {
+        val path = SqlProject.pathOf(specification)
+        val lookup = SqlLookup(project, schemaOf(path), SqlLookup.PackageScope(path, project.packageMembersOf(path)))
+        draft(path, NodeType.CLASS, PACKAGE_KIND)
+        specification.members.forEach { member ->
+            draft(path + member.name, MEMBER_NODE_TYPES.getValue(member.kind), null).uses += resolved(member.names, lookup)
         }
     }
 
-    private fun draft(path: List<String>, nodeType: NodeType, kind: String?): NodeDraft = nodes.getOrPut(path) { NodeDraft(nodeType, kind) }
+    // Without a specification in the run, the body stands for the package (decision 13)
+    private fun addPackageBody(body: SqlObject) {
+        val path = SqlProject.pathOf(body)
+        val hasSpecification = project.hasSpecification(path, SqlObjectKind.PACKAGE)
+        val declared = project.packageMembersOf(path)
+        val lookup = SqlLookup(project, schemaOf(path), SqlLookup.PackageScope(path, declared + body.members.map { it.name }))
+        draftOfPart(path, NodeType.CLASS, PACKAGE_KIND, isPart = hasSpecification).uses += resolved(body.names, lookup)
+        body.members.forEach { member ->
+            val memberPath = path + member.name
+            val nodeType = MEMBER_NODE_TYPES.getValue(member.kind)
+            val memberDraft = when {
+                !hasSpecification -> draft(memberPath, nodeType, null)
+                member.name in declared -> draftOfPart(memberPath, nodeType, null, isPart = true)
+                else -> privateDraft(memberPath, nodeType)
+            }
+            memberDraft.uses += resolved(member.names, lookup)
+        }
+    }
+
+    // The methods and attributes of an object type belong to the type (decision 8)
+    private fun addTypeBody(body: SqlObject) {
+        val path = SqlProject.pathOf(body)
+        val names = body.names + body.members.flatMap { it.names }
+        draftOfPart(path, NodeType.CLASS, TYPE_KIND, isPart = project.hasSpecification(path, SqlObjectKind.TYPE)).uses +=
+            resolved(names, SqlLookup(project, schemaOf(path), null))
+    }
+
+    private fun draft(path: List<String>, nodeType: NodeType, kind: String?): NodeDraft =
+        nodes.getOrPut(path) { NodeDraft(nodeType, kind, isPart = false, isFileScoped = false) }
+
+    // A part depends on the declaration of its own path in another file
+    private fun draftOfPart(path: List<String>, nodeType: NodeType, kind: String?, isPart: Boolean): NodeDraft {
+        val draft = nodes.getOrPut(path) { NodeDraft(nodeType, kind, isPart = isPart, isFileScoped = isPart) }
+        if (draft.isPart) draft.uses += SqlLookup.Found(path, emptySet())
+        return draft
+    }
+
+    // What only a package body declares, only the package itself can name
+    private fun privateDraft(path: List<String>, nodeType: NodeType): NodeDraft =
+        nodes.getOrPut(path) { NodeDraft(nodeType, null, isPart = false, isFileScoped = true) }
 
     private fun resolved(names: List<SqlName>, lookup: SqlLookup): List<SqlLookup.Found> = names.mapNotNull { lookup.resolve(it) }
 
@@ -82,7 +116,9 @@ class SqlAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         nodeType = draft.nodeType,
         language = SupportedLanguage.SQL,
         dependencies = emptySet(),
-        usedTypes = typesOf(draft.uses.filter { it.path != path }),
+        usedTypes = typesOf(draft.uses.filter { draft.isPart || it.path != path }),
+        isFileScoped = draft.isFileScoped,
+        isImplementationPart = draft.isPart,
         kind = draft.kind
     )
 
@@ -109,6 +145,7 @@ class SqlAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         private const val PATH_SEPARATOR = "/"
         private const val WINDOWS_PATH_SEPARATOR = "\\"
         private val PACKAGE_KIND = SqlLookup.kindOf(SqlObjectKind.PACKAGE)
+        private val TYPE_KIND = SqlLookup.kindOf(SqlObjectKind.TYPE)
         private val NODE_TYPES = mapOf(
             SqlObjectKind.TABLE to NodeType.CLASS,
             SqlObjectKind.VIEW to NodeType.CLASS,
@@ -118,6 +155,15 @@ class SqlAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
             SqlObjectKind.DOMAIN to NodeType.CLASS,
             SqlObjectKind.ROUTINE to NodeType.FUNCTION,
             SqlObjectKind.TRIGGER to NodeType.FUNCTION
+        )
+        private val MEMBER_NODE_TYPES = mapOf(
+            SqlMemberKind.ROUTINE to NodeType.FUNCTION,
+            SqlMemberKind.CONSTANT to NodeType.VARIABLE,
+            SqlMemberKind.VARIABLE to NodeType.VARIABLE,
+            SqlMemberKind.TYPE to NodeType.CLASS,
+            SqlMemberKind.CURSOR to NodeType.CLASS,
+            SqlMemberKind.EXCEPTION to NodeType.CLASS,
+            SqlMemberKind.ATTRIBUTE to NodeType.VARIABLE
         )
     }
 }
