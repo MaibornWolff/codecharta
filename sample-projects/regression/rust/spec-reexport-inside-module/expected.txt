@@ -1,0 +1,9 @@
+# rust.md, decision 16: inside the module that re-exports it, a path through the re-export means what it names
+file src/engine/mod.rs -> src/engine/engine_state.rs
+file src/engine/mod.rs -> src/engine/stack.rs
+file src/engine/stack.rs -> src/engine/engine_state.rs
+file src/lib.rs -> src/engine/mod.rs
+leaf src/engine/mod.rs#EngineState -> src/engine/engine_state.rs#EngineState
+leaf src/engine/mod.rs#Stack -> src/engine/stack.rs#Stack
+leaf src/engine/stack.rs#Stack -> src/engine/engine_state.rs#EngineState
+leaf src/lib.rs#run -> src/engine/mod.rs#EngineState
