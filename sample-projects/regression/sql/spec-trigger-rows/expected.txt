@@ -1,0 +1,4 @@
+# sql.md, simple name 1: the rows of a trigger are local names
+file db/triggers.sql -> db/orders.sql
+leaf db/triggers.sql#order_logged -> db/orders.sql#order_log
+leaf db/triggers.sql#order_logged -> db/orders.sql#orders

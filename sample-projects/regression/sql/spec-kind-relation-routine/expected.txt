@@ -1,0 +1,6 @@
+# sql.md, kinds, decision 6: a table and a function of one name, told apart by position
+file app/uses.sql -> db/audit_function.sql
+file app/uses.sql -> db/audit_table.sql
+leaf app/uses.sql#audit_rows -> db/audit_table.sql#audit
+leaf app/uses.sql#order_audited -> db/audit_function.sql#audit
+leaf app/uses.sql#order_audited -> db/audit_table.sql#orders
