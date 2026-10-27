@@ -101,8 +101,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   links a parameter or a local variable to a type of the same name.
 
 - **Schemas in SQL**: `dependencyparser` resolves a SQL name as the databases do, through the object's own schema, the
-  schema `SET search_path` sets and the package it is written in, tells a table from a function of the same name, and
-  no longer links a variable, a temporary table or a trigger's `inserted` rows to a table of the same name.
+  schema `SET search_path` sets and the package it is written in, prefers the object a file creates itself, else that
+  of the latest migration, tells a table from a function of the same name, and no longer links a variable, a temporary
+  table or a trigger's `inserted` rows to a table of the same name.
 
 - **Using directives in C#**: `dependencyparser` looks a C# name up in each enclosing namespace before the using
   directives written around it, so a class of the namespace wins over a using at the top of the file, a name two

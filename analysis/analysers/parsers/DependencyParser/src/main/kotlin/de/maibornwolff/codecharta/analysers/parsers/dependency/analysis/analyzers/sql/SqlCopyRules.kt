@@ -6,14 +6,15 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Fi
 
 /**
  * "Which file" of `sql.md`: a declaration before an implementation part, the file-scoped copy only its own file sees,
- * and of several declarations the latest migration, as migrations create an object again in a later file to change it.
+ * the declaration the using file makes itself, and of several others the latest migration, as migrations create an
+ * object again in a later file to change it (decision 15).
  */
 internal object SqlCopyRules : CopyRules {
-    override fun filesFor(copies: List<DeclaringCopy>, usingFile: FilePath): List<FilePath> = listOf(
-        copies
-            .filterNot { it.isFileScoped }
-            .ifEmpty { copies }
-            .map { it.file }
-            .maxWith { first, second -> NaturalPathOrder.compare(first.segments, second.segments) }
-    )
+    override fun filesFor(copies: List<DeclaringCopy>, usingFile: FilePath): List<FilePath> {
+        val files = copies.filterNot { it.isFileScoped }.ifEmpty { copies }.map { it.file }
+        return listOf(files.find { it == usingFile } ?: latestOf(files))
+    }
+
+    private fun latestOf(files: List<FilePath>): FilePath =
+        files.maxWith { first, second -> NaturalPathOrder.compare(first.segments, second.segments) }
 }

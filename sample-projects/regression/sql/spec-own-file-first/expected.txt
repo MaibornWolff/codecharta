@@ -1,0 +1,5 @@
+# sql.md, which file, decision 15: an object the using file creates itself means its own copy, else the latest migration
+file db/queries.sql -> db/structure.sql
+leaf db/init_structure.sql#item_versions -> db/init_structure.sql#items
+leaf db/queries.sql#recent_items -> db/structure.sql#items
+leaf db/structure.sql#item_versions -> db/structure.sql#items
