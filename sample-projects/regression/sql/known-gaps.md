@@ -44,38 +44,12 @@ missing leaf db/V9__foreign_key.sql#orders -> db/V1__orders.sql#orders
 extra leaf db/V9__foreign_key.sql#V9__foreign_key_script -> db/V1__orders.sql#customers
 ```
 
-## spec-kind-row-type
-
-Types are no declarations, so the type money_amount is not found (decision 5).
-
-```text
-missing file app/report.sql -> db/types.sql
-missing leaf app/report.sql#report -> db/types.sql#money_amount
-```
-
-## spec-object-kinds
-
-Sequences, types and domains are no declarations (decision 5).
-
-```text
-missing leaf app/report.sql#cheer -> db/schema.sql#mood
-missing leaf app/report.sql#cheer -> db/schema.sql#positive_int
-missing leaf app/report.sql#report -> db/schema.sql#order_seq
-missing leaf db/schema.sql#orders -> db/schema.sql#mood
-missing leaf db/schema.sql#orders -> db/schema.sql#order_seq
-missing leaf db/schema.sql#orders -> db/schema.sql#positive_int
-```
-
 ## spec-object-type
 
-CREATE TYPE … AS OBJECT is no declaration and the type body is no implementation part: the body is a declaration of its
-own with its methods as leaves (decisions 5 and 8).
+The type body is no implementation part: it is a declaration of its own with its methods as leaves (decisions 5 and 8).
 
 ```text
-missing file app/shapes.sql -> db/point_t.sql
 missing file db/point_t_body.sql -> db/point_t.sql
-missing leaf app/shapes.sql#add_shape -> db/point_t.sql#point_t
-missing leaf app/shapes.sql#shapes -> db/point_t.sql#point_t
 missing leaf db/point_t_body.sql#point_t -> db/point_t.sql#point_t
 missing leaf db/point_t_body.sql#point_t -> db/scale.sql#scale
 extra leaf db/point_t_body.sql#len -> db/scale.sql#scale
@@ -150,22 +124,4 @@ The members of a package specification are no declarations, so app.pricing.total
 ```text
 missing file app/report.sql -> db/pricing.pks
 missing leaf app/report.sql#report -> db/pricing.pks#total
-```
-
-## spec-sequence-oracle
-
-Sequences are no declarations (decision 5).
-
-```text
-missing file app/insert.sql -> db/sequences.sql
-missing leaf app/insert.sql#add_order -> db/sequences.sql#order_seq
-```
-
-## spec-sequence-tsql
-
-Sequences are no declarations (decision 5).
-
-```text
-missing file app/insert.sql -> db/sequences.sql
-missing leaf app/insert.sql#add_order -> db/sequences.sql#order_seq
 ```
