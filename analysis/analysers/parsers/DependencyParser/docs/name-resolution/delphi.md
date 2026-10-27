@@ -156,6 +156,9 @@ it deviates.
 - A subrange type (`TLevel = 1..20;`): tree-sitter-pascal 0.10.2 cannot read it, and the declaration after it is
   lost with it.
 - Names in strings (`FindClass('TCreature')`, RTTI by name).
+- A library unit listed after a project unit: a name both offer means the library's to the compiler, but only the
+  project's declarations are known, so the project's is taken.
+- `{$SCOPEDENUMS ON}`: the compiler then wants an enum value with its type in front; a bare value still means its enum.
 
 ## Decisions
 

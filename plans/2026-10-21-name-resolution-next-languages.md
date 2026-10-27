@@ -14,7 +14,7 @@ following them, in small commits Christian reviews one by one. Branch `fix/depen
 
 - **State:** Java, Kotlin, C#, Go, Python, TypeScript, JavaScript, Vue and Angular templates, C and C++, PHP are done
   and pushed (last: `fix/dependency-name-resolution-php`). Rust is done and pushed (`fix/dependency-name-resolution-rust`).
-  Delphi is in progress on `fix/dependency-name-resolution-delphi`, see "Delphi" below. After it: SQL.
+  Delphi is done on `fix/dependency-name-resolution-delphi` (unpushed), see "Resume after Delphi here". Next: SQL.
 - **Branches, stacked:** one branch per language, cut from the previous language's branch once Christian has pushed
   it (`git switch -c fix/dependency-name-resolution-<language>` on top of it), never from `main`. Small commits, one
   per item of the announced numbered list; Christian reviews the branch as a whole when the language is done. Tell him
@@ -507,7 +507,7 @@ The prototype of steps 5–10 is `git stash` "rust-prototype" (copy `rust-protot
 probes but `spec-binary-copy` green; decision 16 (a declaration naming itself through a barrel points at the
 re-export, as Python and TypeScript) was asked after it.
 
-## Delphi (in progress, 2026-10-27)
+## Delphi (done, 2026-10-27)
 
 Branch `fix/dependency-name-resolution-delphi`, cut from the pushed `-rust`; comparison build of the first commit
 `ccsh-rs7`. Christian: "do it like the compiler does it, else like the other languages". Ground truth: Free Pascal
@@ -535,7 +535,24 @@ belong to their type, routine-local declarations, attribute suffix, no unit scop
 8. [x] decision 2: script leaves; all 38 probes ok
 9. [x] decision 4: members across units, done before step 7: once routines are declarations, a member must already
    hide a routine of the same name (else `spec-member-hides` and three more draw wrong edges)
-10. [ ] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
+10. [x] changelog, README, gh-pages, the extractor's README, spec table, FINDINGS, plan
+
+### Resume after Delphi here (2026-10-27)
+
+- **Branch** `fix/dependency-name-resolution-delphi`, waiting for Christian's review and push; **last build**
+  `ccsh-dl11` (head before the docs commit), the next language's first chain is `chain.sh dl11 <tag>`. No gap left in
+  `regression/delphi/`. Checkpoint probes worse than the release: the fifteen of Rust plus
+  `delphi/r4-unit-qualifier-case` (decision 3).
+- **How it is built:** TSE `delphiUnit()` (`UnitReader`, `SectionReader`, `MethodBodies`, `TypeDeclarationNames`,
+  `NameCollector`, `LocalNames`, `TypeNames`; types in `languages/delphi/model`). Analyzer: `DelphiProject` (all units
+  of a run by unit name), `UnitScope` (what a unit offers, ignoring case), `DelphiLookup` (members of the type and its
+  project ancestors, qualified names, own unit, `uses` last first, exact case), `DelphiAnalyzer` (declarations and the
+  script leaf, exact paths), `DelphiNameRules` exact. The old Delphi `analyze()` extractors stay for other consumers.
+- **Tools** in the tools folder `delphi/`: `mkprobes.py` (+ `no-compile.json`), `check-probes.py` (FPC in
+  `delphi/fpc`), `run-probes.sh <tag>`, `regen-gaps.py`.
+- **Not supported:** members of a value and `with`, members of library ancestors, unit scope names, other case,
+  include files and `.dpk/.lpr/.pp/.inc`, declare-before-use, subrange types (grammar), names in strings, a library
+  unit listed after a project unit, `{$SCOPEDENUMS ON}`.
 
 ## Steps
 
@@ -547,5 +564,6 @@ belong to their type, routine-local declarations, attribute suffix, no unit scop
 - [x] Next language: C and C++ (Christian, 2026-10-26), done 2026-10-26
 - [x] Next language: PHP (by the order above, 2026-10-26), done 2026-10-26
 - [x] Next language: Rust (by the order above, 2026-10-26), done 2026-10-27
-- [ ] Next language: Delphi (by the order above, 2026-10-27)
+- [x] Next language: Delphi (by the order above, 2026-10-27), done 2026-10-27
+- [ ] Next language: SQL (by the order above)
 - [ ] For each language: spec, probes, implementation commits, acceptance
