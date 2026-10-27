@@ -525,7 +525,7 @@ belong to their type, routine-local declarations, attribute suffix, no unit scop
    `delphi/check-probes.py` compiles them, `delphi/run-probes.sh <tag>` runs them, `delphi/regen-gaps.py` rewrites
    known-gaps.md and the spec table from `scratch/pc-delphi/`)
 3. [x] refactor: Delphi gets name rules of its own (`DelphiNameRules`), the default ones for now
-4. [ ] TSE: the unit structure (`delphiUnit()`): unit or program name, both `uses` lists, declarations with kind,
+4. [x] TSE: the unit structure (`delphiUnit()`): unit or program name, both `uses` lists, declarations with kind,
    section, members, bases; no output change
 5. [ ] TSE: the names each declaration and script part writes, locals hidden; no output change
 6. [ ] the switch: the lookup of the spec over all units of a run (`DelphiProject`), exact rules (decision 3)
