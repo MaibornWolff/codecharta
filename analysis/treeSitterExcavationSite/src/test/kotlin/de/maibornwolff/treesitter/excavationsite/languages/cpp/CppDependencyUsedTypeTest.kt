@@ -82,7 +82,7 @@ class CppDependencyUsedTypeTest {
         val result = TreeSitterDependencies.analyze(code, Language.CPP)
 
         // Assert
-        assertThat(result.declarations.single().usedTypes).containsExactlyInAnyOrder(
+        assertThat(result.declarations.single { it.name == "Nest" }.usedTypes).containsExactlyInAnyOrder(
             UsedType(name = "Roost", fallbacks = listOf(UsedType(name = "Roost", namespacePrefix = listOf("::", "g")))),
             UsedType(name = "Kind", fallbacks = listOf(UsedType(name = "Kind", namespacePrefix = listOf("::", "g"))))
         )
