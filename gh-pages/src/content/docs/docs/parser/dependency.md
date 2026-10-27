@@ -193,6 +193,17 @@ and constant reads count too, and a name matches only in its declared case. The 
 leaf `<file>_script`, which an `include` or `require` of the file uses, its path taken relative to the including file;
 a computed path draws nothing, and neither `composer.json` nor docblock types are read.
 
+Rust resolves a name as the compiler does, through the module tree of its crate. A crate is named by its `Cargo.toml`
+(`my-game` is `my_game`), and a file's module is where the `mod` declarations from `lib.rs`, `main.rs`, `tests/` and the
+other crate roots put it, `#[path]` included; a file no `mod` reaches keeps the path of its folders. A name means an
+item of its module, what a `use` of the module binds, what a glob import brings in (a name two globs offer means
+nothing), another crate of the project by its name, or nothing for the prelude and libraries such as `std`; `crate::`,
+`self::` and `super::` start where Rust starts them. A `pub use` is a leaf of its own that the code importing through
+it points at, an `impl` block in another file than its type a leaf of that file, and a path into a type or enum, such
+as `Creature::new()` or `SpeedType::Walking`, is a use of the type. Function bodies, calls, constants and macros count,
+the arguments of a macro read as the expressions they almost always are; a method called on a variable draws no edge.
+Code under `#[cfg(test)]` counts only in a run that analyses a Rust file in a test folder, so with `--include-tests`.
+
 TypeScript and JavaScript find an imported module where the compiler would: a relative path from the importing file,
 or a bare specifier through the `paths` and `baseUrl` of the nearest `tsconfig.json` or `jsconfig.json`, a bundler
 alias, a Module Federation remote, a workspace package of that `package.json` name or a `declare module` block; each
