@@ -45,7 +45,8 @@ differ, the parser follows the majority and says so. The rules shared by every l
   (decision 2): `ALTER TABLE orders …`, `ALTER VIEW`, `ALTER SEQUENCE`, `ALTER TYPE`, `CREATE INDEX … ON orders`,
   `COMMENT ON TABLE orders` (also `COMMENT ON COLUMN orders.total`). Its uses, such as `REFERENCES customers` in an
   added foreign key, are uses of that part, and the part uses the object it changes. In the file that creates the
-  object, such a statement is part of the object's own leaf.
+  object, such a statement is part of the object's own leaf; a change of an object no file of the run creates belongs to
+  the script leaf.
 - No declarations: what a routine or trigger declares inside itself (variables, cursors, local types, nested
   routines, temporary tables, table variables), common table expressions (`WITH totals AS (…)`), table aliases.
 - The statements outside every definition and implementation part (inserts, grants, `DO` blocks, calls) are a script
@@ -141,9 +142,9 @@ the probes of other dialects follow their manuals. "Gap" means the parser does n
 | Declarations, decision 1: package specification and body | `spec-package-spec-body` | ok |
 | Declarations, decision 5: the members of a package specification | `spec-package-members` | ok |
 | Declarations: what only the package body declares | `spec-package-private` | ok |
-| Declarations, decision 2: `ALTER TABLE`, `CREATE INDEX` in another file | `spec-alter-part` | gap |
-| Declarations, decision 2: `ALTER TABLE` in the creating file | `spec-alter-same-file` | gap |
-| Declarations, decision 2: `COMMENT ON` | `spec-comment-on` | gap |
+| Declarations, decision 2: `ALTER TABLE`, `CREATE INDEX` in another file | `spec-alter-part` | ok |
+| Declarations, decision 2: `ALTER TABLE` in the creating file | `spec-alter-same-file` | ok |
+| Declarations, decision 2: `COMMENT ON` | `spec-comment-on` | ok |
 | Declarations: the script leaf | `spec-script-leaf` | ok |
 | Declarations, decision 9: what a routine declares inside itself | `spec-local-declarations` | ok |
 | Declarations, decision 10: overloads | `spec-overloads` | ok |
@@ -167,7 +168,7 @@ the probes of other dialects follow their manuals. "Gap" means the parser does n
 | Case: a mixed-case quoted name | `spec-case-mixed-quoted` | ok |
 | Case: brackets | `spec-case-brackets` | ok |
 | Which file: the latest migration | `spec-latest-migration` | ok |
-| Which file: a declaration before an implementation part | `spec-declaration-before-part` | gap |
+| Which file: a declaration before an implementation part | `spec-declaration-before-part` | ok |
 | Shared rule 1, name scope | `spec-name-scope` | ok |
 | Shared rule 4, self | `spec-self` | ok |
 
