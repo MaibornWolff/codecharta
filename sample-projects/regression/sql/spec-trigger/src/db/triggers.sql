@@ -1,0 +1,1 @@
+CREATE TRIGGER order_logged AFTER INSERT ON orders FOR EACH ROW EXECUTE FUNCTION log_order();

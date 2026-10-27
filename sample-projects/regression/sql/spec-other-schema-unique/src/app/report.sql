@@ -1,0 +1,5 @@
+CREATE PROCEDURE report AS
+BEGIN
+    SELECT id FROM orders;
+END
+GO

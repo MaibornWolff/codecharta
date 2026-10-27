@@ -1,0 +1,5 @@
+CREATE PROCEDURE dbo.reset_dice AS
+BEGIN
+    SELECT 1;
+END
+GO

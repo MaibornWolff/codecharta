@@ -1,0 +1,1 @@
+CREATE FUNCTION money_amount(x INT) RETURNS INT AS $$ SELECT x $$ LANGUAGE sql;

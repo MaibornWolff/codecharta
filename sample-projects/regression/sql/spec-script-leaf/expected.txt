@@ -1,0 +1,4 @@
+# sql.md, declarations: statements outside every definition are the file's script leaf
+file db/V2__seed.sql -> db/V1__orders.sql
+leaf db/V2__seed.sql#V2__seed_script -> db/V1__orders.sql#next_id
+leaf db/V2__seed.sql#V2__seed_script -> db/V1__orders.sql#orders

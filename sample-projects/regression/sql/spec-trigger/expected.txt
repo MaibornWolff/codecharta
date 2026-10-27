@@ -1,0 +1,7 @@
+# sql.md, declarations, decision 7: a trigger is a leaf of its own that uses its table and function
+file db/audit.sql -> db/orders.sql
+file db/triggers.sql -> db/audit.sql
+file db/triggers.sql -> db/orders.sql
+leaf db/audit.sql#log_order -> db/orders.sql#order_log
+leaf db/triggers.sql#order_logged -> db/audit.sql#log_order
+leaf db/triggers.sql#order_logged -> db/orders.sql#orders
