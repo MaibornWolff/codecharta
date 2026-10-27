@@ -528,7 +528,9 @@ belong to their type, routine-local declarations, attribute suffix, no unit scop
 4. [x] TSE: the unit structure (`delphiUnit()`): unit or program name, both `uses` lists, declarations with kind,
    section, members, bases; no output change
 5. [x] TSE: the names each declaration and script part writes, locals hidden; no output change
-6. [ ] the switch: the lookup of the spec over all units of a run (`DelphiProject`), exact rules (decision 3)
+6. [x] the switch: the lookup of the spec over all units of a run (`DelphiProject`), exact rules (decision 3); member types
+   of the own and enclosing types already (else `spec-nested-type` lost `TOuter -> TInner`). Checkpoint probe worse by
+   decision 3: `delphi/r4-unit-qualifier-case` (`app.base.models.TItem`); `r2-dl1`, `r2-dl2`, `r3-p3-delphi` better
 7. [ ] decision 1: routines, constants, variables, every type kind
 8. [ ] decision 2: script leaves
 9. [ ] decision 4: members across units
