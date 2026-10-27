@@ -21,6 +21,35 @@ class DelphiUnitTest {
     @Nested
     inner class Units {
         @Test
+        fun `should read the routines after one whose local declarations stand between conditional directives`() {
+            // Arrange
+            val code = """
+                unit Game.Dice;
+                interface
+                implementation
+                function Normalize(Value: Integer): Integer;
+                {${'$'}IFDEF MSWINDOWS}
+                var
+                  Index: Integer;
+                (*${'$'}ENDIF*)
+                begin
+                  Result := Value;
+                end;
+                function Lookup: Integer;
+                begin
+                  Result := 1;
+                end;
+                end.
+            """
+
+            // Act
+            val unit = unitOf(code)
+
+            // Assert
+            assertThat(unit.declarations.map { it.name }).containsExactly("Normalize", "Lookup")
+        }
+
+        @Test
         fun `should report the name and the entries of both uses clauses of a unit`() {
             // Arrange
             val code = """
