@@ -10,6 +10,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Ty
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.treesitter.excavationsite.api.SqlMemberKind
 import de.maibornwolff.treesitter.excavationsite.api.SqlName
+import de.maibornwolff.treesitter.excavationsite.api.SqlNameKind
 import de.maibornwolff.treesitter.excavationsite.api.SqlObject
 import de.maibornwolff.treesitter.excavationsite.api.SqlObjectKind
 
@@ -17,8 +18,9 @@ import de.maibornwolff.treesitter.excavationsite.api.SqlObjectKind
  * The objects a SQL file creates, at their schema plus their name (`docs/name-resolution/sql.md`), each name they write
  * looked up in all SQL files of the run as [SqlLookup] does and written as the exact path of what it finds, which
  * [SqlNameRules] takes only as written. What a package specification declares are leaves below the package; a package
- * body's routines that the specification declares, and an object type body, are implementation parts (decisions 1, 5
- * and 8). What the statements outside every object name is the file's script leaf.
+ * body's routines that the specification declares, an object type body and a statement that changes an object another
+ * file creates are implementation parts (decisions 1, 2, 5 and 8). What the statements outside every object name is the
+ * file's script leaf.
  */
 class SqlAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     private val project by lazy {
@@ -34,7 +36,9 @@ class SqlAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
 
     override fun analyze(): FileReport {
         val script = project.scriptOf(fileInfo.physicalPath)
-        script.objects.forEach { addObject(it) }
+        val (changes, created) = script.objects.partition { it.kind == SqlObjectKind.CHANGE }
+        created.forEach { addObject(it) }
+        changes.forEach { addChange(it) }
         script.statements.forEach { statements ->
             scriptUses += resolved(statements.names, SqlLookup(project, statements.defaultSchema, null))
         }
@@ -46,7 +50,6 @@ class SqlAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
             SqlObjectKind.PACKAGE -> addPackage(created)
             SqlObjectKind.PACKAGE_BODY -> addPackageBody(created)
             SqlObjectKind.TYPE_BODY -> addTypeBody(created)
-            SqlObjectKind.CHANGE -> scriptUses += resolved(created.names, SqlLookup(project, created.defaultSchema, null))
             in NODE_TYPES -> {
                 val path = SqlProject.pathOf(created)
                 draft(path, NODE_TYPES.getValue(created.kind), SqlLookup.kindOf(created.kind)).uses +=
@@ -90,6 +93,18 @@ class SqlAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         val names = body.names + body.members.flatMap { it.names }
         draftOfPart(path, NodeType.CLASS, TYPE_KIND, isPart = project.hasSpecification(path, SqlObjectKind.TYPE)).uses +=
             resolved(names, SqlLookup(project, schemaOf(path), null))
+    }
+
+    // A change of an object the file itself creates is part of its leaf; one of an object no file creates, of the script
+    private fun addChange(change: SqlObject) {
+        val lookup = SqlLookup(project, change.defaultSchema, null)
+        val target = lookup.resolve(SqlName(change.name, CHANGED_KINDS[change.changedKind] ?: SqlNameKind.RELATION))
+        if (target == null) {
+            scriptUses += resolved(change.names, lookup)
+            return
+        }
+        val draft = nodes[target.path] ?: draftOfPart(target.path, NodeType.CLASS, null, isPart = true)
+        draft.uses += resolved(change.names, SqlLookup(project, schemaOf(target.path), null))
     }
 
     private fun draft(path: List<String>, nodeType: NodeType, kind: String?): NodeDraft =
@@ -156,6 +171,7 @@ class SqlAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
             SqlObjectKind.ROUTINE to NodeType.FUNCTION,
             SqlObjectKind.TRIGGER to NodeType.FUNCTION
         )
+        private val CHANGED_KINDS = mapOf(SqlObjectKind.SEQUENCE to SqlNameKind.SEQUENCE, SqlObjectKind.TYPE to SqlNameKind.TYPE)
         private val MEMBER_NODE_TYPES = mapOf(
             SqlMemberKind.ROUTINE to NodeType.FUNCTION,
             SqlMemberKind.CONSTANT to NodeType.VARIABLE,
