@@ -11,7 +11,8 @@ import java.io.File
 /**
  * The files that declare each logical path, in scan order, with the name scope of their language. A dependency on a
  * path declared in several files goes to the files of the using file's name scope that the using file can see, as the
- * [CopyRules] of its language pick them. A file-scoped copy is seen only from its own file.
+ * [CopyRules] of its language pick them. A file-scoped copy is seen only from its own file, and a use that can mean some
+ * kinds of declaration only sees the copies of these kinds, if there are any.
  */
 internal class DeclaringFiles private constructor(
     private val filesByLogicalPath: Map<String, List<DeclaringFile>>,
@@ -19,13 +20,19 @@ internal class DeclaringFiles private constructor(
 ) {
     private val copyRulesByLanguage = HashMap<SupportedLanguage, CopyRules>()
 
-    fun filesFor(logicalPath: String, usingFile: FilePath, usingLanguage: SupportedLanguage): List<FilePath> {
+    fun filesFor(
+        logicalPath: String,
+        usingFile: FilePath,
+        usingLanguage: SupportedLanguage,
+        kinds: Set<String> = emptySet()
+    ): List<FilePath> {
         val copies = filesByLogicalPath[logicalPath]
             .orEmpty()
             .filter { it.nameScope == usingLanguage.nameScope && (!it.copy.isFileScoped || it.copy.file == usingFile) }
             .map { it.copy }
         if (copies.isEmpty()) return emptyList()
-        return copyRulesOf(usingLanguage).filesFor(copies, usingFile)
+        val copiesOfKinds = if (kinds.isEmpty()) copies else copies.filter { it.kind == null || it.kind in kinds }.ifEmpty { copies }
+        return copyRulesOf(usingLanguage).filesFor(copiesOfKinds, usingFile)
     }
 
     private fun copyRulesOf(language: SupportedLanguage): CopyRules =
@@ -39,7 +46,7 @@ internal class DeclaringFiles private constructor(
             val filesByLogicalPath = LinkedHashMap<String, MutableList<DeclaringFile>>()
             resolvedNodes.forEach { node ->
                 val files = filesByLogicalPath.getOrPut(node.pathWithName.withDots()) { mutableListOf() }
-                val declaringFile = DeclaringFile(DeclaringCopy(FilePath.of(node), node.isFileScoped), node.language.nameScope)
+                val declaringFile = DeclaringFile(DeclaringCopy(FilePath.of(node), node.isFileScoped, node.kind), node.language.nameScope)
                 if (declaringFile !in files) files.add(declaringFile)
             }
             return DeclaringFiles(filesByLogicalPath, analysisRoot)
