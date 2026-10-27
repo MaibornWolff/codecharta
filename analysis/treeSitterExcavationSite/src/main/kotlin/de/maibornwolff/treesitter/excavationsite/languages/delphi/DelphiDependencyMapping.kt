@@ -1,5 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.delphi
 
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors.ConditionalDirectives
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors.DeclarationExtractor
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors.ImportExtractor
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors.PackageExtractor
@@ -9,6 +10,7 @@ object DelphiDependencyMapping {
     val dependencyMapping = LanguageDependencyMapping(
         extractPackagePath = PackageExtractor::extract,
         extractImports = ImportExtractor::extract,
-        extractDeclarations = DeclarationExtractor::extract
+        extractDeclarations = DeclarationExtractor::extract,
+        preprocessor = ConditionalDirectives::blank
     )
 }
