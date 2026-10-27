@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.readInParallel
 import de.maibornwolff.treesitter.excavationsite.api.SqlMember
 import de.maibornwolff.treesitter.excavationsite.api.SqlMemberKind
 import de.maibornwolff.treesitter.excavationsite.api.SqlObject
@@ -15,9 +16,15 @@ import java.util.concurrent.ConcurrentHashMap
  */
 internal class SqlProject private constructor(private val files: Set<String>, private val sourceOf: (String) -> String) {
     private val scripts = ConcurrentHashMap<String, SqlScript>()
+
+    // The indexes read every file one after the other, while the other files of the run wait for them
+    private val createdObjects: List<SqlObject> by lazy {
+        readInParallel(files) { scriptOf(it) }
+        files.flatMap { file -> scriptOf(file).objects }
+    }
     private val objectsByName by lazy { objectsByName() }
     private val packageMembers by lazy { packageMembers() }
-    private val specifications by lazy { createdObjects().map { Declared(pathOf(it), it.kind) }.toSet() }
+    private val specifications by lazy { createdObjects.map { Declared(pathOf(it), it.kind) }.toSet() }
 
     /** A created object at its [path], `[schema, name]` or `[name]`, of a kind that names can mean. */
     data class Declared(val path: List<String>, val kind: SqlObjectKind)
@@ -37,9 +44,7 @@ internal class SqlProject private constructor(private val files: Set<String>, pr
     /** Whether a package specification ([SqlObjectKind.PACKAGE]) or an object type ([SqlObjectKind.TYPE]) declares [path]. */
     fun hasSpecification(path: List<String>, kind: SqlObjectKind): Boolean = Declared(path, kind) in specifications
 
-    private fun createdObjects(): List<SqlObject> = files.flatMap { file -> scriptOf(file).objects }
-
-    private fun objectsByName(): Map<String, List<Declared>> = createdObjects()
+    private fun objectsByName(): Map<String, List<Declared>> = createdObjects
         .mapNotNull { declaredOf(it) }
         .distinct()
         .groupBy { it.path.last() }
@@ -50,7 +55,7 @@ internal class SqlProject private constructor(private val files: Set<String>, pr
     }
 
     private fun packageMembers(): Map<List<String>, Set<String>> {
-        val packages = createdObjects().filter { it.kind == SqlObjectKind.PACKAGE || it.kind == SqlObjectKind.PACKAGE_BODY }
+        val packages = createdObjects.filter { it.kind == SqlObjectKind.PACKAGE || it.kind == SqlObjectKind.PACKAGE_BODY }
         val (specifications, bodies) = packages.partition { it.kind == SqlObjectKind.PACKAGE }
         val bodyRoutines = membersByPath(bodies) { member -> member.kind == SqlMemberKind.ROUTINE }
         return bodyRoutines + membersByPath(specifications) { true }
