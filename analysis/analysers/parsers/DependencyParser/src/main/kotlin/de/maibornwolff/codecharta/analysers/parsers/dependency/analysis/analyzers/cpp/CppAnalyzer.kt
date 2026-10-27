@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_CPP_GLOBAL_SCOPE
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_FORWARD_DECLARATION_SEGMENT
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_IMPLEMENTATION_SEGMENT
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_NAMESPACE_SEGMENT
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toNodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toTypeOfUsage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.splitNameToParts
@@ -30,7 +31,7 @@ class CppAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         val project = fileInfo.analysisRoot?.let { CppDeclarations.of(it) }
         val result = project?.parseOf(file, fileInfo.content) ?: TreeSitterDependencies.analyze(fileInfo.content, Language.CPP)
         val names = project?.visibleNamesOf(file) ?: CppVisibleNames(listOf(CppFileFacts.of(result)))
-        val nodes = result.declarations.filterNot { it.isForwardDeclaration() }.map { declaration ->
+        val nodes = result.declarations.filterNot { it.declaresNoLeaf() }.map { declaration ->
             toNode(declaration, names)
         }
         return FileReport(nodes)
@@ -68,7 +69,8 @@ class CppAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     private fun implicitDeclarationOf(fallback: UsedType): List<String> =
         fallback.namespacePrefix.filterNot { it == TSE_CPP_GLOBAL_SCOPE } + fallback.name
 
-    private fun Declaration.isForwardDeclaration(): Boolean = parentPath.firstOrNull() == TSE_FORWARD_DECLARATION_SEGMENT
+    private fun Declaration.declaresNoLeaf(): Boolean =
+        parentPath.firstOrNull() in setOf(TSE_FORWARD_DECLARATION_SEGMENT, TSE_NAMESPACE_SEGMENT)
 
     private fun Declaration.isAlias(): Boolean = parentPath.firstOrNull() == TSE_ALIAS_SEGMENT
 

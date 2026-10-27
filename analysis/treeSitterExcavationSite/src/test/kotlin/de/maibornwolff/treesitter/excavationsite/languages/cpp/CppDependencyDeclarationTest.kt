@@ -5,6 +5,7 @@ import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.AliasDeclarationFinder.ALIAS
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.ForwardDeclarationFinder.FORWARD_DECLARATION
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.ImplementationParts.IMPLEMENTATION
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.NamespaceDeclarationFinder.NAMESPACE
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
@@ -88,7 +89,13 @@ class CppDependencyDeclarationTest {
             Declaration(name = "C", type = DeclarationType.CLASS, usedTypes = emptySet(), parentPath = listOf(FORWARD_DECLARATION, "g")),
             Declaration(name = "E", type = DeclarationType.ENUM, usedTypes = emptySet(), parentPath = listOf(FORWARD_DECLARATION, "g")),
             Declaration(name = "H", type = DeclarationType.CLASS, usedTypes = emptySet(), parentPath = emptyList()),
-            Declaration(name = "Inner", type = DeclarationType.CLASS, usedTypes = emptySet(), parentPath = listOf(FORWARD_DECLARATION, "H"))
+            Declaration(
+                name = "Inner",
+                type = DeclarationType.CLASS,
+                usedTypes = emptySet(),
+                parentPath = listOf(FORWARD_DECLARATION, "H")
+            ),
+            namespaceMarker("g")
         )
     }
 
@@ -246,7 +253,8 @@ class CppDependencyDeclarationTest {
                 type = DeclarationType.CLASS,
                 usedTypes = setOf(UsedType("Centaur")),
                 parentPath = listOf(IMPLEMENTATION, "store")
-            )
+            ),
+            namespaceMarker("store")
         )
     }
 
@@ -281,7 +289,10 @@ class CppDependencyDeclarationTest {
                 type = DeclarationType.CLASS,
                 usedTypes = emptySet(),
                 parentPath = listOf("Outer", "Middle", "Inner")
-            )
+            ),
+            namespaceMarker("Outer"),
+            namespaceMarker("Middle", "Outer"),
+            namespaceMarker("Inner", "Outer", "Middle")
         )
     }
 
@@ -306,7 +317,10 @@ class CppDependencyDeclarationTest {
                 type = DeclarationType.CLASS,
                 usedTypes = emptySet(),
                 parentPath = listOf("Outer", "Middle", "Inner")
-            )
+            ),
+            namespaceMarker("Outer"),
+            namespaceMarker("Middle", "Outer"),
+            namespaceMarker("Inner", "Outer", "Middle")
         )
     }
 
@@ -337,7 +351,8 @@ class CppDependencyDeclarationTest {
                 type = DeclarationType.CLASS,
                 usedTypes = emptySet(),
                 parentPath = listOf("MyApp", "Outer")
-            )
+            ),
+            namespaceMarker("MyApp")
         )
     }
 
@@ -362,7 +377,8 @@ class CppDependencyDeclarationTest {
                 type = DeclarationType.CLASS,
                 usedTypes = emptySet(),
                 parentPath = listOf("MyApp")
-            )
+            ),
+            namespaceMarker("MyApp")
         )
     }
 
@@ -387,7 +403,8 @@ class CppDependencyDeclarationTest {
                 type = DeclarationType.CLASS,
                 usedTypes = emptySet(),
                 parentPath = listOf("MyApp")
-            )
+            ),
+            namespaceMarker("MyApp")
         )
     }
 
@@ -469,7 +486,8 @@ class CppDependencyDeclarationTest {
                 type = DeclarationType.CLASS,
                 usedTypes = setOf(UsedType(name = "string", namespacePrefix = listOf("std"))),
                 parentPath = listOf(IMPLEMENTATION, "Catch", "TestSpec")
-            )
+            ),
+            namespaceMarker("Catch")
         )
     }
 
@@ -487,4 +505,26 @@ class CppDependencyDeclarationTest {
         // Assert
         assertThat(result.declarations).isEmpty()
     }
+
+    @Test
+    fun `should report each named namespace a file opens once below its enclosing namespaces`() {
+        // Arrange
+        val code = """
+            namespace util::log { bool ShouldLog(int category); }
+            namespace util { namespace log { bool ShouldTrace(int category); } }
+            namespace { int hidden; }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations).containsExactly(
+            namespaceMarker("util"),
+            namespaceMarker("log", "util")
+        )
+    }
+
+    private fun namespaceMarker(name: String, vararg enclosing: String) =
+        Declaration(name = name, type = DeclarationType.UNKNOWN, usedTypes = emptySet(), parentPath = listOf(NAMESPACE) + enclosing)
 }
