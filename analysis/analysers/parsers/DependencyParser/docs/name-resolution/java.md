@@ -50,6 +50,7 @@ the rule yet; `sample-projects/regression/java/known-gaps.md` says how it deviat
 | 3. member type of the own type | `spec-own-member-type` | ok |
 | 3. member type of an enclosing type | `spec-enclosing-member-type` | ok |
 | 3. inherited member type | `spec-inherited-member-type` | ok |
+| 3 and shared rule 2: member type of the own copy | `spec-member-type-of-copy` | gap |
 | 4. single-type import over the own package | `spec-single-import-beats-package` | ok |
 | 4. single static import of a member type | `spec-static-import-member-type` | ok |
 | 5. own package over an on-demand import | `spec-package-beats-on-demand` | ok |
@@ -74,6 +75,8 @@ the rule yet; `sample-projects/regression/java/known-gaps.md` says how it deviat
 - Kotlin top-level functions seen from Java through their file facade (`UtilsKt.helper()`).
 - Member types inherited over more than one level, or by an enclosing type: rule 3 looks at the own type's direct
   supertypes only.
+- Member types of the own copy: with several copies of the own type (shared rule 2), rule 3 also counts the member
+  types another copy declares (`known-gaps.md`, `spec-member-type-of-copy`).
 
 ## Decisions
 
