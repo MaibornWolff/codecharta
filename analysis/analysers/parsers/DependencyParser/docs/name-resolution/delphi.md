@@ -103,9 +103,9 @@ it deviates.
 | --- | --- | --- |
 | Units: the unit name is the namespace, not the folder | `spec-unit-path` | ok |
 | Units: what the implementation section declares only the unit itself can name | `spec-implementation-private` | ok |
-| Units, decision 2: a program and its main block | `spec-program` | gap |
-| Units: `uses A in 'path'` | `spec-uses-in` | gap |
-| Units, decision 2: an unused uses entry | `spec-unused-uses` | gap |
+| Units, decision 2: a program and its main block | `spec-program` | ok |
+| Units: `uses A in 'path'` | `spec-uses-in` | ok |
+| Units, decision 2: an unused uses entry | `spec-unused-uses` | ok |
 | Declarations, decision 1: alias, pointer, class reference, procedural, set and array types | `spec-type-kinds` | ok |
 | Declarations: a class without a body, a forward declaration | `spec-class-without-body` | ok |
 | Declarations, decision 1: a free routine | `spec-routine` | ok |
@@ -114,7 +114,7 @@ it deviates.
 | Declarations, decision 5: a member type | `spec-nested-type` | ok |
 | Declarations: method bodies in the implementation section | `spec-method-bodies` | ok |
 | Declarations, decision 7: what a routine declares inside itself | `spec-local-declarations` | ok |
-| Declarations, decision 2: `initialization` and `finalization` | `spec-script-initialization` | gap |
+| Declarations, decision 2: `initialization` and `finalization` | `spec-script-initialization` | ok |
 | Declarations: type positions and base types | `spec-type-positions` | ok |
 | Declarations: `is`, `as`, hard cast, `on E: X do`, `^T` | `spec-casts-handlers` | ok |
 | Declarations: an anonymous method | `spec-anonymous-method` | ok |
