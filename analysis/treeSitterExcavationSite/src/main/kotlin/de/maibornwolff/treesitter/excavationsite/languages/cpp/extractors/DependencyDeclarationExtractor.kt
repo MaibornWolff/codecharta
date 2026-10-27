@@ -4,6 +4,7 @@ import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declar
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.ForwardDeclarationFinder
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.ImplementationParts
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.InClassDeclarationFinder
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.NamespaceDeclarationFinder
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.OutOfClassMethodPromoter
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.SpecializationFinder
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
@@ -14,5 +15,5 @@ internal object DependencyDeclarationExtractor {
         InClassDeclarationFinder.find(rootNode),
         OutOfClassMethodPromoter.promote(rootNode) + SpecializationFinder.find(rootNode)
     ) +
-        ForwardDeclarationFinder.find(rootNode) + AliasDeclarationFinder.find(rootNode)
+        ForwardDeclarationFinder.find(rootNode) + AliasDeclarationFinder.find(rootNode) + NamespaceDeclarationFinder.find(rootNode)
 }
