@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_GLOBAL_SEGMENT
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.mapInParallel
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import java.io.File
@@ -27,8 +28,9 @@ internal class GlobalDeclarations private constructor(private val pathsByName: M
         fun of(analysisRoot: File): GlobalDeclarations = globalsByRoot.computeIfAbsent(analysisRoot.absolutePath) { read(analysisRoot) }
 
         private fun read(analysisRoot: File): GlobalDeclarations {
-            val pathsByName = sourceFilesBelow(analysisRoot)
-                .flatMap { file -> globalNamesIn(file).map { name -> name to ImportedModules.logicalPathOf(file, analysisRoot) + name } }
+            val pathsByName = mapInParallel(sourceFilesBelow(analysisRoot)) { file ->
+                globalNamesIn(file).map { name -> name to ImportedModules.logicalPathOf(file, analysisRoot) + name }
+            }.flatten()
                 .groupBy({ (name, _) -> name }, { (_, path) -> path })
             return GlobalDeclarations(pathsByName)
         }
