@@ -31,7 +31,7 @@ class CppAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         val project = fileInfo.analysisRoot?.let { CppDeclarations.of(it) }
         val result = project?.parseOf(file, fileInfo.content) ?: TreeSitterDependencies.analyze(fileInfo.content, Language.CPP)
         val names = project?.visibleNamesOf(file) ?: CppVisibleNames(listOf(CppFileFacts.of(result)))
-        val nodes = result.declarations.filterNot { it.declaresNoLeaf() }.map { declaration ->
+        val nodes = result.declarations.filterNot { it.declaresNoLeaf() || it.definesNamespaceFunctions(names) }.map { declaration ->
             toNode(declaration, names)
         }
         return FileReport(nodes)
@@ -71,6 +71,10 @@ class CppAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
 
     private fun Declaration.declaresNoLeaf(): Boolean =
         parentPath.firstOrNull() in setOf(TSE_FORWARD_DECLARATION_SEGMENT, TSE_NAMESPACE_SEGMENT)
+
+    // `bool log::shouldLog() {}` with `log` a namespace the closure opens defines a free function, no leaf (decision 14)
+    private fun Declaration.definesNamespaceFunctions(names: CppVisibleNames): Boolean =
+        parentPath.firstOrNull() == TSE_IMPLEMENTATION_SEGMENT && names.isNamespace(parentPath.drop(1) + name)
 
     private fun Declaration.isAlias(): Boolean = parentPath.firstOrNull() == TSE_ALIAS_SEGMENT
 
