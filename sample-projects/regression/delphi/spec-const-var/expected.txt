@@ -1,0 +1,10 @@
+# delphi.md, declarations, decision 1: constants, resource strings, variables and thread variables
+file Game.Limits.pas -> Game.Model.pas
+file Game.User.pas -> Game.Limits.pas
+leaf Game.Limits.pas#Current -> Game.Model.pas#TCreature
+leaf Game.Limits.pas#NoBoss -> Game.Model.pas#TCreature
+leaf Game.User.pas#TUser -> Game.Limits.pas#Current
+leaf Game.User.pas#TUser -> Game.Limits.pas#MaxHp
+leaf Game.User.pas#TUser -> Game.Limits.pas#NoBoss
+leaf Game.User.pas#TUser -> Game.Limits.pas#PerThread
+leaf Game.User.pas#TUser -> Game.Limits.pas#SName

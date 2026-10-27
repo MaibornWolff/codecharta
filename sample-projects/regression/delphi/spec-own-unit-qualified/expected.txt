@@ -1,0 +1,2 @@
+# delphi.md, qualified: the own unit's name qualifies its own declarations
+leaf Game.Mine.pas#TUser -> Game.Mine.pas#TItem

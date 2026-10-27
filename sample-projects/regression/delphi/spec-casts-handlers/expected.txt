@@ -1,0 +1,7 @@
+# delphi.md, declarations: `is`, `as`, a hard cast, `on E: X do` and `^T` in a body
+file Game.Rules.pas -> Game.Model.pas
+leaf Game.Rules.pas#TRules -> Game.Model.pas#EFail
+leaf Game.Rules.pas#TRules -> Game.Model.pas#TCentaur
+leaf Game.Rules.pas#TRules -> Game.Model.pas#THerd
+leaf Game.Rules.pas#TRules -> Game.Model.pas#TLair
+leaf Game.Rules.pas#TRules -> Game.Model.pas#TTreasure

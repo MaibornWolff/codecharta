@@ -1,0 +1,3 @@
+# delphi.md, case, decision 3: an edge needs the declared case, the lookup ignores case
+file Game.User.pas -> Game.Model.pas
+leaf Game.User.pas#TUser -> Game.Model.pas#Spawn

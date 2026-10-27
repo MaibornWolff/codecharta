@@ -1,0 +1,3 @@
+# delphi.md, units: `uses A in 'path'` names the unit A
+file App.dpr -> src/Game.Model.pas
+leaf App.dpr#App_script -> src/Game.Model.pas#TCreature
