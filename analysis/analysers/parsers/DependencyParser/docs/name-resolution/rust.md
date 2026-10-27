@@ -36,7 +36,9 @@ are in [README.md](README.md).
 - A file that no `mod` reaches, which the compiler does not compile, keeps the path from the file system: the crate
   name, the folders below `src`, and the file name without `.rs` unless it is `mod.rs`, `lib.rs` or `main.rs`.
 - Test code (decision 6): an item with `#[cfg(test)]`, as the usual `#[cfg(test)] mod tests { … }`, and the module a
-  `#[cfg(test)] mod m;` loads count only with `--include-tests`; without, they declare nothing and use nothing.
+  `#[cfg(test)] mod m;` loads count only in a run with tests; otherwise they declare nothing and use nothing. A run
+  counts as one with tests when it analyses a Rust file in a test folder (`tests/`, `test/`, as the scanner tells test
+  files), since only the scanner knows `--include-tests`.
 
 ## Declarations
 
@@ -200,6 +202,8 @@ confirmed the meaning of each name. "Gap" means the parser does not follow the r
   inference (decision 10). A trait method called by path (`Fightable::attack(&c)`) is a use of the trait.
 - Names in a `macro_rules!` body, procedural macros and derives (`#[derive(Serialize)]`), and code that macros or a
   build script generate (`include!`, `OUT_DIR`).
+- `--include-tests` over Rust code without a test folder: `#[cfg(test)]` code is left out, as the run cannot tell it
+  includes tests (decision 6).
 - `#[cfg]` conditions other than `test`: every variant counts. Cargo features, `[patch]` and whether a crate is a
   declared dependency are not read (decision 9).
 - Names in strings and doc comments (intra-doc links ``[`Creature`]``).
@@ -217,7 +221,9 @@ confirmed the meaning of each name. "Gap" means the parser does not follow the r
    macro invocations, as PHP decision 4 and Go (decided 2026-10-26).
 5. The arguments of a macro invocation are read as expressions, since the parser does not expand macros and the
    standard macros take expressions (decided 2026-10-26).
-6. Items with `#[cfg(test)]` count only with `--include-tests`, as test files (decided 2026-10-26).
+6. Items with `#[cfg(test)]` count only with `--include-tests`, as test files (decided 2026-10-26); the parser takes a
+   run that analyses a Rust file in a test folder as one with tests, rather than passing the flag to every analyzer
+   (Christian, 2026-10-27).
 7. A `use` with a visibility is a re-export declaration that uses what it re-exports, and a path through it means it,
    as a TypeScript re-export and a Python package's `__init__.py` (typescript.md decision 8, python.md decision 2); a
    glob re-export makes one per name, as `export *` (derived 2026-10-26, confirmed by Christian on 2026-10-27 after the
