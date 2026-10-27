@@ -146,8 +146,8 @@ confirmed the meaning of each name. "Gap" means the parser does not follow the r
 | Declarations, decision 4: a const and a static | `spec-const-static` | ok |
 | Declarations: a type alias | `spec-type-alias` | ok |
 | Declarations, decision 3: an `impl` in the type's file | `spec-impl-same-file` | ok |
-| Declarations, decision 3: an implementation part | `spec-impl-part` | gap |
-| Declarations, decision 14: an `impl` for a library type | `spec-impl-trait-for-foreign-type` | gap |
+| Declarations, decision 3: an implementation part | `spec-impl-part` | ok |
+| Declarations, decision 14: an `impl` for a library type | `spec-impl-trait-for-foreign-type` | ok |
 | Declarations, decision 4: types in a body | `spec-body-types` | ok |
 | Declarations, decision 4: a struct literal and pattern | `spec-struct-literal` | ok |
 | Declarations, decision 8: an item in a body | `spec-local-item` | ok |

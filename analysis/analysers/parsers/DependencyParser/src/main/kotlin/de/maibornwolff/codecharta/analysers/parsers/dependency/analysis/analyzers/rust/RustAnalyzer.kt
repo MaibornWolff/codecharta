@@ -19,7 +19,8 @@ import de.maibornwolff.treesitter.excavationsite.api.RustVisibility
 /**
  * The declarations of a Rust file at the module path the module tree gives them (`docs/name-resolution/rust.md`), each
  * use written as the exact path of what the lookup finds for it, which [RustNameRules] takes only as written. A `use`
- * with a visibility is a re-export declaration (decision 7); an `impl` in its type's file belongs to the type.
+ * with a visibility is a re-export declaration (decision 7); an `impl` in its type's file belongs to the type, one in
+ * another file is the implementation part of the type (decisions 3 and 14).
  */
 class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     private val file = RustProject.segmentsOf(fileInfo.physicalPath)
@@ -31,31 +32,49 @@ class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     override fun analyze(): FileReport {
         if (file.isEmpty()) return FileReport(emptyList())
         val facts = project.factsOf(file)
-        val implsByType = facts.impls.groupBy { ownTypeOf(it) }
-        val items = facts.items.mapNotNull { item -> scopeOf(item.inlinePath)?.let { itemNode(item, it, implsByType) } }
+        val implsByOwner = facts.impls.mapNotNull { impl -> ownerOf(impl)?.let { it to impl } }.groupBy({ it.first }, { it.second })
+        val ownImpls = implsByOwner.filterKeys { it.isInThisFile }.mapKeys { it.key.path }
+        val items = facts.items.mapNotNull { item -> scopeOf(item.inlinePath)?.let { itemNode(item, it, ownImpls) } }
+        val implParts = implsByOwner.filterKeys { !it.isInThisFile }.map { (owner, impls) -> implPart(owner, impls) }
         val reexports = facts.uses.filter { it.visibility != RustVisibility.PRIVATE }.flatMap { reexportNodes(it) }
-        return FileReport(items + reexports)
+        return FileReport(items + implParts + reexports)
     }
 
     private fun scopeOf(inlinePath: List<String>): RustModuleScope? = project.tree.scopeOf(file, inlinePath)
 
-    private fun itemNode(item: RustItem, scope: RustModuleScope, implsByType: Map<List<String>?, List<RustImpl>>): Node {
+    private fun itemNode(item: RustItem, scope: RustModuleScope, ownImpls: Map<List<String>, List<RustImpl>>): Node {
         val path = scope.pathOf(item.name)
-        val implUses = implsByType[path].orEmpty().flatMap { impl -> scopeOf(impl.inlinePath)?.let { usesOf(impl.paths, it) }.orEmpty() }
         val ownName = typeOf(path)
-        return node(path, nodeTypeOf(item.kind), (usesOf(item.paths, scope) + implUses).filterNot { it == ownName })
+        val uses = usesOf(item.paths, scope) + ownImpls[path].orEmpty().flatMap { implUses(it) }
+        return node(path, nodeTypeOf(item.kind), uses.filterNot { it == ownName })
     }
 
-    // The path of the type an impl is for, if this file declares it
-    private fun ownTypeOf(impl: RustImpl): List<String>? {
+    // Decision 3: a leaf at its owner's path in this file, which uses the owner and what the impls write
+    private fun implPart(owner: ImplOwner, impls: List<RustImpl>): Node {
+        val ownName = typeOf(owner.path)
+        val uses = listOf(ownName) + impls.flatMap { implUses(it) }.filterNot { it == ownName }
+        return node(owner.path, owner.nodeType, uses).copy(isFileScoped = true, isImplementationPart = true)
+    }
+
+    private fun implUses(impl: RustImpl): List<Type> = scopeOf(impl.inlinePath)?.let { usesOf(impl.paths, it) }.orEmpty()
+
+    private data class ImplOwner(val path: List<String>, val isInThisFile: Boolean, val nodeType: NodeType)
+
+    // The project type the impl is for, else the project trait it implements for a library type, else the first
+    // project type its header names (decision 14)
+    private fun ownerOf(impl: RustImpl): ImplOwner? {
         val scope = scopeOf(impl.inlinePath) ?: return null
-        val selfType = impl.selfType ?: return null
-        return lookup
-            .resolve(selfType, scope)
-            .filterIsInstance<Meaning.Declared>()
-            .firstOrNull { declared ->
-                project.tree.scopeAt(declared.path.dropLast(1))?.file == file
-            }?.path
+        val candidates = listOfNotNull(impl.selfType, impl.trait) + impl.paths.filter { it.namespace == RustNamespace.TYPE }
+        return candidates.firstNotNullOfOrNull { path -> lookup.resolve(path, scope).firstNotNullOfOrNull { ownerOf(it) } }
+    }
+
+    private fun ownerOf(meaning: Meaning): ImplOwner? = when (meaning) {
+        is Meaning.Declared -> meaning.item?.let { item ->
+            val declaringFile = project.tree.scopeAt(meaning.path.dropLast(1))?.file
+            ImplOwner(meaning.path, declaringFile == file, nodeTypeOf(item.kind))
+        }
+        is Meaning.Reexport -> ownerOf(meaning.target)
+        is Meaning.Module -> null
     }
 
     private fun reexportNodes(use: RustUse): List<Node> {

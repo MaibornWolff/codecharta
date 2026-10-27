@@ -204,6 +204,30 @@ class RustAnalyzerTest {
     }
 
     @Test
+    fun `should make an impl in another file the implementation part of its type, which uses the type`(
+        @TempDir root: File
+    ) {
+        // Arrange
+        root.withFiles(
+            "Cargo.toml" to "[package]\nname = \"demo\"\nedition = \"2021\"\n",
+            "src/lib.rs" to "pub mod display;\npub mod model;",
+            "src/model.rs" to "pub struct Creature;\npub struct Speed;\npub trait Fightable {}",
+            "src/display.rs" to "use crate::model::{Creature, Fightable, Speed};\nimpl Creature { fn speed(&self) -> Speed { Speed } }\n" +
+                "impl Fightable for Vec<Speed> {}"
+        )
+
+        // Act
+        val report = analyzeIn(root, "src/display.rs")
+
+        // Assert
+        assertThat(report.nodes.map { Triple(it.pathWithName.withDots(), it.isImplementationPart, it.usedTypes.map { type -> type.name }) })
+            .containsExactlyInAnyOrder(
+                Triple("demo.model.Creature", true, listOf("demo.model.Creature", "demo.model.Speed")),
+                Triple("demo.model.Fightable", true, listOf("demo.model.Fightable", "demo.model.Speed"))
+            )
+    }
+
+    @Test
     fun `should make a re-export declaration of a pub use that uses what it names`(
         @TempDir root: File
     ) {
