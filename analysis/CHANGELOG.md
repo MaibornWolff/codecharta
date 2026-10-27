@@ -29,9 +29,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   also beside the file's classes, which an `include` or `require` of the file uses, and a class outside every
   namespace under its name alone.
 
-- **Leaves of Rust files**: the dependency map shows a `pub use` of a Rust module as a leaf that the code importing
-  through it points at, an `impl` block in another file than its type as a leaf of that file, and code under
-  `#[cfg(test)]` only when the run includes tests.
+- **Leaves of Rust files**: the dependency map shows a `pub use` of a Rust module as a leaf that the code outside the
+  module importing through it points at, an `impl` block in another file than its type as a leaf of that file, and code
+  under `#[cfg(test)]` only when the run includes tests.
 
 - **Leaves of Delphi files**: the dependency map shows every Delphi type, free routine, constant and variable as a
   leaf, and a program's main block and a unit's `initialization` and `finalization` as a leaf `<unit>_script`.
