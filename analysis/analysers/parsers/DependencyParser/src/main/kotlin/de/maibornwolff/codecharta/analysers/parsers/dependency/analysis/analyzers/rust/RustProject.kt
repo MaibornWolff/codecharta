@@ -10,12 +10,16 @@ import java.util.concurrent.ConcurrentHashMap
  * The crates and the module tree of the Rust files of a run, read once: every Rust file of the run asks for them. A
  * file is its path below the analysis root in segments.
  */
-internal class RustProject private constructor(rustFiles: Set<List<String>>, crates: RustCrates, sourceOf: (List<String>) -> String) {
+internal class RustProject private constructor(
+    rustFiles: Set<List<String>>,
+    val crates: RustCrates,
+    private val sourceOf: (List<String>) -> String
+) {
     private val facts = ConcurrentHashMap<List<String>, RustModule>()
-    private val readFacts: (
-        List<String>
-    ) -> RustModule = { file -> facts.computeIfAbsent(file) { TreeSitterDependencies.rustModule(sourceOf(it)) } }
-    val tree = RustModuleTree(crates, rustFiles, readFacts)
+    val tree = RustModuleTree(crates, rustFiles, ::factsOf)
+
+    /** What a file declares and writes, read once. */
+    fun factsOf(file: List<String>): RustModule = facts.computeIfAbsent(file) { TreeSitterDependencies.rustModule(sourceOf(it)) }
 
     companion object {
         private val projectsByRun = ConcurrentHashMap<Pair<String, Set<String>>, RustProject>()

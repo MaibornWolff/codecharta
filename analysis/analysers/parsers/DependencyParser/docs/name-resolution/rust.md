@@ -49,7 +49,8 @@ are in [README.md](README.md).
 - A `use` with a visibility (`pub use`, `pub(crate) use`, `pub(super) use`, `pub(in …) use`) is a re-export: a
   declaration of the kind re-export at its module path plus the name it binds, which uses what it names (decision 7).
   A glob re-export `pub use m::*;` makes one such declaration per name `m` offers that the module does not bind itself.
-  A `use` without a visibility declares nothing.
+  A `use` without a visibility declares nothing, nor does a re-export of a module (`pub use self::creature;`): a path
+  through it walks on into the module.
 - An `impl` block (decision 3): in the file that declares its type, its uses are uses of the type. In any other file
   it is the implementation part of the type: a leaf with the type's path in that file, whose uses are the uses of the
   impl, and which uses the type. An `impl` of a project trait for a type the project does not declare
@@ -78,8 +79,9 @@ types, an expression or a pattern among values, `N!(…)` among macros. In its n
 5. The standard prelude (`Vec`, `Option`, `String`, `Box`, `Result`, `Some`, `Ok`, `Clone`, …) and the primitive types
    (`i32`, `str`, `bool`): no edge. They come last, so a project `Result` that the module declares or imports wins.
 
-An identifier pattern (`match x { MAX => … }`) is a path if step 1 to 3 finds a const, a static, a unit struct or a
-unit enum variant of that name, and a new local name otherwise, as the compiler decides.
+An identifier pattern that starts with a lower-case letter or `_` binds a new local name, any other is a path
+(`match x { MAX => … }`), by Rust's naming conventions. The compiler decides by what steps 1 to 3 find (a const, a
+static, a unit struct or variant makes it a path); the two differ only for code that silences the naming lints.
 
 ## A path `a::b::C`
 
@@ -93,7 +95,8 @@ unit enum variant of that name, and a new local name otherwise, as the compiler 
   `SpeedType`, `Creature`, and `Creature` and `Fightable`).
 - A path through a re-export means the re-export declaration, which uses what it names (decision 7):
   `model::Creature` with `pub use creature::Creature;` in `model/mod.rs` means `….model.Creature`, the re-export, not
-  `….model.creature.Creature`. A path through a `use` without a visibility (`super::Helper` where the parent imports
+  `….model.creature.Creature`; so does `crate::model::Creature` written inside `model/creature.rs` itself, which makes a
+  cycle between the file and its `mod.rs` (decision 16). A path through a `use` without a visibility (`super::Helper` where the parent imports
   `Helper`) means what that `use` names.
 - In a `use` declaration the path is resolved the same way (edition 2018 and later); in edition 2015 a `use` path
   starts at the crate root.
@@ -137,55 +140,55 @@ confirmed the meaning of each name. "Gap" means the parser does not follow the r
 | Modules: `mod m;` inside an inline module | `spec-module-in-inline-module` | ok |
 | Modules: an inline module | `spec-inline-module` | ok |
 | Modules, decision 2: a file no `mod` reaches | `spec-unreached-file` | ok |
-| Modules, decision 12: a file two crate roots load | `spec-two-crate-roots` | gap |
+| Modules, decision 12: a file two crate roots load | `spec-two-crate-roots` | ok |
 | Modules, decision 6: `#[cfg(test)]` with --include-tests | `spec-cfg-test` | ok |
-| Declarations, decision 4: a function | `spec-function` | gap |
-| Declarations, decision 4: a const and a static | `spec-const-static` | gap |
+| Declarations, decision 4: a function | `spec-function` | ok |
+| Declarations, decision 4: a const and a static | `spec-const-static` | ok |
 | Declarations: a type alias | `spec-type-alias` | ok |
 | Declarations, decision 3: an `impl` in the type's file | `spec-impl-same-file` | ok |
 | Declarations, decision 3: an implementation part | `spec-impl-part` | gap |
 | Declarations, decision 14: an `impl` for a library type | `spec-impl-trait-for-foreign-type` | gap |
-| Declarations, decision 4: types in a body | `spec-body-types` | gap |
-| Declarations, decision 4: a struct literal and pattern | `spec-struct-literal` | gap |
-| Declarations, decision 8: an item in a body | `spec-local-item` | gap |
-| Declarations, decision 7: a re-export | `spec-reexport` | gap |
-| Declarations, decision 7: a glob re-export | `spec-reexport-glob` | gap |
-| Declarations, decision 7: `pub(crate) use` | `spec-reexport-crate-visible` | gap |
-| Declarations, decision 7: a chain of re-exports | `spec-reexport-chain` | gap |
-| Use declarations: an alias | `spec-use-alias` | gap |
+| Declarations, decision 4: types in a body | `spec-body-types` | ok |
+| Declarations, decision 4: a struct literal and pattern | `spec-struct-literal` | ok |
+| Declarations, decision 8: an item in a body | `spec-local-item` | ok |
+| Declarations, decision 7: a re-export | `spec-reexport` | ok |
+| Declarations, decision 7: a glob re-export | `spec-reexport-glob` | ok |
+| Declarations, decision 7: `pub(crate) use` | `spec-reexport-crate-visible` | ok |
+| Declarations, decision 7: a chain of re-exports | `spec-reexport-chain` | ok |
+| Use declarations: an alias | `spec-use-alias` | ok |
 | Use declarations: a group with `self` | `spec-use-group-self` | ok |
 | Use declarations: an unused import, `as _` | `spec-unused-use` | ok |
-| Simple name 1: a generic parameter | `spec-generic-parameter` | gap |
+| Simple name 1: a generic parameter | `spec-generic-parameter` | ok |
 | Simple name 1: a local variable | `spec-local-variable` | ok |
-| Simple name 1: a `use` in a block | `spec-use-in-block` | gap |
+| Simple name 1: a `use` in a block | `spec-use-in-block` | ok |
 | Simple name 2: an item of the current module | `spec-own-module-item` | ok |
 | Simple name 2 and 3: an explicit `use` over a glob | `spec-explicit-over-glob` | ok |
 | Simple name 2 and 3: an own item over a glob | `spec-item-over-glob` | ok |
 | Simple name 3: a glob import | `spec-glob` | ok |
-| Simple name 3: a name two globs offer | `spec-glob-ambiguous` | gap |
-| Simple name 3: a glob binds only visible names | `spec-glob-private` | gap |
+| Simple name 3: a name two globs offer | `spec-glob-ambiguous` | ok |
+| Simple name 3: a glob binds only visible names | `spec-glob-private` | ok |
 | Simple name 3 and 5: a glob over the prelude | `spec-glob-over-prelude` | ok |
 | Simple name 4: a workspace crate | `spec-workspace` | ok |
 | Simple name 4, decision 9: a crate that is no dependency | `spec-crate-not-dependency` | ok |
-| Simple name 4: a renamed dependency | `spec-dependency-rename` | gap |
-| Simple name 4: `extern crate x as y` | `spec-extern-crate-alias` | gap |
+| Simple name 4: a renamed dependency | `spec-dependency-rename` | ok |
+| Simple name 4: `extern crate x as y` | `spec-extern-crate-alias` | ok |
 | Simple name 5: the prelude | `spec-prelude` | ok |
-| Simple name: an identifier pattern | `spec-identifier-pattern` | gap |
+| Simple name: an identifier pattern | `spec-identifier-pattern` | ok |
 | Paths: `crate`, `self`, `super` | `spec-crate-self-super` | ok |
 | Paths: `::x` | `spec-leading-colons` | ok |
 | Paths, decision 13: edition 2015 | `spec-edition-2015` | ok |
 | Paths: a module a `use` binds | `spec-module-through-import` | ok |
-| Paths: a qualified path next to an import | `spec-qualified-beats-import` | gap |
-| Paths, decision 11: an enum variant | `spec-enum-variant` | gap |
-| Paths, decision 11: an associated function | `spec-associated-function` | gap |
-| Paths: a trait method by path, `<T as Trait>` | `spec-trait-path` | gap |
-| Paths: through a `use` without visibility | `spec-private-use-through-super` | gap |
+| Paths: a qualified path next to an import | `spec-qualified-beats-import` | ok |
+| Paths, decision 11: an enum variant | `spec-enum-variant` | ok |
+| Paths, decision 11: an associated function | `spec-associated-function` | ok |
+| Paths: a trait method by path, `<T as Trait>` | `spec-trait-path` | ok |
+| Paths: through a `use` without visibility | `spec-private-use-through-super` | ok |
 | Paths: a library path | `spec-library-crate` | ok |
 | Decision 10: a method call on a value | `spec-method-call` | ok |
-| Macros: textual scope | `spec-macro-textual` | gap |
-| Macros: `#[macro_export]` | `spec-macro-export` | gap |
-| Macros: `pub(crate) use m;` | `spec-macro-use` | gap |
-| Macros, decision 5: the arguments | `spec-macro-arguments` | gap |
+| Macros: textual scope | `spec-macro-textual` | ok |
+| Macros: `#[macro_export]` | `spec-macro-export` | ok |
+| Macros: `pub(crate) use m;` | `spec-macro-use` | ok |
+| Macros, decision 5: the arguments | `spec-macro-arguments` | ok |
 | Macros: a `macro_rules!` body | `spec-macro-body` | ok |
 | Shared rule 1, name scope | `spec-name-scope` | ok |
 | Shared rule 2, copies | `spec-copies` | ok |
@@ -217,7 +220,8 @@ confirmed the meaning of each name. "Gap" means the parser does not follow the r
 6. Items with `#[cfg(test)]` count only with `--include-tests`, as test files (decided 2026-10-26).
 7. A `use` with a visibility is a re-export declaration that uses what it re-exports, and a path through it means it,
    as a TypeScript re-export and a Python package's `__init__.py` (typescript.md decision 8, python.md decision 2); a
-   glob re-export makes one per name, as `export *` (derived 2026-10-26).
+   glob re-export makes one per name, as `export *` (derived 2026-10-26, confirmed by Christian on 2026-10-27 after the
+   prototype showed the sample's barrels as hubs).
 8. An item inside a function body or block is no target, as in Java, Go and C++ (cpp.md decision 9, derived
    2026-10-26).
 9. A crate name means the project crate of that name whether or not `Cargo.toml` lists it as a dependency, as a bare
@@ -233,3 +237,6 @@ confirmed the meaning of each name. "Gap" means the parser does not follow the r
     decision 3 (derived 2026-10-26).
 15. A path that two crates of one package declare means the copy of the crate the use resolved in, as the C++ include
     closure picks its copy (cpp.md decision 6, derived 2026-10-26).
+16. A declaration that names itself through a re-export (`crate::model::Foo` inside `model/foo.rs`) points at the
+    re-export, which points back: a cycle between the file and its `mod.rs`, as Python and TypeScript draw it today
+    (decided 2026-10-27).
