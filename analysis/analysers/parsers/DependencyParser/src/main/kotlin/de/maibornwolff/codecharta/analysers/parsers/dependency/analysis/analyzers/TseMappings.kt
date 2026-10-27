@@ -39,6 +39,9 @@ const val TSE_ALIAS_SEGMENT = "ALIAS"
 // The first parent path segment TSE gives a C or C++ forward declaration, which declares no leaf but makes its name visible
 const val TSE_FORWARD_DECLARATION_SEGMENT = "FORWARD_DECLARATION"
 
+// The first parent path segment TSE gives a C++ namespace a file opens, which declares no leaf
+const val TSE_NAMESPACE_SEGMENT = "NAMESPACE"
+
 // The sentinel name TSE assigns to wildcard re-export declarations (e.g. `export * from '...'`)
 const val WILDCARD_EXPORT_NAME = "*"
 
