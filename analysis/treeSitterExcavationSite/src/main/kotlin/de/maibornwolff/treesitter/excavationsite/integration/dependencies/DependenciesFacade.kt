@@ -63,7 +63,9 @@ object DependenciesFacade {
     /** What a Delphi source declares, for the name lookup of `delphi.md`. */
     fun delphiUnit(content: String): DelphiUnit {
         val grammar = NativeTreeSitter.grammar(LanguageRegistry.getGrammarLibrary(Language.DELPHI))
-        return FfmSyntaxTree.parse(content, grammar).use { it.readReleasingReachedNodes(UnitReader::read) }
+        val processedContent =
+            LanguageRegistry.getLanguageDefinition(Language.DELPHI).dependencyMapping?.preprocessor?.invoke(content) ?: content
+        return FfmSyntaxTree.parse(processedContent, grammar).use { it.readReleasingReachedNodes(UnitReader::read) }
     }
 
     /** What a SQL file creates, changes and names, for the name lookup of `sql.md`. */
