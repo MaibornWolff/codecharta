@@ -1,0 +1,7 @@
+# java.md, rule 3 and shared rule 2: the own type's member types are those of its own copy, an inherited one comes from the supertype
+file android/guava/src/com/g/c/RegularImmutableMultiset.java -> android/guava/src/com/g/c/ImmutableMultiset.java
+file guava/src/com/g/c/RegularImmutableMultiset.java -> guava/src/com/g/c/ImmutableMultiset.java
+leaf android/guava/src/com/g/c/RegularImmutableMultiset.java#RegularImmutableMultiset -> android/guava/src/com/g/c/ImmutableMultiset.java#ImmutableMultiset usage=inheritance
+leaf android/guava/src/com/g/c/RegularImmutableMultiset.java#RegularImmutableMultiset -> android/guava/src/com/g/c/RegularImmutableMultiset.java#ElementSet
+leaf guava/src/com/g/c/RegularImmutableMultiset.java#RegularImmutableMultiset -> guava/src/com/g/c/ImmutableMultiset.java#ImmutableMultiset usage=inheritance
+leaf guava/src/com/g/c/RegularImmutableMultiset.java#RegularImmutableMultiset -> guava/src/com/g/c/ImmutableMultiset.java#ElementSet
