@@ -11,8 +11,9 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 
 /**
- * Reads what a Rust source declares at module level, in the file and in its inline modules: `mod` lines, items, `use`
- * declarations, `impl` blocks and `extern crate`. Items inside a function body are part of the function.
+ * Reads what a Rust source declares at module level, in the file and in its inline modules: `mod` lines, items with the
+ * paths they write, `use` declarations, `impl` blocks and `extern crate`. Items inside a function body are part of the
+ * function, see [PathCollector]; the body of a `macro_rules!` is read where it expands, so it writes no path.
  */
 internal object ModuleReader {
     private const val ATTRIBUTE_ITEM = "attribute_item"
@@ -114,6 +115,7 @@ internal object ModuleReader {
             kind = kind,
             inlinePath = place.inlinePath,
             visibility = ItemAttributes.visibilityOf(item),
+            paths = if (kind == RustItemKind.MACRO) emptyList() else PathCollector.pathsOf(item),
             variants = if (item.type == ENUM_ITEM) variantsOf(item) else emptyList(),
             isTest = place.isTest,
             isMacroExport = attributes.isMacroExport,
@@ -151,6 +153,7 @@ internal object ModuleReader {
             selfType = TypePaths.basePathOf(selfType),
             trait = TypePaths.basePathOf(trait),
             inlinePath = place.inlinePath,
+            paths = PathCollector.pathsOf(impl),
             isTest = place.isTest
         )
     }
