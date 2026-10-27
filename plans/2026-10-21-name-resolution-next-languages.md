@@ -527,7 +527,7 @@ belong to their type, routine-local declarations, attribute suffix, no unit scop
 3. [x] refactor: Delphi gets name rules of its own (`DelphiNameRules`), the default ones for now
 4. [x] TSE: the unit structure (`delphiUnit()`): unit or program name, both `uses` lists, declarations with kind,
    section, members, bases; no output change
-5. [ ] TSE: the names each declaration and script part writes, locals hidden; no output change
+5. [x] TSE: the names each declaration and script part writes, locals hidden; no output change
 6. [ ] the switch: the lookup of the spec over all units of a run (`DelphiProject`), exact rules (decision 3)
 7. [ ] decision 1: routines, constants, variables, every type kind
 8. [ ] decision 2: script leaves
