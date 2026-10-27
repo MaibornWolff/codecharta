@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ModuleImports
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ModuleLanguages
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.mapInParallel
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
@@ -29,11 +30,12 @@ internal class GlobalComponents private constructor(private val pathsByName: Map
             componentsByRun.computeIfAbsent(analysisRoot.absolutePath to analysedFiles) { read(analysisRoot, analysedFiles) }
 
         private fun read(analysisRoot: File, analysedFiles: Set<String>): GlobalComponents {
-            val pathsByName = ProjectFiles
+            val scriptFiles = ProjectFiles
                 .pathsOf(analysisRoot, analysedFiles)
                 .filter { it.substringAfterLast('.') in SCRIPT_ENDINGS }
                 .sorted()
-                .flatMap { registrationsIn(analysisRoot, it) }
+            val pathsByName = mapInParallel(scriptFiles) { registrationsIn(analysisRoot, it) }
+                .flatten()
                 .groupBy({ (name, _) -> name }, { (_, path) -> path })
                 .mapValues { (_, paths) -> paths.toSet() }
             return GlobalComponents(pathsByName)
