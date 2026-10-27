@@ -1,0 +1,3 @@
+# sql.md, objects: an object lies at its schema plus its name, whatever folder holds the file
+file reports/report.sql -> db/tables/orders.sql
+leaf reports/report.sql#report -> db/tables/orders.sql#orders

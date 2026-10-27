@@ -1,0 +1,5 @@
+# sql.md, kinds: a synonym fits every position
+file app/game.sql -> db/synonyms.sql
+file db/synonyms.sql -> db/routines.sql
+leaf app/game.sql#play -> db/synonyms.sql#dice
+leaf db/synonyms.sql#dice -> db/routines.sql#roll

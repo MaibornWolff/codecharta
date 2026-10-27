@@ -1,0 +1,2 @@
+CREATE SEQUENCE dbo.order_seq START WITH 1;
+GO
