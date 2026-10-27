@@ -113,6 +113,9 @@ class SqlAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
             SqlObjectKind.TABLE to NodeType.CLASS,
             SqlObjectKind.VIEW to NodeType.CLASS,
             SqlObjectKind.SYNONYM to NodeType.CLASS,
+            SqlObjectKind.SEQUENCE to NodeType.VARIABLE,
+            SqlObjectKind.TYPE to NodeType.CLASS,
+            SqlObjectKind.DOMAIN to NodeType.CLASS,
             SqlObjectKind.ROUTINE to NodeType.FUNCTION,
             SqlObjectKind.TRIGGER to NodeType.FUNCTION
         )

@@ -129,10 +129,10 @@ the probes of other dialects follow their manuals. "Gap" means the parser does n
 | Objects, decision 4: `SET search_path` | `spec-search-path` | ok |
 | Objects, decision 4: `ALTER SESSION SET CURRENT_SCHEMA` | `spec-current-schema` | ok |
 | Objects, decision 4: `USE` is not read | `spec-use-ignored` | ok |
-| Declarations, decision 5: tables, views, sequences, types, domains, routines | `spec-object-kinds` | gap |
+| Declarations, decision 5: tables, views, sequences, types, domains, routines | `spec-object-kinds` | ok |
 | Declarations: synonyms | `spec-synonym` | ok |
-| Declarations, decision 5: `NEXTVAL`, `CURRVAL` | `spec-sequence-oracle` | gap |
-| Declarations, decision 5: `NEXT VALUE FOR` | `spec-sequence-tsql` | gap |
+| Declarations, decision 5: `NEXTVAL`, `CURRVAL` | `spec-sequence-oracle` | ok |
+| Declarations, decision 5: `NEXT VALUE FOR` | `spec-sequence-tsql` | ok |
 | Declarations, decisions 5 and 8: an object type and its body | `spec-object-type` | gap |
 | Declarations: calls, `CALL`, `PERFORM` | `spec-routine-calls` | ok |
 | Declarations: `EXEC` | `spec-exec` | ok |
@@ -148,7 +148,7 @@ the probes of other dialects follow their manuals. "Gap" means the parser does n
 | Declarations, decision 10: overloads | `spec-overloads` | ok |
 | Declarations: `%ROWTYPE`, `%TYPE` | `spec-anchored-types` | ok |
 | Kinds, decision 6: a table and a function of one name | `spec-kind-relation-routine` | ok |
-| Kinds, decision 6: a type, else a row type | `spec-kind-row-type` | gap |
+| Kinds, decision 6: a type, else a row type | `spec-kind-row-type` | ok |
 | Kinds, decision 6: a table function | `spec-kind-table-function` | ok |
 | Kinds: a synonym fits every position | `spec-kind-synonym` | ok |
 | Simple name 1: the rows of a trigger | `spec-trigger-rows` | ok |
