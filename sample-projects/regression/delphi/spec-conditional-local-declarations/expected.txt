@@ -1,0 +1,4 @@
+# delphi.md, not supported: both branches of an {$IFDEF} count, also around the local declarations of a routine
+file Game.Dice.pas -> Game.Model.pas
+leaf Game.Dice.pas#Lookup -> Game.Model.pas#DefaultCreature
+leaf Game.Model.pas#DefaultCreature -> Game.Model.pas#TCreature
