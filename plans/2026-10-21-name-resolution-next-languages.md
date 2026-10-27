@@ -473,8 +473,10 @@ crates without dependency, method calls, variants, two crate roots, editions, im
 6. [x] TSE: the paths each item and `impl` writes, bodies included, local names hidden, macro arguments read
    (`PathCollector`, `LocalScopes`, `PatternBindings`, `MacroTokens`; a lower-case identifier pattern binds, an
    upper-case one is a path, by Rust's naming conventions)
-7. [ ] the switch: exact lookup (scopes, globs, crates, prelude, macros), re-export declarations (decisions 4, 5, 7, 8,
-   10, 11, 16), `RustNameRules` exact; the heuristics and the re-export alias folding go
+7. [x] the switch: exact lookup (scopes, globs, crates, prelude, macros), re-export declarations (decisions 4, 5, 7, 8,
+   10, 11, 16), `RustNameRules` exact; the heuristics and the re-export alias folding go. Checkpoint probes worse by
+   decision: `rust/r2-rs1`, `r2-rs2` (`other::helper()` is a call, decision 4), `r3-p3-rust` (through the barrels,
+   decisions 7 and 16)
 8. [ ] `impl` parts (decisions 3, 14), `RustCopyRules`
 9. [ ] `#[cfg(test)]` (decision 6)
 10. [ ] copies by crate (decision 15)

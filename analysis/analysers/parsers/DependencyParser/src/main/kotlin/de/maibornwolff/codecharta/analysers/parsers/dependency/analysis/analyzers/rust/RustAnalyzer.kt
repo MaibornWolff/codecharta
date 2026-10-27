@@ -1,9 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.rust
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toNodeType
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toType
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
@@ -11,141 +8,98 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.No
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
-import de.maibornwolff.treesitter.excavationsite.api.Declaration
-import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
-import de.maibornwolff.treesitter.excavationsite.api.ImportKind
-import de.maibornwolff.treesitter.excavationsite.api.Language
-import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
-import de.maibornwolff.treesitter.excavationsite.api.UsedType
+import de.maibornwolff.treesitter.excavationsite.api.RustImpl
+import de.maibornwolff.treesitter.excavationsite.api.RustItem
+import de.maibornwolff.treesitter.excavationsite.api.RustItemKind
+import de.maibornwolff.treesitter.excavationsite.api.RustNamespace
+import de.maibornwolff.treesitter.excavationsite.api.RustPath
+import de.maibornwolff.treesitter.excavationsite.api.RustUse
+import de.maibornwolff.treesitter.excavationsite.api.RustVisibility
 
 /**
- * A `.rs` file's module path is the one the module tree gives it (`rust.md`, "Modules"), prefixed to the inline `mod`
- * chain of each declaration; it starts with the crate name.
- *
- * A `pub use module::Type` becomes a [NodeType.REEXPORT] carrier at `crate::Type`, because a crate flattens its
- * public API at `lib.rs` and consumers import the short path. The dependency resolver folds it into an alias.
+ * The declarations of a Rust file at the module path the module tree gives them (`docs/name-resolution/rust.md`), each
+ * use written as the exact path of what the lookup finds for it, which [RustNameRules] takes only as written. A `use`
+ * with a visibility is a re-export declaration (decision 7); an `impl` in its type's file belongs to the type.
  */
 class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     private val file = RustProject.segmentsOf(fileInfo.physicalPath)
+    private val project by lazy {
+        fileInfo.analysisRoot?.let { RustProject.of(it, fileInfo.analysedFiles) } ?: RustProject.ofSingleFile(file, fileInfo.content)
+    }
+    private val lookup by lazy { RustLookup(project.tree, project.crates) }
 
     override fun analyze(): FileReport {
-        val result = TreeSitterDependencies.analyze(fileInfo.content, Language.RUST)
-        val project =
-            fileInfo.analysisRoot?.let { RustProject.of(it, fileInfo.analysedFiles) } ?: RustProject.ofSingleFile(file, fileInfo.content)
-        val fileScope = project.tree.scopeOf(file)
-        val crateRoot = fileScope?.crateRootPath.orEmpty()
-        val fileModulePath = fileScope?.path.orEmpty()
-
-        val (reexportImports, regularImports) = result.imports.partition { it.kind == ImportKind.REEXPORT }
-        val isEdition2015 = (fileScope?.crate?.edition ?: RustCrate.EDITION_2021) < RustCrate.EDITION_2018
-        val imports = regularImports.flatMap { import ->
-            importPaths(
-                import.path,
-                fileModulePath,
-                crateRoot,
-                isEdition2015
-            ).map { Dependency(path = Path(it), isWildcard = import.isWildcard) }
-        }
-
-        val declarationNodes = result.declarations.map { declaration ->
-            toNode(declaration, imports, fileModulePath, crateRoot)
-        }
-        val reexportNodes = reexportImports.mapNotNull { toReexportNode(it, fileModulePath, crateRoot) }
-        return FileReport(declarationNodes + reexportNodes)
+        if (file.isEmpty()) return FileReport(emptyList())
+        val facts = project.factsOf(file)
+        val implsByType = facts.impls.groupBy { ownTypeOf(it) }
+        val items = facts.items.mapNotNull { item -> scopeOf(item.inlinePath)?.let { itemNode(item, it, implsByType) } }
+        val reexports = facts.uses.filter { it.visibility != RustVisibility.PRIVATE }.flatMap { reexportNodes(it) }
+        return FileReport(items + reexports)
     }
 
-    // In edition 2015 a `use` path starts at the crate root, where `extern crate` puts the other crates too
-    private fun importPaths(
-        path: List<String>,
-        fileModulePath: List<String>,
-        crateRoot: List<String>,
-        isEdition2015: Boolean
-    ): List<List<String>> {
-        val normalized = normalizePath(path, fileModulePath, crateRoot)
-        return if (isEdition2015 && normalized == path) listOf(crateRoot + path, path) else listOf(normalized)
+    private fun scopeOf(inlinePath: List<String>): RustModuleScope? = project.tree.scopeOf(file, inlinePath)
+
+    private fun itemNode(item: RustItem, scope: RustModuleScope, implsByType: Map<List<String>?, List<RustImpl>>): Node {
+        val path = scope.pathOf(item.name)
+        val implUses = implsByType[path].orEmpty().flatMap { impl -> scopeOf(impl.inlinePath)?.let { usesOf(impl.paths, it) }.orEmpty() }
+        val ownName = typeOf(path)
+        return node(path, nodeTypeOf(item.kind), (usesOf(item.paths, scope) + implUses).filterNot { it == ownName })
     }
 
-    private fun toReexportNode(import: ImportDeclaration, fileModulePath: List<String>, crateRoot: List<String>): Node? {
-        // Expanding `pub use foo::*` needs the contents of the re-exported module, which lie in another file
-        if (import.isWildcard) return null
-        val name = import.bindingName ?: import.path.lastOrNull() ?: return null
-        val target = reexportTarget(import.path, fileModulePath, crateRoot)
-        if (target.isEmpty()) return null
-        return Node(
-            pathWithName = Path(fileModulePath + name),
-            physicalPath = fileInfo.physicalPath,
-            nodeType = NodeType.REEXPORT,
-            language = SupportedLanguage.RUST,
-            dependencies = setOf(Dependency(path = Path(target))),
-            usedTypes = setOf(Type.simple(name))
-        )
+    // The path of the type an impl is for, if this file declares it
+    private fun ownTypeOf(impl: RustImpl): List<String>? {
+        val scope = scopeOf(impl.inlinePath) ?: return null
+        val selfType = impl.selfType ?: return null
+        return lookup
+            .resolve(selfType, scope)
+            .filterIsInstance<Meaning.Declared>()
+            .firstOrNull { declared ->
+                project.tree.scopeAt(declared.path.dropLast(1))?.file == file
+            }?.path
     }
 
-    // A bare leading segment is a crate-local module: `pub use workshop::Workshop` in crate `domain` re-exports
-    // `domain::workshop::Workshop`
-    private fun reexportTarget(path: List<String>, fileModulePath: List<String>, crateRoot: List<String>): List<String> {
-        if (path.isEmpty()) return emptyList()
-        return when (path.first()) {
-            CRATE, SELF, SUPER -> normalizePath(path, fileModulePath, crateRoot)
-            else -> crateRoot + path
-        }
+    private fun reexportNodes(use: RustUse): List<Node> {
+        val scope = scopeOf(use.inlinePath) ?: return emptyList()
+        if (use.isGlob) return globReexports(use, scope)
+        val name = use.binding ?: return emptyList()
+        val targets = REEXPORTED_NAMESPACES.flatMap { lookup.resolveUse(use, it, scope) }.mapNotNull { it.declarationPath }.distinct()
+        if (targets.isEmpty()) return emptyList()
+        return listOf(node(scope.pathOf(name), NodeType.REEXPORT, targets.map { typeOf(it) }))
     }
 
-    private fun toNode(declaration: Declaration, imports: List<Dependency>, fileModulePath: List<String>, crateRoot: List<String>): Node {
-        val nodePath = fileModulePath + declaration.parentPath
-        return Node(
-            pathWithName = Path(nodePath + declaration.name),
-            physicalPath = fileInfo.physicalPath,
-            nodeType = declaration.type.toNodeType(),
-            language = SupportedLanguage.RUST,
-            dependencies = buildDependencies(declaration, imports, fileModulePath, crateRoot, nodePath),
-            usedTypes = declaration.usedTypes.map { it.toType() }.toSet()
-        )
+    // One re-export per item the module offers that the re-exporting module does not bind itself
+    private fun globReexports(use: RustUse, scope: RustModuleScope): List<Node> {
+        val source =
+            lookup.resolveUse(use, RustNamespace.TYPE, scope).firstNotNullOfOrNull { (it as? Meaning.Module)?.scope } ?: return emptyList()
+        val ownNames = scope.items.keys + scope.uses.mapNotNull { it.binding } + scope.modules.keys
+        return source.items
+            .filter { (name, items) -> name !in ownNames && items.any { source.isVisibleTo(scope, it.visibility) } }
+            .map { (name, _) -> node(scope.pathOf(name), NodeType.REEXPORT, listOf(typeOf(source.pathOf(name)))) }
     }
 
-    private fun buildDependencies(
-        declaration: Declaration,
-        imports: List<Dependency>,
-        fileModulePath: List<String>,
-        crateRoot: List<String>,
-        nodePath: List<String>
-    ): Set<Dependency> {
-        val selfWildcard = Dependency.asWildcard(nodePath)
-        val namespacePrefixWildcards = declaration.usedTypes
-            .flatMap { it.collectNamespacePrefixes() }
-            .map { Dependency.asWildcard(normalizePath(it, fileModulePath, crateRoot)) }
-        return (imports + selfWildcard + namespacePrefixWildcards).toSet()
-    }
+    private fun usesOf(paths: List<RustPath>, scope: RustModuleScope): List<Type> =
+        paths.flatMap { path -> lookup.resolve(path, scope).mapNotNull { it.declarationPath } }.distinct().map { typeOf(it) }
 
-    private fun UsedType.collectNamespacePrefixes(): List<List<String>> {
-        val own = if (namespacePrefix.isEmpty()) emptyList() else listOf(namespacePrefix)
-        return own + genericTypes.flatMap { it.collectNamespacePrefixes() }
-    }
+    private fun typeOf(path: List<String>): Type = Type.simple(Path(path).withDots())
 
-    // A path starting with another crate's name is already crate-rooted and stays as it is
-    private fun normalizePath(path: List<String>, fileModulePath: List<String>, crateRoot: List<String>): List<String> {
-        if (path.isEmpty()) return path
-        return when (path.first()) {
-            CRATE -> crateRoot + path.drop(1)
-            SELF -> fileModulePath + path.drop(1)
-            SUPER -> normalizeSuperPath(path, fileModulePath)
-            else -> path
-        }
-    }
+    private fun node(path: List<String>, nodeType: NodeType, uses: List<Type>) = Node(
+        pathWithName = Path(path),
+        physicalPath = fileInfo.physicalPath,
+        nodeType = nodeType,
+        language = SupportedLanguage.RUST,
+        dependencies = emptySet(),
+        usedTypes = uses.toSet()
+    )
 
-    private fun normalizeSuperPath(path: List<String>, fileModulePath: List<String>): List<String> {
-        var base = fileModulePath
-        var index = 0
-        while (index < path.size && path[index] == SUPER) {
-            base = base.dropLast(1)
-            index++
-        }
-        return base + path.drop(index)
+    private fun nodeTypeOf(kind: RustItemKind): NodeType = when (kind) {
+        RustItemKind.STRUCT, RustItemKind.TUPLE_STRUCT, RustItemKind.UNION, RustItemKind.TYPE_ALIAS -> NodeType.CLASS
+        RustItemKind.ENUM -> NodeType.ENUM
+        RustItemKind.TRAIT -> NodeType.INTERFACE
+        RustItemKind.FUNCTION, RustItemKind.MACRO -> NodeType.FUNCTION
+        RustItemKind.CONST, RustItemKind.STATIC -> NodeType.VARIABLE
     }
 
     companion object {
-        private const val CRATE = "crate"
-        private const val SELF = "self"
-        private const val SUPER = "super"
+        private val REEXPORTED_NAMESPACES = listOf(RustNamespace.TYPE, RustNamespace.VALUE, RustNamespace.MACRO)
     }
 }

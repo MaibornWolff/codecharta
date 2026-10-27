@@ -33,6 +33,10 @@ internal class RustCrates(private val analysisRoot: File?, private val rustFiles
     val packages: List<RustPackage> = manifestFolders().mapNotNull { folder -> packageIn(folder) }
     val crates: List<RustCrate> = packages.flatMap { it.crates } + cratesWithoutPackage()
 
+    /** The library crate name a package name stands for in another package's dependencies. */
+    fun libraryNameOfPackage(packageName: String): String? =
+        packages.firstOrNull { it.name == packageName }?.crates?.firstOrNull { it.kind == CargoTargetKind.LIBRARY }?.name
+
     /** The package whose folder holds [file], the innermost of nested ones. */
     fun packageOf(file: List<String>): RustPackage? =
         packages.filter { file.size > it.folder.size && file.take(it.folder.size) == it.folder }.maxByOrNull { it.folder.size }
