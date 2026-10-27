@@ -112,8 +112,10 @@ unquoted name folds to. Names in brackets (`[Orders]`) and backticks compare wit
 
 ## Which file
 
-An object that several files create, as migrations do with `CREATE OR REPLACE VIEW`, means the copy of the latest
-migration: the last file in the natural order of the paths (`V10__` after `V9__`, versioned migrations before
+An object that several files create means the copy of the using file when that file creates it too, as PostgreSQL
+running the file finds its own (schema dumps such as `structure.sql` and `init_structure.sql`, decision 15); the order
+of statements inside a file is not read. Otherwise, as migrations create an object again with `CREATE OR REPLACE
+VIEW`, it means the copy of the latest migration: the last file in the natural order of the paths (`V10__` after `V9__`, versioned migrations before
 Flyway's repeatable `R__` ones), which holds the object's current definition (shared rule 2). A declaration comes
 before an implementation part (decisions 1 and 2), and only a copy of the kind the position asks for counts.
 
@@ -169,6 +171,7 @@ the probes of other dialects follow their manuals. "Gap" means the parser does n
 | Case: a mixed-case quoted name | `spec-case-mixed-quoted` | ok |
 | Case: brackets | `spec-case-brackets` | ok |
 | Which file: the latest migration | `spec-latest-migration` | ok |
+| Which file, decision 15: the own file's copy first | `spec-own-file-first` | ok |
 | Which file: a declaration before an implementation part | `spec-declaration-before-part` | ok |
 | Shared rule 1, name scope | `spec-name-scope` | ok |
 | Shared rule 4, self | `spec-self` | ok |
@@ -220,3 +223,6 @@ the probes of other dialects follow their manuals. "Gap" means the parser does n
 14. Only a routine body in SQL or PL/pgSQL, or one without a `LANGUAGE` clause, has uses: PostgreSQL hands a body in
     `plperl`, `plpython3u` or `C` to that language as text (Christian, 2026-10-27, after the edge check found Perl's
     `defined()` linked to an extension's function).
+15. An object the using file creates itself means that file's copy, before the latest migration, as PostgreSQL runs
+    the file and as shared rule 2 picks the nearest copy elsewhere (Christian, 2026-10-27, after the edge check found
+    each schema dump of gitlabhq linked to `structure.sql`).
