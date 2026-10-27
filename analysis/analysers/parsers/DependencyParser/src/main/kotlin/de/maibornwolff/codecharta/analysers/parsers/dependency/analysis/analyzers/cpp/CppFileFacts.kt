@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_ALIAS_SEGMENT
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_FORWARD_DECLARATION_SEGMENT
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_IMPLEMENTATION_SEGMENT
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_NAMESPACE_SEGMENT
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DependencyResult
 import de.maibornwolff.treesitter.excavationsite.api.ImportKind
@@ -23,7 +24,7 @@ internal data class CppFileFacts(
         fun of(result: DependencyResult): CppFileFacts {
             val usings = result.imports.filter { it.kind != ImportKind.INCLUDE && it.bindingName == null }
             return CppFileFacts(
-                declarations = result.declarations.map { toDeclared(it) },
+                declarations = result.declarations.filterNot { it.isNamespace() }.map { toDeclared(it) },
                 usingDirectives = usings.filter { it.isWildcard }.map { CppUsing(it.namespacePath, it.path) },
                 usingDeclarations = usings.filterNot { it.isWildcard }.map { CppUsing(it.namespacePath, it.path) },
                 namespaceAliases = result.imports.mapNotNull { alias ->
@@ -33,6 +34,8 @@ internal data class CppFileFacts(
         }
 
         private val MARKERS = setOf(TSE_FORWARD_DECLARATION_SEGMENT, TSE_ALIAS_SEGMENT, TSE_IMPLEMENTATION_SEGMENT)
+
+        private fun Declaration.isNamespace(): Boolean = parentPath.firstOrNull() == TSE_NAMESPACE_SEGMENT
 
         private fun toDeclared(declaration: Declaration): CppDeclared {
             val marker = declaration.parentPath.firstOrNull()

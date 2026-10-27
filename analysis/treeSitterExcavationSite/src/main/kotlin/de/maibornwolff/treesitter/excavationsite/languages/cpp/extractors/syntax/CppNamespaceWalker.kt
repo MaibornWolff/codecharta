@@ -14,7 +14,7 @@ internal object CppNamespaceWalker {
         var current = node.parent
         while (!current.isNull) {
             if (current.type == NAMESPACE_DEFINITION) {
-                segments.add(0, extractSegments(current))
+                segments.add(0, segmentsOf(current))
             }
             current = current.parent
         }
@@ -25,10 +25,11 @@ internal object CppNamespaceWalker {
         val namespaceNode = TreeTraversal
             .findAllDescendantsOfType(rootNode, NAMESPACE_DEFINITION)
             .firstOrNull() ?: return emptyList()
-        return extractSegments(namespaceNode)
+        return segmentsOf(namespaceNode)
     }
 
-    private fun extractSegments(namespaceDef: SyntaxNode): List<String> {
+    /** The segments the namespace definition [namespaceDef] names, none for an unnamed namespace. */
+    fun segmentsOf(namespaceDef: SyntaxNode): List<String> {
         val text = TreeTraversal.findFirstChildTextByType(
             namespaceDef,
             NAMESPACE_IDENTIFIER,
