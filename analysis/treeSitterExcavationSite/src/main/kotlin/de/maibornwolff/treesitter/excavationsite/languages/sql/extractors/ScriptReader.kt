@@ -2,7 +2,9 @@ package de.maibornwolff.treesitter.excavationsite.languages.sql.extractors
 
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlObject
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlScript
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlStatements
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 
 /**
  * Reads what a SQL file creates, changes and names, statement by statement (`sql.md`): the definitions the grammar
@@ -14,12 +16,13 @@ internal object ScriptReader {
         val reading = ScriptReading()
         root.children().forEach { reading.accept(it) }
         reading.flush()
-        return SqlScript(reading.objects, emptyList())
+        return SqlScript(reading.objects, reading.statements)
     }
 }
 
 private class ScriptReading {
     val objects = mutableListOf<SqlObject>()
+    val statements = mutableListOf<SqlStatements>()
     private var defaultSchema: String? = null
     private val pending = mutableListOf<SyntaxNode>()
 
@@ -47,11 +50,31 @@ private class ScriptReading {
             defaultSchema = schema
             return
         }
-        StatementReader.objectOf(tokens, defaultSchema)?.let { objects += it }
+        val changedOrCreated = StatementReader.objectOf(tokens, defaultSchema)
+        if (changedOrCreated != null) objects += changedOrCreated else addNamesOf(tokens)
     }
+
+    private fun addNamesOf(tokens: List<SyntaxNode>) {
+        val names = SqlNameCollector(commonTableExpressionsOf(tokens), inPackage = false).namesOfTokens(tokens)
+        if (names.isEmpty()) return
+        val last = statements.lastOrNull()
+        if (last != null && last.defaultSchema == defaultSchema) {
+            statements[statements.lastIndex] = last.copy(names = (last.names + names).distinct())
+        } else {
+            statements += SqlStatements(defaultSchema, names)
+        }
+    }
+
+    private fun commonTableExpressionsOf(tokens: List<SyntaxNode>): Set<String> = tokens
+        .flatMap { token ->
+            listOf(token).filter { it.type == COMMON_TABLE_EXPRESSION } +
+                TreeTraversal.findAllDescendantsOfType(token, COMMON_TABLE_EXPRESSION)
+        }.mapNotNull { expression -> SqlNames.nameNodeOf(expression)?.let { SqlNames.comparablePartsOf(it).lastOrNull() } }
+        .toSet()
 
     companion object {
         private val TERMINATORS = setOf(";", "slash_terminator", "batch_separator")
+        private const val COMMON_TABLE_EXPRESSION = "common_table_expression"
 
         // T-SQL ends statements without a semicolon, so a statement also ends where one of these keywords starts the next
         private val STATEMENT_STARTS = setOf("CREATE", "ALTER", "COMMENT")

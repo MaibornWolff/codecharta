@@ -2,6 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.sql.extractors
 
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlMember
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlMemberKind
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlName
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlObject
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlObjectKind
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
@@ -25,7 +26,9 @@ internal object PackageReader {
     private val KEYWORD_KINDS = mapOf("TYPE" to SqlMemberKind.TYPE, "SUBTYPE" to SqlMemberKind.TYPE, "CURSOR" to SqlMemberKind.CURSOR)
 
     fun read(node: SyntaxNode, kind: SqlObjectKind, name: List<String>, defaultSchema: String?): SqlObject {
+        val inPackage = kind != SqlObjectKind.TYPE_BODY
         val members = mutableListOf<SqlMember>()
+        val packageNames = mutableListOf<SqlName>()
         var item = mutableListOf<SyntaxNode>()
         var isLoadCode = false
         for (child in contentOf(node)) {
@@ -36,18 +39,19 @@ internal object PackageReader {
                     item = mutableListOf()
                 }
                 child.type == ROUTINE_DEFINITION || child.type == ROUTINE_DECLARATION -> {
-                    memberOf(item)?.let { members += it }
+                    memberOf(item, inPackage)?.let { members += it }
                     item = mutableListOf()
-                    routineOf(child)?.let { members += it }
+                    routineOf(child, inPackage)?.let { members += it }
                 }
                 child.type == SEPARATOR -> {
-                    memberOf(item)?.let { members += it }
+                    memberOf(item, inPackage)?.let { members += it }
                     item = mutableListOf()
                 }
                 else -> item += child
             }
         }
-        return SqlObject(kind, name, defaultSchema, members)
+        if (isLoadCode) packageNames += SqlNameCollector(emptySet(), inPackage).namesOfTokens(item)
+        return SqlObject(kind, name, defaultSchema, members, packageNames)
     }
 
     // What follows `CREATE PACKAGE pricing AS`
@@ -58,12 +62,13 @@ internal object PackageReader {
         return children.drop(headerEnd + 1)
     }
 
-    private fun routineOf(routine: SyntaxNode): SqlMember? {
+    private fun routineOf(routine: SyntaxNode, inPackage: Boolean): SqlMember? {
         val name = SqlNames.nameNodeOf(routine)?.let { SqlNames.comparablePartsOf(it).lastOrNull() } ?: return null
-        return SqlMember(name, SqlMemberKind.ROUTINE)
+        val names = SqlNameCollector(SqlLocals.of(routine, isTrigger = false), inPackage).namesOf(routine)
+        return SqlMember(name, SqlMemberKind.ROUTINE, names)
     }
 
-    private fun memberOf(item: List<SyntaxNode>): SqlMember? {
+    private fun memberOf(item: List<SyntaxNode>, inPackage: Boolean): SqlMember? {
         val first = item.firstOrNull() ?: return null
         val firstWord = NameTokens.wordOf(first)
         if (firstWord in SKIPPED_ITEMS) return null
@@ -71,7 +76,9 @@ internal object PackageReader {
         val nameToken = (if (keywordKind != null) item.getOrNull(1) else first)?.takeIf { it.type == OBJECT_NAME } ?: return null
         val name = SqlNames.comparablePartsOf(nameToken).last()
         val rest = item.drop(item.indexOf(nameToken) + 1)
-        return SqlMember(name, keywordKind ?: kindOfDeclaration(rest))
+        val typeToken = if (keywordKind == null) rest.firstOrNull { NameTokens.wordOf(it) !in MODIFIERS } else null
+        val names = SqlNameCollector(emptySet(), inPackage).namesOfTokens(rest, listOfNotNull(typeToken))
+        return SqlMember(name, keywordKind ?: kindOfDeclaration(rest), names)
     }
 
     private fun kindOfDeclaration(rest: List<SyntaxNode>): SqlMemberKind {

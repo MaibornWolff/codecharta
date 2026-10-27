@@ -573,10 +573,10 @@ leaf. Decisions 8-12 derived.
    PostgreSQL 18.6 (tools `sql/mkprobes.py` writes them and `probe-meta.json`, `sql/check-probes.mjs` runs them in PGlite,
    `sql/regen-gaps.py` rewrites known-gaps.md and the spec table from `scratch/pc-sql/`)
 3. [x] refactor: SQL gets name rules of its own (`SqlNameRules`), the default ones for now
-4. [ ] TSE: `TreeSitterDependencies.sqlScript()`: objects with kind, name as written and default schema (`SET
+4. [x] TSE: `TreeSitterDependencies.sqlScript()`: objects with kind, name as written and default schema (`SET
    search_path`, `CURRENT_SCHEMA`), package and type body members, changes (`ALTER`, `CREATE INDEX ON`, `COMMENT ON`);
    no output change
-5. [ ] TSE: the names each object and statement writes, with the kind their position asks for, locals hidden; no output
+5. [x] TSE: the names each object and statement writes, with the kind their position asks for, locals hidden; no output
    change
 6. [ ] refactor (shared, approved by Christian 2026-10-27): a kind on nodes, uses and copies; the file choice keeps the
    copies of the kinds a use asks for; no output change

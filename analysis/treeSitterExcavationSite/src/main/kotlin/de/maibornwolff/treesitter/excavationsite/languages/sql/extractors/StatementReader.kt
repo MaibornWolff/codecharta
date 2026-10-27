@@ -71,15 +71,22 @@ internal object StatementReader {
         } else {
             NameTokens.nameAt(tokens, onAt + 1)?.first
         } ?: return null
-        return SqlObject(SqlObjectKind.CHANGE, name, defaultSchema)
+        val rest = tokens.drop(onAt + 2)
+        return SqlObject(
+            SqlObjectKind.CHANGE,
+            name,
+            defaultSchema,
+            names = SqlNameCollector(emptySet(), inPackage = false).namesOfTokens(rest)
+        )
     }
 
     private fun altered(tokens: List<SyntaxNode>, defaultSchema: String?): SqlObject? {
         val words = tokens.map { NameTokens.wordOf(it) }
         val written = words.drop(1)
         val (keywords, changedKind) = ALTERED_KINDS.firstOrNull { (keywords, _) -> written.take(keywords.size) == keywords } ?: return null
-        val (name, _) = NameTokens.nameAt(tokens, 1 + keywords.size) ?: return null
-        return SqlObject(SqlObjectKind.CHANGE, name, defaultSchema, changedKind = changedKind)
+        val (name, end) = NameTokens.nameAt(tokens, 1 + keywords.size) ?: return null
+        val names = SqlNameCollector(emptySet(), inPackage = false).namesOfTokens(tokens.drop(end))
+        return SqlObject(SqlObjectKind.CHANGE, name, defaultSchema, names = names, changedKind = changedKind)
     }
 
     // COMMENT ON COLUMN orders.total IS '…' changes the table orders
