@@ -44,24 +44,6 @@ missing leaf src/cap.rs#cap -> src/limits.rs#MAX
 missing leaf src/cap.rs#cap -> src/limits.rs#NAME
 ```
 
-## spec-crate-name
-
-The crate root is the folder before src, not the Cargo.toml name (decision 1).
-
-```text
-missing file tests/arena.rs -> src/model.rs
-missing leaf tests/arena.rs#spawn -> src/model.rs#Creature
-```
-
-## spec-crate-not-dependency
-
-The crate root is the folder before src, so game_model names no crate (decision 1, 9).
-
-```text
-missing file crates/app/src/lib.rs -> crates/model/src/lib.rs
-missing leaf crates/app/src/lib.rs#Arena -> crates/model/src/lib.rs#Creature
-```
-
 ## spec-dependency-rename
 
 Cargo.toml dependency renames are not read.
@@ -155,24 +137,6 @@ missing leaf src/herd.rs#Fightable -> src/creature.rs#Creature
 missing leaf src/herd.rs#Fightable -> src/fightable.rs#Fightable
 ```
 
-## spec-leading-colons
-
-The crate root is the folder before src, so game_model names no crate (decision 1).
-
-```text
-missing file crates/app/src/lib.rs -> crates/model/src/lib.rs
-missing leaf crates/app/src/lib.rs#Arena -> crates/model/src/lib.rs#Creature
-```
-
-## spec-lib-name
-
-The crate root is the folder before src, not [lib] name (decision 1).
-
-```text
-missing file tests/arena.rs -> src/model.rs
-missing leaf tests/arena.rs#spawn -> src/model.rs#Creature
-```
-
 ## spec-local-item
 
 Function bodies are not read; the names of an item in a body are no uses of the function (decision 8).
@@ -220,15 +184,6 @@ missing file src/report.rs -> src/macros.rs
 missing leaf src/report.rs#count -> src/macros.rs#creature_count
 ```
 
-## spec-path-attribute
-
-Module paths come from the file system, not from #[path] (decision 2).
-
-```text
-missing file src/report.rs -> src/app/creature_naming.rs
-missing leaf src/report.rs#Report -> src/app/creature_naming.rs#Naming
-```
-
 ## spec-private-use-through-super
 
 A path through a use of the parent module is not followed.
@@ -249,7 +204,8 @@ missing leaf src/facade.rs#map -> src/dto.rs#Creature
 
 ## spec-reexport-chain
 
-Re-export declarations are made at the crate root only and the test crate does not resolve the crate name.
+Re-export declarations are made at the crate root only, and the old re-export folding resolves the test crate's
+demo::Creature through the re-export to the struct; the switch to the exact lookup closes this.
 
 ```text
 missing file src/lib.rs -> src/model/mod.rs
@@ -258,6 +214,8 @@ missing file tests/arena.rs -> src/lib.rs
 missing leaf src/lib.rs#Creature -> src/model/mod.rs#Creature
 missing leaf src/model/mod.rs#Creature -> src/model/creature.rs#Creature
 missing leaf tests/arena.rs#spawn -> src/lib.rs#Creature
+extra file tests/arena.rs -> src/model/creature.rs
+extra leaf tests/arena.rs#spawn -> src/model/creature.rs#Creature
 ```
 
 ## spec-reexport-crate-visible
@@ -318,13 +276,11 @@ missing leaf src/fight.rs#second -> src/fightable.rs#Fightable
 
 ## spec-two-crate-roots
 
-Function bodies are not read and the test crate does not resolve the crate name (decision 1, 12).
+Function bodies are not read (decision 4).
 
 ```text
 missing file src/main.rs -> src/shared.rs
-missing file tests/check.rs -> src/shared.rs
 missing leaf src/main.rs#main -> src/shared.rs#Thing
-missing leaf tests/check.rs#check -> src/shared.rs#Thing
 ```
 
 ## spec-use-alias
@@ -343,13 +299,4 @@ Function bodies, and a use in them, are not read (decision 4).
 ```text
 missing file src/spawn.rs -> src/model.rs
 missing leaf src/spawn.rs#spawn -> src/model.rs#Creature
-```
-
-## spec-workspace
-
-The crate root is the folder before src, not the Cargo.toml name game_model (decision 1).
-
-```text
-missing file crates/app/src/lib.rs -> crates/model/src/lib.rs
-missing leaf crates/app/src/lib.rs#Arena -> crates/model/src/lib.rs#Creature
 ```

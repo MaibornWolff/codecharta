@@ -468,7 +468,8 @@ crates without dependency, method calls, variants, two crate roots, editions, im
 4. [x] TSE: `TreeSitterDependencies.rustModule()` (Christian chose a Rust-only result type over markers in the shared
    types): `mod` lines, items with kind, visibility and variants, `use` bindings, `impl` headers, `extern crate`; types
    in `languages/rust/model` (a package of their own, the architecture test forbids `rust` <-> `rust.extractors`)
-5. [ ] crates from `Cargo.toml`, module tree from the `mod` declarations (decisions 1, 2, 12, 13), old lookup
+5. [x] crates from `Cargo.toml`, module tree from the `mod` declarations (decisions 1, 2, 12, 13), old lookup;
+   `spec-reexport-chain` keeps an interim `extra` line until step 7 (Christian chose it over merging 5 and 7)
 6. [ ] TSE: the paths each item and `impl` writes, bodies included, local names hidden, macro arguments read
 7. [ ] the switch: exact lookup (scopes, globs, crates, prelude, macros), re-export declarations (decisions 4, 5, 7, 8,
    10, 11, 16), `RustNameRules` exact; the heuristics and the re-export alias folding go

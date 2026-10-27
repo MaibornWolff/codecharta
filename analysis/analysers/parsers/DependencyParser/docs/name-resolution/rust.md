@@ -128,12 +128,12 @@ confirmed the meaning of each name. "Gap" means the parser does not follow the r
 
 | Rule | Probe | Today |
 | --- | --- | --- |
-| Crates, decision 1: the name from Cargo.toml | `spec-crate-name` | gap |
-| Crates, decision 1: `[lib] name` | `spec-lib-name` | gap |
+| Crates, decision 1: the name from Cargo.toml | `spec-crate-name` | ok |
+| Crates, decision 1: `[lib] name` | `spec-lib-name` | ok |
 | Crates: a crate root without Cargo.toml | `spec-no-cargo` | ok |
 | Crates, decision 15: a library and a binary declare one path | `spec-binary-copy` | gap |
 | Modules, decision 2: `m.rs` and `m/mod.rs` | `spec-module-files` | ok |
-| Modules, decision 2: `#[path]` | `spec-path-attribute` | gap |
+| Modules, decision 2: `#[path]` | `spec-path-attribute` | ok |
 | Modules: `mod m;` inside an inline module | `spec-module-in-inline-module` | ok |
 | Modules: an inline module | `spec-inline-module` | ok |
 | Modules, decision 2: a file no `mod` reaches | `spec-unreached-file` | ok |
@@ -165,14 +165,14 @@ confirmed the meaning of each name. "Gap" means the parser does not follow the r
 | Simple name 3: a name two globs offer | `spec-glob-ambiguous` | gap |
 | Simple name 3: a glob binds only visible names | `spec-glob-private` | gap |
 | Simple name 3 and 5: a glob over the prelude | `spec-glob-over-prelude` | ok |
-| Simple name 4: a workspace crate | `spec-workspace` | gap |
-| Simple name 4, decision 9: a crate that is no dependency | `spec-crate-not-dependency` | gap |
+| Simple name 4: a workspace crate | `spec-workspace` | ok |
+| Simple name 4, decision 9: a crate that is no dependency | `spec-crate-not-dependency` | ok |
 | Simple name 4: a renamed dependency | `spec-dependency-rename` | gap |
 | Simple name 4: `extern crate x as y` | `spec-extern-crate-alias` | gap |
 | Simple name 5: the prelude | `spec-prelude` | ok |
 | Simple name: an identifier pattern | `spec-identifier-pattern` | gap |
 | Paths: `crate`, `self`, `super` | `spec-crate-self-super` | ok |
-| Paths: `::x` | `spec-leading-colons` | gap |
+| Paths: `::x` | `spec-leading-colons` | ok |
 | Paths, decision 13: edition 2015 | `spec-edition-2015` | ok |
 | Paths: a module a `use` binds | `spec-module-through-import` | ok |
 | Paths: a qualified path next to an import | `spec-qualified-beats-import` | gap |
