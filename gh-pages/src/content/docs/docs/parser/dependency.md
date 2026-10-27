@@ -113,11 +113,12 @@ declarations:
   with the same package — is one leaf per file, with the same key and, where it has one, the same `namespace`. Each
   copy's dependencies leave the file they are written in, while a dependency *on* the name points at the file that
   shares the longest folder path with the file using it, and among equally near files at the first as the scan
-  lists them (path order); for SQL at the latest migration, and for C# at every file of the nearest project (the
+  lists them (path order); for SQL at the declaration before an implementation part, then at the latest migration, and
+  for C# at every file of the nearest project (the
   folder of a `.csproj`) that declares it, the parts of a partial class; for Go at every file of the package that
   declares it, its build-tag variants; for C and C++ at the copy the include closure of the using file holds, else
-  the nearest. A Kotlin `private` top-level copy, a C# `file` type or a C++ implementation part counts only for the
-  file it is written in.
+  the nearest. A Kotlin `private` top-level copy, a C# `file` type, a C++ or SQL implementation part and a routine only
+  an Oracle package body declares count only for the file they are written in.
 - `kind` is the declaration kind: `class`, `valueclass`, `interface`, `annotation`, `enum`, `function`,
   `variable`, `reexport`, `script` or `unknown`.
 
@@ -231,18 +232,26 @@ A Vue component is named after its file and uses what its scripts use, what its 
 `<script setup>`, and the component each tag names, looked up as Vue does: a binding of `<script setup>`, the
 `components` option, a global `app.component` registration, else the one component of the project of that name.
 
-SQL has no imports: a table, view, synonym, package or routine is found by its name, whatever file creates it and
-in whatever dialect. A name with a schema (`dbo.orders`) finds the object of that schema, or else one created
-without a schema; a name without one finds the object of the same schema first, then one created without a schema,
-then one of any schema. Names compare without
-regard to case, like the database does with unquoted names and with names in brackets or backticks; a name in
-double quotes keeps its case (`"Orders"` is not `orders`), unless it is written all in one case (`"orders"`,
-`"ORDERS"`), which is how PostgreSQL and Oracle store an unquoted name. An object created in several files, such as
-a view that migrations recreate, is one leaf per file, and a use points at the last of these files, the latest
-migration: paths are ordered folder by folder and name by name, with the numbers in them compared as numbers, so
-`V10__orders.sql` comes after `V9__orders.sql`, and a later folder wins over an earlier one whatever the file names.
-Flyway's repeatable migrations (`R__views.sql`) come after the versioned ones of their folder, as Flyway runs them
-last.
+SQL has no imports: the SQL files of the analysed folder are read as one database, and every object is found by its
+name, whatever file creates it and in whatever dialect. Tables, views, synonyms, sequences, types, domains, routines,
+triggers and packages are leaves at their schema plus their name (`sales.orders`), or their name alone when created
+without a schema; `SET search_path` and `ALTER SESSION SET CURRENT_SCHEMA` give the objects after them their schema.
+A name without a schema means a variable, a common table expression, a temporary table or a trigger's rows first,
+then, inside an Oracle package, a member of the package, then the object of the same schema, then one created without
+a schema, then the one object of that name in any other schema (several draw no edge). A name with a schema
+(`dbo.orders`) finds the object of that schema, or else one created without a schema; `pricing.total` a member of the
+package `pricing`. The place of a name tells which kind of object it means: `FROM audit` a table or view, `audit()`
+a routine, the type of a column a type, a domain or a table's row type, `NEXTVAL` a sequence. What a package
+specification declares are leaves below the package; the routines of the package body, an object type body and an
+`ALTER TABLE`, `CREATE INDEX` or `COMMENT ON` of a table another file creates are leaves of their own file that point
+at what they implement or change. Names compare without regard to case, like the database does with unquoted names
+and with names in brackets or backticks; a name in double quotes keeps its case (`"Orders"` is not `orders`), unless
+it is written all in one case (`"orders"`, `"ORDERS"`), which is how PostgreSQL and Oracle store an unquoted name. An
+object created in several files, such as a view that migrations recreate, is one leaf per file, and a use points at
+the last of these files, the latest migration: paths are ordered folder by folder and name by name, with the numbers
+in them compared as numbers, so `V10__orders.sql` comes after `V9__orders.sql`, and a later folder wins over an
+earlier one whatever the file names. Flyway's repeatable migrations (`R__views.sql`) come after the versioned ones of
+their folder, as Flyway runs them last. Statements in strings, `USE` and `DROP` are not read.
 
 ## Tests are excluded by default
 
