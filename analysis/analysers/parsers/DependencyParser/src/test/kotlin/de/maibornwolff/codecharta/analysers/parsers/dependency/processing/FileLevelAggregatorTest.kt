@@ -295,4 +295,40 @@ class FileLevelAggregatorTest {
         // Assert
         assertThat(filePaths).containsExactly(FilePath(listOf("db", "V10__orders.sql")))
     }
+
+    @Test
+    fun `should point a dependency that can mean some kinds of declaration only at the copies of these kinds`() {
+        // Arrange
+        val nodes =
+            listOf(
+                declaration("audit", "db/a_function.sql", language = SupportedLanguage.SQL).copy(kind = "routine"),
+                declaration("audit", "db/z_table.sql", language = SupportedLanguage.SQL).copy(kind = "table")
+            )
+
+        // Act
+        val filePaths = DeclaringFiles
+            .of(nodes)
+            .filesFor("audit", FilePath(listOf("db", "report.sql")), SupportedLanguage.SQL, setOf("routine"))
+
+        // Assert
+        assertThat(filePaths).containsExactly(FilePath(listOf("db", "a_function.sql")))
+    }
+
+    @Test
+    fun `should point a dependency at every copy as the copy rules pick them when no copy is of its kinds`() {
+        // Arrange
+        val nodes =
+            listOf(
+                declaration("audit", "db/a_function.sql", language = SupportedLanguage.SQL).copy(kind = "routine"),
+                declaration("audit", "db/z_table.sql", language = SupportedLanguage.SQL).copy(kind = "table")
+            )
+
+        // Act
+        val filePaths = DeclaringFiles
+            .of(nodes)
+            .filesFor("audit", FilePath(listOf("db", "report.sql")), SupportedLanguage.SQL, setOf("sequence"))
+
+        // Assert
+        assertThat(filePaths).containsExactly(FilePath(listOf("db", "z_table.sql")))
+    }
 }

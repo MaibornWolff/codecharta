@@ -39,7 +39,8 @@ object FileLevelAggregator {
                 val targetId = dependency.withDots()
                 // A dependency whose declaration no analyzer produced (e.g. a node dropped as a Rust
                 // re-export carrier) has no file to point at, so there is no edge to draw.
-                declaringFiles.filesFor(targetId, sourceFile, node.language).filter { it != sourceFile }.forEach { targetFile ->
+                val targetFiles = declaringFiles.filesFor(targetId, sourceFile, node.language, dependency.kinds)
+                targetFiles.filter { it != sourceFile }.forEach { targetFile ->
                     val endpoints = sourceFile to targetFile
                     weightByEndpoints.merge(endpoints, 1, Int::plus)
                     if (targetId in cyclicTargets) cyclicEndpoints.add(endpoints)
