@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import org.assertj.core.api.Assertions.assertThat
@@ -73,6 +74,42 @@ class DelphiAnalyzerTest {
                 tuple(listOf("Game", "Model", "TCreature", "TStats"), NodeType.CLASS),
                 tuple(listOf("Game", "Model", "IFight"), NodeType.INTERFACE),
                 tuple(listOf("Game", "Model", "TKind"), NodeType.ENUM)
+            )
+        }
+
+        @Test
+        fun `should make every other type, a routine, a constant and a variable a declaration (decision 1)`() {
+            // Arrange
+            val code = """
+                unit Game.Dice;
+                interface
+                type
+                  TCreature = class end;
+                  TEntity = TCreature;
+                  PCreature = ^TCreature;
+                const MaxHp = 100;
+                var Current: TCreature;
+                function Roll: Integer;
+                implementation
+                function Roll: Integer;
+                begin
+                  Result := MaxHp;
+                end;
+                end.
+            """
+
+            // Act
+            val report = analyze(code)
+
+            // Assert
+            val usedTypeNames = { node: Node -> node.usedTypes.map { it.name } }
+            assertThat(report.nodes).extracting({ it.pathWithName.parts.last() }, { it.nodeType }, usedTypeNames).containsExactly(
+                tuple("TCreature", NodeType.CLASS, emptyList<String>()),
+                tuple("TEntity", NodeType.CLASS, listOf("Game.Dice.TCreature")),
+                tuple("PCreature", NodeType.CLASS, listOf("Game.Dice.TCreature")),
+                tuple("MaxHp", NodeType.VARIABLE, emptyList<String>()),
+                tuple("Current", NodeType.VARIABLE, listOf("Game.Dice.TCreature")),
+                tuple("Roll", NodeType.FUNCTION, listOf("Game.Dice.MaxHp"))
             )
         }
 
