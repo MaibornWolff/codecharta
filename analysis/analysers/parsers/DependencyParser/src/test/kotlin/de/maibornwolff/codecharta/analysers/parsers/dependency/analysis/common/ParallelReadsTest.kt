@@ -33,4 +33,16 @@ class ParallelReadsTest {
         // Assert
         assertThat(read).containsExactlyInAnyOrder("a", "c")
     }
+
+    @Test
+    fun `should map every item in the order of the items`() {
+        // Arrange
+        val items = (1..1000).toList()
+
+        // Act
+        val mapped = mapInParallel(items) { it * 2 }
+
+        // Assert
+        assertThat(mapped).containsExactlyElementsOf(items.map { it * 2 })
+    }
 }
