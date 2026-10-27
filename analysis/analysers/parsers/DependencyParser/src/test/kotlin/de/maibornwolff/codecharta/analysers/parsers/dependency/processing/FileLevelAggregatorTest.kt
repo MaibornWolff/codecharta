@@ -331,4 +331,20 @@ class FileLevelAggregatorTest {
         // Assert
         assertThat(filePaths).containsExactly(FilePath(listOf("db", "z_table.sql")))
     }
+
+    @Test
+    fun `should point a SQL dependency from an implementation part's own file at the declaration, not at the later part`() {
+        // Arrange
+        val nodes =
+            listOf(
+                declaration("point_t", "db/point_t.sql", language = SupportedLanguage.SQL),
+                declaration("point_t", "db/point_t_body.sql", language = SupportedLanguage.SQL, isFileScoped = true)
+            )
+
+        // Act
+        val filePaths = DeclaringFiles.of(nodes).filesFor("point_t", FilePath(listOf("db", "point_t_body.sql")), SupportedLanguage.SQL)
+
+        // Assert
+        assertThat(filePaths).containsExactly(FilePath(listOf("db", "point_t.sql")))
+    }
 }

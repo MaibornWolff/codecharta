@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql
 
+import de.maibornwolff.treesitter.excavationsite.api.SqlMember
 import de.maibornwolff.treesitter.excavationsite.api.SqlMemberKind
 import de.maibornwolff.treesitter.excavationsite.api.SqlObject
 import de.maibornwolff.treesitter.excavationsite.api.SqlObjectKind
@@ -9,13 +10,14 @@ import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * The SQL files of a run as one database (`sql.md`), read once: the objects they create by name, and the routines of
- * each package. Which file a path means is the copy rule's choice.
+ * The SQL files of a run as one database (`sql.md`), read once: the objects they create by name, and what each package
+ * declares. Which file a path means is the copy rule's choice.
  */
 internal class SqlProject private constructor(private val files: Set<String>, private val sourceOf: (String) -> String) {
     private val scripts = ConcurrentHashMap<String, SqlScript>()
     private val objectsByName by lazy { objectsByName() }
     private val packageMembers by lazy { packageMembers() }
+    private val specifications by lazy { createdObjects().map { Declared(pathOf(it), it.kind) }.toSet() }
 
     /** A created object at its [path], `[schema, name]` or `[name]`, of a kind that names can mean. */
     data class Declared(val path: List<String>, val kind: SqlObjectKind)
@@ -23,11 +25,17 @@ internal class SqlProject private constructor(private val files: Set<String>, pr
     /** What a file creates, changes and names, read once. */
     fun scriptOf(file: String): SqlScript = scripts.computeIfAbsent(file) { TreeSitterDependencies.sqlScript(sourceOf(it)) }
 
-    /** The objects of [name] in any schema; a package body counts as its package. */
+    /** The objects of [name] in any schema; a package body counts as its package, an object type body as its type. */
     fun objectsNamed(name: String): List<Declared> = objectsByName[name].orEmpty()
 
-    /** What the package at [packagePath] declares that a name can mean: the routines of its bodies. */
+    /**
+     * What the package at [packagePath] declares that other code can name: the members of its specification, or the
+     * routines of its bodies if no file of the run holds the specification (decision 13).
+     */
     fun packageMembersOf(packagePath: List<String>): Set<String> = packageMembers[packagePath].orEmpty()
+
+    /** Whether a package specification ([SqlObjectKind.PACKAGE]) or an object type ([SqlObjectKind.TYPE]) declares [path]. */
+    fun hasSpecification(path: List<String>, kind: SqlObjectKind): Boolean = Declared(path, kind) in specifications
 
     private fun createdObjects(): List<SqlObject> = files.flatMap { file -> scriptOf(file).objects }
 
@@ -41,9 +49,15 @@ internal class SqlProject private constructor(private val files: Set<String>, pr
         return Declared(pathOf(created), kind)
     }
 
-    private fun packageMembers(): Map<List<String>, Set<String>> = createdObjects()
-        .filter { it.kind == SqlObjectKind.PACKAGE_BODY }
-        .groupBy({ pathOf(it) }, { body -> body.members.filter { it.kind == SqlMemberKind.ROUTINE }.map { it.name } })
+    private fun packageMembers(): Map<List<String>, Set<String>> {
+        val packages = createdObjects().filter { it.kind == SqlObjectKind.PACKAGE || it.kind == SqlObjectKind.PACKAGE_BODY }
+        val (specifications, bodies) = packages.partition { it.kind == SqlObjectKind.PACKAGE }
+        val bodyRoutines = membersByPath(bodies) { member -> member.kind == SqlMemberKind.ROUTINE }
+        return bodyRoutines + membersByPath(specifications) { true }
+    }
+
+    private fun membersByPath(containers: List<SqlObject>, isMember: (SqlMember) -> Boolean): Map<List<String>, Set<String>> = containers
+        .groupBy({ pathOf(it) }, { container -> container.members.filter(isMember).map { it.name } })
         .mapValues { (_, members) -> members.flatten().toSet() }
 
     companion object {
@@ -56,6 +70,7 @@ internal class SqlProject private constructor(private val files: Set<String>, pr
             SqlObjectKind.SYNONYM to SqlObjectKind.SYNONYM,
             SqlObjectKind.SEQUENCE to SqlObjectKind.SEQUENCE,
             SqlObjectKind.TYPE to SqlObjectKind.TYPE,
+            SqlObjectKind.TYPE_BODY to SqlObjectKind.TYPE,
             SqlObjectKind.DOMAIN to SqlObjectKind.DOMAIN,
             SqlObjectKind.ROUTINE to SqlObjectKind.ROUTINE,
             SqlObjectKind.PACKAGE to SqlObjectKind.PACKAGE,
