@@ -195,9 +195,9 @@ Additional single-statement probes (scratch files, not kept) that explain number
 
 Since the name rules of `analysis/analysers/parsers/DependencyParser/docs/name-resolution/cpp.md` (2026-10-26): 94 file
 edges, 98 with tests; every use points at the header the using file includes, each header draws its own edges and
-each `.cpp` reaches its header; see the fixes below. The cycle search still takes the header and the implementation
-part of a class as one node with the dependencies of one of them (open), so `Creature.hpp -> ArmorClass.hpp` lacks
-its cyclic flag.
+each `.cpp` reaches its header; see the fixes below. Since 2026-10-28 the cycle search takes the header and the
+implementation part of a class as one node with the dependencies of both, so `Creature.hpp -> ArmorClass.hpp` carries
+its cyclic flag, and the `part_of` edge of each `.cpp` on a cycle to its header is cyclic too.
 
 - Commands (both exit 0, only the `.gitignore` warning):
   - `ccsh dependencyparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/dependency.cc.json` -> 44 files in the tree,

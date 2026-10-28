@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **Friends and parts on leaf edges**: a leaf edge says `friend` from a C++ class to a class it declares its friend,
+  and `part_of` from a part of a type written in another file, such as a C++ source file's member functions, to the
+  type.
+
+### Fixed 🐞
+
+- **Cycles between files of the dependency map**: declarations that share a name in different files no longer close
+  cycles that the edges cannot follow, and a cycle through a type split over several files is found.
+
 ## [2.2.1] - 2026-10-23
 
 ### Added 🚀
