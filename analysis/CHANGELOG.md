@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.3.0] - 2026-10-28
+
 ### Added 🚀
 
 - **Friends and parts on leaf edges**: a leaf edge says `friend` from a C++ class to a class it declares its friend,
