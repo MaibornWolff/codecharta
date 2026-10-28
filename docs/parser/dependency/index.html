@@ -219,13 +219,17 @@ template is <code dir="auto">angular</code>.</li>
 <li><code dir="auto">usage</code> names how the source uses the target: <code dir="auto">usage</code>, <code dir="auto">inheritance</code>, <code dir="auto">implementation</code>,
 <code dir="auto">instantiation</code>, <code dir="auto">argument</code>, <code dir="auto">return_value</code>, <code dir="auto">constant_access</code>. A pair carries one kind, the first the
 extractor found, as in DependaCharta. PHP reports every kind; Java, Kotlin and C# report <code dir="auto">inheritance</code>
-and <code dir="auto">implementation</code>; see <a href="#known-issues">known issues</a>.</li>
+and <code dir="auto">implementation</code>, C++ <code dir="auto">inheritance</code>; see <a href="#known-issues">known issues</a>.</li>
 <li>A name declared in several files — a C# partial class, a Go function name reused within a package, two projects
 with the same package — is one leaf per file, with the same key and, where it has one, the same <code dir="auto">namespace</code>. Each
 copy’s dependencies leave the file they are written in, while a dependency <em>on</em> the name points at the file that
 shares the longest folder path with the file using it, and among equally near files at the first as the scan
-lists them (path order); for SQL at the latest migration, and for C# at the first file. A Kotlin <code dir="auto">private</code>
-top-level copy counts only for the file it is written in.</li>
+lists them (path order); for SQL at the declaration before an implementation part, then at the latest migration, and
+for C# at every file of the nearest project (the
+folder of a <code dir="auto">.csproj</code>) that declares it, the parts of a partial class; for Go at every file of the package that
+declares it, its build-tag variants; for C and C++ at the copy the include closure of the using file holds, else
+the nearest. A Kotlin <code dir="auto">private</code> top-level copy, a C# <code dir="auto">file</code> type, a C++ or SQL implementation part and a routine only
+an Oracle package body declares count only for the file they are written in.</li>
 <li><code dir="auto">kind</code> is the declaration kind: <code dir="auto">class</code>, <code dir="auto">valueclass</code>, <code dir="auto">interface</code>, <code dir="auto">annotation</code>, <code dir="auto">enum</code>, <code dir="auto">function</code>,
 <code dir="auto">variable</code>, <code dir="auto">reexport</code>, <code dir="auto">script</code> or <code dir="auto">unknown</code>.</li>
 </ul>
@@ -239,8 +243,10 @@ gzipped; output is gzipped by default.</p>
 <p>Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates and SQL, with
 the same file extensions as the <a href="/docs/parser/unified#supported-languages">Unified Parser</a>. C files (<code dir="auto">.c</code>, <code dir="auto">.h</code>) are
 read as C++.</p>
-<p>An Angular template (<code dir="auto">.html</code>) depends on each component it names by the element of its selector and on each pipe it
-names, as the <code dir="auto">@Component</code> and <code dir="auto">@Pipe</code> decorators in the TypeScript files declare them. A name that several classes
+<p>An Angular template (<code dir="auto">.html</code>) depends on each component and directive whose selector matches one of its elements, as
+the Angular compiler matches them by tag, attribute and value, property, two-way and event binding, class and, for a
+structural directive such as <code dir="auto">*ngFor</code>, its <code dir="auto">ng-template</code> element, and on each pipe it names, as the <code dir="auto">@Component</code>,
+<code dir="auto">@Directive</code> and <code dir="auto">@Pipe</code> decorators in the TypeScript files declare them. A selector or pipe name that several classes
 declare means the one in the scope of the template’s component, as Angular decides it: the <code dir="auto">imports</code> of a standalone
 component, or the <code dir="auto">declarations</code> and <code dir="auto">imports</code> of the <code dir="auto">@NgModule</code> that declares the component, where an imported
 module adds what it exports, a module it exports in turn included. A class a decorator names is the one its file
@@ -256,18 +262,93 @@ aliases (webpack, vite, vue.config) and Module Federation remotes.</p>
 as do TypeScript, JavaScript, Vue and Angular templates, and C and C++; every other language keeps its own. A
 repository with several languages thus draws no edge from a Python name to a SQL table or from a C++ class to a
 Python class of the same name.</p>
-<p>SQL has no imports: a table, view, synonym, package or routine is found by its name, whatever file creates it and
-in whatever dialect. A name with a schema (<code dir="auto">dbo.orders</code>) finds the object of that schema, or else one created
-without a schema; a name without one finds the object of the same schema first, then one created without a schema,
-then one of any schema. Names compare without
-regard to case, like the database does with unquoted names and with names in brackets or backticks; a name in
-double quotes keeps its case (<code dir="auto">"Orders"</code> is not <code dir="auto">orders</code>), unless it is written all in one case (<code dir="auto">"orders"</code>,
-<code dir="auto">"ORDERS"</code>), which is how PostgreSQL and Oracle store an unquoted name. An object created in several files, such as
-a view that migrations recreate, is one leaf per file, and a use points at the last of these files, the latest
-migration: paths are ordered folder by folder and name by name, with the numbers in them compared as numbers, so
-<code dir="auto">V10__orders.sql</code> comes after <code dir="auto">V9__orders.sql</code>, and a later folder wins over an earlier one whatever the file names.
-Flyway’s repeatable migrations (<code dir="auto">R__views.sql</code>) come after the versioned ones of their folder, as Flyway runs them
-last.</p>
+<p>Go finds an imported package through the <code dir="auto">go.mod</code> files of the analysed folder: the path on a <code dir="auto">module</code> line stands for
+the folder of its <code dir="auto">go.mod</code>, a module’s <code dir="auto">vendor/</code> folder holds the packages it vendors, and a file under no <code dir="auto">go.mod</code>
+finds the folder its import path ends with in at least two segments. A name written through an import, such as
+<code dir="auto">model.Creature</code>, means the declaration of that package; a method called on a variable draws no edge, as the parser
+does not infer the variable’s type.</p>
+<p>Python finds an imported module where the interpreter would: below the analysed folder, the folder above each
+top-level package (a folder with <code dir="auto">__init__.py</code>, such as <code dir="auto">src/</code>) and the folder of the importing file, the nearest to the
+importing file first; a module path none of them holds finds the module it ends with in at least two segments. A name
+means what Python binds it to where it is used: a declaration of the own module, an import, also one inside a function
+or one in each branch of <code dir="auto">try</code> and <code dir="auto">except ImportError</code>, or a name a wildcard import brings in, as the module’s
+<code dir="auto">__all__</code> lists it. A class nested in a class is a leaf of its own; a parameter, a local variable, a builtin or a
+method called on a variable draws no edge.</p>
+<p>C and C++ resolve a name as the compiler does: a file sees only what it declares and what its <code dir="auto">#include</code>s bring in,
+directly or through other headers. <code dir="auto">#include "p"</code> means the file <code dir="auto">p</code> beside the including file, else, as for
+<code dir="auto">#include &#x3C;p></code>, the project file whose path ends with <code dir="auto">p</code>, the nearest to the including file; a header without an
+extension or an <code dir="auto">.inc</code> fragment is followed too, and a system header such as <code dir="auto">&#x3C;vector></code> declares nothing of the
+project. A name is looked up in its class and the class’s base classes, then in the enclosing namespaces outwards,
+with <code dir="auto">using</code> declarations, <code dir="auto">using namespace</code> directives and namespace aliases where they apply, and <code dir="auto">::Name</code> in the
+global namespace; a template parameter or a class declared in a function hides a class of the same name. A forward
+declaration such as <code dir="auto">struct Creature;</code> means the class wherever its body is, and <code dir="auto">Type::member</code> is a use of <code dir="auto">Type</code>. A
+type alias (<code dir="auto">using</code> or <code dir="auto">typedef</code>) is a leaf of its own, a struct named only by its <code dir="auto">typedef</code> takes that name, and the
+member functions a source file defines for the class of a header form a leaf of that file that depends on the header.
+A declaration outside every namespace has its name as logical path, so two programs in one folder that both define
+<code dir="auto">struct Creature</code> are told apart by their includes. The build’s include directories (<code dir="auto">-I</code>, CMake,
+<code dir="auto">compile_commands.json</code>) are not read, and macros are not expanded.</p>
+<p>PHP resolves a name as the compiler does, from the text of its file: through the <code dir="auto">use</code> declarations of the namespace
+block it stands in, aliases and groups included, else in the current namespace; <code dir="auto">\A\B</code> is taken as written and
+<code dir="auto">namespace\A</code> below the current namespace. A class name never falls back to the global namespace, while a function
+call or a constant does where the current namespace declares none. A class counts wherever the compiler resolves one:
+any type, <code dir="auto">extends</code>, <code dir="auto">implements</code>, <code dir="auto">new</code>, <code dir="auto">X::member</code>, <code dir="auto">catch</code>, <code dir="auto">instanceof</code>, an attribute and a trait; function calls
+and constant reads count too, and a name matches only in its declared case. The code at the top level of a file is a
+leaf <code dir="auto">&#x3C;file>_script</code>, which an <code dir="auto">include</code> or <code dir="auto">require</code> of the file uses, its path taken relative to the including file;
+a computed path draws nothing, and neither <code dir="auto">composer.json</code> nor docblock types are read.</p>
+<p>Rust resolves a name as the compiler does, through the module tree of its crate. A crate is named by its <code dir="auto">Cargo.toml</code>
+(<code dir="auto">my-game</code> is <code dir="auto">my_game</code>), and a file’s module is where the <code dir="auto">mod</code> declarations from <code dir="auto">lib.rs</code>, <code dir="auto">main.rs</code>, <code dir="auto">tests/</code> and the
+other crate roots put it, <code dir="auto">#[path]</code> included; a file no <code dir="auto">mod</code> reaches keeps the path of its folders. A name means an
+item of its module, what a <code dir="auto">use</code> of the module binds, what a glob import brings in (a name two globs offer means
+nothing), another crate of the project by its name, or nothing for the prelude and libraries such as <code dir="auto">std</code>; <code dir="auto">crate::</code>,
+<code dir="auto">self::</code> and <code dir="auto">super::</code> start where Rust starts them. A <code dir="auto">pub use</code> is a leaf of its own that the code importing through
+it points at, an <code dir="auto">impl</code> block in another file than its type a leaf of that file, and a path into a type or enum, such
+as <code dir="auto">Creature::new()</code> or <code dir="auto">SpeedType::Walking</code>, is a use of the type. Function bodies, calls, constants and macros count,
+the arguments of a macro read as the expressions they almost always are; a method called on a variable draws no edge.
+Code under <code dir="auto">#[cfg(test)]</code> counts only in a run that analyses a Rust file in a test folder, so with <code dir="auto">--include-tests</code>.</p>
+<p>Delphi resolves a name as the compiler does, through the units of the analysed folder by their unit name, wherever the
+file lies. A name means a local declaration, a parameter or <code dir="auto">Result</code> first, then a member of its class, of the class’s
+ancestors in the project and of the classes around it, then a declaration of the own unit, then of the units of the
+<code dir="auto">uses</code> clauses, the last listed first; the implementation section sees its own <code dir="auto">uses</code> before those of the interface,
+and another unit only offers what its interface declares. <code dir="auto">Unit.Name</code> means the declaration of the unit the longest
+prefix names, and <code dir="auto">[Table]</code> means <code dir="auto">TableAttribute</code> before <code dir="auto">Table</code>. Every type, free routine, constant and variable is a
+leaf, a member type below its outer type, while an enum value, a field or a method is a use of its type; a program’s
+main block and a unit’s <code dir="auto">initialization</code> and <code dir="auto">finalization</code> are a leaf <code dir="auto">&#x3C;unit>_script</code>. A name matches only in the case
+of its declaration, as written in the <code dir="auto">uses</code> entry too; library units such as <code dir="auto">System.SysUtils</code>, unit scope names from
+the <code dir="auto">.dproj</code>, include files and members of a value or a <code dir="auto">with</code> draw no edge.</p>
+<p>TypeScript and JavaScript find an imported module where the compiler would: a relative path from the importing file,
+or a bare specifier through the <code dir="auto">paths</code> and <code dir="auto">baseUrl</code> of the nearest <code dir="auto">tsconfig.json</code> or <code dir="auto">jsconfig.json</code>, a bundler
+alias, a Module Federation remote, a workspace package of that <code dir="auto">package.json</code> name or a <code dir="auto">declare module</code> block; each
+with the endings TypeScript tries, a <code dir="auto">.js</code> specifier finding the <code dir="auto">.ts</code> file, and a folder by its <code dir="auto">package.json</code> or its
+<code dir="auto">index</code> file. A name means what the module binds it to: a declaration of the own module or of a namespace around it,
+an import of any form (named, renamed, default, namespace, <code dir="auto">require</code>, <code dir="auto">import x = require</code>, <code dir="auto">import()</code> and an import
+type <code dir="auto">import('./m').A</code>), or a global declaration of a script file or of <code dir="auto">declare global</code>. A re-export such as
+<code dir="auto">export { A } from</code> or <code dir="auto">export *</code> is a leaf of the barrel that points on at what it re-exports. Every top-level
+declaration is a leaf, exported or not, and so is each member a namespace exports and the code at the top level of a
+file (<code dir="auto">main_script</code>), which a side-effect import uses. A parameter, a local variable, a name from a library or a
+method called on a variable draws no edge.</p>
+<p>A Vue component is named after its file and uses what its scripts use, what its template expressions read from
+<code dir="auto">&#x3C;script setup></code>, and the component each tag names, looked up as Vue does: a binding of <code dir="auto">&#x3C;script setup></code>, the
+<code dir="auto">components</code> option, a global <code dir="auto">app.component</code> registration, else the one component of the project of that name.</p>
+<p>SQL has no imports: the SQL files of the analysed folder are read as one database, and every object is found by its
+name, whatever file creates it and in whatever dialect. Tables, views, synonyms, sequences, types, domains, routines,
+triggers and packages are leaves at their schema plus their name (<code dir="auto">sales.orders</code>), or their name alone when created
+without a schema; <code dir="auto">SET search_path</code> and <code dir="auto">ALTER SESSION SET CURRENT_SCHEMA</code> give the objects after them their schema.
+A name without a schema means a variable, a common table expression, a temporary table or a trigger’s rows first,
+then, inside an Oracle package, a member of the package, then the object of the same schema, then one created without
+a schema, then the one object of that name in any other schema (several draw no edge). A name with a schema
+(<code dir="auto">dbo.orders</code>) finds the object of that schema, or else one created without a schema; <code dir="auto">pricing.total</code> a member of the
+package <code dir="auto">pricing</code>. The place of a name tells which kind of object it means: <code dir="auto">FROM audit</code> a table or view, <code dir="auto">audit()</code>
+a routine, the type of a column a type, a domain or a table’s row type, <code dir="auto">NEXTVAL</code> a sequence. What a package
+specification declares are leaves below the package; the routines of the package body, an object type body and an
+<code dir="auto">ALTER TABLE</code>, <code dir="auto">CREATE INDEX</code> or <code dir="auto">COMMENT ON</code> of a table another file creates are leaves of their own file that point
+at what they implement or change. Names compare without regard to case, like the database does with unquoted names
+and with names in brackets or backticks; a name in double quotes keeps its case (<code dir="auto">"Orders"</code> is not <code dir="auto">orders</code>), unless
+it is written all in one case (<code dir="auto">"orders"</code>, <code dir="auto">"ORDERS"</code>), which is how PostgreSQL and Oracle store an unquoted name. An
+object created in several files, such as a view that migrations recreate, is one leaf per file, and a use points at
+the last of these files, the latest migration: paths are ordered folder by folder and name by name, with the numbers
+in them compared as numbers, so <code dir="auto">V10__orders.sql</code> comes after <code dir="auto">V9__orders.sql</code>, and a later folder wins over an
+earlier one whatever the file names. Flyway’s repeatable migrations (<code dir="auto">R__views.sql</code>) come after the versioned ones of
+their folder, as Flyway runs them last. Statements in strings, <code dir="auto">USE</code> and <code dir="auto">DROP</code> are not read.</p>
 <div class="sl-heading-wrapper level-h2"><h2 id="tests-are-excluded-by-default">Tests are excluded by default</h2><a class="sl-anchor-link" href="#tests-are-excluded-by-default"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Tests are excluded by default”</span></a></div>
 <p>A test depends on everything it exercises and nothing depends on it, so including tests shifts every
 level and every cycle. <code dir="auto">--include-tests</code> opts back in. Test files are recognized by directory (<code dir="auto">test</code>,
@@ -283,9 +364,9 @@ The skipped file is reported like any other
 <a href="/docs/analysis/codecharta-shell#files-a-parser-cannot-analyse">file the parser cannot analyse</a>, with the timeout as
 its cause.</p>
 <div class="sl-heading-wrapper level-h2"><h2 id="known-issues">Known issues</h2><a class="sl-anchor-link" href="#known-issues"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Known issues”</span></a></div>
-<p><strong>Usage kinds are only reported for PHP and partly for Java, Kotlin and C#.</strong> The <code dir="auto">usage</code> list on a leaf edge can name seven
-kinds, but every language except PHP — which runs its own queries — reports only <code dir="auto">usage</code>, apart from <code dir="auto">inheritance</code>
-and <code dir="auto">implementation</code> in Java, Kotlin and C#. The underlying extraction
+<p><strong>Usage kinds are only reported for PHP and partly for Java, Kotlin, C# and C++.</strong> The <code dir="auto">usage</code> list on a leaf edge can
+name seven kinds, but every language except PHP — which runs its own queries — reports only <code dir="auto">usage</code>, apart from
+<code dir="auto">inheritance</code> and <code dir="auto">implementation</code> in Java, Kotlin and C# and <code dir="auto">inheritance</code> in C++. The underlying extraction
 (<code dir="auto">TreeSitterExcavationSite</code>) does separate used types by the position they appear in, but flattens that
 away in the type it hands back, so the distinction is lost before this parser sees it. DependaCharta has
 the same gap.</p>
