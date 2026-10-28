@@ -8,7 +8,8 @@ package de.maibornwolff.treesitter.excavationsite.languages.vue.extractors
 internal object PugTemplate {
     private const val COMMENT_START = "//"
     private val TAG = Regex("""^([A-Za-z][\w-]*)""")
-    private val TAG_SUFFIX = Regex("""^(?:[.#][\w-]+)*(?:\((?:[^()"']|"[^"]*"|'[^']*')*\))?""")
+    private val CLASSES_AND_ID = Regex("""^(?:[.#][\w-]+)*""")
+    private val ATTRIBUTES = Regex("""^\((?:[^()"']|"[^"]*"|'[^']*')*\)""")
     private val BLOCK_EXPANSION = Regex("""^:\s+""")
     private val TEXT_BLOCK = Regex("""^[A-Za-z][\w-]*(?:[.#][\w-]+)*(?:\(.*\))?\.\s*$""")
     private val KEYWORDS = setOf(
@@ -31,9 +32,10 @@ internal object PugTemplate {
 
     private fun tagsAtStartOf(content: String): List<String> {
         val tag = TAG.find(content)?.groupValues?.get(1)?.takeIf { it !in KEYWORDS } ?: return emptyList()
-        val afterTag = content.substring(tag.length)
-        val rest = afterTag.substring(TAG_SUFFIX.find(afterTag)?.value?.length ?: 0)
+        val rest = content.substring(tag.length).removePrefixMatching(CLASSES_AND_ID).removePrefixMatching(ATTRIBUTES)
         val expansion = BLOCK_EXPANSION.find(rest) ?: return listOf(tag)
         return listOf(tag) + tagsAtStartOf(rest.substring(expansion.value.length))
     }
+
+    private fun String.removePrefixMatching(prefix: Regex): String = substring(prefix.find(this)?.value?.length ?: 0)
 }

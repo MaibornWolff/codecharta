@@ -8,7 +8,12 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularSelector
  * alternatives separated by commas. Anything else, such as a space between parts, is skipped as Angular skips it.
  */
 internal object AngularSelectorParser {
-    private val SELECTOR_PART = Regex("""(:not\()|(([.#]?)[-\w]+)|(?:\[([-.\w*\\$]+)(?:=(["']?)([^\]"']*)\5)?])|(\))|(\s*,\s*)""")
+    private const val NOT_START_PART = """(:not\()"""
+    private const val NAME_PART = """(([.#]?)[-\w]+)"""
+    private const val ATTRIBUTE_PART = """(?:\[([-.\w*\\$]+)(?:=(["']?)([^\]"']*)\5)?])"""
+    private const val NOT_END_PART = """(\))"""
+    private const val SEPARATOR_PART = """(\s*,\s*)"""
+    private val SELECTOR_PART = Regex(listOf(NOT_START_PART, NAME_PART, ATTRIBUTE_PART, NOT_END_PART, SEPARATOR_PART).joinToString("|"))
     private const val NOT_START = 1
     private const val NAME = 2
     private const val NAME_PREFIX = 3
