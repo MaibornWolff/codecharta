@@ -11,7 +11,7 @@ import de.maibornwolff.codecharta.util.Logger
 
 class CycleAnalyzer {
     companion object {
-        fun determineCycles(leaves: Set<NodeInformation>, singleCycle: Boolean = false): List<Cycle> {
+        fun <K> determineCycles(leaves: Set<NodeInformation<K>>, singleCycle: Boolean = false): List<Cycle<K>> {
             val stronglyConnectedComponentsWithCycles = StronglyConnectedComponentDetection()
                 .run(leaves)
                 .filter { it.nodes.size > 1 }
@@ -23,12 +23,12 @@ class CycleAnalyzer {
             }
         }
 
-        fun List<Cycle>.groupByLeafs() = this
+        fun <K> List<Cycle<K>>.groupByLeafs() = this
             .flatMap { it.edges }
             .groupBy({ it.from }, { it.to })
             .mapValues { it.value.toSet() }
 
-        private fun findCycleInComponent(cycle: StronglyConnectedComponent, singleCycle: Boolean): List<Cycle> {
+        private fun <K> findCycleInComponent(cycle: StronglyConnectedComponent<K>, singleCycle: Boolean): List<Cycle<K>> {
             val nodes = cycle.nodes.toList()
             val nodeIdToNumber = nodes
                 .mapIndexed { index, nodeInformationDto -> nodeInformationDto.id to index }

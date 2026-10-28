@@ -45,7 +45,7 @@ class DependencyResolverService {
         }
 
         // An implementation part depends on the class of its own path, which is no cycle
-        fun mapNodeInfo(node: Node): NodeInformation {
+        fun mapNodeInfo(node: Node): NodeInformation<String> {
             val id = node.pathWithName.withDots()
             return NodeInformation(
                 id = id,

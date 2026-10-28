@@ -1,5 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.model
 
-data class NodeInformation(val id: String, val dependencies: Set<String>) {
+data class NodeInformation<K>(val id: K, val dependencies: Set<K>) {
     companion object
 }
