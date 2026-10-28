@@ -105,7 +105,8 @@ class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         val ownNames = scope.items.keys + scope.uses.mapNotNull { it.binding } + scope.modules.keys
         return source.items
             .filter { (name, items) -> name !in ownNames && items.any { source.isVisibleTo(scope, it.visibility) } }
-            .map { (name, _) -> node(scope.pathOf(name), NodeType.REEXPORT, listOf(typeOf(source.pathOf(name)))) }
+            .keys
+            .map { name -> node(scope.pathOf(name), NodeType.REEXPORT, listOf(typeOf(source.pathOf(name)))) }
     }
 
     private fun usesOf(paths: List<RustPath>, scope: RustModuleScope): List<Type> = paths

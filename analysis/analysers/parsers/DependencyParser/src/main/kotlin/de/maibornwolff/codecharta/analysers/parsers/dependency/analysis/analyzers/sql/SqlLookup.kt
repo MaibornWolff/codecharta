@@ -39,7 +39,7 @@ internal class SqlLookup(private val project: SqlProject, private val ownSchema:
     private fun unqualified(name: String, kindsInOrder: List<Set<SqlObjectKind>>): Found? = kindsInOrder.firstNotNullOfOrNull { kinds ->
         val candidates = project.objectsNamed(name).filter { it.kind in kinds }.map { it.path }.distinct()
         val inOwnSchema = ownSchema?.let { schema -> candidates.find { it == listOf(schema, name) } }
-        val path = inOwnSchema ?: candidates.find { it.size == 1 } ?: candidates.filter { it.size > 1 }.singleOrNull()
+        val path = inOwnSchema ?: candidates.find { it.size == 1 } ?: candidates.singleOrNull { it.size > 1 }
         path?.let { Found(it, namesOf(kinds)) }
     }
 
