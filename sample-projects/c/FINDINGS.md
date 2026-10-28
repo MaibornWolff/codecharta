@@ -162,9 +162,9 @@ and `if` in `EDGE_CLAMP_ROLL` are not counted. Complexity: 1 logic + 1 function 
 
 Since the name rules of `analysis/analysers/parsers/DependencyParser/docs/name-resolution/cpp.md` (2026-10-26): 26 file
 edges, the same with tests; the three wrong `Creature` edges point at `domain/model/creature.h`, and the alias and
-forward-declaration edges are drawn; see the fixes below. The cycle `creature.h <-> fightable.h` is not flagged, as the
-dto copy of `Creature` hides the domain one from the cycle search, which still takes the copies of one path as one
-node (open).
+forward-declaration edges are drawn; see the fixes below. The cycle `creature.h <-> fightable.h` is flagged since the
+cycle search tells the copies of one path apart by their file (2026-10-28); before, the dto copy of `Creature` hid the
+domain one from it.
 
 - Commands: both README commands exit 0, no exception. Default run 49 files, `--include-tests` 50 files; the two
   `.cc.json` are byte-identical. `Found a total of 0 cycles`.

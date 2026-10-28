@@ -2,7 +2,7 @@
 
 Every dependency edge the parser writes carries two flags, `isCyclic` and `isPointingUpwards`. The visualization's
 dependency view draws an edge by them; both live in the cc.json on file edges (`edges`) and leaf edges (`leafEdges`).
-State of 2026-10-23.
+State of 2026-10-28.
 
 ## What the visualization draws
 
@@ -29,9 +29,18 @@ type and legend in `lenses/dependency/store/dependencyEdge.ts` and `renderer/dep
 
 - Cycles are found between declarations, not files: Tarjan's strongly connected components, then a depth-first search
   for the cycles inside each component (`CycleAnalyzer`, `DepthFirstSearchCycleDetection`).
+- A declaration is its file and its logical path (`DeclarationKey` in `DeclarationCycles`), and a use points at the
+  copies the copy rules of its language pick, the same the drawn edges target. Two declarations of one path in
+  different files (twin source trees, a C# partial class, Go build variants) are apart, so a cycle closes only along
+  drawn edges. Until 2026-10-28 they were one node, whose dependencies came from one copy picked by chance.
+- An implementation part (C++ members defined in another file, a Rust `impl` in another file, an SQL body or `ALTER`)
+  is one declaration with the declaration of its path, as the compiler sees one type. Its edge to that declaration has
+  the kind `part_of` and is cyclic when a cycle enters the type through one part and leaves it through another.
 - The search caps the cycle length by the component's edge count: 10 below 100 edges, 8 below 200, 6 below 400, else 4.
 - A declaration edge is cyclic when it lies on a found cycle; a file edge when any declaration edge behind it is
   (`FileLevelAggregator`). Edges inside one file disappear from the file layer.
+- Every cyclic declaration edge has a way back along cyclic edges, a `part_of` edge walked both ways
+  (`cyclicEdgesWithoutWayBack`, a test helper of `DeclarationCyclesTest`).
 
 **Upward** (`processing/levelization/`), once over the folder tree for file edges and once over the namespace tree for
 leaf edges:
@@ -61,11 +70,13 @@ and a dashed red edge breaks a cycle that exists only between folders or package
 ## How the flags are tested
 
 - Analysis unit tests: `CycleAnalyzerTest`, `LevelizerTest`, `IsPointingUpwardsTest`, `FileLevelAggregatorTest`,
-  `ProcessingPipelineTest`; `CycleChainsTest` for the gate.
+  `ProcessingPipelineTest`, `DeclarationCyclesTest` (twin copies, C++ header and source, Rust `impl`, way back);
+  `CycleChainsTest` for the gate.
 - Visualization unit tests: `dependencyEdge.spec.ts` (flags to type), `edgeProjection.spec.ts` (merging, upward rule),
   `lineStyle.spec.ts`.
-- `ProbeRegressionTest` compares ` cyclic` and ` upward` exactly, but only one spec probe has such a line
-  (`java/r1-mono`): the name-resolution probes are kept free of cycles on purpose.
+- `ProbeRegressionTest` compares ` cyclic` and ` upward` exactly, but only two probes have such a line (`java/r1-mono`
+  and `cpp/spec-friend`, whose cycle runs through a friend edge): the name-resolution probes are kept free of cycles on
+  purpose.
 - The checkpoint probes (`.claude/name-resolution-tools/cp-probes`, 25 of 197 with flags) are compared by
   `cp-compare.py`, which strips the flags, so the acceptance of the name-resolution commits does not check them.
 - The sample project reviews (`sample-projects/<language>/FINDINGS.md`) check expected cycles and upward edges by hand.
@@ -78,6 +89,8 @@ and a dashed red edge breaks a cycle that exists only between folders or package
    cycle would be as right.
 3. An equal level counts as upward. After cycle breaking only the removed edges can meet that, but no rule says so.
 4. Name resolution feeds both flags: a missing or wrong edge changes cycles and levels.
+5. An edge into a Rust facade (`mod.rs`, `lib.rs` re-exporting its children) can be flagged upward when the folders
+   form a cycle; about 800 such edges in nushell are not examined yet (known gap, Christian, 2026-10-28).
 
 Next step proposed (2026-10-23): a spec page for cycles and layering, flag probes (cycle, long cycle, container-only
 upward, equal level), and flags compared in `cp-compare.py`.
