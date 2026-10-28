@@ -1,5 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.model
 
-data class Cycle(val edges: List<Edge>)
+data class Cycle<K>(val edges: List<Edge<K>>)
 
-data class Edge(val from: String, val to: String)
+data class Edge<K>(val from: K, val to: K)

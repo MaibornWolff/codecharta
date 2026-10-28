@@ -10,13 +10,13 @@ class StronglyConnectedComponentDetection {
     private val lowLinkMap = mutableMapOf<TarjanNode, Int>()
     private val sccs = mutableListOf<StronglyConnectedTarjanComponent>()
 
-    fun run(nodeInformations: Set<NodeInformation>): List<StronglyConnectedComponent> {
+    fun <K> run(nodeInformations: Set<NodeInformation<K>>): List<StronglyConnectedComponent<K>> {
         val tarjanNodes = convertToTarjanNodes(nodeInformations)
         return detectSCCs(tarjanNodes.values.toSet()).toDto(tarjanNodes, nodeInformations)
     }
 
-    private fun convertToTarjanNodes(nodeInformations: Set<NodeInformation>): Map<String, TarjanNode> {
-        val result = mutableMapOf<String, TarjanNode>()
+    private fun <K> convertToTarjanNodes(nodeInformations: Set<NodeInformation<K>>): Map<K, TarjanNode> {
+        val result = mutableMapOf<K, TarjanNode>()
         var nextNodeIndex = 0
         nodeInformations.forEach { node ->
             val tarjanNode = result.getOrPut(node.id) { TarjanNode(nextNodeIndex++) }
@@ -86,13 +86,13 @@ class TarjanNode(val id: Int, val neighbors: MutableSet<TarjanNode> = mutableSet
     override fun hashCode(): Int = id
 }
 
-fun List<StronglyConnectedTarjanComponent>.toDto(
-    map: Map<String, TarjanNode>,
-    nodeInformations: Set<NodeInformation>
-): List<StronglyConnectedComponent> = map { it.toDto(map, nodeInformations) }
+fun <K> List<StronglyConnectedTarjanComponent>.toDto(
+    map: Map<K, TarjanNode>,
+    nodeInformations: Set<NodeInformation<K>>
+): List<StronglyConnectedComponent<K>> = map { it.toDto(map, nodeInformations) }
 
 data class StronglyConnectedTarjanComponent(val nodes: Set<TarjanNode>) {
-    fun toDto(map: Map<String, TarjanNode>, nodeInformations: Set<NodeInformation>) = StronglyConnectedComponent(
+    fun <K> toDto(map: Map<K, TarjanNode>, nodeInformations: Set<NodeInformation<K>>) = StronglyConnectedComponent(
         nodes
             .mapNotNull { tarjanNode -> map.entries.find { it.value == tarjanNode } }
             .mapNotNull { tarjanNode -> nodeInformations.find { it.id == tarjanNode.key } }
@@ -100,4 +100,4 @@ data class StronglyConnectedTarjanComponent(val nodes: Set<TarjanNode>) {
     )
 }
 
-data class StronglyConnectedComponent(val nodes: Set<NodeInformation>)
+data class StronglyConnectedComponent<K>(val nodes: Set<NodeInformation<K>>)
