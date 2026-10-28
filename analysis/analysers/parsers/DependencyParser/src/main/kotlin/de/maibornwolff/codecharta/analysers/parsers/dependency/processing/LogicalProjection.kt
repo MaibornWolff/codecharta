@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.De
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FilePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.TypeOfUsage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization.GraphIndex
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization.model.GraphNode
 import de.maibornwolff.codecharta.model.withAncestors
@@ -94,7 +95,7 @@ internal class LogicalProjection(
                 from = addressOf(sourceFile, sourcePath),
                 to = addressOf(targetFile, targetPath),
                 weight = 1,
-                usage = listOf(dependency.type.rawValue),
+                usage = listOf(if (targetPath == sourcePath) TypeOfUsage.PART_OF.rawValue else dependency.type.rawValue),
                 isCyclic = isCyclic,
                 isPointingUpwards = pointsUpwards(sourcePath, targetPath, isCyclic)
             )

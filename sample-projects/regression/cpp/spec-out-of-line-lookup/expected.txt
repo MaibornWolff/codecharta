@@ -1,6 +1,6 @@
 # cpp.md, simple name 2 and 3: an out-of-line body looks in its class and the class's namespaces
 file Creature.cpp -> Creature.hpp
 file Creature.cpp -> Dice.hpp
-leaf Creature.cpp#Creature -> Creature.hpp#Creature
+leaf Creature.cpp#Creature -> Creature.hpp#Creature usage=part_of
 leaf Creature.cpp#Creature -> Creature.hpp#Stats
 leaf Creature.cpp#Creature -> Dice.hpp#Dice

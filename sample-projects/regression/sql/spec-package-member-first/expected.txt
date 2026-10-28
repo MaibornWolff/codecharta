@@ -3,8 +3,8 @@ file db/pricing.pkb -> db/orders.sql
 file db/pricing.pkb -> db/pricing.pks
 file db/pricing.pks -> db/orders.sql
 leaf db/pricing.pkb#helper -> db/pricing.pks#c_max
-leaf db/pricing.pkb#pricing -> db/pricing.pks#pricing
+leaf db/pricing.pkb#pricing -> db/pricing.pks#pricing usage=part_of
 leaf db/pricing.pkb#total -> db/orders.sql#orders
 leaf db/pricing.pkb#total -> db/pricing.pkb#helper
-leaf db/pricing.pkb#total -> db/pricing.pks#total
+leaf db/pricing.pkb#total -> db/pricing.pks#total usage=part_of
 leaf db/pricing.pks#c_orders -> db/orders.sql#orders

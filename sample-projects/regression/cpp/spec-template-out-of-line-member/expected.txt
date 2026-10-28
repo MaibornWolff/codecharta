@@ -2,4 +2,4 @@
 file pool_impl.hpp -> counter.hpp
 file pool_impl.hpp -> pool.hpp
 leaf pool_impl.hpp#Pool -> counter.hpp#Counter
-leaf pool_impl.hpp#Pool -> pool.hpp#Pool
+leaf pool_impl.hpp#Pool -> pool.hpp#Pool usage=part_of

@@ -4,6 +4,6 @@ file centaur_repository.hpp -> repository.hpp
 file stable.hpp -> centaur.hpp
 file stable.hpp -> repository.hpp
 leaf centaur_repository.hpp#Repository -> centaur.hpp#Centaur
-leaf centaur_repository.hpp#Repository -> repository.hpp#Repository
+leaf centaur_repository.hpp#Repository -> repository.hpp#Repository usage=part_of
 leaf stable.hpp#Stable -> centaur.hpp#Centaur
 leaf stable.hpp#Stable -> repository.hpp#Repository

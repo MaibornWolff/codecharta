@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.No
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.TypeOfUsage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -465,6 +466,24 @@ class ProcessingPipelineTest {
         assertThat(graph.edges.map { Triple(it.fromPath, it.toPath, it.isCyclic) }).containsExactly(
             Triple(listOf("game", "Creature.cpp"), listOf("game", "Creature.hpp"), false)
         )
+    }
+
+    @Test
+    fun `should mark the dependency of an implementation part on its declaration as part of it`() {
+        // Arrange: Creature.cpp defines a member function that also takes a Creature.
+        val body = cppNode("game/Creature", "game/Creature.hpp")
+        val implementation = cppNode(
+            "game/Creature",
+            "game/Creature.cpp",
+            usedTypes = setOf(Type.simple("game.Creature"), Type.simple("game.Creature").copy(usageSource = TypeOfUsage.ARGUMENT))
+        ).copy(isImplementationPart = true, isFileScoped = true)
+        val fileReports = listOf(FileReport(listOf(body)), FileReport(listOf(implementation)))
+
+        // Act
+        val graph = ProcessingPipeline.run(fileReports, omitGraphAnalysis = false)
+
+        // Assert
+        assertThat(graph.declarationEdges.single().usage).containsExactly("part_of")
     }
 
     @Test
