@@ -75,7 +75,9 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
 - **`language`** is the language the declaration is written in, lower case: `java`, `kotlin`, `csharp`,
   `cpp`, `go`, `php`, `python`, `typescript`, `javascript`, `vue`, `delphi`, `rust`, `angular` or `sql`.
 - **`usage`** names how the source declaration uses the target: `usage`, `inheritance`,
-  `implementation`, `instantiation`, `argument`, `return_value`, `constant_access`. A pair carries one
+  `implementation`, `instantiation`, `argument`, `return_value`, `constant_access`, and `part_of` from an
+  implementation part (C++ member definitions in another file, a Rust `impl` in another file, an SQL body or
+  `ALTER`) to the declaration of its own path. A pair carries one
   kind, the first the extractor found, because a used type is identified by its name alone — the same
   rule DependaCharta applies, and why a pair weighs 1 at declaration level unless the source is declared
   more than once in its file, when each declaration that references the target counts once. **Only PHP reports

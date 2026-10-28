@@ -3,5 +3,5 @@ file Log.cpp -> Log.hpp
 file Log.cpp -> Logger.hpp
 file Logger.hpp -> Log.hpp
 leaf Log.cpp#Logger -> Log.hpp#Entry
-leaf Log.cpp#Logger -> Logger.hpp#Logger
+leaf Log.cpp#Logger -> Logger.hpp#Logger usage=part_of
 leaf Logger.hpp#Logger -> Log.hpp#Entry

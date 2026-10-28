@@ -1,5 +1,5 @@
 # rust.md, declarations, decision 3: an impl in another file is an implementation part
 file src/display.rs -> src/model/creature.rs
 file src/display.rs -> src/model/speed.rs
-leaf src/display.rs#Creature -> src/model/creature.rs#Creature
+leaf src/display.rs#Creature -> src/model/creature.rs#Creature usage=part_of
 leaf src/display.rs#Creature -> src/model/speed.rs#Speed
