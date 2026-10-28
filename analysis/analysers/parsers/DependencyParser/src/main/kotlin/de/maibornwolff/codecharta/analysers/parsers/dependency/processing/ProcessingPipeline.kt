@@ -4,8 +4,6 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Fi
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
-import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.CycleAnalyzer
-import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.CycleAnalyzer.Companion.groupByLeafs
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies.DependencyResolverService
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization.GraphIndex
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization.GraphLeaf
@@ -32,21 +30,21 @@ object ProcessingPipeline {
             return DependencyGraph()
         }
 
-        val cyclicEdgesByDeclaration = detectCycles(resolvedNodes, omitGraphAnalysis)
         val declaringFiles = DeclaringFiles.of(resolvedNodes, analysisRoot)
-        val aggregatedEdges = FileLevelAggregator.aggregate(resolvedNodes, cyclicEdgesByDeclaration, declaringFiles)
+        val cycles = detectCycles(resolvedNodes, declaringFiles, omitGraphAnalysis)
+        val aggregatedEdges = FileLevelAggregator.aggregate(resolvedNodes, cycles, declaringFiles)
 
         if (omitGraphAnalysis) {
             Logger.info { "Levelization disabled by --omit-graph-analysis" }
             val physical = DependencyGraph(edges = aggregatedEdges.map { it.withoutLevelization() })
-            return LogicalProjection(resolvedNodes, cyclicEdgesByDeclaration, namespaceTree = null, declaringFiles).addTo(physical)
+            return LogicalProjection(resolvedNodes, cycles, namespaceTree = null, declaringFiles).addTo(physical)
         }
 
         val filePaths = resolvedNodes.map { FilePath.of(it) }.distinct()
         val physical = levelizeFileTree(aggregatedEdges, filePaths)
         return LogicalProjection(
             resolvedNodes,
-            cyclicEdgesByDeclaration,
+            cycles,
             levelizeNamespaceTree(resolvedNodes),
             declaringFiles
         ).addTo(physical)
@@ -113,17 +111,16 @@ object ProcessingPipeline {
         return levels
     }
 
-    private fun detectCycles(resolvedNodes: Collection<Node>, omitGraphAnalysis: Boolean): Map<String, Set<String>> {
+    private fun detectCycles(
+        resolvedNodes: Collection<Node>,
+        declaringFiles: DeclaringFiles,
+        omitGraphAnalysis: Boolean
+    ): DeclarationCycles {
         if (omitGraphAnalysis) {
             Logger.info { "Cycle detection disabled by --omit-graph-analysis" }
-            return emptyMap()
+            return DeclarationCycles.NONE
         }
-        return Logger.timed("Analyzing cycles") {
-            val nodeInfos = resolvedNodes.map { DependencyResolverService.mapNodeInfo(it) }.toSet()
-            val cycles = CycleAnalyzer.determineCycles(nodeInfos)
-            Logger.info { "Found a total of ${cycles.size} cycles" }
-            cycles.groupByLeafs()
-        }
+        return Logger.timed("Analyzing cycles") { DeclarationCycles.of(resolvedNodes, declaringFiles) }
     }
 
     private fun resolveDependencies(fileReports: List<FileReport>): Collection<Node> =
