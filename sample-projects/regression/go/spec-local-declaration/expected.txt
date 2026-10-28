@@ -1,0 +1,1 @@
+# go.md, rule 1: a variable of the enclosing function hides a function of the own package

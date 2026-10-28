@@ -1,0 +1,9 @@
+# typescript.md, Angular, decision 14: a class selector matches a class of the class attribute, ignoring case; [class.x] takes no part
+file app/panel.component.html -> shared/card-style.directive.ts
+file app/panel.component.ts -> app/panel.component.html
+file app/panel.component.ts -> shared/card-style.directive.ts
+file app/panel.component.ts -> shared/tile-style.directive.ts
+leaf app/panel.component.html#panel_component_html -> shared/card-style.directive.ts#CardStyleDirective
+leaf app/panel.component.ts#PanelComponent -> app/panel.component.html#panel_component_html
+leaf app/panel.component.ts#PanelComponent -> shared/card-style.directive.ts#CardStyleDirective
+leaf app/panel.component.ts#PanelComponent -> shared/tile-style.directive.ts#TileStyleDirective

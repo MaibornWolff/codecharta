@@ -1,0 +1,4 @@
+# python.md, 1: a class body sees its nested class, a method of it does not
+file app/outer.py -> app/other.py
+leaf app/outer.py#Outer -> app/other.py#Inner
+leaf app/outer.py#Outer -> app/outer.py#Inner

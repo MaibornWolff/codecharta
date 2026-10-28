@@ -1,0 +1,6 @@
+# sql.md, which file: a declaration before an implementation part of a later migration
+file db/V5__report.sql -> db/V1__orders.sql
+file db/V9__foreign_key.sql -> db/V1__orders.sql
+leaf db/V5__report.sql#report -> db/V1__orders.sql#orders
+leaf db/V9__foreign_key.sql#orders -> db/V1__orders.sql#customers
+leaf db/V9__foreign_key.sql#orders -> db/V1__orders.sql#orders usage=part_of

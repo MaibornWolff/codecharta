@@ -1,0 +1,3 @@
+# rust.md, decision 10: a method call or field on a value draws no edge
+file src/fight.rs -> src/creature.rs
+leaf src/fight.rs#fight -> src/creature.rs#Creature

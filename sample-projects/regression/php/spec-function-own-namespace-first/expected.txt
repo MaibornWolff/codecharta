@@ -1,0 +1,3 @@
+# php.md, function name 3: the current namespace's function before the global one
+file App/Job.php -> lib/app.php
+leaf App/Job.php#Job -> lib/app.php#helper

@@ -1,0 +1,16 @@
+# typescript.md, Angular, decision 14: an element uses its component and every directive that matches it
+file app/card.component.html -> shared/badge.component.ts
+file app/card.component.html -> shared/highlight.directive.ts
+file app/card.component.html -> shared/tooltip.directive.ts
+file app/card.component.ts -> app/card.component.html
+file app/card.component.ts -> shared/badge.component.ts
+file app/card.component.ts -> shared/highlight.directive.ts
+file app/card.component.ts -> shared/tooltip.directive.ts
+leaf app/card.component.html#card_component_html -> shared/badge.component.ts#BadgeComponent
+leaf app/card.component.html#card_component_html -> shared/highlight.directive.ts#HighlightDirective
+leaf app/card.component.html#card_component_html -> shared/tooltip.directive.ts#TooltipDirective
+leaf app/card.component.ts#CardComponent -> app/card.component.html#card_component_html
+leaf app/card.component.ts#CardComponent -> shared/badge.component.ts#BadgeComponent
+leaf app/card.component.ts#CardComponent -> shared/highlight.directive.ts#HighlightDirective
+leaf app/card.component.ts#CardComponent -> shared/tooltip.directive.ts#TooltipDirective
+leaf shared/badge.component.ts#BadgeComponent -> shared/badge.component.ts#template

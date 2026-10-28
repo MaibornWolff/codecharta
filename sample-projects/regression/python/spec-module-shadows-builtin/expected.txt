@@ -1,0 +1,3 @@
+# python.md, 2 and 3: a module binding comes before a builtin of the same name
+file app/use.py -> app/errors.py
+leaf app/use.py#check -> app/errors.py#TimeoutError

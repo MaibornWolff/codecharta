@@ -1,0 +1,7 @@
+# typescript.md, declarations, decision 8: export * re-exports every named export, not the default and not what is not exported
+file models/index.ts -> models/model.ts
+file user.ts -> models/index.ts
+leaf models/index.ts#Model -> models/model.ts#Model
+leaf models/index.ts#hidden -> models/model.ts#hidden
+leaf models/model.ts#hidden -> models/model.ts#Hidden
+leaf user.ts#User -> models/index.ts#Model

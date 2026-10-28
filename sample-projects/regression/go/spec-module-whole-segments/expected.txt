@@ -1,0 +1,3 @@
+# go.md, import paths, rule 1: a module path matches in whole segments only
+file shop/app/app.go -> shopx/domain/d.go
+leaf shop/app/app.go#Run -> shopx/domain/d.go#D

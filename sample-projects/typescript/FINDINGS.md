@@ -115,6 +115,10 @@ ccsh dependencyparser -nc $LANG_DIR -e "output,FINDINGS.md" --include-tests -o o
 Result: 72 file edges, 109 leaves, 91 leaf edges (default); 78 / 110 / 97 with tests. Expected 79 / 85 file edges:
 71 / 77 found, 8 missing, 1 extra. Console: `Found 1 strongly connected components`, `Found a total of 6 cycles`.
 
+Since the name rules of `typescript.md` (2026-10-26): 79 file edges, 85 with tests: every missing edge below is drawn,
+`index.ts -> Dice.ts` is gone (`export * as dice` binds the module and draws no edge of its own) and the `winston` edge
+stays (`declare module "winston"` declares a project module); see the fixes below.
+
 Missing edges: `CreatureFacade.ts -> dto/Creature.ts`, `index.ts -> ui/CreatureCard.tsx`,
 `Stable.ts -> registerCreatureTypes.ts`, `SpeedLimit.ts -> Speed.ts`, `CreatureLoader.ts -> CreatureUtil.ts`,
 `registerCreatureTypes.ts -> types/creatureGlobals.d.ts`, `hoardLedger.cts -> Dice.ts`,
@@ -197,6 +201,9 @@ relative paths, directory imports to `index.ts`, the `tsconfig.json` alias, `.js
 `.ts` / `.mts` / `.cts`, aliases, `export *` and dynamic `import()`. It does not read `import x = require()`,
 `import("...").X` in type positions, side-effect imports, triple-slash references, `export { default as }`, and it
 does not treat a type predicate as a use of the type.
+
+- Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/typescript.md`): listed
+  per probe in `regression/typescript/known-gaps.md`.
 
 ## Unified parser
 
@@ -510,28 +517,28 @@ aborts with a stack trace, `rollD20` -> `roll`, `20`, no stemming, `id` among th
 
 - Missing:
   1. `application/CreatureFacade.ts`: the second of two imports with the same original name
-     (`import { Creature as CreatureDto } from "./dto/Creature"`) gives no edge; `dto/Creature.ts` has 0 incoming. **Decision: accept (derived from Java).**
+     (`import { Creature as CreatureDto } from "./dto/Creature"`) gives no edge; `dto/Creature.ts` has 0 incoming. **Decision: accept (derived from Java).** **Fixed 2026-10-26 (typescript.md: a renamed import binds its local name).**
   2. `application/index.ts`: `export { default as CreatureCard } from "./ui/CreatureCard"` gives a `reexport` leaf
-     without an edge, so the cycle through `CreatureCard.tsx` is not found. **Decision: accept.**
-  3. `application/CreatureLoader.ts`, `domain/model/hoardLedger.cts`: `import x = require("...")` is not read. **Decision: accept.**
-  4. `domain/service/SpeedLimit.ts`: `import("../model/Speed").Speed` in a type position gives no edge. **Decision: accept (derived from Java).**
+     without an edge, so the cycle through `CreatureCard.tsx` is not found. **Decision: accept.** **Fixed 2026-10-23 (typescript.md decision 8).**
+  3. `application/CreatureLoader.ts`, `domain/model/hoardLedger.cts`: `import x = require("...")` is not read. **Decision: accept.** **Fixed 2026-10-26 (typescript.md: `import x = require` binds the module).**
+  4. `domain/service/SpeedLimit.ts`: `import("../model/Speed").Speed` in a type position gives no edge. **Decision: accept (derived from Java).** **Fixed 2026-10-26 (typescript.md decision 15).**
   5. `domain/service/EncounterEdgeCases.ts` `isCentaur`: a type used only in a type predicate
-     (`creature is Centaur`) gives no edge. **Decision: accept (derived from Java).**
+     (`creature is Centaur`) gives no edge. **Decision: accept (derived from Java).** **Fixed 2026-10-26 (typescript.md: every identifier in a type is a name).**
   6. `domain/model/registerCreatureTypes.ts`: `/// <reference path=...>` gives no edge, and
-     `declare var creatureTypeRegistry` in `types/creatureGlobals.d.ts` is no leaf. **Decision: ignore.**
-  7. `domain/model/Stable.ts`: the side-effect import `import "./registerCreatureTypes"` gives no edge. **Decision: accept.**
+     `declare var creatureTypeRegistry` in `types/creatureGlobals.d.ts` is no leaf. **Decision: ignore.** **Fixed 2026-10-23 (typescript.md rule 3): the global is a leaf, and its use draws the edge.**
+  7. `domain/model/Stable.ts`: the side-effect import `import "./registerCreatureTypes"` gives no edge. **Decision: accept.** **Fixed 2026-10-23 (typescript.md decision 3).**
   8. `--verbose` says nothing about unresolved imports. **Decision: ignore.**
 - Wrong:
   1. `types/winstonAugmentation.d.ts`: `declare module "winston"` makes
-     `CreatureService.ts -> winstonAugmentation.d.ts` appear, an edge to a file `CreatureService.ts` never imports. **Decision: accept.**
+     `CreatureService.ts -> winstonAugmentation.d.ts` appear, an edge to a file `CreatureService.ts` never imports. **Decision: accept.** **The rule since 2026-10-23 (typescript.md specifiers 2.4: `declare module "winston"` declares a project module).**
   2. `application/index.ts`: two star exports double the count of every star-exported declaration
-     (`-> CreatureUtil.ts x2`, `-> Dice.ts x6`), and `outgoing_dependencies` 11 / `Dice.ts` incoming 8 inherit it. **Decision: accept.**
-  3. Leaf kinds: type aliases are `class`, namespaces `unknown` without member leaves, `const` functions `variable`. **Decision: accept.**
+     (`-> CreatureUtil.ts x2`, `-> Dice.ts x6`), and `outgoing_dependencies` 11 / `Dice.ts` incoming 8 inherit it. **Decision: accept.** **Fixed 2026-10-23 (typescript.md decisions 8 and 9: one re-export leaf per name, `export * as` binds the module).**
+  3. Leaf kinds: type aliases are `class`, namespaces `unknown` without member leaves, `const` functions `variable`. **Decision: accept.** **Namespace members are leaves since 2026-10-23 (typescript.md decision 7).**
 - Bad:
   - `incoming_dependencies` / `outgoing_dependencies` count declaration pairs, not files; the name suggests files. **Decision: accept (derived from Java).**
-  - `CreatureType.ts`: the unreferenced `..._DEFAULT_EXPORT` leaf. **Decision: accept.**
-  - `export * as dice` is flattened, the namespace name is lost. **Decision: ignore.**
-  - The barrel is a hop of its own; `Creature.ts -> CreatureFacade.ts` exists only via `index.ts`. **Decision: accept — an import through a barrel should point at the real target.**
+  - `CreatureType.ts`: the unreferenced `..._DEFAULT_EXPORT` leaf. **Decision: accept.** **Fixed 2026-10-23 (typescript.md decision 2).**
+  - `export * as dice` is flattened, the namespace name is lost. **Decision: ignore.** **Fixed 2026-10-23: `export * as dice` binds the module, a use through it points at `Dice.ts`.**
+  - The barrel is a hop of its own; `Creature.ts -> CreatureFacade.ts` exists only via `index.ts`. **Decision: accept — an import through a barrel should point at the real target.** **Superseded by typescript.md decision 8: a use through a barrel points at its re-export leaf, which points on at the real target.**
 - Good: relative paths, directory import, `tsconfig` alias, `.js` / `.mjs` / `.cjs` specifiers, aliased, namespace,
   default, type-only and dynamic imports, `export *`, `export type`, decorators, `extends` / `implements`, generic
   arguments and constraints, `satisfies`, conditional types, `keyof typeof`, `instanceof`, a component used only as

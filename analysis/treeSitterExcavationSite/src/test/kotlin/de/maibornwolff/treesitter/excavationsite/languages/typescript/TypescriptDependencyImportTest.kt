@@ -1,5 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.typescript
 
+import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
+import de.maibornwolff.treesitter.excavationsite.api.ImportKind
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import org.assertj.core.api.Assertions.assertThat
@@ -117,6 +119,25 @@ class TypescriptDependencyImportTest {
             assertThat(result.imports).hasSize(1)
             assertThat(result.imports[0].path).containsExactly(".", "foo", "DEFAULT_EXPORT")
             assertThat(result.imports[0].isWildcard).isFalse()
+        }
+
+        @Test
+        fun `should extract an import that binds a module by require as a binding of what the module exports`() {
+            // Arrange
+            val code = "import util = require('./util')"
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+            // Assert
+            assertThat(result.imports).containsExactly(
+                ImportDeclaration(
+                    path = listOf(".", "util", "DEFAULT_EXPORT"),
+                    isWildcard = false,
+                    kind = ImportKind.MEMBER,
+                    bindingName = "util"
+                )
+            )
         }
 
         @Test
@@ -298,7 +319,38 @@ class TypescriptDependencyImportTest {
         }
 
         @Test
-        fun `should extract dynamic import`() {
+        fun `should bind the name of a namespace re-export to its module and declare nothing for it`() {
+            // Arrange
+            val code = "export * as shapes from './shapes'"
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+            // Assert
+            val import = result.imports.single()
+            assertThat(import.path).containsExactly(".", "shapes")
+            assertThat(import.isWildcard).isTrue()
+            assertThat(import.kind).isEqualTo(ImportKind.REEXPORT)
+            assertThat(import.bindingName).isEqualTo("shapes")
+            assertThat(result.declarations).isEmpty()
+        }
+
+        @Test
+        fun `should report a re-export of a default export as a use of the default export of its module`() {
+            // Arrange
+            val code = "export { default as Button } from './button'"
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+            // Assert
+            val reexport = result.declarations.single()
+            assertThat(reexport.name).isEqualTo("Button")
+            assertThat(reexport.usedTypes.map { it.name to it.namespacePrefix }).containsExactly("DEFAULT_EXPORT" to listOf(".", "button"))
+        }
+
+        @Test
+        fun `should extract a dynamic import as a module bound to a name of its own position`() {
             // Arrange
             val code = "const mod = import('./utils')"
 
@@ -306,9 +358,10 @@ class TypescriptDependencyImportTest {
             val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
 
             // Assert
-            assertThat(result.imports).hasSize(1)
-            assertThat(result.imports[0].path).containsExactly(".", "utils")
-            assertThat(result.imports[0].isWildcard).isFalse()
+            val import = result.imports.single()
+            assertThat(import.path).containsExactly(".", "utils")
+            assertThat(import.isWildcard).isTrue()
+            assertThat(import.bindingName).isEqualTo("dynamic_import_12")
         }
 
         @Test
@@ -345,6 +398,58 @@ class TypescriptDependencyImportTest {
         @Test
         fun `should support TypeScript dependency analysis`() {
             assertThat(TreeSitterDependencies.isDependencyAnalysisSupported(Language.TYPESCRIPT)).isTrue()
+        }
+    }
+
+    @Nested
+    inner class ImportKinds {
+        @Test
+        fun `should mark an import that ends with the name it imports out of the module`() {
+            // Arrange
+            val code = """
+                import Base, { Model, Other as Alias } from './model'
+                import * as models from './models'
+                import './polyfill'
+                export { Shape } from './shape'
+                export * from './all'
+                const lazy = import('./lazy')
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+            // Assert
+            val kindByPath = result.imports.associate { it.path.joinToString("/") to it.kind }
+            assertThat(kindByPath).containsExactlyInAnyOrderEntriesOf(
+                mapOf(
+                    "./model/DEFAULT_EXPORT" to ImportKind.MEMBER,
+                    "./model/Model" to ImportKind.MEMBER,
+                    "./model/Other" to ImportKind.MEMBER,
+                    "./models" to ImportKind.STANDARD,
+                    "./polyfill" to ImportKind.STANDARD,
+                    "./shape/Shape" to ImportKind.REEXPORT,
+                    "./all" to ImportKind.REEXPORT,
+                    "./lazy" to ImportKind.STANDARD
+                )
+            )
+        }
+
+        @Test
+        fun `should mark a require that binds a name out of the module`() {
+            // Arrange
+            val code = """
+                const { Svc, helper: help } = require('./a')
+                const whole = require('./b')
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.JAVASCRIPT)
+
+            // Assert
+            val kindByPath = result.imports.associate { it.path.joinToString("/") to it.kind }
+            assertThat(kindByPath).containsExactlyInAnyOrderEntriesOf(
+                mapOf("./a/Svc" to ImportKind.MEMBER, "./a/helper" to ImportKind.MEMBER, "./b/DEFAULT_EXPORT" to ImportKind.MEMBER)
+            )
         }
     }
 }

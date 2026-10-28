@@ -1,0 +1,3 @@
+# python.md, import binds: a wildcard import binds only what __all__ lists
+file app/user.py -> app/models.py
+leaf app/user.py#build -> app/models.py#Model

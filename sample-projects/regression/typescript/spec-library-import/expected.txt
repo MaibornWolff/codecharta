@@ -1,0 +1,1 @@
+# typescript.md, module specifiers 2.5: a library import names no project declaration of the same name

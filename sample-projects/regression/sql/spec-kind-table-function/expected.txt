@@ -1,0 +1,3 @@
+# sql.md, kinds, decision 6: a call in FROM means a routine
+file app/report.sql -> db/recent.sql
+leaf app/report.sql#report -> db/recent.sql#recent_orders

@@ -107,7 +107,7 @@ class TsxDependencyTest {
         }
 
         @Test
-        fun `should extract dynamic import`() {
+        fun `should extract a dynamic import as a module bound to a name of its own position`() {
             // Arrange
             val code = "const mod = import('./utils')"
 
@@ -115,9 +115,10 @@ class TsxDependencyTest {
             val result = TreeSitterDependencies.analyze(code, Language.TSX)
 
             // Assert
-            assertThat(result.imports).hasSize(1)
-            assertThat(result.imports[0].path).containsExactly(".", "utils")
-            assertThat(result.imports[0].isWildcard).isFalse()
+            val import = result.imports.single()
+            assertThat(import.path).containsExactly(".", "utils")
+            assertThat(import.isWildcard).isTrue()
+            assertThat(import.bindingName).isEqualTo("dynamic_import_12")
         }
     }
 
@@ -251,7 +252,7 @@ class TsxDependencyTest {
             assertThat(result.declarations).hasSize(1)
             assertThat(result.declarations[0].name).isEqualTo("myFunction")
             assertThat(result.declarations[0].type).isEqualTo(DeclarationType.FUNCTION)
-            assertThat(result.declarations[0].parentPath).containsExactly("MyModule")
+            assertThat(result.declarations[0].parentPath).containsExactly("AMBIENT_MODULE", "MyModule")
         }
 
         @Test
@@ -396,7 +397,7 @@ class TsxDependencyTest {
         }
 
         @Test
-        fun `should resolve import alias to original type name in usedTypes`() {
+        fun `should report a use of a renamed import under the local name it binds`() {
             // Arrange
             val code = """
                 import { MyType as MyRenamedType } from './MyType'
@@ -408,7 +409,7 @@ class TsxDependencyTest {
 
             // Assert
             val usedTypeNames = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("MyType")
+            assertThat(usedTypeNames).containsExactlyInAnyOrder("MyRenamedType")
         }
 
         @Test
@@ -465,5 +466,20 @@ class TsxDependencyTest {
         fun `should support TSX dependency analysis`() {
             assertThat(TreeSitterDependencies.isDependencyAnalysisSupported(Language.TSX)).isTrue()
         }
+    }
+
+    @Test
+    fun `should report no use for a lower-case JSX tag, even one named like an import`() {
+        // Arrange
+        val code = """
+            import { UserCard, card } from './card'
+            export function Page() { return <section><UserCard /><card /></section> }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.TSX)
+
+        // Assert
+        assertThat(result.declarations.single { it.name == "Page" }.usedTypes.map { it.name }).containsExactly("UserCard")
     }
 }

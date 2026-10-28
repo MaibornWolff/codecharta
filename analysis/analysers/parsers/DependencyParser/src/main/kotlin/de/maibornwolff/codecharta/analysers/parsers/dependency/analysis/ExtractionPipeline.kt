@@ -51,7 +51,8 @@ class ExtractionPipeline(
 
         progressReporter.startPhase("Extracting dependencies", sourceFiles.size.toLong())
         val failures = ConcurrentLinkedQueue<FailedFile>()
-        val reports = runBlocking { analyzeInParallel(sourceFiles, analysisRoot, failures) }
+        val analysedFiles = sourceFiles.mapTo(HashSet()) { relativePathOf(it, analysisRoot) }
+        val reports = runBlocking { analyzeInParallel(sourceFiles, AnalysedProject(analysisRoot, analysedFiles), failures) }
         progressReporter.completePhase()
         val sortedFailures = failures.sortedBy { it.path }
         FailureReport.warnAbout(sortedFailures)
@@ -60,21 +61,22 @@ class ExtractionPipeline(
 
     private suspend fun analyzeInParallel(
         sourceFiles: List<File>,
-        analysisRoot: File,
+        project: AnalysedProject,
         failures: ConcurrentLinkedQueue<FailedFile>
     ): List<FileReport> = coroutineScope {
         val semaphore = Semaphore(maxConcurrency)
         sourceFiles
-            .map { sourceFile -> async { semaphore.withPermit { analyzeOne(sourceFile, analysisRoot, failures) } } }
+            .map { sourceFile -> async { semaphore.withPermit { analyzeOne(sourceFile, project, failures) } } }
             .awaitAll()
             .filterNotNull()
     }
 
     // A file that fails is left out of the result, and with it its node in the tree, so every failure is
     // collected and reported by its cause once the phase is over; a parser that fits no file stops the run.
-    private suspend fun analyzeOne(sourceFile: File, analysisRoot: File, failures: ConcurrentLinkedQueue<FailedFile>): FileReport? {
+    private suspend fun analyzeOne(sourceFile: File, project: AnalysedProject, failures: ConcurrentLinkedQueue<FailedFile>): FileReport? {
+        val analysisRoot = project.analysisRoot
         try {
-            val fileInfo = toFileInfo(sourceFile, analysisRoot) ?: return null
+            val fileInfo = toFileInfo(sourceFile, project) ?: return null
             return withOptionalTimeout { createAnalyzer(fileInfo).analyze() }
         } catch (timeout: TimeoutCancellationException) {
             // The parse itself is a blocking native call, so cancelling only abandons the coroutine waiting
@@ -98,15 +100,18 @@ class ExtractionPipeline(
     }
 
     // Only a file of no supported language is no file to analyse; one that cannot be read fails like one that cannot be parsed
-    private fun toFileInfo(sourceFile: File, analysisRoot: File): FileInfo? {
+    private fun toFileInfo(sourceFile: File, project: AnalysedProject): FileInfo? {
         val language = SupportedLanguage.ofFileName(sourceFile.name) ?: return null
         return FileInfo(
             language = language,
-            physicalPath = relativePathOf(sourceFile, analysisRoot),
+            physicalPath = relativePathOf(sourceFile, project.analysisRoot),
             content = readContent(sourceFile),
-            analysisRoot = analysisRoot
+            analysisRoot = project.analysisRoot,
+            analysedFiles = project.analysedFiles
         )
     }
+
+    private class AnalysedProject(val analysisRoot: File, val analysedFiles: Set<String>)
 
     private fun relativePathOf(sourceFile: File, analysisRoot: File): String =
         sourceFile.absoluteFile.toRelativeString(analysisRoot.absoluteFile)

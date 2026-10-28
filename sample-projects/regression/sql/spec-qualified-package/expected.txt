@@ -1,0 +1,3 @@
+# sql.md, qualified: S.P.N means the member of package P in schema S
+file app/report.sql -> db/pricing.pks
+leaf app/report.sql#report -> db/pricing.pks#total

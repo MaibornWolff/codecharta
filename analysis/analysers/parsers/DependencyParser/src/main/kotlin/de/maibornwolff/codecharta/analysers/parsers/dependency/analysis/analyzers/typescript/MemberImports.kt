@@ -1,0 +1,99 @@
+package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript
+
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_DEFAULT_EXPORT_NAME
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
+import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
+import de.maibornwolff.treesitter.excavationsite.api.ImportKind
+import java.io.File
+
+/**
+ * The imports of one file that name a member of a project module, by "What an import binds" of
+ * `docs/name-resolution/typescript.md`: `import D from './m'` binds `D` to the default export of `m`, `import { A }` to
+ * the declaration `m` exports as `A`, so a use is written as the full path of that declaration.
+ */
+internal class MemberImports(private val analysisRoot: File) {
+    private val exports = ModuleExports.of(analysisRoot)
+    private val targetByBinding = HashMap<String, Target>()
+
+    /** The declaration a member import of [moduleFile] means; null for an import that binds the module or no name of it. */
+    fun targetOf(import: ImportDeclaration, moduleFile: File, module: Path): Path? {
+        val boundModule = boundModuleOf(import, moduleFile)
+        if (boundModule != null) {
+            import.bindingName?.let { targetByBinding[it] = moduleTarget(boundModule) }
+            return null
+        }
+        if (!ImportedModules.namesMember(import)) return null
+        val importedName = import.path.lastOrNull() ?: return null
+        if (importedName == TSE_DEFAULT_EXPORT_NAME) {
+            val target = exports.defaultPathOf(moduleFile, module)
+            // Without a default declaration the binding stands for the module, as `module.exports = { A, … }` (decision 10)
+            val binding = if (target != null) Target(target, moduleFile = null) else moduleTarget(moduleFile)
+            import.bindingName?.let { targetByBinding[it] = binding }
+            return target
+        }
+        val ownName = exports.nameOf(moduleFile, importedName)
+        return (module + ownName).also { targetByBinding[boundNameOf(import, importedName)] = Target(it, moduleFile = null) }
+    }
+
+    /** Binds the name an import of no project file binds, of a library or a `declare module`, to the [path] it is written as. */
+    fun bindOutsideProject(import: ImportDeclaration, path: Path) {
+        val importedName = import.path.lastOrNull()
+        val boundName = if (ImportedModules.namesMember(import) && importedName != null && importedName != TSE_DEFAULT_EXPORT_NAME) {
+            boundNameOf(import, importedName)
+        } else {
+            import.bindingName
+        }
+        boundName?.let { targetByBinding[it] = Target(path, moduleFile = null) }
+    }
+
+    // `import { Model as Base }` binds `Base`; a re-export binds no name, its use is the name it re-exports
+    private fun boundNameOf(import: ImportDeclaration, importedName: String): String =
+        if (import.kind == ImportKind.MEMBER) import.bindingName ?: importedName else importedName
+
+    // `import * as ns` binds the module itself, `import { shapes }` the module it exports by `export * as shapes`
+    private fun boundModuleOf(import: ImportDeclaration, moduleFile: File): File? {
+        if (import.isWildcard && import.kind == ImportKind.STANDARD) return moduleFile
+        if (import.isWildcard || import.kind != ImportKind.MEMBER) return null
+        return import.path.lastOrNull()?.let { exports.moduleExportOf(moduleFile, it) }
+    }
+
+    private fun moduleTarget(moduleFile: File) = Target(ImportedModules.logicalPathOf(moduleFile, analysisRoot), moduleFile)
+
+    /** The nodes with each use of an imported binding written as the full path of what it names. */
+    fun rewrite(nodes: List<Node>): List<Node> {
+        if (targetByBinding.isEmpty()) return nodes
+        return nodes.map { node -> node.copy(usedTypes = node.usedTypes.mapTo(LinkedHashSet()) { rewrite(it) }) }
+    }
+
+    // `Geo.Circle` behind `import Geo` means the member `Circle` of what `Geo` names, else the longest prefix down to a
+    // declaration: `Geo` itself, or the export `ns.Shapes` behind `import * as ns`, as a module is no declaration
+    private fun rewrite(type: Type): Type {
+        val genericTypes = type.genericTypes.map { rewrite(it) }
+        val segments = type.name.split(SEPARATOR)
+        val binding = targetByBinding[segments.first()] ?: return type.copy(genericTypes = genericTypes)
+        val (target, members) = throughModuleExports(binding, segments.drop(1))
+        val path = target.path + Path(members)
+        if (path.parts.size < target.shortestDeclarationPath) return type.copy(genericTypes = genericTypes)
+        val prefixes = (path.parts.size downTo target.shortestDeclarationPath).map { Path(path.parts.take(it)).withDots() }
+        return type.copy(name = prefixes.first(), genericTypes = genericTypes, fallbacks = prefixes.drop(1).map { Type.simple(it) })
+    }
+
+    // `ns.shapes.Circle` behind `export * as shapes` walks on into that module: its member `Circle`
+    private tailrec fun throughModuleExports(target: Target, members: List<String>): Pair<Target, List<String>> {
+        val exportedModule = members.firstOrNull()?.let { name -> target.moduleFile?.let { exports.moduleExportOf(it, name) } }
+            ?: return target to members
+        return throughModuleExports(moduleTarget(exportedModule), members.drop(1))
+    }
+
+    /** What a binding names: a declaration, or the module [moduleFile] when it binds a module. */
+    private class Target(val path: Path, val moduleFile: File?) {
+        // A module is no declaration, so only a name below it is one
+        val shortestDeclarationPath = path.parts.size + if (moduleFile != null) 1 else 0
+    }
+
+    companion object {
+        private const val SEPARATOR = "."
+    }
+}

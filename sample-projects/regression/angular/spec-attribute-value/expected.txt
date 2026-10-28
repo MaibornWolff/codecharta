@@ -1,0 +1,9 @@
+# typescript.md, Angular, decision 14: an attribute value in a selector, ignoring case
+file app/birthday.component.html -> shared/date-mask.directive.ts
+file app/birthday.component.ts -> app/birthday.component.html
+file app/birthday.component.ts -> shared/date-mask.directive.ts
+file app/birthday.component.ts -> shared/phone-mask.directive.ts
+leaf app/birthday.component.html#birthday_component_html -> shared/date-mask.directive.ts#DateMaskDirective
+leaf app/birthday.component.ts#BirthdayComponent -> app/birthday.component.html#birthday_component_html
+leaf app/birthday.component.ts#BirthdayComponent -> shared/date-mask.directive.ts#DateMaskDirective
+leaf app/birthday.component.ts#BirthdayComponent -> shared/phone-mask.directive.ts#PhoneMaskDirective

@@ -1,0 +1,5 @@
+CREATE FUNCTION log_order() RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO order_log VALUES (NEW.id);
+    RETURN NEW;
+END $$ LANGUAGE plpgsql;

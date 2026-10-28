@@ -1,0 +1,2 @@
+class Helper:
+    pass

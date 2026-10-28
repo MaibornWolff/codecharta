@@ -1,88 +1,86 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.cpp
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.model.RelativeImport
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.resolveRelativePath
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toDependency
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_ALIAS_SEGMENT
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_CPP_GLOBAL_SCOPE
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_FORWARD_DECLARATION_SEGMENT
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_IMPLEMENTATION_SEGMENT
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_NAMESPACE_SEGMENT
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toNodeType
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toType
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toTypeOfUsage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.splitNameToParts
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
-import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
-import de.maibornwolff.treesitter.excavationsite.api.ImportKind
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
 
+/**
+ * The declarations of a C or C++ file, each use written as the exact path of the declaration `docs/name-resolution/cpp.md`
+ * finds for it in the include closure of the file; a use that means nothing the closure declares is left out.
+ */
 class CppAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
-    override fun analyze(): FileReport {
-        val result = TreeSitterDependencies.analyze(fileInfo.content, Language.CPP)
-        val physicalPath = Path.fromPhysicalPath(fileInfo.physicalPath)
-        val physicalPathParts = splitNameToParts(fileInfo.physicalPath).filter { it != "." }
-        val importsByNamespace = result.imports
-            .groupBy { it.namespacePath }
-            .mapValues { (_, imports) -> imports.map { it.normalize(physicalPath) } }
-        val globalImports = importsByNamespace[emptyList()].orEmpty()
+    private val file = splitNameToParts(fileInfo.physicalPath).filter { it != CURRENT_FOLDER }
 
-        val nodes = result.declarations.map { declaration ->
-            toNode(declaration, globalImports, importsByNamespace, physicalPathParts)
+    override fun analyze(): FileReport {
+        val project = fileInfo.analysisRoot?.let { CppDeclarations.of(it) }
+        val result = project?.parseOf(file, fileInfo.content) ?: TreeSitterDependencies.analyze(fileInfo.content, Language.CPP)
+        val names = project?.visibleNamesOf(file) ?: CppVisibleNames(listOf(CppFileFacts.of(result)))
+        val nodes = result.declarations.filterNot { it.declaresNoLeaf() || it.definesNamespaceFunctions(names) }.map { declaration ->
+            toNode(declaration, names)
         }
         return FileReport(nodes)
     }
 
-    private fun toNode(
-        declaration: Declaration,
-        globalImports: List<Dependency>,
-        importsByNamespace: Map<List<String>, List<Dependency>>,
-        physicalPathParts: List<String>
-    ): Node = Node(
-        pathWithName = buildPathWithName(declaration, physicalPathParts),
-        physicalPath = fileInfo.physicalPath,
-        language = SupportedLanguage.CPP,
-        nodeType = declaration.type.toNodeType(),
-        dependencies = buildDependencies(declaration, globalImports, importsByNamespace),
-        usedTypes = declaration.usedTypes.map { it.toType() }.toSet()
-    )
-
-    private fun buildPathWithName(declaration: Declaration, physicalPathParts: List<String>): Path = if (declaration.parentPath.isEmpty()) {
-        Path(physicalPathParts + declaration.name)
-    } else {
-        Path(declaration.parentPath + declaration.name)
+    // A type alias is a leaf of its own; what it names is looked up in the scope around it. An implementation part
+    // defines members of the class of its own path, which it uses (decision 3)
+    private fun toNode(declaration: Declaration, names: CppVisibleNames): Node {
+        val path = (if (declaration.isMarked()) declaration.parentPath.drop(1) else declaration.parentPath) + declaration.name
+        val scope = if (declaration.isAlias()) path.dropLast(1) else path
+        val isImplementationPart = declaration.parentPath.firstOrNull() == TSE_IMPLEMENTATION_SEGMENT
+        val ownClass = listOfNotNull(Type.simple(Path(path).withDots()).takeIf { isImplementationPart })
+        return Node(
+            pathWithName = Path(path),
+            physicalPath = fileInfo.physicalPath,
+            language = SupportedLanguage.CPP,
+            nodeType = declaration.type.toNodeType(),
+            dependencies = emptySet(),
+            usedTypes = (declaration.usedTypes.flatMap { resolve(it, scope, names) } + ownClass).toSet(),
+            isFileScoped = isImplementationPart,
+            isImplementationPart = isImplementationPart
+        )
     }
 
-    private fun buildDependencies(
-        declaration: Declaration,
-        globalImports: List<Dependency>,
-        importsByNamespace: Map<List<String>, List<Dependency>>
-    ): Set<Dependency> {
-        val scopedImports = importsByNamespace[declaration.parentPath].orEmpty()
-        val selfWildcard = Dependency.asWildcard(declaration.parentPath)
-        val namespacePrefixWildcards = declaration.usedTypes
-            .flatMap { it.collectNamespacePrefixes() }
-            .map { Dependency.asWildcard(it) }
-        return (globalImports + scopedImports + selfWildcard + namespacePrefixWildcards).toSet()
+    // A use that means nothing visible still holds its template arguments, which are uses of their own
+    private fun resolve(used: UsedType, scope: List<String>, names: CppVisibleNames): List<Type> {
+        val genericTypes = used.genericTypes.flatMap { resolve(it, scope, names) }
+        val target = names.resolve(used.namespacePrefix + used.name, scope)
+            ?: used.fallbacks.firstOrNull()?.let { implicitDeclarationOf(it) }
+            ?: return genericTypes
+        return listOf(Type.generic(Path(target).withDots(), genericTypes, used.usage.toTypeOfUsage()))
     }
 
-    private fun UsedType.collectNamespacePrefixes(): List<List<String>> {
-        val own = if (namespacePrefix.isEmpty()) emptyList() else listOf(namespacePrefix)
-        return own + genericTypes.flatMap { it.collectNamespacePrefixes() }
-    }
+    // A class tag nothing visible declares declares the class at the path TSE writes as fallback, from ::
+    private fun implicitDeclarationOf(fallback: UsedType): List<String> =
+        fallback.namespacePrefix.filterNot { it == TSE_CPP_GLOBAL_SCOPE } + fallback.name
 
-    private fun ImportDeclaration.normalize(physicalPath: Path): Dependency {
-        if (kind != ImportKind.INCLUDE) return toDependency()
-        val firstSegment = path.firstOrNull()
-        val resolved = if (firstSegment == "." || firstSegment == "..") {
-            resolveRelativePath(RelativeImport(path.joinToString("/")), physicalPath)
-        } else {
-            Path(path)
-        }
-        val transformedFilename = resolved.parts.last().replace(".", "_")
-        return Dependency(Path(resolved.parts.dropLast(1) + transformedFilename), isWildcard = false)
+    private fun Declaration.declaresNoLeaf(): Boolean =
+        parentPath.firstOrNull() in setOf(TSE_FORWARD_DECLARATION_SEGMENT, TSE_NAMESPACE_SEGMENT)
+
+    // `bool log::shouldLog() {}` with `log` a namespace the closure opens defines a free function, no leaf (decision 14)
+    private fun Declaration.definesNamespaceFunctions(names: CppVisibleNames): Boolean =
+        parentPath.firstOrNull() == TSE_IMPLEMENTATION_SEGMENT && names.isNamespace(parentPath.drop(1) + name)
+
+    private fun Declaration.isAlias(): Boolean = parentPath.firstOrNull() == TSE_ALIAS_SEGMENT
+
+    private fun Declaration.isMarked(): Boolean = parentPath.firstOrNull() in setOf(TSE_ALIAS_SEGMENT, TSE_IMPLEMENTATION_SEGMENT)
+
+    companion object {
+        private const val CURRENT_FOLDER = "."
     }
 }

@@ -1,0 +1,5 @@
+# rust.md, decision 14: an impl of a project trait for a library type is a part of the trait
+file src/herd.rs -> src/creature.rs
+file src/herd.rs -> src/fightable.rs
+leaf src/herd.rs#Fightable -> src/creature.rs#Creature
+leaf src/herd.rs#Fightable -> src/fightable.rs#Fightable usage=part_of

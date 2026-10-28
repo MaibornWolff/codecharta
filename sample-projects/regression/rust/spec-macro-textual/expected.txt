@@ -1,0 +1,3 @@
+# rust.md, macros: a `macro_rules!` before the `mod` line is in scope of the module
+file src/fight.rs -> src/lib.rs
+leaf src/fight.rs#clamp -> src/lib.rs#clamp_roll

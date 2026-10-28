@@ -1,0 +1,3 @@
+# php.md, function name 2: a qualified function name through a namespace import
+file App/Fight.php -> Dice/dice.php
+leaf App/Fight.php#Fight -> Dice/dice.php#roll

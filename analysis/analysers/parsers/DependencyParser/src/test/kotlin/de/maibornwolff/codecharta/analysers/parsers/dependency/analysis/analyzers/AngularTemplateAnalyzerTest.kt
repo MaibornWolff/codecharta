@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
+import de.maibornwolff.treesitter.excavationsite.api.AngularSelector
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -29,7 +30,7 @@ class AngularTemplateAnalyzerTest {
     }
 
     @Test
-    fun `should use the elements and pipe names the template names`() {
+    fun `should use the pipe names the template names`() {
         // Arrange
         val content = """
             <app-torch [lit]="isLit" />
@@ -40,6 +41,24 @@ class AngularTemplateAnalyzerTest {
         val report = analyze(content)
 
         // Assert
-        assertThat(report.nodes.single().usedTypes.map { it.name }).containsExactly("app-torch", "p", "goldCoins")
+        assertThat(report.nodes.single().usedTypes.map { it.name }).containsExactly("goldCoins")
+    }
+
+    @Test
+    fun `should carry the elements of the template for matching selectors`() {
+        // Arrange
+        val content = "<p appGlow>lit</p>"
+
+        // Act
+        val report = analyze(content)
+
+        // Assert
+        assertThat(
+            report.nodes
+                .single()
+                .angular
+                ?.declaration
+                ?.elements
+        ).containsExactly(AngularSelector(element = "p", attributes = mapOf("appGlow" to "")))
     }
 }

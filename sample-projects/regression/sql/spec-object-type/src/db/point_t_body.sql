@@ -1,0 +1,7 @@
+CREATE OR REPLACE TYPE BODY point_t AS
+    MEMBER FUNCTION len RETURN NUMBER IS
+    BEGIN
+        RETURN scale(x);
+    END;
+END;
+/

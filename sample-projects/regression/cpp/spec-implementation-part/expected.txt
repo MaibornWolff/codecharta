@@ -1,0 +1,9 @@
+# cpp.md, declarations, decision 3: out-of-line members are an implementation part
+file Creature.cpp -> Creature.hpp
+file Creature.cpp -> Logger.hpp
+file Creature.hpp -> Dice.hpp
+file User.cpp -> Creature.hpp
+leaf Creature.cpp#Creature -> Creature.hpp#Creature usage=part_of
+leaf Creature.cpp#Creature -> Logger.hpp#Logger
+leaf Creature.hpp#Creature -> Dice.hpp#Dice
+leaf User.cpp#User -> Creature.hpp#Creature

@@ -1,0 +1,3 @@
+# delphi.md, not supported: a routine body whose begin and asm stand in two branches of one {$IFDEF} with one shared end
+file Game.Swap.pas -> Game.Helper.pas
+leaf Game.Swap.pas#Report -> Game.Helper.pas#THelper

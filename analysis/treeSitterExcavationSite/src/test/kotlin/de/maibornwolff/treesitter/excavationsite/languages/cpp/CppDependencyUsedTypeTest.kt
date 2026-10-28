@@ -2,16 +2,113 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp
 
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 class CppDependencyUsedTypeTest {
+    @Test
+    fun `should mark a globally qualified type with a leading scope segment`() {
+        // Arrange
+        val code = "struct U { ::Config config; ::a::b::C deep; a::D relative; };"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.single().usedTypes).containsExactlyInAnyOrder(
+            UsedType(name = "Config", namespacePrefix = listOf("::")),
+            UsedType(name = "C", namespacePrefix = listOf("::", "a", "b")),
+            UsedType(name = "D", namespacePrefix = listOf("a"))
+        )
+    }
+
+    @Test
+    fun `should report no use of a template parameter`() {
+        // Arrange
+        val code = "template <class Creature, typename U = int, class... Rest> struct Box { Creature c; U u; Speed s; };"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactly("Speed")
+    }
+
+    @Test
+    fun `should report no use of a class the enclosing function declares before`() {
+        // Arrange
+        val code = """
+            struct User {
+                int count() {
+                    Node before{0};
+                    struct Node { int local; };
+                    Node node{1};
+                    return node.local;
+                }
+            };
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.map { it.name }).containsExactly("User")
+        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactlyInAnyOrder("Node", "int")
+    }
+
+    @Test
+    fun `should leave the type a member alias names to the alias and give a function alias to its declaration`() {
+        // Arrange
+        val code = "struct Repo { using Entity = CreatureEntity; void f() { using Row = RowEntity; } };"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(
+            result.declarations.single { it.name == "Repo" }.usedTypes.map { it.name }
+        ).containsExactlyInAnyOrder("RowEntity", "void")
+    }
+
+    @Test
+    fun `should report a class tag without a body as a use that declares it in its namespace if nothing visible does`() {
+        // Arrange
+        val code = "namespace g { struct Nest { struct Roost *held; enum Kind kind; }; }"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.single { it.name == "Nest" }.usedTypes).containsExactlyInAnyOrder(
+            UsedType(name = "Roost", fallbacks = listOf(UsedType(name = "Roost", namespacePrefix = listOf("::", "g")))),
+            UsedType(name = "Kind", fallbacks = listOf(UsedType(name = "Kind", namespacePrefix = listOf("::", "g"))))
+        )
+    }
+
+    @Test
+    fun `should report a qualified name in an expression as a use with its qualifier`() {
+        // Arrange
+        val code = "struct Mover : game::Base { int pace = static_cast<int>(SpeedType::WALKING); int f() { return Speed::MAX; } };"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.single().usedTypes).containsExactlyInAnyOrder(
+            UsedType(name = "Base", namespacePrefix = listOf("game"), usage = TypeUsage.INHERITANCE),
+            UsedType(name = "WALKING", namespacePrefix = listOf("SpeedType")),
+            UsedType(name = "MAX", namespacePrefix = listOf("Speed")),
+            UsedType(name = "int")
+        )
+    }
+
     @Nested
     inner class Inheritance {
         @Test
-        fun `should extract single public base class as used type`() {
+        fun `should extract a single public base class as an inherited type`() {
             // Arrange
             val code = """
                 class Parent {};
@@ -23,11 +120,11 @@ class CppDependencyUsedTypeTest {
 
             // Assert
             val child = result.declarations.single { it.name == "Child" }
-            assertThat(child.usedTypes).containsExactly(UsedType(name = "Parent"))
+            assertThat(child.usedTypes).containsExactly(UsedType(name = "Parent", usage = TypeUsage.INHERITANCE))
         }
 
         @Test
-        fun `should extract all base classes from multiple inheritance`() {
+        fun `should extract all base classes of multiple inheritance as inherited types`() {
             // Arrange
             val code = """
                 class Child : public Base1, protected Base2 {};
@@ -39,13 +136,13 @@ class CppDependencyUsedTypeTest {
             // Assert
             val child = result.declarations.single { it.name == "Child" }
             assertThat(child.usedTypes).containsExactlyInAnyOrder(
-                UsedType(name = "Base1"),
-                UsedType(name = "Base2")
+                UsedType(name = "Base1", usage = TypeUsage.INHERITANCE),
+                UsedType(name = "Base2", usage = TypeUsage.INHERITANCE)
             )
         }
 
         @Test
-        fun `should extract template specialization as base class`() {
+        fun `should extract a template specialization as an inherited type and its argument as a use`() {
             // Arrange
             val code = """
                 class Child : public Base<int> {};
@@ -57,7 +154,7 @@ class CppDependencyUsedTypeTest {
             // Assert
             val child = result.declarations.single { it.name == "Child" }
             assertThat(child.usedTypes).containsExactly(
-                UsedType(name = "Base", genericTypes = listOf(UsedType(name = "int")))
+                UsedType(name = "Base", genericTypes = listOf(UsedType(name = "int")), usage = TypeUsage.INHERITANCE)
             )
         }
     }
@@ -127,7 +224,7 @@ class CppDependencyUsedTypeTest {
     @Nested
     inner class TypeAliases {
         @Test
-        fun `should extract aliased type from typedef`() {
+        fun `should give the type a member typedef names to the alias`() {
             // Arrange
             val code = """
                 class Container {
@@ -140,11 +237,13 @@ class CppDependencyUsedTypeTest {
 
             // Assert
             val container = result.declarations.single { it.name == "Container" }
-            assertThat(container.usedTypes).containsExactly(UsedType(name = "Foo"))
+            val alias = result.declarations.single { it.name == "Bar" }
+            assertThat(container.usedTypes).isEmpty()
+            assertThat(alias.usedTypes).containsExactly(UsedType(name = "Foo"))
         }
 
         @Test
-        fun `should extract template aliased type from typedef`() {
+        fun `should give the template type a member typedef names to the alias`() {
             // Arrange
             val code = """
                 class Container {
@@ -157,13 +256,13 @@ class CppDependencyUsedTypeTest {
 
             // Assert
             val container = result.declarations.single { it.name == "Container" }
-            assertThat(container.usedTypes).containsExactly(
-                UsedType(name = "Vec", genericTypes = listOf(UsedType(name = "Foo")))
-            )
+            val alias = result.declarations.single { it.name == "Items" }
+            assertThat(container.usedTypes).isEmpty()
+            assertThat(alias.usedTypes).containsExactly(UsedType(name = "Vec", genericTypes = listOf(UsedType(name = "Foo"))))
         }
 
         @Test
-        fun `should extract aliased type from using alias declaration`() {
+        fun `should give the type a member using alias names to the alias`() {
             // Arrange
             val code = """
                 class Container {
@@ -176,11 +275,13 @@ class CppDependencyUsedTypeTest {
 
             // Assert
             val container = result.declarations.single { it.name == "Container" }
-            assertThat(container.usedTypes).containsExactly(UsedType(name = "Foo"))
+            val alias = result.declarations.single { it.name == "Bar" }
+            assertThat(container.usedTypes).isEmpty()
+            assertThat(alias.usedTypes).containsExactly(UsedType(name = "Foo"))
         }
 
         @Test
-        fun `should extract template aliased type from using alias declaration`() {
+        fun `should give the template type a member using alias names to the alias`() {
             // Arrange
             val code = """
                 class Container {
@@ -193,9 +294,9 @@ class CppDependencyUsedTypeTest {
 
             // Assert
             val container = result.declarations.single { it.name == "Container" }
-            assertThat(container.usedTypes).containsExactly(
-                UsedType(name = "Vec", genericTypes = listOf(UsedType(name = "Foo")))
-            )
+            val alias = result.declarations.single { it.name == "Items" }
+            assertThat(container.usedTypes).isEmpty()
+            assertThat(alias.usedTypes).containsExactly(UsedType(name = "Vec", genericTypes = listOf(UsedType(name = "Foo"))))
         }
     }
 
@@ -216,7 +317,7 @@ class CppDependencyUsedTypeTest {
             // Assert
             val container = result.declarations.single { it.name == "Container" }
             assertThat(container.usedTypes).containsExactly(
-                UsedType(name = "Foo", genericTypes = listOf(UsedType(name = "T")))
+                UsedType(name = "Foo")
             )
         }
 
@@ -235,8 +336,8 @@ class CppDependencyUsedTypeTest {
             // Assert
             val container = result.declarations.single { it.name == "Container" }
             assertThat(container.usedTypes).containsExactlyInAnyOrder(
-                UsedType(name = "Foo", genericTypes = listOf(UsedType(name = "T"))),
-                UsedType(name = "Bar", genericTypes = listOf(UsedType(name = "T")))
+                UsedType(name = "Foo"),
+                UsedType(name = "Bar")
             )
         }
 
@@ -255,8 +356,8 @@ class CppDependencyUsedTypeTest {
             // Assert
             val container = result.declarations.single { it.name == "Container" }
             assertThat(container.usedTypes).containsExactlyInAnyOrder(
-                UsedType(name = "Foo", genericTypes = listOf(UsedType(name = "T"))),
-                UsedType(name = "Bar", genericTypes = listOf(UsedType(name = "T")))
+                UsedType(name = "Foo"),
+                UsedType(name = "Bar")
             )
         }
     }
@@ -467,7 +568,7 @@ class CppDependencyUsedTypeTest {
     @Nested
     inner class FriendDeclarations {
         @Test
-        fun `should extract friend class type`() {
+        fun `should extract a friend class as a friend type`() {
             // Arrange
             val code = """
                 class Container {
@@ -480,11 +581,11 @@ class CppDependencyUsedTypeTest {
 
             // Assert
             val container = result.declarations.single { it.name == "Container" }
-            assertThat(container.usedTypes).containsExactly(UsedType(name = "Tester"))
+            assertThat(container.usedTypes).containsExactly(UsedType(name = "Tester", usage = TypeUsage.FRIEND))
         }
 
         @Test
-        fun `should extract qualified friend class type`() {
+        fun `should extract a qualified friend class as a friend type`() {
             // Arrange
             val code = """
                 class Container {
@@ -498,7 +599,7 @@ class CppDependencyUsedTypeTest {
             // Assert
             val container = result.declarations.single { it.name == "Container" }
             assertThat(container.usedTypes).containsExactly(
-                UsedType(name = "Tester", namespacePrefix = listOf("Outer"))
+                UsedType(name = "Tester", namespacePrefix = listOf("Outer"), usage = TypeUsage.FRIEND)
             )
         }
     }
@@ -519,7 +620,10 @@ class CppDependencyUsedTypeTest {
 
             // Assert
             val derived = result.declarations.single { it.name == "Derived" }
-            assertThat(derived.usedTypes).containsExactly(UsedType(name = "Base"))
+            assertThat(derived.usedTypes).containsExactlyInAnyOrder(
+                UsedType(name = "Base"),
+                UsedType(name = "Base", usage = TypeUsage.INHERITANCE)
+            )
         }
 
         @Test
@@ -615,8 +719,6 @@ class CppDependencyUsedTypeTest {
         val widget = result.declarations.single { it.name == "Widget" }
         assertThat(widget.usedTypes.map { it.name }.toSet()).containsExactlyInAnyOrder(
             "Base",
-            "Wrapped",
-            "Counter",
             "Field",
             "Friend",
             "Result",
@@ -627,7 +729,8 @@ class CppDependencyUsedTypeTest {
             "Namespace",
             "helper",
             "Sized",
-            "Init"
+            "Init",
+            "Value"
         )
     }
 }

@@ -1,0 +1,5 @@
+# cpp.md, declarations, decision 4: a typedef of another name is an alias
+file room.h -> size.h
+leaf room.h#Room -> size.h#Area
+leaf room.h#Room -> size.h#Meters
+leaf size.h#Area -> size.h#Size

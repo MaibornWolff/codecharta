@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.io.PrintStream
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class ExtractionPipelineTest {
     @TempDir
@@ -96,6 +97,24 @@ class ExtractionPipelineTest {
 
         // Assert
         assertThat(reports.flatMap { it.nodes }).hasSize(2)
+    }
+
+    @Test
+    fun `should tell every analyser which files the run analyses`() {
+        // Arrange
+        writeSources()
+        File(projectDirectory, "notes.txt").writeText("nothing to parse")
+        val seenFiles = ConcurrentLinkedQueue<Set<String>>()
+        val recording: (FileInfo) -> LanguageAnalyzer = { fileInfo ->
+            seenFiles.add(fileInfo.analysedFiles)
+            LanguageAnalyzerFactory.createAnalyzer(fileInfo)
+        }
+
+        // Act
+        pipeline(createAnalyzer = recording).run(projectDirectory, bypassGitignore = true)
+
+        // Assert
+        assertThat(seenFiles).hasSize(2).allSatisfy { assertThat(it).containsExactlyInAnyOrder("Item.kt", "Service.kt") }
     }
 
     @Test

@@ -1,0 +1,3 @@
+# python.md, attribute p.N through a class: a method or class variable is a use of the class
+file app/use.py -> app/config.py
+leaf app/use.py#start -> app/config.py#Config

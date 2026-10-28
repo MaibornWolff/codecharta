@@ -1,0 +1,1 @@
+# python.md, attribute p.N on a value draws no edge, also where N names a project declaration

@@ -1,0 +1,4 @@
+# typescript.md, Vue, decision 11: a plain script is the module's top level: an unexported declaration and top-level code are leaves of their own
+file components/Panel.vue -> registry.ts
+leaf components/Panel.vue#Panel -> components/Panel.vue#size
+leaf components/Panel.vue#Panel_script -> registry.ts#register

@@ -1,0 +1,3 @@
+# php.md, decision 4: the interfaces an enum implements
+file Model/Alignment.php -> Model/Describable.php
+leaf Model/Alignment.php#Alignment -> Model/Describable.php#Describable usage=implementation

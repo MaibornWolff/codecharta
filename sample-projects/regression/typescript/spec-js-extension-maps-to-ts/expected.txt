@@ -1,0 +1,3 @@
+# typescript.md, module specifiers 1: ./a.js means a.ts when it exists
+file b.ts -> a.ts
+leaf b.ts#B -> a.ts#A

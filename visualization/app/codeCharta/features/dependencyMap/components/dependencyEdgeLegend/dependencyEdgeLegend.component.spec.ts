@@ -71,18 +71,20 @@ describe("DependencyEdgeLegendComponent", () => {
 
         // Assert
         expect(entriesOf("dependency-usage-legend")).toEqual([
+            "Is part of",
             "Inherits from",
             "Implements",
             "Creates",
             "Takes as argument",
             "Returns",
             "Reads a constant of",
+            "Befriends",
             "Uses"
         ])
         const edgeTypeLines = [...screen.getByTestId("dependency-edge-legend").querySelectorAll("line")]
         expect(edgeTypeLines.every(line => line.getAttribute("stroke-dasharray") === null)).toBe(true)
         expect(edgeTypeLines.at(-1).getAttribute("stroke")).toBe("#7f1d1d")
-        expect(screen.getByTestId("dependency-usage-legend").querySelectorAll("polyline, circle")).toHaveLength(3)
+        expect(screen.getByTestId("dependency-usage-legend").querySelectorAll("polyline, circle")).toHaveLength(5)
     })
 
     it("should explain the icons of the declaration kinds", async () => {

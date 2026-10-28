@@ -17,8 +17,9 @@ enum class ImportKind {
     REEXPORT,
 
     /**
-     * A name imported out of a module (Python `from module import name`): the last path segment is that name, for a
-     * wildcard there is none. A relative module starts with one `.` segment per leading dot.
+     * A name imported out of a module (Python `from module import name`, JavaScript `import { name } from 'module'`):
+     * the last path segment is that name, for a wildcard there is none. A relative Python module starts with one `.`
+     * segment per leading dot.
      */
     MEMBER
 }
@@ -64,7 +65,10 @@ enum class TypeUsage {
     CONSTANT_ACCESS,
     RETURN_VALUE,
     INSTANTIATION,
-    ARGUMENT
+    ARGUMENT,
+
+    /** Named by a C++ `friend` declaration, which lets it use the private members of the declaring class. */
+    FRIEND
 }
 
 /**
@@ -73,13 +77,16 @@ enum class TypeUsage {
  * @property namespacePrefix the scope written before the type at the use site (`A::B` for `A::B::Settings`), empty for
  *   unqualified uses; C++ adapters turn it into the wildcard import a `using namespace A::B;` would be
  * @property alternativeName a second name the same use may mean, as `NameAttribute` for a C# attribute `[Name]`
+ * @property fallbacks what the use means, in order, when this one names nothing, as a Python name a wildcard import may
+ *   or may not bind
  */
 data class UsedType(
     val name: String,
     val genericTypes: List<UsedType> = emptyList(),
     val namespacePrefix: List<String> = emptyList(),
     val usage: TypeUsage = TypeUsage.USAGE,
-    val alternativeName: String? = null
+    val alternativeName: String? = null,
+    val fallbacks: List<UsedType> = emptyList()
 ) {
     fun isUppercase(): Boolean = name.firstOrNull()?.isUpperCase() == true
 }

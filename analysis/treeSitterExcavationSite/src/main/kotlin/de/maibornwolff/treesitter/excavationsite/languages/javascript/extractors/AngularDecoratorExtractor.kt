@@ -1,30 +1,29 @@
 package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularDeclaration
+import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularSelector
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ancestors
 import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 
 /**
- * What the Angular decorator of a class declares: the elements its `@Component` selector names and the name of its
- * `@Pipe`, the names a template refers to the class by, the template file of a component, and the classes a component
- * or an `@NgModule` imports, declares and exports. An attribute or class selector names no element, so it is left out.
- * The inline template of a component is a source of its own, see [InlineTemplateExtractor].
+ * What the Angular decorator of a class declares: the name of a `@Pipe`, the selector of a component or `@Directive`,
+ * the template file of a component, and the classes a component or an `@NgModule` imports, declares and exports. The
+ * inline template of a component is a source of its own, see [InlineTemplateExtractor].
  */
 internal object AngularDecoratorExtractor {
     private const val COMPONENT = "Component"
     private const val SELECTOR = "selector"
     private const val TEMPLATE_URL = "templateUrl"
     private const val TEMPLATE = "template"
+    private const val DIRECTIVE = "Directive"
     private const val PIPE = "Pipe"
     private const val NG_MODULE = "NgModule"
     private const val IMPORTS = "imports"
     private const val DECLARATIONS = "declarations"
     private const val EXPORTS = "exports"
     private const val PIPE_NAME = "name"
-    private const val SELECTOR_SEPARATOR = ","
-    private val ELEMENT_SELECTOR = Regex("^[a-zA-Z][\\w-]*")
 
     // The value of the template pair sits in the pair, its object, the call's arguments, the call, then the decorator
     private const val DECORATOR_DEPTH_BELOW_TEMPLATE = 4
@@ -52,17 +51,21 @@ internal object AngularDecoratorExtractor {
         val call = callOf(decorator) ?: return null
         return when (TreeTraversal.findFirstChildTextByType(call, IDENTIFIER)) {
             COMPONENT -> componentOf(call)
-            PIPE -> AngularDeclaration(templateNames = setOfNotNull(stringPropertyOf(call, PIPE_NAME)))
+            DIRECTIVE -> AngularDeclaration(selectors = selectorsOf(call))
+            PIPE -> AngularDeclaration(pipeName = stringPropertyOf(call, PIPE_NAME))
             NG_MODULE -> moduleOf(call)
             else -> null
         }
     }
 
     private fun componentOf(call: SyntaxNode): AngularDeclaration = AngularDeclaration(
-        templateNames = stringPropertyOf(call, SELECTOR)?.let { elementsOf(it) }.orEmpty().toSet(),
+        selectors = selectorsOf(call),
         templateUrl = stringPropertyOf(call, TEMPLATE_URL),
         imports = classesOf(call, IMPORTS)
     )
+
+    private fun selectorsOf(call: SyntaxNode): List<AngularSelector> =
+        stringPropertyOf(call, SELECTOR)?.let { AngularSelectorParser.parse(it) }.orEmpty()
 
     private fun moduleOf(call: SyntaxNode): AngularDeclaration = AngularDeclaration(
         imports = classesOf(call, IMPORTS),
@@ -102,8 +105,4 @@ internal object AngularDecoratorExtractor {
         .flatMap { it.children() }
         .filter { it.type == PAIR && TreeTraversal.findFirstChildTextByType(it, PROPERTY_IDENTIFIER) == key }
         .firstNotNullOfOrNull { pair -> pair.getChildByFieldName(VALUE_FIELD).orNull() }
-
-    private fun elementsOf(selector: String): List<String> = selector
-        .split(SELECTOR_SEPARATOR)
-        .mapNotNull { ELEMENT_SELECTOR.find(it.trim())?.value?.lowercase() }
 }

@@ -1,0 +1,5 @@
+CREATE PROCEDURE dbo.add_order AS
+BEGIN
+    SELECT NEXT VALUE FOR dbo.order_seq;
+END
+GO

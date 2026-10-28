@@ -15,6 +15,9 @@ class GoDependencyTest {
     private fun usedTypeNamesOf(code: String, declarationName: String): List<String> =
         analyze(code).declarations.first { it.name == declarationName }.usedTypes.map { it.name }
 
+    private fun qualifiedNamesOf(code: String, declarationName: String): List<Pair<String, List<String>>> =
+        analyze(code).declarations.first { it.name == declarationName }.usedTypes.map { it.name to it.namespacePrefix }
+
     @Nested
     inner class ApiSupportCheck {
         @Test
@@ -95,6 +98,26 @@ class GoDependencyTest {
                 listOf("embed")
             )
             assertThat(result.imports).noneMatch { it.isWildcard }
+        }
+
+        @Test
+        fun `should report the alias of an import and the blank identifier as its binding name`() {
+            // Arrange
+            val code = """
+                package main
+
+                import (
+                    "fmt"
+                    log "github.com/sirupsen/logrus"
+                    _ "embed"
+                )
+            """.trimIndent()
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.imports.map { it.bindingName }).containsExactly(null, "log", "_")
         }
 
         @Test
@@ -216,13 +239,13 @@ class GoDependencyTest {
         }
 
         @Test
-        fun `should extract a type declared inside a function as well`() {
+        fun `should not extract a type declared inside a function, whose uses are the function's`() {
             // Arrange
             val code = """
                 package shop
 
                 func Build() {
-                    type draft struct{}
+                    type draft struct{ order Order }
                 }
             """.trimIndent()
 
@@ -230,14 +253,15 @@ class GoDependencyTest {
             val result = analyze(code)
 
             // Assert
-            assertThat(result.declarations.map { it.name }).containsExactly("Build", "draft")
+            assertThat(result.declarations.map { it.name }).containsExactly("Build")
+            assertThat(usedTypeNamesOf(code, "Build")).containsExactly("Order")
         }
     }
 
     @Nested
     inner class UsedTypesOfTypeDeclarations {
         @Test
-        fun `should extract field types, a qualified type both as written and by its name`() {
+        fun `should extract field types, a qualified type both as written and by its name, but not the declared name`() {
             // Arrange
             val code = """
                 package shop
@@ -252,7 +276,7 @@ class GoDependencyTest {
             val usedTypes = usedTypeNamesOf(code, "Order")
 
             // Assert
-            assertThat(usedTypes).containsExactly("Order", "Customer", "http.Client", "Client")
+            assertThat(usedTypes).containsExactly("Customer", "http.Client", "Client")
         }
     }
 
@@ -321,7 +345,7 @@ class GoDependencyTest {
         }
 
         @Test
-        fun `should extract the methods of a call chain in source order`() {
+        fun `should extract only the call of a chain that goes through a plain name`() {
             // Arrange
             val code = """
                 package main
@@ -336,7 +360,7 @@ class GoDependencyTest {
             val usedTypes = usedTypeNamesOf(code, "processChainedCalls")
 
             // Assert
-            assertThat(usedTypes).containsExactly("Connect", "Authenticate", "Execute", "GetResult")
+            assertThat(usedTypes).containsExactly("Connect")
         }
 
         @Test
@@ -442,7 +466,7 @@ class GoDependencyTest {
         }
 
         @Test
-        fun `should extract the method called on a field, however deep the field chain`() {
+        fun `should leave out a method called on a field`() {
             // Arrange
             val code = """
                 package main
@@ -457,11 +481,11 @@ class GoDependencyTest {
             val usedTypes = usedTypeNamesOf(code, "processFieldMethods")
 
             // Assert
-            assertThat(usedTypes).containsExactly("Info", "Validate")
+            assertThat(usedTypes).isEmpty()
         }
 
         @Test
-        fun `should extract the method called on the result of a function after that function`() {
+        fun `should leave out a method called on a parameter or on the result of a function`() {
             // Arrange
             val code = """
                 package main
@@ -476,7 +500,7 @@ class GoDependencyTest {
             val usedTypes = usedTypeNamesOf(code, "processWithInterface")
 
             // Assert
-            assertThat(usedTypes).containsExactly("Logger", "Info", "Warn", "getLogger")
+            assertThat(usedTypes).containsExactly("Logger", "getLogger")
         }
 
         @Test
@@ -499,7 +523,7 @@ class GoDependencyTest {
         }
 
         @Test
-        fun `should extract generic functions and the types they are called with`() {
+        fun `should extract generic functions and the types they are called with, but no method of a local variable`() {
             // Arrange
             val code = """
                 package main
@@ -519,7 +543,6 @@ class GoDependencyTest {
             assertThat(usedTypes).containsExactly(
                 "Map",
                 "NewContainer",
-                "Add",
                 "Transform",
                 "Convert",
                 "string",
@@ -601,7 +624,7 @@ class GoDependencyTest {
             val usedTypes = usedTypeNamesOf(code, "Config")
 
             // Assert
-            assertThat(usedTypes).containsExactly("Config", "string", "error", "LoadConfigFile", "validate")
+            assertThat(usedTypes).containsExactly("string", "Config", "error", "LoadConfigFile", "validate")
         }
 
         @Test
@@ -658,6 +681,276 @@ class GoDependencyTest {
 
             // Assert
             assertThat(result.declarations).isEmpty()
+        }
+    }
+
+    @Nested
+    inner class SelectorQualifiers {
+        @Test
+        fun `should give a type written through a package that package as qualifier`() {
+            // Arrange
+            val code = """
+                package shop
+
+                type Order struct {
+                    Client *http.Client
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "Order")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("http.Client" to emptyList(), "Client" to listOf("http"))
+        }
+
+        @Test
+        fun `should give the qualified parameter, result and body types their package as qualifier`() {
+            // Arrange
+            val code = """
+                package shop
+
+                func Convert(writer io.Writer) http.Handler {
+                    var buffer bytes.Buffer
+                    return nil
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "Convert")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(
+                "Writer" to listOf("io"),
+                "Handler" to listOf("http"),
+                "Buffer" to listOf("bytes"),
+                "io.Writer" to emptyList(),
+                "http.Handler" to emptyList(),
+                "bytes.Buffer" to emptyList()
+            )
+        }
+
+        @Test
+        fun `should give a call through a selector on a plain name that name as qualifier`() {
+            // Arrange
+            val code = """
+                package main
+
+                func run() {
+                    util.New()
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "run")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("New" to listOf("util"))
+        }
+
+        @Test
+        fun `should leave out a call through a selector on anything but a plain name`() {
+            // Arrange
+            val code = """
+                package main
+
+                func run() {
+                    client.Connect().Authenticate()
+                    config.server.Start()
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "run")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("Connect" to listOf("client"))
+        }
+
+        @Test
+        fun `should give a type written without a package no qualifier`() {
+            // Arrange
+            val code = """
+                package shop
+
+                func Load(order *Order) Invoice {
+                    return Invoice{}
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "Load")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("Order" to emptyList(), "Invoice" to emptyList())
+        }
+    }
+
+    @Nested
+    inner class NamesOfTheEnclosingFunction {
+        @Test
+        fun `should leave out a type parameter of the function`() {
+            // Arrange
+            val code = """
+                package shop
+
+                func Map[T any](value T) T {
+                    var zero T
+                    return zero
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypeNamesOf(code, "Map")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("any")
+        }
+
+        @Test
+        fun `should leave out a type parameter of a generic type`() {
+            // Arrange
+            val code = """
+                package shop
+
+                type Stack[T any] struct {
+                    items []T
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypeNamesOf(code, "Stack")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("any")
+        }
+
+        @Test
+        fun `should leave out a call of a variable the function declares`() {
+            // Arrange
+            val code = """
+                package shop
+
+                func Run() {
+                    price := func() {}
+                    price()
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypeNamesOf(code, "Run")
+
+            // Assert
+            assertThat(usedTypes).isEmpty()
+        }
+
+        @Test
+        fun `should leave out a type the function declares`() {
+            // Arrange
+            val code = """
+                package shop
+
+                func Run() {
+                    type mount struct{}
+                    _ = mount{}
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypeNamesOf(code, "Run")
+
+            // Assert
+            assertThat(usedTypes).isEmpty()
+        }
+
+        @Test
+        fun `should leave out a call through a parameter that hides an import name, but keep the type it is written with`() {
+            // Arrange
+            val code = """
+                package app
+
+                func Parameter(util util.Tool) {
+                    util.Helper()
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "Parameter")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("Tool" to listOf("util"), "util.Tool" to emptyList())
+        }
+
+        @Test
+        fun `should hide an import name from the end of a short variable declaration on`() {
+            // Arrange
+            val code = """
+                package app
+
+                func Shadowed() {
+                    util := util.New()
+                    util.Helper()
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "Shadowed")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("New" to listOf("util"))
+        }
+
+        @Test
+        fun `should hide an import name only inside the statement whose header declares the variable`() {
+            // Arrange
+            val code = """
+                package app
+
+                func Scoped(ok bool) {
+                    if util := util.New(); ok {
+                        util.Helper()
+                    }
+                    for util := 0; util < 1; util++ {
+                        util.Helper()
+                    }
+                    util.Kind()
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "Scoped")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("bool" to emptyList(), "New" to listOf("util"), "Kind" to listOf("util"))
+        }
+
+        @Test
+        fun `should hide an import name by a type switch variable and a received value`() {
+            // Arrange
+            val code = """
+                package app
+
+                func Switch(value any, channel chan util.Tool) {
+                    switch util := value.(type) {
+                    case util.Tool:
+                        util.Helper()
+                    }
+                    select {
+                    case util := <-channel:
+                        util.Helper()
+                    }
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = qualifiedNamesOf(code, "Switch")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(
+                "any" to emptyList(),
+                "Tool" to listOf("util"),
+                "util.Tool" to emptyList()
+            )
         }
     }
 }

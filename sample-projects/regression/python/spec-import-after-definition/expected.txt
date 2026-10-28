@@ -1,0 +1,3 @@
+# python.md, 2, decision 3: an import after a definition of the same name wins
+file app/tree.py -> app/other.py
+leaf app/tree.py#grow -> app/other.py#Node

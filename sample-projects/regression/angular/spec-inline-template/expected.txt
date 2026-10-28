@@ -1,0 +1,5 @@
+# typescript.md, Angular: an inline template is a leaf template of the component's file
+file app/card.component.ts -> shared/badge.component.ts
+leaf app/card.component.ts#CardComponent -> app/card.component.ts#template
+leaf app/card.component.ts#template -> shared/badge.component.ts#BadgeComponent
+leaf shared/badge.component.ts#BadgeComponent -> shared/badge.component.ts#template

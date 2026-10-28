@@ -1,0 +1,3 @@
+# typescript.md, binding: import x = require('./m') binds x as const x = require does, x.A is the export A
+file loader.ts -> util.ts
+leaf loader.ts#Loader -> util.ts#Util

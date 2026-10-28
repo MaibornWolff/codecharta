@@ -12,13 +12,16 @@ package de.maibornwolff.treesitter.excavationsite.shared.domain
  * place of the [LanguageDefinition.embeddedSources], see [EmbeddedSourceMapping]
  * @property grammarOfWholeFile set where metrics and text extraction parse only a part of the file with the grammar
  * of that part: dependency extraction then parses the whole, unprocessed file with this grammar instead
+ * @property preprocessor turns the text dependency extraction parses, after the language's own preprocessor, into one
+ * the grammar reads as the compiler does; it keeps every character's position, and the file itself stays unchanged
  */
 data class LanguageDependencyMapping(
     val extractPackagePath: (SyntaxNode) -> List<String>,
     val extractImports: (SyntaxNode) -> List<ImportDeclaration>,
     val extractDeclarations: (SyntaxNode) -> List<Declaration>,
     val embeddedSources: EmbeddedSourceMapping? = null,
-    val grammarOfWholeFile: GrammarLibrary? = null
+    val grammarOfWholeFile: GrammarLibrary? = null,
+    val preprocessor: ((String) -> String)? = null
 )
 
 /**

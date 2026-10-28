@@ -67,20 +67,24 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
 - **`namespace`** is written only where the language has packages apart from its files — Java, Kotlin,
   C#, PHP and C++ — and there only for a declaration that sits in one. Everywhere else the logical
   path is the re-encoded file path, so the leaf carries no `namespace` and no namespace is listed: the
-  file tree already is that hierarchy. A nested declaration is a leaf of its own in the package of the
+  file tree already is that hierarchy. A C, C++ or PHP declaration outside every namespace has its name alone as
+  logical path, as the compiler names it (`::Point`, `\Util`). A nested declaration is a leaf of its own in the package of the
   declaration around it, with only its own uses as dependencies; the schema's `parent` is not written yet.
 - **`namespaces`** lists the packages with their level and their `parent`, the package containing them.
   The hierarchy comes from `parent`, never from the dots of a key.
 - **`language`** is the language the declaration is written in, lower case: `java`, `kotlin`, `csharp`,
   `cpp`, `go`, `php`, `python`, `typescript`, `javascript`, `vue`, `delphi`, `rust`, `angular` or `sql`.
 - **`usage`** names how the source declaration uses the target: `usage`, `inheritance`,
-  `implementation`, `instantiation`, `argument`, `return_value`, `constant_access`. A pair carries one
+  `implementation`, `instantiation`, `argument`, `return_value`, `constant_access`, `friend` for the class a C++
+  `friend` declaration names, and `part_of` from an
+  implementation part (C++ member definitions in another file, a Rust `impl` in another file, an SQL body or
+  `ALTER`) to the declaration of its own path. A pair carries one
   kind, the first the extractor found, because a used type is identified by its name alone — the same
   rule DependaCharta applies, and why a pair weighs 1 at declaration level unless the source is declared
   more than once in its file, when each declaration that references the target counts once. **Only PHP reports
   every kind today**: its extractor in `TreeSitterExcavationSite` classifies a type by the clause it
-  appears in and says so in `UsedType.usage`. Java, Kotlin and C# report `inheritance` and `implementation`,
-  which their name resolution needs for inherited member types; C# writes a base class and interfaces in one
+  appears in and says so in `UsedType.usage`. Java, Kotlin and C# report `inheritance` and `implementation`, C++
+  `inheritance`, which their name resolution needs for inherited member types; C# writes a base class and interfaces in one
   list, so its extractor reports `inheritance` and the resolver turns it into `implementation` where a class
   names an interface. The extractors of Java, Kotlin and C# make the other
   distinctions internally — separate `extractInheritanceTypes`, `extractParameterTypes`, `extractReturnTypes`,
@@ -89,8 +93,15 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
   projects with the same package — is one leaf per file, with the same key and, where it has one, the same
   `namespace`. Each copy's dependencies leave the file they are written in, in both layers, while a dependency
   *on* the name points at the file that shares the longest folder path with the file using it, and among
-  equally near files at the first as the scan lists them (path order); for SQL at the latest migration, and
-  for C# at the first file. A Kotlin `private` top-level copy counts only for the file it is written in.
+  equally near files at the first as the scan lists them (path order); for SQL at the declaration before an
+  implementation part, then at the latest migration, and
+  for C# at every file of the nearest project (the folder of a `.csproj`) that declares it, the parts of a
+  partial class; for Go at every file of the package that declares it, its build-tag variants; for C and C++ at the
+  copy the include closure of the using file holds, else the nearest. A Kotlin `private` top-level copy, a C# `file`
+  type, a C++ implementation part (the member functions a source file defines for a class of a header), a SQL
+  implementation part (a package or object type body, a change of another file's table) and a routine only an Oracle
+  package body declares count only for the file they are written in, which an implementation part's own dependency on
+  its declaration leaves for the declaring file.
 - `kind` is the declaration kind: `class`, `valueclass`, `interface`, `annotation`, `enum`, `function`,
   `variable`, `reexport`, `script` or `unknown`.
 - `leafEdges` is a list of its own rather than a widened `Edge`, because `edges` is what the edge-metric
@@ -118,16 +129,17 @@ Both tools run over the three contract samples in
 | -------- | ------------------------ | ----------------- | ------------ | --------------------- |
 | `java`   | 16 / 16                  | 30 / 29           | 6 / 6        | 3 / 2                 |
 | `csharp` | 16 / 16                  | 29 / 28           | 6 / 6        | 3 / 2                 |
-| `cpp`    | 16 / 16                  | 29 / 28           | 6 / 6        | 3 / 2                 |
+| `cpp`    | 16 / 21                  | 29 / 48           | 6 / 9        | 3 / 2                 |
 
-Every declaration and every declaration pair matches exactly. The single difference in each sample is
+In `java` and `csharp` every declaration and every declaration pair matches exactly. The single difference is
 one **self-edge** (`HitPoints` → `HitPoints`), which DependaCharta keeps and flags as upward-pointing
 and this parser drops: an edge from a declaration to itself says nothing about the architecture, and the
 file-level projection has never carried one either.
 
-On the `cpp` sample the *file* edges also differ in name only: DependaCharta labels a merged
-header/source pair `Creature.cpp/.h` under the logical package path, while this parser keeps the
-physical path of the first file of the pair, `src/.../Creature.cpp`; the pairs themselves are the same.
+The `cpp` sample differs by design (`docs/name-resolution/cpp.md`): DependaCharta merges a class's header and
+source file into one declaration, while this parser keeps the class body in the header and makes the member
+functions of the source file an implementation part of their own that depends on the header, so each header draws
+its own edges and every use points at the header the using file includes.
 
 Beyond the self-edge, the parser deliberately deviates from DependaCharta where the original loses
 edges on common project layouts; every item below is a bug in DependaCharta that this port fixes:
@@ -141,7 +153,18 @@ edges on common project layouts; every item below is a bug in DependaCharta that
   expanded; DependaCharta probes for `user_service.ts` and gives up.
 - A Vue component pairing a plain `<script>` with a `<script setup>` has both blocks analysed.
 - An explicit import wins over a same-package type of the same name, as Java's single-type import does.
-- Every PHP grouped `use` contributes, not only the first in the file.
+- A PHP name is resolved as the compiler does, through the `use` declarations of its own namespace block, every member
+  of a grouped `use` included; an include is a use of the included file's top-level code.
+- A Rust name is resolved as the compiler does, through the module tree of its crate: crate names from `Cargo.toml`,
+  modules from the `mod` declarations and `#[path]`, function bodies and macro calls included; a `pub use` is a leaf of
+  its own that the code importing through it points at, rather than an alias folded onto the declaration.
+- A Delphi name is resolved as the compiler does, through the units of the run by their unit name: the members of its
+  class and the class's project ancestors, the own unit, then the units of the `uses` clauses, the last listed first;
+  free routines, constants, variables and the main code are leaves of their own.
+- A SQL name is resolved as the databases do, through the SQL files of the run as one database: the own package, the
+  own schema, the default schema and the schema `SET search_path` sets, the kind of object its place asks for;
+  sequences, types, domains and package members are leaves of their own, package bodies and changes of a table in
+  another file implementation parts.
 - A Module Federation producer is looked up in name order, preferring a federation-name match over a
   directory-name match, so the result does not depend on how the file system lists directories.
 - A file that fails to parse or exceeds `--file-timeout` is reported in a warning per cause naming the files;
@@ -151,7 +174,12 @@ edges on common project layouts; every item below is a bug in DependaCharta that
 
 1. **Extract.** Every source file is parsed with tree-sitter into the declarations it contains and the
    types they use. Imports are resolved through the language's own rules, plus tsconfig/jsconfig path
-   aliases, bundler aliases (webpack, vite, vue.config) and Module Federation remotes.
+   aliases, bundler aliases (webpack, vite, vue.config), Module Federation remotes, workspace packages and
+   `package.json` entry files, Go's `go.mod` files and `vendor/` folders, the folders above Python's top-level
+   packages, Rust's `Cargo.toml` files and `mod` declarations, the unit names of Delphi's files, and the schemas,
+   packages and changed objects of SQL files. TypeScript,
+   JavaScript and Vue write every name as the full path of what its binding names, so the resolve step only looks that
+   path up.
 2. **Resolve.** Used types are matched against the declarations the whole project offers, with a
    per-language standard-library filter so `java.util.List` does not become a project dependency. A name is
    matched only against languages that can refer to each other by name (`SupportedLanguage.nameScope`): Java
@@ -173,8 +201,10 @@ differ from the namespace levels in the logical layer — which are DependaChart
 
 Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates and SQL.
 
-An Angular template (`.html`) depends on each component it names by the element of its selector and on each pipe it
-names, as the `@Component` and `@Pipe` decorators in the TypeScript files declare them. A name that several classes
+An Angular template (`.html`) depends on each component and directive whose selector matches one of its elements, as
+the Angular compiler matches them by tag, attribute and value, property, two-way and event binding, class and, for a
+structural directive such as `*ngFor`, its `ng-template` element, and on each pipe it names, as the `@Component`,
+`@Directive` and `@Pipe` decorators in the TypeScript files declare them. A selector or pipe name that several classes
 declare means the one in the scope of the template's component, as Angular decides it: the `imports` of a standalone
 component, or the `declarations` and `imports` of the `@NgModule` that declares the component, where an imported
 module adds what it exports, a module it exports in turn included. A class a decorator names is the one its file
@@ -185,18 +215,26 @@ file of the component. Every `.html` file is read as an Angular template, by thi
 `domainlanguageparser`; exclude the `.html` files that are no templates of an Angular application, such as reports or
 documentation, with `-e`.
 
-SQL has no imports: a table, view, synonym, package or routine is found by its name, whatever file creates it and
-in whatever dialect. A name with a schema (`dbo.orders`) finds the object of that schema, or else one created
-without a schema; a name without one finds the object of the same schema first, then one created without a schema,
-then one of any schema. Names compare without
-regard to case, like the database does with unquoted names and with names in brackets or backticks; a name in
-double quotes keeps its case (`"Orders"` is not `orders`), unless it is written all in one case (`"orders"`,
-`"ORDERS"`), which is how PostgreSQL and Oracle store an unquoted name. An object created in several files, such as
-a view that migrations recreate, is one leaf per file, and a use points at the last of these files, the latest
-migration: paths are ordered folder by folder and name by name, with the numbers in them compared as numbers, so
-`V10__orders.sql` comes after `V9__orders.sql`, and a later folder wins over an earlier one whatever the file names.
-Flyway's repeatable migrations (`R__views.sql`) come after the versioned ones of their folder, as Flyway runs them
-last.
+SQL has no imports: the SQL files of the analysed folder are read as one database, and every object is found by its
+name, whatever file creates it and in whatever dialect. Tables, views, synonyms, sequences, types, domains, routines,
+triggers and packages are leaves at their schema plus their name (`sales.orders`), or their name alone when created
+without a schema; `SET search_path` and `ALTER SESSION SET CURRENT_SCHEMA` give the objects after them their schema.
+A name without a schema means a variable, a common table expression, a temporary table or a trigger's rows first,
+then, inside an Oracle package, a member of the package, then the object of the same schema, then one created without
+a schema, then the one object of that name in any other schema (several draw no edge). A name with a schema
+(`dbo.orders`) finds the object of that schema, or else one created without a schema; `pricing.total` a member of the
+package `pricing`. The place of a name tells which kind of object it means: `FROM audit` a table or view, `audit()`
+a routine, the type of a column a type, a domain or a table's row type, `NEXTVAL` a sequence. What a package
+specification declares are leaves below the package; the routines of the package body, an object type body and an
+`ALTER TABLE`, `CREATE INDEX` or `COMMENT ON` of a table another file creates are leaves of their own file that point
+at what they implement or change. Names compare without regard to case, like the database does with unquoted names
+and with names in brackets or backticks; a name in double quotes keeps its case (`"Orders"` is not `orders`), unless
+it is written all in one case (`"orders"`, `"ORDERS"`), which is how PostgreSQL and Oracle store an unquoted name. An
+object created in several files, such as a view that migrations recreate, is one leaf per file, and a use points at
+the last of these files, the latest migration: paths are ordered folder by folder and name by name, with the numbers
+in them compared as numbers, so `V10__orders.sql` comes after `V9__orders.sql`, and a later folder wins over an
+earlier one whatever the file names. Flyway's repeatable migrations (`R__views.sql`) come after the versioned ones of
+their folder, as Flyway runs them last. Statements in strings, `USE` and `DROP` are not read.
 
 ## Usage and parameters
 

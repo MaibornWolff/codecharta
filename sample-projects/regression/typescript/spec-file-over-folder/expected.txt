@@ -1,0 +1,3 @@
+# typescript.md, module specifiers: the file models.ts comes before the folder models/index.ts
+file user.ts -> models.ts
+leaf user.ts#User -> models.ts#Model

@@ -1,0 +1,3 @@
+# sql.md, simple name 1: a common table expression hides an object of its name
+file app/report.sql -> db/orders.sql
+leaf app/report.sql#report -> db/orders.sql#raw_orders

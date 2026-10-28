@@ -1,0 +1,2 @@
+# cpp.md, declarations, simple name 2: a member type, a leaf of its own, before the namespace
+leaf outer.hpp#Outer -> outer.hpp#Stats

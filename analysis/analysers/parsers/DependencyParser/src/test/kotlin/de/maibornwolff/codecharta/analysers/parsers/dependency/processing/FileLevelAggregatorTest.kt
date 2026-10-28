@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FilePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeDependencies
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
@@ -42,7 +43,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges).hasSize(1)
@@ -53,32 +54,36 @@ class FileLevelAggregatorTest {
 
     @Test
     fun `should mark a file edge cyclic when any declaration edge behind it is cyclic`() {
-        // Arrange: only the second class takes part in a cycle.
+        // Arrange: only the second class takes part in a cycle with the target.
         val nodes =
             listOf(
                 declaration("app.First", "app/Source.kt", listOf("app.Target")),
                 declaration("app.Second", "app/Source.kt", listOf("app.Target")),
-                declaration("app.Target", "app/Target.kt")
+                declaration("app.Target", "app/Target.kt", listOf("app.Second"))
             )
-        val cyclicEdges = mapOf("app.Second" to setOf("app.Target"))
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, cyclicEdges)
+        val edges = FileLevelAggregator.aggregate(nodes, DeclarationCycles.of(nodes, DeclaringFiles.of(nodes)))
 
         // Assert
-        assertThat(edges.single().isCyclic).isTrue()
+        assertThat(edges.map { it.isCyclic }).containsExactly(true, true)
     }
 
     @Test
     fun `should leave a file edge non-cyclic when no declaration edge behind it is cyclic`() {
-        // Arrange
-        val nodes = listOf(declaration("app.First", "app/Source.kt", listOf("app.Target")), declaration("app.Target", "app/Target.kt"))
+        // Arrange: the target closes a cycle only with a class of another file.
+        val nodes =
+            listOf(
+                declaration("app.First", "app/Source.kt", listOf("app.Target")),
+                declaration("app.Target", "app/Target.kt", listOf("app.Other")),
+                declaration("app.Other", "app/Other.kt", listOf("app.Target"))
+            )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, mapOf("app.First" to setOf("app.Other")))
+        val edges = FileLevelAggregator.aggregate(nodes, DeclarationCycles.of(nodes, DeclaringFiles.of(nodes)))
 
         // Assert
-        assertThat(edges.single().isCyclic).isFalse()
+        assertThat(edges.single { it.from.segments.last() == "Source.kt" }.isCyclic).isFalse()
     }
 
     @Test
@@ -91,7 +96,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges).isEmpty()
@@ -110,7 +115,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges).isEmpty()
@@ -122,7 +127,7 @@ class FileLevelAggregatorTest {
         val nodes = listOf(declaration("app.First", "app/Source.kt", listOf("app.Ghost")))
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges).isEmpty()
@@ -138,7 +143,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges).hasSize(2)
@@ -151,7 +156,7 @@ class FileLevelAggregatorTest {
         val nodes = listOf(declaration("app.First", "src/app/First.kt", listOf("app.Target")), declaration("app.Target", "src/T.kt"))
 
         // Act
-        val edge = FileLevelAggregator.aggregate(nodes, emptyMap()).single()
+        val edge = FileLevelAggregator.aggregate(nodes).single()
 
         // Assert: the tree keeps the real name; the graph id escapes the extension dot so its
         // dot-joined ids still split on namespace boundaries.
@@ -170,7 +175,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges.single().from.segments).containsExactly("app", "FooB.kt")
@@ -187,7 +192,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges.single().to.segments).containsExactly("app", "FooA.kt")
@@ -204,15 +209,15 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges.single().to.segments).containsExactly("b", "app", "Config.kt")
     }
 
     @Test
-    fun `should point a dependency on a C# declaration in several files at the first file, as long as C# has no rules of its own`() {
-        // Arrange: the second part of a partial class lies nearer to the using file.
+    fun `should point a dependency on a C# declaration in several files of one project at every file`() {
+        // Arrange: a partial class in two files of one project.
         val nodes =
             listOf(
                 declaration("Shop.Order", "Gen/Order.g.cs", language = SupportedLanguage.C_SHARP),
@@ -221,10 +226,10 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
-        assertThat(edges.single().to.segments).containsExactly("Gen", "Order.g.cs")
+        assertThat(edges.map { it.to.segments }).containsExactlyInAnyOrder(listOf("Gen", "Order.g.cs"), listOf("Model", "Order.cs"))
     }
 
     @Test
@@ -239,7 +244,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges.single().to.segments).containsExactly("near", "a", "Config.java")
@@ -256,7 +261,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges.single().to.segments).containsExactly("lib", "a", "Widget.java")
@@ -273,7 +278,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges.single().to.segments).containsExactly("db", "V2__orders.sql")
@@ -289,9 +294,61 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val filePath = DeclaringFiles.of(nodes).fileFor("orders", FilePath(listOf("db", "report.sql")), SupportedLanguage.SQL)
+        val filePaths = DeclaringFiles.of(nodes).filesFor("orders", FilePath(listOf("db", "report.sql")), SupportedLanguage.SQL)
 
         // Assert
-        assertThat(filePath?.segments).containsExactly("db", "V10__orders.sql")
+        assertThat(filePaths).containsExactly(FilePath(listOf("db", "V10__orders.sql")))
+    }
+
+    @Test
+    fun `should point a dependency that can mean some kinds of declaration only at the copies of these kinds`() {
+        // Arrange
+        val nodes =
+            listOf(
+                declaration("audit", "db/a_function.sql", language = SupportedLanguage.SQL).copy(kind = "routine"),
+                declaration("audit", "db/z_table.sql", language = SupportedLanguage.SQL).copy(kind = "table")
+            )
+
+        // Act
+        val filePaths = DeclaringFiles
+            .of(nodes)
+            .filesFor("audit", FilePath(listOf("db", "report.sql")), SupportedLanguage.SQL, setOf("routine"))
+
+        // Assert
+        assertThat(filePaths).containsExactly(FilePath(listOf("db", "a_function.sql")))
+    }
+
+    @Test
+    fun `should point a dependency at every copy as the copy rules pick them when no copy is of its kinds`() {
+        // Arrange
+        val nodes =
+            listOf(
+                declaration("audit", "db/a_function.sql", language = SupportedLanguage.SQL).copy(kind = "routine"),
+                declaration("audit", "db/z_table.sql", language = SupportedLanguage.SQL).copy(kind = "table")
+            )
+
+        // Act
+        val filePaths = DeclaringFiles
+            .of(nodes)
+            .filesFor("audit", FilePath(listOf("db", "report.sql")), SupportedLanguage.SQL, setOf("sequence"))
+
+        // Assert
+        assertThat(filePaths).containsExactly(FilePath(listOf("db", "z_table.sql")))
+    }
+
+    @Test
+    fun `should point a SQL dependency from an implementation part's own file at the declaration, not at the later part`() {
+        // Arrange
+        val nodes =
+            listOf(
+                declaration("point_t", "db/point_t.sql", language = SupportedLanguage.SQL),
+                declaration("point_t", "db/point_t_body.sql", language = SupportedLanguage.SQL, isFileScoped = true)
+            )
+
+        // Act
+        val filePaths = DeclaringFiles.of(nodes).filesFor("point_t", FilePath(listOf("db", "point_t_body.sql")), SupportedLanguage.SQL)
+
+        // Assert
+        assertThat(filePaths).containsExactly(FilePath(listOf("db", "point_t.sql")))
     }
 }

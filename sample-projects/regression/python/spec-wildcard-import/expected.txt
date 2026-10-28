@@ -1,0 +1,3 @@
+# python.md, import binds: `from m import *` binds the public names of m
+file app/user.py -> app/models.py
+leaf app/user.py#User -> app/models.py#Model

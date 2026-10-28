@@ -1,0 +1,3 @@
+# cpp.md, simple name 3: an enclosing namespace
+file app.hpp -> config.hpp
+leaf app.hpp#App -> config.hpp#Config

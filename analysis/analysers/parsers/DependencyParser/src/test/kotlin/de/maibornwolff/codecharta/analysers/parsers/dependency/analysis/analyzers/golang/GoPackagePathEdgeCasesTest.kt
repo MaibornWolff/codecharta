@@ -15,10 +15,10 @@ class GoPackagePathEdgeCasesTest {
     }
 
     @Test
-    fun `should handle test files`() {
+    fun `should give an external test package its own path below the folder, and a test file of the package the folder`() {
         // Act & Assert
         val result = GoPackagePath.derive("pkg/utils/helper_test.go", listOf("utils_test"))
-        assertThat(result).isEqualTo(listOf("pkg", "utils"))
+        assertThat(result).isEqualTo(listOf("pkg", "utils", "utils_test"))
 
         val result2 = GoPackagePath.derive("pkg/utils/helper_test.go", listOf("utils"))
         assertThat(result2).isEqualTo(listOf("pkg", "utils"))

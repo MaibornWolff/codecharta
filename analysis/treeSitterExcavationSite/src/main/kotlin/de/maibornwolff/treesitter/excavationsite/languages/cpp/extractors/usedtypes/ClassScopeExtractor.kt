@@ -1,6 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
 internal object ClassScopeExtractor {
@@ -25,7 +26,7 @@ internal object ClassScopeExtractor {
             friend
                 .namedChildren()
                 .mapNotNull { child ->
-                    if (CppTypeHelper.isTypeNode(child)) CppTypeHelper.extractType(child) else null
+                    if (CppTypeHelper.isTypeNode(child)) CppTypeHelper.extractType(child)?.copy(usage = TypeUsage.FRIEND) else null
                 }.toList()
         }
         val inClassUsingTypes = buckets[USING_DECLARATION]

@@ -193,6 +193,12 @@ Additional single-statement probes (scratch files, not kept) that explain number
 
 ## Dependency parser
 
+Since the name rules of `analysis/analysers/parsers/DependencyParser/docs/name-resolution/cpp.md` (2026-10-26): 94 file
+edges, 98 with tests; every use points at the header the using file includes, each header draws its own edges and
+each `.cpp` reaches its header; see the fixes below. Since 2026-10-28 the cycle search takes the header and the
+implementation part of a class as one node with the dependencies of both, so `Creature.hpp -> ArmorClass.hpp` carries
+its cyclic flag, and the `part_of` edge of each `.cpp` on a cycle to its header is cyclic too.
+
 - Commands (both exit 0, only the `.gitignore` warning):
   - `ccsh dependencyparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/dependency.cc.json` -> 44 files in the tree,
     46 leaves, 62 file edges, 63 leaf edges, `Found a total of 5 cycles`
@@ -274,6 +280,8 @@ Round 3:
   signatures, fields, base lists, local variable declarations, `new`, `sizeof` / `alignof`, casts, template arguments
   and default arguments; it does not see `Type::member` expressions in bodies, `typeid`, braced temporaries, lambda
   parameters, pointers to members, constrained template parameters, aliases, catch types, or anything outside a class.
+- Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/cpp.md`): listed
+  per probe in `regression/cpp/known-gaps.md`.
 
 ## Domain language parser
 
@@ -450,29 +458,29 @@ Identifier splitting:
 - Missing:
   1. `Type::member` in a function body: `EncounterResolver.hpp` `model::SpeedType::WALKING`, `EncounterWitness::isDragon`
      `model::CreatureType::DRAGON`, `PersistedCreatures.cpp` `CreatureFacade::STANDARD_CREATURE_TYPE`,
-     `CreatureFacade.cpp` `HitPoints::init(...)`. **Decision: accept (derived from Java).**
+     `CreatureFacade.cpp` `HitPoints::init(...)`. **Decision: accept (derived from Java).** **Fixed 2026-10-26 (cpp.md: a member below a class is a use of it).**
   2. Everything outside a class: free functions (`rollD20`, `freeFunctionUse`), namespace-scope variables
      (`lastAttacker`), gtest `TEST` bodies; with `--include-tests` the edge `CreatureServiceTest -> CreatureService`. **Decision: accept (derived from Kotlin).**
-  3. Aliases: `using Entity = CreatureEntity;` (`CreatureRepository.hpp`), `typedef` (`EntityMapper.hpp`). **Decision: accept (derived from Kotlin).**
+  3. Aliases: `using Entity = CreatureEntity;` (`CreatureRepository.hpp`), `typedef` (`EntityMapper.hpp`). **Decision: accept (derived from Kotlin).** **Fixed 2026-10-26 (cpp.md decision 4: an alias is a leaf that uses what it names).**
   4. `EncounterWitness`: `typeid(model::Fightable)`, `using enum model::SpeedType;`, lambda parameter
      `const model::ArmorClass&`, temporary `model::Dice{6}`, pointer to member `&model::Zentaurenhöhle::rüstungsklasse`,
      member function pointer parameter `int (CreatureService::*)() const`, constrained template parameter
-     `std::derived_from<Creatures>`. **Decision: accept (derived from Java).**
+     `std::derived_from<Creatures>`. **Decision: accept (derived from Java).** **Partly fixed 2026-10-26 (cpp.md: a qualified name in an expression is a use): `typeid`, the pointer to member and the member function pointer draw their edge; `using enum`, the lambda parameter, the temporary and the constraint do not.**
   5. `catch (const NoSuchCreatureException&)` (`SafeCreatureLookup.hpp`). **Decision: accept (derived from Java).**
-  6. `template <> class Repository<Centaur>` (`CentaurRepository.hpp`): no leaf, no edge, file absent. **Decision: accept.**
+  6. `template <> class Repository<Centaur>` (`CentaurRepository.hpp`): no leaf, no edge, file absent. **Decision: accept.** **Fixed 2026-10-26 (cpp.md decision 8: an implementation part of `Repository`, which uses `Centaur`).**
   7. `variants/HippogriffNest.h++`: not analysed, no message. **Decision: accept.**
   8. Test detection by file name (`*Test.cpp`, `*_test.cpp`). **Decision: accept.**
 - Wrong:
   1. `CentaurInspector.hpp`, `CreatureDescriber.hpp`, `SafeCreatureLookup.hpp`: `domain::model::Creature` resolves to
-     `application/dto/Creature.hpp`; `CreatureFacade` never reaches `dto::Creature`. **Decision: accept (derived from Java).**
+     `application/dto/Creature.hpp`; `CreatureFacade` never reaches `dto::Creature`. **Decision: accept (derived from Java).** **Fixed 2026-10-26 (cpp.md decision 1 and qualified names: the first segment is looked up from the enclosing namespaces).**
   2. `EncounterEdgeCases.hpp`: the out-of-line definition `int Pool<Combatant>::size() const` creates a leaf
-     `Pool<Combatant>` next to `Pool`. **Decision: accept.**
+     `Pool<Combatant>` next to `Pool`. **Decision: accept.** **Fixed 2026-10-26 (cpp.md decision 8: an implementation part of `Pool`).**
   3. Files without a declaration (`Application.hpp`, `CentaurRepository.hpp`) are absent from the tree. **Decision: accept (derived from Java).**
 - Bad:
   1. Header / source fold: the leaf sits on the `.cpp`, the header of the pair is a 0 / 0 node (`Creature.hpp`,
      `ArmorClass.hpp`, `CreatureService.hpp`, `CreatureFacade.hpp`, `PersistedCreatures.hpp`; `EncounterTally` sits on
-     `EncounterEdgeCases.cpp`). **Decision: ignore.**
-  2. `EncounterEdgeCases.cpp#Counter`: a function-local struct is a leaf. **Decision: accept (derived from Java).**
+     `EncounterEdgeCases.cpp`). **Decision: ignore.** **Fixed 2026-10-26 (cpp.md decision 3: the header holds the class, the `.cpp` an implementation part that depends on it).**
+  2. `EncounterEdgeCases.cpp#Counter`: a function-local struct is a leaf. **Decision: accept (derived from Java).** **Fixed 2026-10-26 (cpp.md decision 9: a class declared in a function is no target).**
   3. Every leaf edge has usage `usage`; inheritance is not distinguished. **Decision: ignore — documented (derived from Kotlin).**
   4. With a non-UTF-8 locale `Zentaurenhöhle.hpp` is dropped without a message. **Decision: accept (derived from Java).**
 - Good: no new false positive. Types in signatures, fields, base lists, template arguments (also of a call in a body),

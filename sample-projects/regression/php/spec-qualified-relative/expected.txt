@@ -1,0 +1,3 @@
+# php.md, class name 4: a qualified name without an import is below the current namespace
+file App/Util.php -> x/Creature.php
+leaf App/Util.php#Util -> x/Creature.php#Creature

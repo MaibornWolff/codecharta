@@ -1,0 +1,3 @@
+# cpp.md, which file 2, decision 5: a forward declaration in a namespace
+file fightable.hpp -> creature.hpp
+leaf fightable.hpp#Fightable -> creature.hpp#Creature

@@ -1,0 +1,5 @@
+# typescript.md, Angular 3: two classes of one selector and the scope does not decide: no edge
+file app/card.component.ts -> app/card.component.html
+leaf app/card.component.ts#CardComponent -> app/card.component.html#card_component_html
+leaf legacy/badge.component.ts#BadgeComponent -> legacy/badge.component.ts#template
+leaf shared/badge.component.ts#BadgeComponent -> shared/badge.component.ts#template

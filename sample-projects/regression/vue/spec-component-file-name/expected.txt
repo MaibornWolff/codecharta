@@ -1,0 +1,3 @@
+# typescript.md, Vue: a .vue file's default export is the component, named after the file
+file main.ts -> components/Button.vue
+leaf main.ts#root -> components/Button.vue#Button

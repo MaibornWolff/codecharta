@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.withoutFileSuffix
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toNodeType
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
@@ -12,57 +11,74 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Pa
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
+import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
 
+/**
+ * The declarations of a Python file. The extractor reports a use as the module its name is looked up in, a last `*`
+ * segment for a wildcard import, and the name with the attribute names behind it; the analyzer writes it as the paths it can have below the analysis root, the
+ * likeliest first, of which [PythonNameRules] takes the first that is a declaration.
+ */
 class PythonAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     private val modulePath by lazy { fileInfo.physicalPathAsPath().withoutFileSuffix(PYTHON_SUFFIX).parts }
+    private val modules = fileInfo.analysisRoot?.let { PythonModules.of(it) }
+    private val wildcardExports = fileInfo.analysisRoot?.let { WildcardExports.of(it) }
 
     override fun analyze(): FileReport {
         val result = TreeSitterDependencies.analyze(fileInfo.content, Language.PYTHON)
-        val imports = PythonImports.of(result.imports, modulePath)
-        val reexports = if (modulePath.last() == PythonImports.PACKAGE_FILE) namesReexportedByPackage(imports) else emptyList()
-        return FileReport(reexports + result.declarations.map { toNode(it, imports) })
+        val candidates = ModuleCandidates(modules, modulePath.dropLast(1))
+        val reexports = if (modulePath.last() == PythonModules.PACKAGE_FILE) reexportsOf(result.imports, candidates) else emptyList()
+        return FileReport(reexports + result.declarations.map { toNode(it, candidates) })
     }
 
     // A package file that imports a name makes it importable from the package itself
-    private fun namesReexportedByPackage(imports: PythonImports): List<Node> = imports.memberDependencies
-        .filter { PythonImports.PACKAGE_FILE !in it.path.parts }
-        .map { dependency ->
-            val name = dependency.path.parts.last()
-            node(name, NodeType.UNKNOWN, imports.memberDependencies.toSet(), setOf(Type.simple(name)))
+    private fun reexportsOf(imports: List<ImportDeclaration>, candidates: ModuleCandidates): List<Node> =
+        PythonImports.reexportsOf(imports, modulePath).map { (name, imported) ->
+            node(listOf(name), NodeType.UNKNOWN, setOfNotNull(typeOf(candidates.namesIn(imported.module, listOf(imported.name)))))
         }
 
-    private fun toNode(declaration: Declaration, imports: PythonImports): Node {
-        if (declaration.type == DeclarationType.VARIABLE) return node(declaration.name, NodeType.VARIABLE, emptySet(), emptySet())
-        val (qualifiedNames, plainNames) = declaration.usedTypes.partition { it.namespacePrefix.isNotEmpty() }
-        val aliasedMembersInUse = plainNames.mapNotNull { imports.aliasedMembers[it.name] }
-        val dependencies = imports.memberDependencies + imports.wildcardDependencies +
-            aliasedMembersInUse.flatMap { PythonImports.inModuleOrPackage(it.dropLast(1), listOf(it.last())) } +
-            qualifiedNames.flatMap { dependenciesOnImportedModule(it, imports) }
-        val usedTypes = plainNames.map { Type.simple(imports.aliasedMembers[it.name]?.last() ?: it.name) }
-        return node(declaration.name, declaration.type.toNodeType(), dependencies.toSet(), usedTypes.toSet())
+    private fun toNode(declaration: Declaration, candidates: ModuleCandidates): Node {
+        if (declaration.type == DeclarationType.VARIABLE) return node(listOf(declaration.name), NodeType.VARIABLE, emptySet())
+        val usedTypes = declaration.usedTypes.mapNotNull { use ->
+            typeOf((listOf(use) + use.fallbacks).flatMap { pathsOf(it, candidates) })
+        }
+        return node(declaration.parentPath + declaration.name, declaration.type.toNodeType(), usedTypes.toSet())
     }
 
-    private fun dependenciesOnImportedModule(qualifiedName: UsedType, imports: PythonImports): List<Dependency> {
-        val qualifier = qualifiedName.namespacePrefix
-        val dottedQualifier = qualifier.joinToString(SEGMENT_SEPARATOR)
-        val module = if (dottedQualifier in imports.modules) qualifier else imports.aliasedModules[dottedQualifier]
-        return module?.let { PythonImports.inModuleOrPackage(it, listOf(qualifiedName.name)) }.orEmpty()
+    private fun pathsOf(use: UsedType, candidates: ModuleCandidates): List<List<String>> {
+        val chain = use.name.split(SEGMENT_SEPARATOR)
+        if (use.namespacePrefix.isEmpty()) return ModuleCandidates.deepestFirst(modulePath, chain)
+        val isWildcard = use.namespacePrefix.last() == WILDCARD_SEGMENT
+        val module =
+            ModuleReference.of(if (isWildcard) use.namespacePrefix.dropLast(1) else use.namespacePrefix, modulePath) ?: return emptyList()
+        if (!isWildcard) return candidates.namesIn(module, chain)
+        return candidates.of(module).filter { exports(it, chain.first()) }.flatMap { ModuleCandidates.deepestFirst(it, chain) }
     }
 
-    private fun node(name: String, nodeType: NodeType, dependencies: Set<Dependency>, usedTypes: Set<Type>) = Node(
-        pathWithName = Path(modulePath + name),
+    private fun exports(module: List<String>, name: String): Boolean =
+        wildcardExports?.exports(module, name) ?: WildcardExports.isPublic(name)
+
+    // The first of the paths that is a declaration
+    private fun typeOf(paths: List<List<String>>): Type? {
+        val dottedPaths = paths.distinct().map { it.joinToString(SEGMENT_SEPARATOR) }
+        val first = dottedPaths.firstOrNull() ?: return null
+        return Type.simple(first).copy(fallbacks = dottedPaths.drop(1).map { Type.simple(it) })
+    }
+
+    private fun node(nameBelowModule: List<String>, nodeType: NodeType, usedTypes: Set<Type>) = Node(
+        pathWithName = Path(modulePath + nameBelowModule),
         physicalPath = fileInfo.physicalPath,
         language = fileInfo.language,
         nodeType = nodeType,
-        dependencies = dependencies,
+        dependencies = emptySet(),
         usedTypes = usedTypes
     )
 
     companion object {
         private const val PYTHON_SUFFIX = "py"
         private const val SEGMENT_SEPARATOR = "."
+        private const val WILDCARD_SEGMENT = "*"
     }
 }

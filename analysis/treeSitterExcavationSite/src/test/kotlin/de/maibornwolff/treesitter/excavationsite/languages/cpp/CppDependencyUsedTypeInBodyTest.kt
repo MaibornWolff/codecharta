@@ -2,6 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp
 
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -26,8 +27,9 @@ class CppDependencyUsedTypeInBodyTest {
 
             // Assert
             val foo = result.declarations.single { it.name == "Foo" }
-            assertThat(foo.usedTypes).containsExactly(
-                UsedType(name = "B", namespacePrefix = listOf("A"))
+            assertThat(foo.usedTypes).containsExactlyInAnyOrder(
+                UsedType(name = "B", namespacePrefix = listOf("A")),
+                UsedType(name = "GLOBAL_CONSTANT", namespacePrefix = listOf("A", "B"))
             )
         }
 
@@ -45,7 +47,10 @@ class CppDependencyUsedTypeInBodyTest {
 
             // Assert
             val foo = result.declarations.single { it.name == "Foo" }
-            assertThat(foo.usedTypes).containsExactly(UsedType(name = "A"))
+            assertThat(foo.usedTypes).containsExactlyInAnyOrder(
+                UsedType(name = "A"),
+                UsedType(name = "GLOBAL_CONSTANT", namespacePrefix = listOf("A"))
+            )
         }
 
         @Test
@@ -64,8 +69,9 @@ class CppDependencyUsedTypeInBodyTest {
             // Assert
             val foo = result.declarations.single { it.name == "FooClass" }
             assertThat(foo.usedTypes).containsExactlyInAnyOrder(
-                UsedType(name = "BarClass"),
+                UsedType(name = "BarClass", usage = TypeUsage.INHERITANCE),
                 UsedType(name = "C", namespacePrefix = listOf("A", "B")),
+                UsedType(name = "GLOBAL_CONSTANT", namespacePrefix = listOf("A", "B", "C")),
                 UsedType(name = "int")
             )
         }
@@ -85,7 +91,7 @@ class CppDependencyUsedTypeInBodyTest {
             // Assert
             val foo = result.declarations.single { it.name == "FooClass" }
             assertThat(foo.usedTypes).containsExactlyInAnyOrder(
-                UsedType(name = "BarClass"),
+                UsedType(name = "BarClass", usage = TypeUsage.INHERITANCE),
                 UsedType(name = "int")
             )
         }

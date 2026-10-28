@@ -131,7 +131,11 @@ variable), 2 found that I had not expected. With tests 15 of 19.
   outgoing over 4 file edges, creature.go 13 / 13).
 - Native vs resolved: the import path is the directory under the module, so the parser maps the import string onto the
   directory tree by suffix. `go.mod` (module name, `replace`) is not read. Package aliases are ignored (harmless), the
-  dot import is not resolved, the package qualifier of a type is not used to choose between two packages.
+  dot import is not resolved, the package qualifier of a type is not used to choose between two packages. Since the
+  name rules of go.md (2026-10-22) import paths go through `go.mod` and `vendor/`, and a name through an import means a
+  declaration of that package; see the fixes marked below.
+- Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/go.md`): listed
+  per probe in `regression/go/known-gaps.md`.
 
 ## Unified parser
 - `ccsh unifiedparser -nc <dir> -e "output,FINDINGS.md" -o output/unified.cc.json`: ran without error, 37 `.go` files
@@ -372,25 +376,29 @@ their sums equal the totals of the real file. Format: parameters / logic / compl
      `dependencyEnumConstOnly`), `model.MAX_HIT_POINTS` (`dependencyConstOnly`), `Monstrosity` / `Walking`
      (centaur.go), `application.StandardCreatureType` (creature.go, persisted_creatures.go). With the last one the
      planted upward dependency and the cycle creature -> facade -> service -> creatures -> creature are invisible. **Decision: accept (derived from Kotlin).**
-  2. Dot import (`application/creature_util.go`): no outgoing edge at all. **Decision: accept.**
+  2. Dot import (`application/creature_util.go`): no outgoing edge at all. **Decision: accept.** **Fixed 2026-10-22
+     (go.md rule 3).**
   3. Package-level `var` declarations are not scanned: `var fallbackArmor model.ArmorClass` (encounter_edge_cases.go),
      `var _ Fightable = (*Creature)(nil)`, `var _ service.Creatures = (*PersistedCreatures)(nil)`, so Go's way of
      stating "implements" yields no edge. **Decision: accept.**
   4. `replace de.sots/dicebag => ./libs/dicebag`: `domain/model/dice_bag.go -> libs/dicebag/bag.go` is absent, `go.mod`
-     is not read, nothing is logged. **Decision: ignore.**
+     is not read, nothing is logged. **Decision: ignore.** **Fixed 2026-10-22 all the same: `libs/dicebag` has a
+     `go.mod` of its own, which go.md import paths rule 1 reads.**
   5. Method value `reroll := dice.Roll` (initiative.go) and `//go:embed lair_manifest.txt`: no edge. **Decision: accept (derived from Java).**
   6. Scratch probe only: types after the first in a `type ( … )` group and methods on a generic receiver. **Decision: accept.**
 - Wrong:
   1. `application/creature_facade.go`: `model.Creature` and `dto.Creature` collapse onto the package imported first
      (dto as written, model after swapping the two import lines in a scratch copy). **Decision: accept (derived from Java).**
+     **Fixed 2026-10-22 (go.md, a selector through an import).**
   2. Called method names are resolved as type names: `creature.HitPoints()` / `defender.ArmorClass()` in
      encounter_resolver.go create `EncounterResolver -> HitPoints` / `-> ArmorClass`; the probe `animals.Centaur()` on
-     an unrelated local interface creates an edge to `domain/model/centaur.go`. **Decision: accept.**
+     an unrelated local interface creates an edge to `domain/model/centaur.go`. **Decision: accept.** **Fixed 2026-10-22
+     (go.md decision 5: a selector on a value draws no edge).**
   3. `application/aliases.go`: the alias `Fightable` is a leaf named `unknown`. **Decision: accept (derived from Kotlin).**
   4. Kinds: `CreatureType`, `SpeedType` (named int) and `damageRule` (func type) are `class`. **Decision: ignore.**
 - Bad:
   1. The log reports "1 cycle" while no file edge is cyclic (it is `Dice <-> DiceRoll` inside dice.go). **Decision: ignore — the cycle count is at declaration level, documented (derived from Kotlin).**
-  2. encounter_edge_cases.go: the function-local type `mount` is a file-level leaf; two `init` functions are one leaf. **Decisions derived from Java: accept — function-local type exported as a file-level leaf.** **Decision: ignore — two `init` functions as one leaf.**
+  2. encounter_edge_cases.go: the function-local type `mount` is a file-level leaf; two `init` functions are one leaf. **Decisions derived from Java: accept — function-local type exported as a file-level leaf.** **Fixed 2026-10-22: a type declared in a function is no leaf (go.md).** **Decision: ignore — two `init` functions as one leaf.**
   3. `doc.go` is not a node, so the file count differs from the other two parsers (34 vs 35 non-test files). **Decision: accept (derived from Java).**
   4. Leaf levels are per package; unresolved imports leave no trace even with `--verbose`. **Decisions: ignore — leaf levels per package, documented; ignore — `--verbose` (derived from TypeScript).**
 - Good: 13 of the 17 expected new edges and all 43 old ones are present; a type is found as parameter, result,

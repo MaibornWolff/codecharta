@@ -1,0 +1,5 @@
+# sql.md, qualified: S.N means the object of schema S, else one created without a schema, never another schema
+file app/report.sql -> db/plain.sql
+file app/report.sql -> db/sales.sql
+leaf app/report.sql#report -> db/plain.sql#refunds
+leaf app/report.sql#report -> db/sales.sql#orders

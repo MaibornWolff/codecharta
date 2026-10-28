@@ -1,0 +1,5 @@
+# sql.md, objects, decision 4: SET search_path sets the schema of the rest of the file
+file reports/plain_report.sql -> db/plain.sql
+file reports/sales_report.sql -> db/sales.sql
+leaf reports/plain_report.sql#plain_report -> db/plain.sql#orders
+leaf reports/sales_report.sql#report -> db/sales.sql#orders

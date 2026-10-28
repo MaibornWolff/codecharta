@@ -1,0 +1,3 @@
+# typescript.md, binding: import { A as B } binds B to the export A
+file user.ts -> model.ts
+leaf user.ts#User -> model.ts#Model

@@ -7,5 +7,9 @@ enum class TypeOfUsage(val rawValue: String) {
     CONSTANT_ACCESS("constant_access"),
     RETURN_VALUE("return_value"),
     INSTANTIATION("instantiation"),
-    ARGUMENT("argument")
+    ARGUMENT("argument"),
+    FRIEND("friend"),
+
+    /** An implementation part's tie to the declaration of its own path (`Node.isImplementationPart`). */
+    PART_OF("part_of")
 }

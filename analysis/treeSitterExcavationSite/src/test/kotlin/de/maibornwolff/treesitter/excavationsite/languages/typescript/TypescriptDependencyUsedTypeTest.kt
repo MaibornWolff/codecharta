@@ -49,7 +49,7 @@ class TypescriptDependencyUsedTypeTest {
         }
 
         @Test
-        fun `should not extract lowercase object from member access`() {
+        fun `should report the free lower-case object of a member access as a possible global`() {
             // Arrange
             val code = "export class Foo { bar() { return myModule.value } }"
 
@@ -57,8 +57,8 @@ class TypescriptDependencyUsedTypeTest {
             val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
 
             // Assert
-            val usedTypeNames = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).doesNotContain("myModule")
+            val uses = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name to it.namespacePrefix }
+            assertThat(uses).containsExactly("myModule" to listOf("GLOBAL"))
         }
 
         @Test
@@ -114,7 +114,7 @@ class TypescriptDependencyUsedTypeTest {
         }
 
         @Test
-        fun `should not extract lowercase identifiers`() {
+        fun `should report a free lower-case identifier as a possible global`() {
             // Arrange
             val code = "export class Foo { bar() { return myFactory } }"
 
@@ -122,8 +122,8 @@ class TypescriptDependencyUsedTypeTest {
             val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
 
             // Assert
-            val usedTypeNames = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).doesNotContain("myFactory")
+            val uses = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name to it.namespacePrefix }
+            assertThat(uses).containsExactly("myFactory" to listOf("GLOBAL"))
         }
 
         @Test
@@ -140,7 +140,7 @@ class TypescriptDependencyUsedTypeTest {
         }
 
         @Test
-        fun `should resolve import alias to original type name in usedTypes`() {
+        fun `should report a use of a renamed import under the local name it binds`() {
             // Arrange
             val code = """
                 import { MyType as MyRenamedType } from './MyType'
@@ -152,7 +152,25 @@ class TypescriptDependencyUsedTypeTest {
 
             // Assert
             val usedTypeNames = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("MyType")
+            assertThat(usedTypeNames).containsExactlyInAnyOrder("MyRenamedType")
+        }
+
+        @Test
+        fun `should extract the type a type predicate or an assertion predicate names`() {
+            // Arrange
+            val code = """
+                export function isCentaur(creature: Creature): creature is Centaur { return true }
+                export function assertCentaur(creature: Creature): asserts creature is Centaur {}
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+            // Assert
+            assertThat(result.declarations.map { declaration -> declaration.usedTypes.map { it.name } }).containsExactly(
+                listOf("Creature", "Centaur"),
+                listOf("Creature", "Centaur")
+            )
         }
 
         @Test
@@ -230,7 +248,7 @@ class TypescriptDependencyUsedTypeTest {
         }
 
         @Test
-        fun `should resolve aliased lowercase import to original name as usedType`() {
+        fun `should report a renamed lower-case import under the local name it binds`() {
             // Arrange
             val code = """
                 import { Hash as createHash } from 'crypto'
@@ -242,7 +260,7 @@ class TypescriptDependencyUsedTypeTest {
 
             // Assert
             val usedTypeNames = result.declarations.first { it.name == "process" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("Hash")
+            assertThat(usedTypeNames).containsExactlyInAnyOrder("createHash")
         }
     }
 
@@ -284,7 +302,7 @@ class TypescriptDependencyUsedTypeTest {
 
             // Assert
             val usedTypeNames = result.declarations.first { it.name == "Controller" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("UserService")
+            assertThat(usedTypeNames).containsExactlyInAnyOrder("createService", "UserService")
         }
 
         @Test
@@ -344,66 +362,25 @@ class TypescriptDependencyUsedTypeTest {
     }
 
     @Nested
-    inner class NamespaceImportUsedTypeExtraction {
-        @Test
-        fun `should recognize lowercase namespace alias usages as usedType`() {
-            // Arrange
-            val code = """
-                import * as ns from './utils'
-                export class Bar {
-                    doWork() { ns.method() }
-                }
-            """.trimIndent()
-
-            // Act
-            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
-
-            // Assert
-            val usedTypeNames = result.declarations.first { it.name == "Bar" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("ns")
-        }
-
-        @Test
-        fun `should extract class name from namespace alias constructor call`() {
-            // Arrange
-            val code = """
-                import * as types from './types'
-                export class Consumer {
-                    log(): void { new types.Logger() }
-                }
-            """.trimIndent()
-
-            // Act
-            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
-
-            // Assert
-            val usedTypeNames = result.declarations.first { it.name == "Consumer" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("types", "Logger")
-        }
-
-        @Test
-        fun `should extract class name from namespace alias member access`() {
-            // Arrange
-            val code = """
-                import * as types from './types'
-                export class Consumer {
-                    create() { return types.Animal.create() }
-                }
-            """.trimIndent()
-
-            // Act
-            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
-
-            // Assert
-            val usedTypeNames = result.declarations.first { it.name == "Consumer" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).containsExactlyInAnyOrder("types", "Animal")
-        }
-    }
-
-    @Nested
     inner class UsedTypeEdgeCases {
         @Test
-        fun `should not emit lowercase constructor call as usedType`() {
+        fun `should report no use of a method called on a value, also where its name starts upper case`() {
+            // Arrange
+            val code = """
+                import { Render } from './render'
+                export function draw(widget: Widget): void { widget.Render() }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+            // Assert
+            val usedTypeNames = result.declarations.first { it.name == "draw" }.usedTypes.map { it.name }
+            assertThat(usedTypeNames).containsExactlyInAnyOrder("Widget")
+        }
+
+        @Test
+        fun `should report a free lower-case constructor as a possible global`() {
             // Arrange
             val code = "export class Foo { x = new xmlParser() }"
 
@@ -411,8 +388,161 @@ class TypescriptDependencyUsedTypeTest {
             val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
 
             // Assert
-            val usedTypeNames = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name }
-            assertThat(usedTypeNames).doesNotContain("xmlParser")
+            val uses = result.declarations.first { it.name == "Foo" }.usedTypes.map { it.name to it.namespacePrefix }
+            assertThat(uses).containsExactly("xmlParser" to listOf("GLOBAL"))
         }
+    }
+
+    @Nested
+    inner class LocalBindings {
+        private fun usedNames(code: String, declaration: String): List<String> = TreeSitterDependencies
+            .analyze(code, Language.TYPESCRIPT)
+            .declarations
+            .single { it.name == declaration }
+            .usedTypes
+            .map { it.name }
+
+        @Test
+        fun `should report no use of a name a parameter binds`() {
+            // Arrange
+            val code = """
+                import { Model } from './model'
+                export function shadowed(Model: number): number { return Model }
+            """.trimIndent()
+
+            // Act
+            val names = usedNames(code, "shadowed")
+
+            // Assert
+            assertThat(names).isEmpty()
+        }
+
+        @Test
+        fun `should report the type of a name a parameter binds as a value`() {
+            // Arrange
+            val code = """
+                import { Model } from './model'
+                export function typed(Model: Model): void {}
+            """.trimIndent()
+
+            // Act
+            val names = usedNames(code, "typed")
+
+            // Assert
+            assertThat(names).containsExactly("Model")
+        }
+
+        @Test
+        fun `should report no use of a class or a variable a block declares`() {
+            // Arrange
+            val code = """
+                import { Model, Other } from './model'
+                export function local(): unknown {
+                    class Model {}
+                    const { Other } = { Other: 1 }
+                    return new Model() + Other
+                }
+            """.trimIndent()
+
+            // Act
+            val names = usedNames(code, "local")
+
+            // Assert
+            assertThat(names).isEmpty()
+        }
+
+        @Test
+        fun `should report no use of a name a type parameter binds`() {
+            // Arrange
+            val code = """
+                import { Model } from './model'
+                export class Box<Model> { item?: Model }
+            """.trimIndent()
+
+            // Act
+            val names = usedNames(code, "Box")
+
+            // Assert
+            assertThat(names).isEmpty()
+        }
+
+        @Test
+        fun `should report no use of a name a loop or a catch binds`() {
+            // Arrange
+            val code = """
+                import { Item, Failure } from './model'
+                export function each(items: number[]): void {
+                    for (const Item of items) { console.log(Item) }
+                    try {} catch (Failure) { console.log(Failure) }
+                }
+            """.trimIndent()
+
+            // Act
+            val names = usedNames(code, "each")
+
+            // Assert
+            assertThat(names).containsExactly("console")
+        }
+
+        @Test
+        fun `should keep a name that a block binds out of a dynamic import or a require, the import's through its module`() {
+            // Arrange
+            val code = """
+                export async function load() {
+                    const { Centaur } = await import('./centaur')
+                    const { Helper } = require('./helper')
+                    return new Centaur() + new Helper()
+                }
+            """.trimIndent()
+
+            // Act
+            val names = usedNames(code, "load")
+
+            // Assert
+            val dynamicImport = "dynamic_import_" + code.indexOf("import('./centaur')")
+            assertThat(names).containsExactlyInAnyOrder("$dynamicImport.Centaur", "Helper", "require")
+        }
+    }
+
+    @Test
+    fun `should report a shorthand property as a use of the name it reads, not a destructured one`() {
+        // Arrange
+        val code = """
+            import { format, size } from './fmt'
+            export const card = {
+                methods: { format },
+                data() {
+                    const { label } = this.props
+                    return { size, label }
+                }
+            }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+        // Assert
+        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactlyInAnyOrder("format", "size")
+    }
+
+    @Test
+    fun `should report the default export that defineAsyncComponent loads as a use, by its specifier`() {
+        // Arrange
+        val code = """
+            import { defineAsyncComponent } from 'vue'
+            export const LazyForm = defineAsyncComponent(() => import('./Form.vue'))
+            export const LazyCard = defineAsyncComponent({ loader: () => import('../ui/Card.vue'), delay: 200 })
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+        // Assert
+        val loaded = result.declarations.associate { declaration ->
+            declaration.name to declaration.usedTypes.filter { it.name == "DEFAULT_EXPORT" }.map { it.namespacePrefix }
+        }
+        assertThat(loaded).containsExactlyInAnyOrderEntriesOf(
+            mapOf("LazyForm" to listOf(listOf(".", "Form.vue")), "LazyCard" to listOf(listOf("..", "ui", "Card.vue")))
+        )
     }
 }

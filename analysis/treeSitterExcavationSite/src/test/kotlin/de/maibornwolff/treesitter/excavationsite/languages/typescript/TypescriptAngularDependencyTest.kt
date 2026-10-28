@@ -1,5 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.typescript
 
+import de.maibornwolff.treesitter.excavationsite.api.AngularSelector
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import org.assertj.core.api.Assertions.assertThat
@@ -25,7 +26,7 @@ class TypescriptAngularDependencyTest {
         }
 
         @Test
-        fun `should declare the components and pipes the inline template of each component uses`() {
+        fun `should declare the elements and pipes of the inline template of each component`() {
             // Arrange
             val code = """
                 @Component({ selector: 'app-chest', template: `<app-torch />{{ gold | goldCoins }}` })
@@ -41,11 +42,21 @@ class TypescriptAngularDependencyTest {
             assertThat(embedded.map { it.owner to it.language })
                 .containsExactly("ChestComponent" to Language.ANGULAR, "LidComponent" to Language.ANGULAR)
             assertThat(embedded.map { template -> template.declarations.single().usedTypes.map { it.name } })
-                .containsExactly(listOf("app-torch", "goldCoins"), listOf("p"))
+                .containsExactly(listOf("goldCoins"), emptyList())
+            assertThat(
+                embedded.map { template ->
+                    template.declarations
+                        .single()
+                        .angular
+                        ?.elements
+                        .orEmpty()
+                        .map { it.element }
+                }
+            ).containsExactly(listOf("app-torch"), listOf("p"))
         }
 
         @Test
-        fun `should declare the components a quoted inline template uses behind escaped quotes`() {
+        fun `should declare the elements of a quoted inline template behind escaped quotes`() {
             // Arrange
             val code = """
                 @Component({ selector: 'app-lair', template: '<app-dragon size=\'large\'></app-dragon>' })
@@ -56,7 +67,8 @@ class TypescriptAngularDependencyTest {
             val template = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).embedded.single()
 
             // Assert
-            assertThat(template.declarations.single().usedTypes.map { it.name }).containsExactly("app-dragon")
+            assertThat(template.declarations.single().angular?.elements)
+                .containsExactly(AngularSelector(element = "app-dragon", attributes = mapOf("size" to "large")))
         }
 
         @Test
@@ -71,7 +83,7 @@ class TypescriptAngularDependencyTest {
             val angular = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations.single().angular
 
             // Assert
-            assertThat(angular?.templateNames).isEmpty()
+            assertThat(angular?.selectors).isEmpty()
             assertThat(angular?.templateUrl).isEqualTo("../pages/lair.page.html")
         }
     }
@@ -116,47 +128,7 @@ class TypescriptAngularDependencyTest {
     }
 
     @Nested
-    inner class AngularTemplateNames {
-        private fun templateNamesOf(code: String, className: String): Set<String> = TreeSitterDependencies
-            .analyze(
-                code,
-                Language.TYPESCRIPT
-            ).declarations
-            .first { it.name == className }
-            .angular
-            ?.templateNames
-            .orEmpty()
-
-        @Test
-        fun `should name an exported component after its element selector`() {
-            // Arrange
-            val code = """
-                @Component({ selector: 'app-cave-map', templateUrl: './cave-map.component.html' })
-                export class CaveMapComponent {}
-            """.trimIndent()
-
-            // Act
-            val templateNames = templateNamesOf(code, "CaveMapComponent")
-
-            // Assert
-            assertThat(templateNames).containsExactly("app-cave-map")
-        }
-
-        @Test
-        fun `should name a component after each element of a selector list but not after attribute or class selectors`() {
-            // Arrange
-            val code = """
-                @Component({ selector: 'app-torch, App-Lantern[lit], [appGlow], .flame' })
-                class TorchComponent {}
-            """.trimIndent()
-
-            // Act
-            val templateNames = templateNamesOf(code, "TorchComponent")
-
-            // Assert
-            assertThat(templateNames).containsExactly("app-torch", "app-lantern")
-        }
-
+    inner class AngularPipeNames {
         @Test
         fun `should name a pipe after its pipe name`() {
             // Arrange
@@ -166,10 +138,10 @@ class TypescriptAngularDependencyTest {
             """.trimIndent()
 
             // Act
-            val templateNames = templateNamesOf(code, "GoldCoinsPipe")
+            val angular = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations.single().angular
 
             // Assert
-            assertThat(templateNames).containsExactly("goldCoins")
+            assertThat(angular?.pipeName).isEqualTo("goldCoins")
         }
 
         @Test
@@ -188,21 +160,19 @@ class TypescriptAngularDependencyTest {
             val declarations = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations
 
             // Assert
-            assertThat(declarations.map { it.angular?.templateNames to it.angular?.templateUrl }).containsExactly(
-                setOf("app-vault") to "./vault.component.html",
-                setOf("goldCoins") to null,
-                emptySet<String>() to null
+            assertThat(declarations.map { listOf(it.angular?.selectors, it.angular?.pipeName, it.angular?.templateUrl) }).containsExactly(
+                listOf(listOf(AngularSelector(element = "app-vault")), null, "./vault.component.html"),
+                listOf(emptyList<AngularSelector>(), "goldCoins", null),
+                listOf(emptyList<AngularSelector>(), null, null)
             )
         }
 
         @Test
-        fun `should not name classes without component or pipe decorator`() {
+        fun `should not name classes without component, directive or pipe decorator`() {
             // Arrange
             val code = """
                 @Injectable({ providedIn: 'root' })
                 export class TreasuryService {}
-                @Directive({ selector: 'app-glow' })
-                export class GlowDirective {}
                 export class Centaur {}
             """.trimIndent()
 
@@ -211,6 +181,75 @@ class TypescriptAngularDependencyTest {
 
             // Assert
             assertThat(declarations.mapNotNull { it.angular }).isEmpty()
+        }
+    }
+
+    @Nested
+    inner class AngularSelectors {
+        private fun selectorsOf(code: String): List<AngularSelector> = TreeSitterDependencies
+            .analyze(code, Language.TYPESCRIPT)
+            .declarations
+            .single()
+            .angular
+            ?.selectors
+            .orEmpty()
+
+        @Test
+        fun `should read each alternative of a component selector with its element, attributes and classes`() {
+            // Arrange
+            val code = """
+                @Component({ selector: 'App-Lantern[lit], [appGlow=Bright].flame.Ember' })
+                export class LanternComponent {}
+            """.trimIndent()
+
+            // Act
+            val selectors = selectorsOf(code)
+
+            // Assert
+            assertThat(selectors).containsExactly(
+                AngularSelector(element = "app-lantern", attributes = mapOf("lit" to "")),
+                AngularSelector(attributes = mapOf("appGlow" to "bright"), classNames = setOf("flame", "ember"))
+            )
+        }
+
+        @Test
+        fun `should read the selector of a directive with its not parts and quoted attribute values`() {
+            // Arrange
+            val code = """
+                @Directive({ selector: 'input[type="range"]:not([disabled]):not(.locked), #torch' })
+                export class RangeDirective {}
+            """.trimIndent()
+
+            // Act
+            val selectors = selectorsOf(code)
+
+            // Assert
+            assertThat(selectors).containsExactly(
+                AngularSelector(
+                    element = "input",
+                    attributes = mapOf("type" to "range"),
+                    notSelectors = listOf(
+                        AngularSelector(attributes = mapOf("disabled" to "")),
+                        AngularSelector(classNames = setOf("locked"))
+                    )
+                ),
+                AngularSelector(attributes = mapOf("id" to "torch"))
+            )
+        }
+
+        @Test
+        fun `should read a selector of only not parts as one that matches any other element`() {
+            // Arrange
+            val code = """
+                @Directive({ selector: ':not(a)' })
+                export class NotLinkDirective {}
+            """.trimIndent()
+
+            // Act
+            val selectors = selectorsOf(code)
+
+            // Assert
+            assertThat(selectors).containsExactly(AngularSelector(notSelectors = listOf(AngularSelector(element = "a"))))
         }
     }
 }

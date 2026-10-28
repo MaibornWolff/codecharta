@@ -1,5 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes
 
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.syntax.CppForwardDeclarations
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.syntax.CppNamespaceWalker
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
@@ -16,15 +18,19 @@ internal object CppTypeHelper {
     private const val PRIMITIVE_TYPE = "primitive_type"
     private const val SIZED_TYPE_SPECIFIER = "sized_type_specifier"
     private const val SCOPE_FIELD = "scope"
+    const val GLOBAL_SCOPE = "::"
+    private const val TEMPLATE_ARGUMENTS_START = "<"
     private const val TYPE_FIELD = "type"
 
     private val TYPE_NODE_TYPES =
         setOf(TYPE_IDENTIFIER, TEMPLATE_TYPE, QUALIFIED_IDENTIFIER, PRIMITIVE_TYPE, SIZED_TYPE_SPECIFIER)
+    private val TAG_SPECIFIERS = setOf("class_specifier", "struct_specifier", "union_specifier", "enum_specifier")
+    private val TAG_BODIES = setOf("field_declaration_list", "enumerator_list")
     private val LEAF_TYPE_NODES = setOf(TYPE_IDENTIFIER, IDENTIFIER, PRIMITIVE_TYPE, SIZED_TYPE_SPECIFIER)
     private val TEMPLATE_LIKE_TYPES = setOf(TEMPLATE_TYPE, TEMPLATE_FUNCTION)
     private val TEMPLATE_NAME_TYPES = setOf(TYPE_IDENTIFIER, IDENTIFIER)
 
-    fun isTypeNode(node: SyntaxNode): Boolean = node.type in TYPE_NODE_TYPES
+    fun isTypeNode(node: SyntaxNode): Boolean = node.type in TYPE_NODE_TYPES || isElaborated(node)
 
     fun extractType(typeNode: SyntaxNode): UsedType? {
         if (typeNode.isNull) return null
@@ -32,11 +38,29 @@ internal object CppTypeHelper {
             in LEAF_TYPE_NODES -> extractLeafName(typeNode)
             in TEMPLATE_LIKE_TYPES -> extractTemplateLike(typeNode)
             QUALIFIED_IDENTIFIER -> extractRightmostSegment(typeNode)
+            in TAG_SPECIFIERS -> extractElaborated(typeNode)
             else -> null
         }
     }
 
-    private fun extractLeafName(node: SyntaxNode): UsedType = UsedType(name = node.text.trim())
+    private fun isElaborated(node: SyntaxNode): Boolean = node.type in TAG_SPECIFIERS && node.children().none { it.type in TAG_BODIES }
+
+    // struct Roost *held; names Roost, and declares it in the namespace around it if no visible declaration does
+    private fun extractElaborated(specifier: SyntaxNode): UsedType? {
+        if (!isElaborated(specifier) || CppForwardDeclarations.isForwardDeclaration(specifier)) return null
+        val qualified = specifier.children().firstOrNull { it.type == QUALIFIED_IDENTIFIER }
+        if (qualified != null) return extractRightmostSegment(qualified)
+        val name = specifier.children().firstOrNull { it.type == TYPE_IDENTIFIER }?.text?.trim() ?: return null
+        val implicitDeclaration = UsedType(
+            name = name,
+            namespacePrefix =
+                listOf(GLOBAL_SCOPE) + CppNamespaceWalker.walkAncestorsFrom(specifier)
+        )
+        return UsedType(name = name, fallbacks = listOf(implicitDeclaration))
+    }
+
+    private fun extractLeafName(node: SyntaxNode): UsedType? =
+        node.text.trim().takeUnless { CppLocalNames.isLocal(node, it) }?.let { UsedType(name = it) }
 
     fun extractTypeFromTypeField(node: SyntaxNode): UsedType? {
         val typeField = node.getChildByFieldName(TYPE_FIELD).orNull()
@@ -56,6 +80,7 @@ internal object CppTypeHelper {
         // template_function (name=identifier, used for function-call forms and, per
         // tree-sitter-cpp, also for nested template arguments like C<T> inside list<C<T>>).
         val nameNode = templateNode.children().firstOrNull { it.type in TEMPLATE_NAME_TYPES } ?: return null
+        if (CppLocalNames.isLocal(templateNode, nameNode.text.trim())) return null
         val argList = templateNode.children().firstOrNull { it.type == TEMPLATE_ARGUMENT_LIST }
         val genericTypes = argList
             ?.namedChildren()
@@ -75,13 +100,18 @@ internal object CppTypeHelper {
         return extractType(argNode)
     }
 
+    // A leading :: names the global namespace, reported as the first prefix segment GLOBAL_SCOPE
     fun extractRightmostSegment(qualifiedId: SyntaxNode): UsedType? = QualifiedIdentifierPath.readLeaf(qualifiedId) { scopeSegments, leaf ->
+        val prefix = (if (isGloballyQualified(qualifiedId)) listOf(GLOBAL_SCOPE) else emptyList()) + scopeSegments
         when {
             leaf == null -> null
-            leaf.type in TEMPLATE_LIKE_TYPES -> extractTemplateLike(leaf)?.copy(namespacePrefix = scopeSegments)
-            else -> leaf.text.trim().takeIf { it.isNotEmpty() }?.let { UsedType(name = it, namespacePrefix = scopeSegments) }
+            leaf.type in TEMPLATE_LIKE_TYPES -> extractTemplateLike(leaf)?.copy(namespacePrefix = prefix)
+            else -> leaf.text.trim().takeIf { it.isNotEmpty() }?.let { UsedType(name = it, namespacePrefix = prefix) }
         }
     }
+
+    private fun isGloballyQualified(qualifiedId: SyntaxNode): Boolean =
+        qualifiedId.getChildByFieldName(SCOPE_FIELD).isNull && qualifiedId.children().firstOrNull()?.type == GLOBAL_SCOPE
 
     fun extractSingleSegmentScope(qualifiedId: SyntaxNode): UsedType? {
         val scope = qualifiedId.getChildByFieldName(SCOPE_FIELD).orNull() ?: return null
@@ -90,8 +120,9 @@ internal object CppTypeHelper {
         return if (text.isEmpty()) null else UsedType(name = text)
     }
 
+    // Pool<T>::size() is a member of the template Pool, whatever its arguments
     fun extractSecondToLastSegment(qualifiedId: SyntaxNode): UsedType? {
-        val segments = QualifiedIdentifierPath.scopeSegments(qualifiedId)
+        val segments = QualifiedIdentifierPath.scopeSegments(qualifiedId).map { it.substringBefore(TEMPLATE_ARGUMENTS_START).trim() }
         val name = segments.lastOrNull() ?: return null
         return UsedType(name = name, namespacePrefix = segments.dropLast(1))
     }

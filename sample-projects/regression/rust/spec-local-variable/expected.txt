@@ -1,0 +1,1 @@
+# rust.md, simple name 1: a local variable hides a function

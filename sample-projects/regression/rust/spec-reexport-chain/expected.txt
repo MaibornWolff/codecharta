@@ -1,0 +1,7 @@
+# rust.md, decision 7: a chain of re-exports, each a declaration
+file src/lib.rs -> src/model/mod.rs
+file src/model/mod.rs -> src/model/creature.rs
+file tests/arena.rs -> src/lib.rs
+leaf src/lib.rs#Creature -> src/model/mod.rs#Creature
+leaf src/model/mod.rs#Creature -> src/model/creature.rs#Creature
+leaf tests/arena.rs#spawn -> src/lib.rs#Creature

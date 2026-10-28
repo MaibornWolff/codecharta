@@ -1,0 +1,2 @@
+# delphi.md, units, decision 2: a uses entry nothing uses draws no edge, not even to a script leaf
+leaf Game.Model.pas#Model_script -> Game.Model.pas#Count

@@ -1,0 +1,7 @@
+# typescript.md, declarations, decision 7: what a namespace exports is a leaf of its own, what it does not export belongs to it; qualified p.N through a namespace
+file draw.ts -> geo.ts
+file geo.ts -> point.ts
+leaf draw.ts#draw -> geo.ts#Circle
+leaf geo.ts#Circle -> point.ts#Point
+leaf geo.ts#Shapes -> point.ts#Point
+leaf geo.ts#unit -> geo.ts#Shapes

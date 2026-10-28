@@ -1,0 +1,5 @@
+# php.md, decision 4: the interfaces an interface extends
+file Model/Boss.php -> Model/Describable.php
+file Model/Boss.php -> Model/Fightable.php
+leaf Model/Boss.php#Boss -> Model/Describable.php#Describable usage=inheritance
+leaf Model/Boss.php#Boss -> Model/Fightable.php#Fightable usage=inheritance

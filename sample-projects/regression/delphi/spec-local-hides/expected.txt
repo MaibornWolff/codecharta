@@ -1,0 +1,3 @@
+# delphi.md, simple name 1: a parameter, a local variable, `Result` and a `for` variable hide a unit name
+file Game.User.pas -> Game.Limits.pas
+leaf Game.User.pas#Calc -> Game.Limits.pas#MaxHp

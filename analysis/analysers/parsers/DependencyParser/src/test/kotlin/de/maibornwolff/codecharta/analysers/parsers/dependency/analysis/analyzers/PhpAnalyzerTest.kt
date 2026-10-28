@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.php.PhpAnalyzer
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
@@ -48,7 +47,7 @@ class PhpAnalyzerTest {
      */
 
     @Test
-    fun `should name a node after its file with a script suffix when the file declares nothing`() {
+    fun `should name the script leaf after its file with a script suffix at the file's path`() {
         // Arrange
         val code = """
             <?php
@@ -69,12 +68,12 @@ class PhpAnalyzerTest {
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactly(
-                tuple(NodeType.SCRIPT, Path(listOf("JustScript_php", "JustScript_script")))
+                tuple(NodeType.SCRIPT, Path(listOf("JustScript", "JustScript.script")))
             )
     }
 
     @Test
-    fun `should convert physical path to correct path with names`() {
+    fun `should give a class outside every namespace its name alone as path`() {
         // Arrange
         val code = """
             <?php
@@ -97,7 +96,7 @@ class PhpAnalyzerTest {
         assertThat(report.nodes)
             .extracting("pathWithName")
             .containsExactly(
-                Path(listOf("MyExample", "Path", "PhpAnalyzerTest_php", "Person"))
+                Path(listOf("Person"))
             )
     }
 
@@ -215,7 +214,7 @@ class PhpAnalyzerTest {
     }
 
     @Test
-    fun `should convert constant declared by define function to node with type VARIABLE`() {
+    fun `should convert a constant define declares to a global node with type VARIABLE and other calls to the script`() {
         // Arrange
         val code = """
             <?php
@@ -239,9 +238,10 @@ class PhpAnalyzerTest {
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactlyInAnyOrder(
-                tuple(NodeType.VARIABLE, Path(listOf("php", "variable", "MY_CONSTANT"))),
-                tuple(NodeType.VARIABLE, Path(listOf("php", "variable", "MY_SECOND_CONSTANT"))),
-                tuple(NodeType.VARIABLE, Path(listOf("php", "variable", "MY_3_CONSTANT")))
+                tuple(NodeType.SCRIPT, Path(listOf("TestClass", "TestClass.script"))),
+                tuple(NodeType.VARIABLE, Path(listOf("MY_CONSTANT"))),
+                tuple(NodeType.VARIABLE, Path(listOf("MY_SECOND_CONSTANT"))),
+                tuple(NodeType.VARIABLE, Path(listOf("MY_3_CONSTANT")))
             )
     }
 
@@ -279,7 +279,7 @@ class PhpAnalyzerTest {
     }
 
     @Test
-    fun `should create a dependency on a namespace-level constant and add it to the used types when it is imported and used`() {
+    fun `should write an imported namespace-level constant as its full path`() {
         // Arrange
         val code = """
             <?php
@@ -301,18 +301,11 @@ class PhpAnalyzerTest {
         ).analyze()
 
         // Assert
-        val expectedDependencies = listOf(
-            Dependency(
-                path = Path(listOf("php", "variable", "MY_CONSTANT"))
-            )
-        )
-
         val expectedTypes = listOf(
-            Type.simple("MY_CONSTANT", TypeOfUsage.CONSTANT_ACCESS)
+            Type.simple("php.variable.MY_CONSTANT", TypeOfUsage.CONSTANT_ACCESS)
         )
 
         val node = report.nodes.first()
-        assertThat(node.dependencies).containsAll(expectedDependencies)
         assertThat(node.usedTypes).containsAll(expectedTypes)
     }
 
@@ -348,7 +341,7 @@ class ArmorClass
 
         // Assert
         val expectedTypes = listOf(
-            Type.simple("ArmorUtilClass", TypeOfUsage.CONSTANT_ACCESS)
+            Type.simple("de.sots.domain.model.ArmorUtilClass", TypeOfUsage.CONSTANT_ACCESS)
         )
 
         val node = report.nodes.first()
@@ -356,114 +349,7 @@ class ArmorClass
     }
 
     @Test
-    fun `should add own namespace to dependencies with wildcard`() {
-        // Arrange
-        val code = """
-            <?php
-            namespace php\import;
-            use php\vertebrates\Cat;
-            
-            class Person extends Cat{
-            }
-        """.trimIndent()
-
-        // Act
-        val report = PhpAnalyzer(
-            FileInfo(
-                SupportedLanguage.PHP,
-                "TestClass.php",
-                code
-            )
-        ).analyze()
-
-        // Assert
-        val expectedDependencies = listOf(
-            Dependency(
-                path = Path(listOf("php", "import")),
-                isWildcard = true
-            ),
-            Dependency(
-                path = Path(listOf("php", "vertebrates", "Cat"))
-            )
-        )
-
-        val node = report.nodes.first()
-        assertThat(node.dependencies).containsExactlyInAnyOrderElementsOf(expectedDependencies)
-    }
-
-    @Test
-    fun `should add namespace usages to dependencies of a node`() {
-        // Arrange
-        val code = """
-            <?php
-            namespace php\import;
-            use php\vertebrates\Cat;
-            use php\vertebrates\{Dog, Human};
-            
-            class Person extends Human{
-            }
-        """.trimIndent()
-
-        // Act
-        val report = PhpAnalyzer(
-            FileInfo(
-                SupportedLanguage.PHP,
-                "TestClass.php",
-                code
-            )
-        ).analyze()
-
-        // Assert
-        val expectedDependencies = listOf(
-            Dependency(
-                path = Path(listOf("php", "vertebrates", "Cat"))
-            ),
-            Dependency(
-                path = Path(listOf("php", "vertebrates", "Dog"))
-            ),
-            Dependency(
-                path = Path(listOf("php", "vertebrates", "Human"))
-            )
-        )
-
-        val node = report.nodes.first()
-        assertThat(node.dependencies).containsAll(expectedDependencies)
-    }
-
-    @Test
-    fun `should add original type of aliased namespace usage to dependencies of a node`() {
-        // Arrange
-        val code = """
-            <?php
-            namespace php\import;
-            use php\invertebrates\Bee as Pet;
-            
-            class HoneyBee extends Pet{
-            }
-        """.trimIndent()
-
-        // Act
-        val report = PhpAnalyzer(
-            FileInfo(
-                SupportedLanguage.PHP,
-                "TestClass.php",
-                code
-            )
-        ).analyze()
-
-        // Assert
-        val expectedDependencies = listOf(
-            Dependency(
-                path = Path(listOf("php", "invertebrates", "Bee"))
-            )
-        )
-
-        val node = report.nodes.first()
-        assertThat(node.dependencies).containsAll(expectedDependencies)
-    }
-
-    @Test
-    fun `should add original type of aliased namespace usage to usedTypes of a node`() {
+    fun `should write an aliased class as the full path of the class it imports`() {
         // Arrange
         val code = """
             <?php
@@ -489,109 +375,12 @@ class ArmorClass
 
         // Assert
         val expectedUsedTypes = listOf(
-            Type.simple("Bee", TypeOfUsage.INHERITANCE),
-            Type.simple("Dog", TypeOfUsage.INHERITANCE)
+            Type.simple("php.invertebrates.Bee", TypeOfUsage.INHERITANCE),
+            Type.simple("php.invertebrates.Dog", TypeOfUsage.INHERITANCE)
         )
 
         val node = report.nodes.flatMap { it.usedTypes }
         assertThat(node).containsAll(expectedUsedTypes)
-    }
-
-    @Test
-    fun `should add require statements with relative path of node to dependencies of a node`() {
-        // Arrange
-        val code = """
-             <?php
-            require_once '../../../model/Creature.php';
-            require '../../domain/model/OtherCreature.php';
-            
-            class HoneyBee extends Creature{
-            }
-
-        """.trimIndent()
-
-        // Act
-        val report = PhpAnalyzer(
-            FileInfo(
-                SupportedLanguage.PHP,
-                "src/de/sots/adapter/persistence/TestClass.php",
-                code
-            )
-        ).analyze()
-
-        // Assert
-        val expectedDependencies = listOf(
-            Dependency(Path(listOf("src", "de", "model", "Creature"))),
-            Dependency(Path(listOf("src", "de", "sots", "domain", "model", "OtherCreature")))
-        )
-
-        val node = report.nodes.first()
-        assertThat(node.dependencies).containsAll(expectedDependencies)
-    }
-
-    @Test
-    fun `should add require statements with relative path of namespace if present to dependencies of a node`() {
-        // Arrange
-        val code = """
-             <?php
-            namespace de\sots\adapter\persistence;
-            require_once '../../../model/Creature.php';
-            require '../../domain/model/OtherCreature.php';
-            
-            class HoneyBee extends Creature{
-            }
-
-        """.trimIndent()
-
-        // Act
-        val report = PhpAnalyzer(
-            FileInfo(
-                SupportedLanguage.PHP,
-                "src/de/sots/adapter/persistence/TestClass.php",
-                code
-            )
-        ).analyze()
-
-        // Assert
-        val expectedDependencies = listOf(
-            Dependency(Path(listOf("de", "model", "Creature"))),
-            Dependency(Path(listOf("de", "sots", "domain", "model", "OtherCreature")))
-        )
-
-        val node = report.nodes.first()
-        assertThat(node.dependencies).containsAll(expectedDependencies)
-    }
-
-    @Test
-    fun `should add include statements with relative path to dependencies of a node`() {
-        // Arrange
-        val code = """
-             <?php
-            include_once '../../../domain/model/Creature.php';
-            include '../../domain/model/OtherCreature.php';
-            
-            class HoneyBee extends Creature{
-            }
-
-        """.trimIndent()
-
-        // Act
-        val report = PhpAnalyzer(
-            FileInfo(
-                SupportedLanguage.PHP,
-                "php/test/analyzer/domain/TestClass.php",
-                code
-            )
-        ).analyze()
-
-        // Assert
-        val expectedDependencies = listOf(
-            Dependency(Path(listOf("php", "domain", "model", "Creature"))),
-            Dependency(Path(listOf("php", "test", "domain", "model", "OtherCreature")))
-        )
-
-        val node = report.nodes.first()
-        assertThat(node.dependencies).containsAll(expectedDependencies)
     }
 
     @Test
@@ -620,8 +409,8 @@ class ArmorClass
 
         // Assert
         val expectedUsedTypes = setOf(
-            Type.simple("Cat"),
-            Type.simple("Bee")
+            Type.simple("php.vertebrates.Cat"),
+            Type.simple("php.invertebrates.Bee")
         )
 
         val node = report.nodes.first()
@@ -650,7 +439,7 @@ class ArmorClass
 
         // Assert
         val expectedInheritedTypes = setOf(
-            Type.simple("Human", TypeOfUsage.INHERITANCE)
+            Type.simple("php.test.analyzer.Human", TypeOfUsage.INHERITANCE)
         )
 
         val node = report.nodes.first()
@@ -679,8 +468,8 @@ class ArmorClass
 
         // Assert
         val expectedInheritedTypes = setOf(
-            Type.simple("Human", TypeOfUsage.IMPLEMENTATION),
-            Type.simple("Animal", TypeOfUsage.IMPLEMENTATION)
+            Type.simple("php.test.analyzer.Human", TypeOfUsage.IMPLEMENTATION),
+            Type.simple("php.test.analyzer.Animal", TypeOfUsage.IMPLEMENTATION)
         )
 
         val node = report.nodes.first()
@@ -709,8 +498,8 @@ class ArmorClass
 
         // Assert
         val expectedInheritedTypes = setOf(
-            Type.simple("Human", TypeOfUsage.IMPLEMENTATION),
-            Type.simple("Animal", TypeOfUsage.INHERITANCE)
+            Type.simple("php.test.analyzer.Human", TypeOfUsage.IMPLEMENTATION),
+            Type.simple("php.test.analyzer.Animal", TypeOfUsage.INHERITANCE)
         )
 
         val node = report.nodes.first()
@@ -751,9 +540,9 @@ class ArmorClass
 
         // Assert
         val expectedInheritedTypes = setOf(
-            Type.simple("Cat", TypeOfUsage.INSTANTIATION),
-            Type.simple("Dog", TypeOfUsage.INSTANTIATION),
-            Type.simple("Bee", TypeOfUsage.INSTANTIATION)
+            Type.simple("php.vertebrates.Cat", TypeOfUsage.INSTANTIATION),
+            Type.simple("php.vertebrates.Dog", TypeOfUsage.INSTANTIATION),
+            Type.simple("php.invertebrates.Bee", TypeOfUsage.INSTANTIATION)
         )
 
         val usedTypes = report.nodes.flatMap { it.usedTypes }
@@ -792,9 +581,9 @@ class ArmorClass
 
         // Assert
         val expectedInheritedTypes = setOf(
-            Type.simple("Cat", TypeOfUsage.ARGUMENT),
-            Type.simple("Dog", TypeOfUsage.ARGUMENT),
-            Type.simple("Bee", TypeOfUsage.ARGUMENT)
+            Type.simple("php.vertebrates.Cat", TypeOfUsage.ARGUMENT),
+            Type.simple("php.vertebrates.Dog", TypeOfUsage.ARGUMENT),
+            Type.simple("php.invertebrates.Bee", TypeOfUsage.ARGUMENT)
         )
 
         val usedTypes = report.nodes.flatMap { it.usedTypes }
@@ -836,9 +625,9 @@ class ArmorClass
 
         // Assert
         val expectedInheritedTypes = setOf(
-            Type.simple("Cat", TypeOfUsage.RETURN_VALUE),
-            Type.simple("Dog", TypeOfUsage.RETURN_VALUE),
-            Type.simple("Bee", TypeOfUsage.RETURN_VALUE)
+            Type.simple("php.vertebrates.Cat", TypeOfUsage.RETURN_VALUE),
+            Type.simple("php.vertebrates.Dog", TypeOfUsage.RETURN_VALUE),
+            Type.simple("php.invertebrates.Bee", TypeOfUsage.RETURN_VALUE)
         )
 
         val usedTypes = report.nodes.flatMap { it.usedTypes }
@@ -884,7 +673,7 @@ class ArmorClass
 
         // Assert
         val expectedInheritedTypes = setOf(
-            Type.simple("Animal")
+            Type.simple("php.test.analyzer.Animal")
         )
 
         val usedTypes = report.nodes.flatMap { it.usedTypes }
@@ -943,7 +732,7 @@ class ArmorClass
 
         // Assert
         val expectedUsedTypes = setOf(
-            Type.simple("MyTrait")
+            Type.simple("php.traits.MyTrait")
         )
 
         val node = report.nodes.first()
@@ -951,7 +740,7 @@ class ArmorClass
     }
 
     @Test
-    fun `should import every grouped use declaration`() {
+    fun `should resolve a member of each group import to its full path`() {
         // Arrange
         val code = """
             <?php
@@ -960,6 +749,8 @@ class ArmorClass
             use php\invertebrates\{Bee, Ant};
 
             class Zoo {
+                public Dog ${'$'}dog;
+                public Ant ${'$'}ant;
             }
         """.trimIndent()
 
@@ -967,11 +758,71 @@ class ArmorClass
         val report = PhpAnalyzer(FileInfo(SupportedLanguage.PHP, "Zoo.php", code)).analyze()
 
         // Assert
-        assertThat(report.nodes.first().dependencies).contains(
-            Dependency(Path(listOf("php", "vertebrates", "Dog"))),
-            Dependency(Path(listOf("php", "vertebrates", "Cat"))),
-            Dependency(Path(listOf("php", "invertebrates", "Bee"))),
-            Dependency(Path(listOf("php", "invertebrates", "Ant")))
+        assertThat(report.nodes.first().usedTypes).containsExactlyInAnyOrder(
+            Type.simple("php.vertebrates.Dog"),
+            Type.simple("php.invertebrates.Ant")
+        )
+    }
+
+    @Test
+    fun `should write a called function in its namespace with the global function as fallback`() {
+        // Arrange
+        val code = """
+            <?php
+            namespace App;
+            function run() {
+                return helper();
+            }
+        """.trimIndent()
+
+        // Act
+        val report = PhpAnalyzer(FileInfo(SupportedLanguage.PHP, "run.php", code)).analyze()
+
+        // Assert
+        assertThat(report.nodes.single().usedTypes).containsExactly(
+            Type.simple("App.helper").copy(fallbacks = listOf(Type.simple("helper")))
+        )
+    }
+
+    @Test
+    fun `should place the script leaf of a file with a namespace at the file's path`() {
+        // Arrange
+        val code = """
+            <?php
+            namespace App;
+            class Kernel {}
+            echo "boot";
+        """.trimIndent()
+
+        // Act
+        val report = PhpAnalyzer(FileInfo(SupportedLanguage.PHP, "src/boot.php", code)).analyze()
+
+        // Assert
+        assertThat(report.nodes.map { it.pathWithName }).containsExactly(
+            Path(listOf("src", "boot", "boot.script")),
+            Path(listOf("App", "Kernel"))
+        )
+    }
+
+    @Test
+    fun `should write an include as the script leaf of the file its path names`() {
+        // Arrange
+        val code = """
+            <?php
+            require '../lib/boot.php';
+            require './helpers.php';
+            require '/vendor/autoload.php';
+            require '../../../outside.php';
+        """.trimIndent()
+
+        // Act
+        val report = PhpAnalyzer(FileInfo(SupportedLanguage.PHP, "src/app/index.php", code)).analyze()
+
+        // Assert
+        assertThat(report.nodes.single().usedTypes.map { it.name }).containsExactly(
+            "src.lib.boot.boot_script",
+            "src.app.helpers.helpers_script",
+            "vendor.autoload.autoload_script"
         )
     }
 }

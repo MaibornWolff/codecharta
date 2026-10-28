@@ -1,0 +1,4 @@
+# sql.md, case: unquoted names fold, quoted mixed case keeps its case
+file app/report.sql -> db/tables.sql
+leaf app/report.sql#report -> db/tables.sql#Zentaurenhöhle
+leaf app/report.sql#report -> db/tables.sql#orders

@@ -1,0 +1,3 @@
+# typescript.md, module specifiers 2.1: the tsconfig baseUrl
+file app/app.ts -> core/store.ts
+leaf app/app.ts#App -> core/store.ts#Store

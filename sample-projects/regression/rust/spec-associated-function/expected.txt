@@ -1,0 +1,3 @@
+# rust.md, decision 11: `Type::function()` is a use of the type
+file src/spawn.rs -> src/creature.rs
+leaf src/spawn.rs#spawn -> src/creature.rs#Creature

@@ -2,9 +2,36 @@
 
 package de.maibornwolff.treesitter.excavationsite.api
 
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiDeclaration
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiDeclarationKind
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiName
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiScript
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiSection
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiUnit
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiUnitKind
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustExternCrate
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustImpl
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustItem
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustItemKind
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustModDeclaration
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustModule
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustNamespace
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustPath
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustUse
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustVisibility
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlMember
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlMemberKind
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlName
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlNameKind
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlObject
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlObjectKind
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlScript
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlStatements
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AliasPathStart
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularDeclaration
+import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularSelector
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ComponentRegistration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DependencyResult
@@ -23,6 +50,33 @@ typealias ImportKind = ImportKind
 typealias TypeUsage = TypeUsage
 typealias UsedType = UsedType
 typealias BundlerAlias = BundlerAlias
+typealias ComponentRegistration = ComponentRegistration
 typealias AliasPathStart = AliasPathStart
 typealias AngularDeclaration = AngularDeclaration
+typealias AngularSelector = AngularSelector
 typealias EmbeddedDeclarations = EmbeddedDeclarations
+typealias DelphiUnit = DelphiUnit
+typealias DelphiUnitKind = DelphiUnitKind
+typealias DelphiSection = DelphiSection
+typealias DelphiDeclaration = DelphiDeclaration
+typealias DelphiDeclarationKind = DelphiDeclarationKind
+typealias DelphiName = DelphiName
+typealias DelphiScript = DelphiScript
+typealias RustModule = RustModule
+typealias RustModDeclaration = RustModDeclaration
+typealias RustItem = RustItem
+typealias RustItemKind = RustItemKind
+typealias RustUse = RustUse
+typealias RustImpl = RustImpl
+typealias RustExternCrate = RustExternCrate
+typealias RustPath = RustPath
+typealias RustNamespace = RustNamespace
+typealias RustVisibility = RustVisibility
+typealias SqlScript = SqlScript
+typealias SqlObject = SqlObject
+typealias SqlObjectKind = SqlObjectKind
+typealias SqlMember = SqlMember
+typealias SqlMemberKind = SqlMemberKind
+typealias SqlStatements = SqlStatements
+typealias SqlName = SqlName
+typealias SqlNameKind = SqlNameKind

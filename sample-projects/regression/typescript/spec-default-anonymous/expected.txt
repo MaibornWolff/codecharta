@@ -1,0 +1,7 @@
+# typescript.md, declarations, decision 2: an anonymous default export is a leaf default that uses what it names
+file config.ts -> port.ts
+file user.ts -> anon.ts
+file user.ts -> config.ts
+leaf config.ts#default -> port.ts#Port
+leaf user.ts#start -> anon.ts#default
+leaf user.ts#start -> config.ts#default

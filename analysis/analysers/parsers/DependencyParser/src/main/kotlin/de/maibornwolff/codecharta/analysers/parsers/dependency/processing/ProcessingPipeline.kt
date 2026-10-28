@@ -1,11 +1,9 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FilePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
-import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
-import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.CycleAnalyzer
-import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.CycleAnalyzer.Companion.groupByLeafs
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies.DependencyResolverService
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization.GraphIndex
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization.GraphLeaf
@@ -15,13 +13,15 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.leveli
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization.toGraphNodes
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization.toGraphTree
 import de.maibornwolff.codecharta.util.Logger
+import java.io.File
 
 // Cycles are detected between declarations, since two classes in one file form a cycle only if they really reference
 // each other. The result is then folded onto the files, so every physical level and edge addresses a node of the
 // cc.json file tree, and kept per declaration for the logical graph over the namespace tree.
 object ProcessingPipeline {
-    fun run(fileReports: List<FileReport>, omitGraphAnalysis: Boolean): DependencyGraph {
-        val resolvedNodes = resolveDependencies(mergeIdenticalTypes(fileReports))
+    /** [analysisRoot] is the folder the file paths of the reports are relative to. */
+    fun run(fileReports: List<FileReport>, omitGraphAnalysis: Boolean, analysisRoot: File? = null): DependencyGraph {
+        val resolvedNodes = resolveDependencies(fileReports)
         if (resolvedNodes.isEmpty()) {
             Logger.warn {
                 "No analyzable declarations were found, so the dependency lens stays empty. This usually means no " +
@@ -30,18 +30,24 @@ object ProcessingPipeline {
             return DependencyGraph()
         }
 
-        val cyclicEdgesByDeclaration = detectCycles(resolvedNodes, omitGraphAnalysis)
-        val aggregatedEdges = FileLevelAggregator.aggregate(resolvedNodes, cyclicEdgesByDeclaration)
+        val declaringFiles = DeclaringFiles.of(resolvedNodes, analysisRoot)
+        val cycles = detectCycles(resolvedNodes, declaringFiles, omitGraphAnalysis)
+        val aggregatedEdges = FileLevelAggregator.aggregate(resolvedNodes, cycles, declaringFiles)
 
         if (omitGraphAnalysis) {
             Logger.info { "Levelization disabled by --omit-graph-analysis" }
             val physical = DependencyGraph(edges = aggregatedEdges.map { it.withoutLevelization() })
-            return LogicalProjection(resolvedNodes, cyclicEdgesByDeclaration, namespaceTree = null).addTo(physical)
+            return LogicalProjection(resolvedNodes, cycles, namespaceTree = null, declaringFiles).addTo(physical)
         }
 
         val filePaths = resolvedNodes.map { FilePath.of(it) }.distinct()
         val physical = levelizeFileTree(aggregatedEdges, filePaths)
-        return LogicalProjection(resolvedNodes, cyclicEdgesByDeclaration, levelizeNamespaceTree(resolvedNodes)).addTo(physical)
+        return LogicalProjection(
+            resolvedNodes,
+            cycles,
+            levelizeNamespaceTree(resolvedNodes),
+            declaringFiles
+        ).addTo(physical)
     }
 
     private fun levelizeFileTree(aggregatedEdges: List<AggregatedFileEdge>, filePaths: List<FilePath>): DependencyGraph {
@@ -105,45 +111,20 @@ object ProcessingPipeline {
         return levels
     }
 
-    private fun detectCycles(resolvedNodes: Collection<Node>, omitGraphAnalysis: Boolean): Map<String, Set<String>> {
+    private fun detectCycles(
+        resolvedNodes: Collection<Node>,
+        declaringFiles: DeclaringFiles,
+        omitGraphAnalysis: Boolean
+    ): DeclarationCycles {
         if (omitGraphAnalysis) {
             Logger.info { "Cycle detection disabled by --omit-graph-analysis" }
-            return emptyMap()
+            return DeclarationCycles.NONE
         }
-        return Logger.timed("Analyzing cycles") {
-            val nodeInfos = resolvedNodes.map { DependencyResolverService.mapNodeInfo(it) }.toSet()
-            val cycles = CycleAnalyzer.determineCycles(nodeInfos)
-            Logger.info { "Found a total of ${cycles.size} cycles" }
-            cycles.groupByLeafs()
-        }
+        return Logger.timed("Analyzing cycles") { DeclarationCycles.of(resolvedNodes, declaringFiles) }
     }
 
     private fun resolveDependencies(fileReports: List<FileReport>): Collection<Node> =
         Logger.timed("Resolving dependencies") { DependencyResolverService.resolveNodes(fileReports) }
-
-    // C++ declares a type in a header and defines it in a source file, so the type arrives twice and would appear to
-    // depend on itself across the two files
-    private fun mergeIdenticalTypes(fileReports: List<FileReport>): List<FileReport> {
-        val nodes = fileReports.flatMap { it.nodes }
-        val (mergeable, rest) = nodes.partition { it.language == SupportedLanguage.CPP }
-        val (duplicates, singles) = mergeable.groupBy { it.pathWithName }.entries.partition { it.value.size > 1 }
-        if (duplicates.isEmpty()) return fileReports
-        return listOf(FileReport(singles.flatMap { it.value } + mergeDuplicates(duplicates) + rest))
-    }
-
-    private fun mergeDuplicates(duplicates: List<Map.Entry<Path, List<Node>>>): List<Node> = duplicates.flatMap { duplicate ->
-        val byName = duplicate.value.groupBy { it.pathWithName.getName() }
-        val (sameName, differentNames) = byName.entries.partition { it.value.size > 1 }
-        // Sorted so the surviving node's file is the same on every run, whatever order the scan found the files in
-        val merged = sameName.flatMap { it.value }.sortedBy { it.physicalPath }.reduce { first, second ->
-            first.copy(
-                dependencies = first.dependencies + second.dependencies,
-                usedTypes = first.usedTypes + second.usedTypes,
-                resolvedNodeDependencies = first.resolvedNodeDependencies + second.resolvedNodeDependencies
-            )
-        }
-        differentNames.flatMap { it.value } + merged
-    }
 
     private fun AggregatedFileEdge.withoutLevelization(): FileDependencyEdge =
         FileDependencyEdge(from.segments, to.segments, weight, isCyclic, isPointingUpwards = false)

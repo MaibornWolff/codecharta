@@ -1,0 +1,3 @@
+# python.md, import binds: `import a.b.c as m` binds `m` to the module
+file app/use.py -> app/domain/speed.py
+leaf app/use.py#Use -> app/domain/speed.py#Speed

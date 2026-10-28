@@ -1,0 +1,1 @@
+# go.md, rule 1: a type parameter hides a type of the own package

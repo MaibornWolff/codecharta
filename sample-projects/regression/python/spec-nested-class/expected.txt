@@ -1,0 +1,5 @@
+# python.md, declarations, decision 4: a nested class is a leaf of its own; attribute p.N through a class
+file shop/invoice.py -> shop/order.py
+file shop/order.py -> shop/product.py
+leaf shop/invoice.py#Invoice -> shop/order.py#Line
+leaf shop/order.py#Line -> shop/product.py#Product

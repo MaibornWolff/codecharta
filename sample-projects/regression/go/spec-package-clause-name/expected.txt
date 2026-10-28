@@ -1,0 +1,7 @@
+# go.md, import paths: without an alias an import binds the name of the package clause, not the last segment
+file app/app.go -> go-yaml/yaml.go
+file app/app.go -> lib/v2/lib.go
+file app/app.go -> mismatch-dir/m.go
+leaf app/app.go#Run -> go-yaml/yaml.go#Marshal
+leaf app/app.go#Run -> lib/v2/lib.go#Open
+leaf app/app.go#Run -> mismatch-dir/m.go#Do

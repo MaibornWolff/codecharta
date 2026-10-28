@@ -1,0 +1,3 @@
+# rust.md, simple name: an identifier pattern naming a const is a use, else a binding
+file src/rule.rs -> src/limits.rs
+leaf src/rule.rs#rule -> src/limits.rs#MAX

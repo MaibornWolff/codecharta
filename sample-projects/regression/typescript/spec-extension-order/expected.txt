@@ -1,0 +1,3 @@
+# typescript.md, module specifiers 2: .tsx comes before .d.ts
+file app.ts -> widget.tsx
+leaf app.ts#App -> widget.tsx#Widget

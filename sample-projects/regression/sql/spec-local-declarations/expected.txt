@@ -1,0 +1,3 @@
+# sql.md, declarations, decision 9: what a routine declares inside itself is no target
+file app/report.sql -> db/tables.sql
+leaf app/report.sql#report -> db/tables.sql#orders

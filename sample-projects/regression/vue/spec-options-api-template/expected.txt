@@ -1,0 +1,3 @@
+# typescript.md, Vue, decision 12: without script setup a template reads its names from the component instance: no edge
+file components/Card.vue -> fmt.ts
+leaf components/Card.vue#Card -> fmt.ts#format

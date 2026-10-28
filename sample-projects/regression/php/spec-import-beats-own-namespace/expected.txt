@@ -1,0 +1,3 @@
+# php.md, class name 5: an import beats the current namespace
+file App/Lair.php -> Model/Creature.php
+leaf App/Lair.php#Lair -> Model/Creature.php#Creature

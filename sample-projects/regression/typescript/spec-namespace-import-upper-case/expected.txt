@@ -1,0 +1,4 @@
+# typescript.md, qualified name: through `import * as Generator`, written upper case, Generator.A is the export A
+file view.ts -> generator.ts
+leaf view.ts#View -> generator.ts#Layout
+leaf view.ts#View -> generator.ts#createNodes

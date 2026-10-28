@@ -1,0 +1,3 @@
+# cpp.md, qualified name: `::N` is the global N
+file app.hpp -> config.hpp
+leaf app.hpp#App -> config.hpp#Config

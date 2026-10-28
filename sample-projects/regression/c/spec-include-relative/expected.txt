@@ -1,0 +1,3 @@
+# cpp.md, include paths 1: relative to the including file
+file app/centaur.h -> model/creature.h
+leaf app/centaur.h#Centaur -> model/creature.h#Creature

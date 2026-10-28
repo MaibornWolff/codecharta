@@ -1,0 +1,4 @@
+# rust.md, declarations, decision 4: a const and a static are declarations, a read a use
+file src/cap.rs -> src/limits.rs
+leaf src/cap.rs#cap -> src/limits.rs#MAX
+leaf src/cap.rs#cap -> src/limits.rs#NAME

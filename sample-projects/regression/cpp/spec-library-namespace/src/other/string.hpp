@@ -1,0 +1,1 @@
+struct string { int length; };

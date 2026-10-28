@@ -43,6 +43,8 @@ describe("lineStyle", () => {
             [["argument"], { dash: [2, 4], head: "open" }],
             [["return_value"], { dash: [9, 3, 2, 3], head: "filled" }],
             [["constant_access"], { dash: null, head: "dot" }],
+            [["part_of"], { dash: [2, 4], head: "dot" }],
+            [["friend"], { dash: [9, 3, 2, 3], head: "open" }],
             [["usage", "argument", "inheritance"], { dash: null, head: "hollow" }],
             [["a_usage_of_tomorrow"], { dash: null, head: "filled" }]
         ])("should draw an edge standing for one dependency used as %j with its strongest tie's dashes and head", (usage, expected) => {

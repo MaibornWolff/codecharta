@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.No
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.TypeOfUsage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -396,7 +397,7 @@ class ProcessingPipelineTest {
     }
 
     @Test
-    fun `should emit one declaration per file of a split declaration and point edges into it at the first`() {
+    fun `should emit one declaration per file of a split declaration and point edges into it at every part`() {
         // Arrange: a partial class in two files, and a class that depends on it.
         File(sampleDirectory, "FooA.cs").writeText("namespace N { public partial class Foo { private Bar bar; } }")
         File(sampleDirectory, "FooB.cs").writeText("namespace N { public partial class Foo { } }")
@@ -405,47 +406,84 @@ class ProcessingPipelineTest {
         // Act
         val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.C_SHARP), omitGraphAnalysis = false)
 
-        // Assert: both parts share namespace and key, and both projections point Bar at the first part.
+        // Assert: both parts share namespace and key, and both projections point Bar at every part.
         val fooA = DeclarationAddress(listOf("FooA.cs"), "Foo")
         val parts = graph.declarations.filter { it.name == "Foo" }
         assertThat(parts.map { it.address }).containsExactly(fooA, DeclarationAddress(listOf("FooB.cs"), "Foo"))
         assertThat(parts.map { it.namespace }).containsOnly("N")
         val bar = DeclarationAddress(listOf("Bar.cs"), "Bar")
-        assertThat(graph.declarationEdges.map { it.from to it.to }).containsExactlyInAnyOrder(bar to fooA, fooA to bar)
+        val fooB = DeclarationAddress(listOf("FooB.cs"), "Foo")
+        assertThat(graph.declarationEdges.map { it.from to it.to }).containsExactlyInAnyOrder(bar to fooA, bar to fooB, fooA to bar)
         val edgesIntoFoo = graph.edges.filter { it.fromPath == listOf("Bar.cs") }
-        assertThat(edgesIntoFoo).extracting("toPath").containsExactly(listOf("FooA.cs"))
+        assertThat(edgesIntoFoo).extracting("toPath").containsExactlyInAnyOrder(listOf("FooA.cs"), listOf("FooB.cs"))
         assertThat(graph.edges.map { it.fromPath to it.toPath }).contains(listOf("FooA.cs") to listOf("Bar.cs"))
     }
 
     @Test
-    fun `should fold a C++ type declared in a header and defined in a source file into one declaration`() {
-        // Arrange: MyType arrives twice, once per translation unit; only the source half uses UsedType.
-        val root = cppNode("cpp/example/Root", "cpp/example/Root.cpp", usedTypes = setOf(Type.simple("MyType")))
+    fun `should keep the C++ declarations of one path in a header and a source file apart`() {
+        // Arrange: MyType arrives twice, once per file; only the source part uses UsedType.
         val definition =
             cppNode(
                 "cpp/example/MyType",
                 "cpp/example/MyType.cpp",
-                dependencies = setOf(Dependency.simple("cpp", "different", "UsedType_h")),
-                usedTypes = setOf(Type.simple("UsedType"))
+                usedTypes = setOf(Type.simple("cpp.different.UsedType"))
             )
         val declaration = cppNode("cpp/example/MyType", "cpp/example/MyType.h")
         val usedType = cppNode("cpp/different/UsedType", "cpp/different/UsedType.h")
-        val fileReports = listOf(FileReport(listOf(root, definition)), FileReport(listOf(declaration, usedType)))
+        val fileReports = listOf(FileReport(listOf(definition)), FileReport(listOf(declaration, usedType)))
 
         // Act
         val graph = ProcessingPipeline.run(fileReports, omitGraphAnalysis = false)
 
-        // Assert: one leaf, in the source file (first in path order), keeping the source half's dependency.
-        val myType = DeclarationAddress(listOf("cpp", "example", "MyType.cpp"), "MyType")
+        // Assert: one leaf per file, and the source part's dependency stays with the source file.
+        val definitionAddress = DeclarationAddress(listOf("cpp", "example", "MyType.cpp"), "MyType")
         assertThat(graph.declarations.map { it.address }).containsExactlyInAnyOrder(
-            DeclarationAddress(listOf("cpp", "example", "Root.cpp"), "Root"),
-            myType,
+            definitionAddress,
+            DeclarationAddress(listOf("cpp", "example", "MyType.h"), "MyType"),
             DeclarationAddress(listOf("cpp", "different", "UsedType.h"), "UsedType")
         )
         assertThat(graph.declarationEdges.map { it.from to it.to })
-            .contains(myType to DeclarationAddress(listOf("cpp", "different", "UsedType.h"), "UsedType"))
-        assertThat(graph.edges.map { it.fromPath to it.toPath })
-            .doesNotContain(listOf("cpp", "example", "MyType.cpp") to listOf("cpp", "example", "MyType.h"))
+            .containsExactly(definitionAddress to DeclarationAddress(listOf("cpp", "different", "UsedType.h"), "UsedType"))
+    }
+
+    @Test
+    fun `should draw the dependency of an implementation part on the class of its own path, as no cycle`() {
+        // Arrange: Creature.cpp defines the member functions of the class whose body is in Creature.hpp.
+        val body = cppNode("game/Creature", "game/Creature.hpp")
+        val implementation = cppNode("game/Creature", "game/Creature.cpp", usedTypes = setOf(Type.simple("game.Creature")))
+            .copy(isImplementationPart = true, isFileScoped = true)
+        val fileReports = listOf(FileReport(listOf(body)), FileReport(listOf(implementation)))
+
+        // Act
+        val graph = ProcessingPipeline.run(fileReports, omitGraphAnalysis = false)
+
+        // Assert
+        val implementationAddress = DeclarationAddress(listOf("game", "Creature.cpp"), "Creature")
+        val bodyAddress = DeclarationAddress(listOf("game", "Creature.hpp"), "Creature")
+        assertThat(graph.declarationEdges.map { Triple(it.from, it.to, it.isCyclic) }).containsExactly(
+            Triple(implementationAddress, bodyAddress, false)
+        )
+        assertThat(graph.edges.map { Triple(it.fromPath, it.toPath, it.isCyclic) }).containsExactly(
+            Triple(listOf("game", "Creature.cpp"), listOf("game", "Creature.hpp"), false)
+        )
+    }
+
+    @Test
+    fun `should mark the dependency of an implementation part on its declaration as part of it`() {
+        // Arrange: Creature.cpp defines a member function that also takes a Creature.
+        val body = cppNode("game/Creature", "game/Creature.hpp")
+        val implementation = cppNode(
+            "game/Creature",
+            "game/Creature.cpp",
+            usedTypes = setOf(Type.simple("game.Creature"), Type.simple("game.Creature").copy(usageSource = TypeOfUsage.ARGUMENT))
+        ).copy(isImplementationPart = true, isFileScoped = true)
+        val fileReports = listOf(FileReport(listOf(body)), FileReport(listOf(implementation)))
+
+        // Act
+        val graph = ProcessingPipeline.run(fileReports, omitGraphAnalysis = false)
+
+        // Assert
+        assertThat(graph.declarationEdges.single().usage).containsExactly("part_of")
     }
 
     @Test

@@ -1,0 +1,1 @@
+# typescript.md, module specifiers: a specifier that names no project file draws no edge

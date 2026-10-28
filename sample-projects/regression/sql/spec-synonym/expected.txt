@@ -1,0 +1,7 @@
+# sql.md, declarations: a synonym is a declaration that uses what it stands for
+file app/repository.sql -> db/synonyms.sql
+file db/synonyms.sql -> db/orders.sql
+leaf app/repository.sql#touch -> db/synonyms.sql#all_orders
+leaf app/repository.sql#touch -> db/synonyms.sql#order_entity
+leaf db/synonyms.sql#all_orders -> db/orders.sql#orders
+leaf db/synonyms.sql#order_entity -> db/orders.sql#orders

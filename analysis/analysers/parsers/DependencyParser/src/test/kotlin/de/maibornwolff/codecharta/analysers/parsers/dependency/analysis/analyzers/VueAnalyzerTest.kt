@@ -3,9 +3,12 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.vue.VueAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
+import java.io.File
 
 class VueAnalyzerTest {
     @Test
@@ -435,5 +438,230 @@ class VueAnalyzerTest {
         val dependencyPaths = result.nodes.single().dependencies.map { it.path.withDots() }
         assertThat(dependencyPaths).anyMatch { it.startsWith("src.components.Foo") }
         assertThat(dependencyPaths).anyMatch { it.startsWith("src.components.Bar") }
+    }
+
+    @Test
+    fun `should let a default import of a Vue file name its component, and a use of the binding name it in full`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange
+        File(analysisRoot, "b").mkdirs()
+        File(analysisRoot, "b/Badge.vue").writeText("<template><span>b</span></template>")
+        val vueCode = """
+            <template>
+              <Badge />
+            </template>
+
+            <script setup lang="ts">
+            import Badge from '../b/Badge.vue'
+            </script>
+        """.trimIndent()
+        val fileInfo = FileInfo(SupportedLanguage.VUE, "views/Home.vue", vueCode, analysisRoot = analysisRoot)
+
+        // Act
+        val node = VueAnalyzer(fileInfo).analyze().nodes.single()
+
+        // Assert
+        assertThat(node.dependencies.map { it.path }).contains(Path(listOf("b", "Badge")))
+        assertThat(node.usedTypes.map { it.name }).containsExactly("b.Badge")
+    }
+
+    @Test
+    fun `should resolve a named import of a script block to the module file the compiler finds`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange
+        File(analysisRoot, "application").mkdirs()
+        File(analysisRoot, "application/index.ts").writeText("export { Facade } from './Facade'")
+        val vueCode = """
+            <script setup lang="ts">
+            import { Facade } from '../application'
+            </script>
+        """.trimIndent()
+        val fileInfo = FileInfo(SupportedLanguage.VUE, "ui/Stable.vue", vueCode, analysisRoot = analysisRoot)
+
+        // Act
+        val node = VueAnalyzer(fileInfo).analyze().nodes.single()
+
+        // Assert
+        assertThat(node.dependencies.map { it.path }).contains(Path(listOf("application", "index", "Facade")))
+    }
+
+    @Test
+    fun `should count an import only where the script setup block or the template uses it`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange
+        File(analysisRoot, "fmt.ts").writeText("export function format() {}\nexport const defaults = {}\nexport function unused() {}")
+        File(analysisRoot, "components").mkdirs()
+        val vueCode = """
+            <template>
+              <span :title="defaults.size">{{ format(date) }}</span>
+            </template>
+
+            <script setup lang="ts">
+            import { defaults, format, unused } from '../fmt'
+
+            const date = new Date()
+            </script>
+        """.trimIndent()
+        val fileInfo = FileInfo(SupportedLanguage.VUE, "components/Item.vue", vueCode, analysisRoot = analysisRoot)
+
+        // Act
+        val node = VueAnalyzer(fileInfo).analyze().nodes.single()
+
+        // Assert
+        assertThat(node.usedTypes.map { it.name }).containsExactlyInAnyOrder("fmt.defaults", "fmt.format", "Date")
+    }
+
+    @Test
+    fun `should let a script setup block see what the plain script block binds`() {
+        // Arrange
+        val vueCode = """
+            <script lang="ts">
+            import { format } from './fmt'
+            export interface Props { size: number }
+            </script>
+
+            <script setup lang="ts">
+            defineProps<Props>()
+            const label = format('x')
+            </script>
+        """.trimIndent()
+        val fileInfo = FileInfo(SupportedLanguage.VUE, "src/Comp.vue", vueCode)
+
+        // Act
+        val nodes = VueAnalyzer(fileInfo).analyze().nodes
+
+        // Assert
+        val component = nodes.single { it.pathWithName == Path(listOf("src", "Comp")) }
+        assertThat(component.usedTypes.map { it.name }).containsExactlyInAnyOrder("src.Comp.Props", "format")
+        assertThat(nodes.map { it.pathWithName.withDots() }).containsExactlyInAnyOrder("src.Comp", "src.Comp.Props")
+    }
+
+    @Test
+    fun `should make the declaration a plain script exports as default the component itself`() {
+        // Arrange
+        val vueCode = """
+            <script lang="ts">
+            import { B } from './b'
+            export default class Comp { b?: B }
+            </script>
+            <template><div/></template>
+        """.trimIndent()
+        val fileInfo = FileInfo(SupportedLanguage.VUE, "src/Comp.vue", vueCode)
+
+        // Act
+        val nodes = VueAnalyzer(fileInfo).analyze().nodes
+
+        // Assert
+        val component = nodes.single()
+        assertThat(component.pathWithName).isEqualTo(Path(listOf("src", "Comp")))
+        assertThat(component.usedTypes.map { it.name }).containsExactly("B")
+    }
+
+    private fun vueFiles(analysisRoot: File, vararg paths: String) = paths.forEach { path ->
+        File(analysisRoot, path).apply { parentFile.mkdirs() }.writeText("<template><span>$path</span></template>")
+    }
+
+    private fun usesOf(analysisRoot: File, physicalPath: String, vueCode: String): List<String> =
+        VueAnalyzer(FileInfo(SupportedLanguage.VUE, physicalPath, vueCode, analysisRoot = analysisRoot))
+            .analyze()
+            .nodes
+            .first()
+            .usedTypes
+            .map { it.name }
+
+    @Test
+    fun `should look a tag up among the script setup bindings in camel case too`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange
+        vueFiles(analysisRoot, "a/Badge.vue", "b/Badge.vue")
+        val vueCode = """
+            <script setup lang="ts">
+            import badge from '../b/Badge.vue'
+            </script>
+            <template><Badge /></template>
+        """.trimIndent()
+
+        // Act
+        val uses = usesOf(analysisRoot, "views/Home.vue", vueCode)
+
+        // Assert
+        assertThat(uses).containsExactly("b.Badge")
+    }
+
+    @Test
+    fun `should look a tag up in the components option of the plain script`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange
+        vueFiles(analysisRoot, "components/CreatureCard.vue", "components/other/CreatureCard.vue")
+        val vueCode = """
+            <script>
+            import Card from '../components/CreatureCard.vue'
+            export default { components: { CreatureCard: Card } }
+            </script>
+            <template><creature-card /></template>
+        """.trimIndent()
+
+        // Act
+        val uses = usesOf(analysisRoot, "views/List.vue", vueCode)
+
+        // Assert
+        assertThat(uses).containsExactly("components.CreatureCard")
+    }
+
+    @Test
+    fun `should take the one component of a tag's name in the project, written in kebab case too`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange
+        vueFiles(analysisRoot, "components/creature-badge.vue")
+
+        // Act
+        val uses = usesOf(analysisRoot, "views/Home.vue", "<template><CreatureBadge /></template>")
+
+        // Assert
+        assertThat(uses).containsExactly("components.creature-badge")
+    }
+
+    @Test
+    fun `should draw nothing for a tag of several components, of none, or of the component itself`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange
+        vueFiles(analysisRoot, "a/Badge.vue", "b/Badge.vue", "other/Tree.vue")
+
+        // Act
+        val uses = usesOf(analysisRoot, "tree/Tree.vue", "<template><Badge /><Tree /><Unknown /></template>")
+
+        // Assert
+        assertThat(uses).isEmpty()
+    }
+
+    @Test
+    fun `should look a tag up among the components the project registers globally, before the one of its name`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange
+        vueFiles(analysisRoot, "components/CreatureBadge.vue", "components/other/CreatureBadge.vue", "components/Lonely.vue")
+        File(analysisRoot, "main.ts").writeText(
+            """
+            import { createApp } from 'vue'
+            import Badge from './components/CreatureBadge.vue'
+            import Lonely from './components/Lonely.vue'
+            const app = createApp({})
+            app.component('creature-badge', Badge)
+            app.component('Solo', Lonely)
+            """.trimIndent()
+        )
+
+        // Act
+        val uses = usesOf(analysisRoot, "views/Panel.vue", "<template><CreatureBadge /><solo /></template>")
+
+        // Assert
+        assertThat(uses).containsExactlyInAnyOrder("components.CreatureBadge", "components.Lonely")
     }
 }

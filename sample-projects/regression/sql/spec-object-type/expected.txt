@@ -1,0 +1,9 @@
+# sql.md, declarations, decisions 5 and 8: an object type, its body as implementation part, its constructor
+file app/shapes.sql -> db/point_t.sql
+file db/point_t_body.sql -> db/point_t.sql
+file db/point_t_body.sql -> db/scale.sql
+leaf app/shapes.sql#add_shape -> app/shapes.sql#shapes
+leaf app/shapes.sql#add_shape -> db/point_t.sql#point_t
+leaf app/shapes.sql#shapes -> db/point_t.sql#point_t
+leaf db/point_t_body.sql#point_t -> db/point_t.sql#point_t usage=part_of
+leaf db/point_t_body.sql#point_t -> db/scale.sql#scale

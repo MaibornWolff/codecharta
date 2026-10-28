@@ -1,0 +1,7 @@
+# go.md, selector: p.N through an import name is the declaration N of that package
+file app/app.go -> model/dice.go
+file app/app.go -> model/rider.go
+file app/app.go -> model/speed.go
+leaf app/app.go#Party -> model/rider.go#Rider
+leaf app/app.go#Start -> model/dice.go#NewDice
+leaf app/app.go#Start -> model/speed.go#Speed

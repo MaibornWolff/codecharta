@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **Friends and parts on leaf edges**: a leaf edge says `friend` from a C++ class to a class it declares its friend,
+  and `part_of` from a part of a type written in another file, such as a C++ source file's member functions, to the
+  type.
+
+### Fixed 🐞
+
+- **Cycles between files of the dependency map**: declarations that share a name in different files no longer close
+  cycles that the edges cannot follow, and a cycle through a type split over several files is found.
+
 ## [2.2.1] - 2026-10-23
 
 ### Added 🚀
@@ -14,17 +25,101 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Local changes and past commits in one step**: `ccsh analyse` takes `--local-changes` to map only the files you
   changed since your last push, and `--commit` to map the codebase as it was at a commit, tag, branch or date.
 
-- **Inheritance on leaf edges**: a leaf edge from a Java, Kotlin or C# class to the class it extends or the interface
-  it implements says so, as `inheritance` or `implementation`.
+- **Inheritance on leaf edges**: a leaf edge from a Java, Kotlin, C# or C++ class to the class it extends or the
+  interface it implements says so, as `inheritance` or `implementation`.
+
+### Changed
+
+- **Leaves of TypeScript and JavaScript files**: the dependency map shows every top-level declaration of a TypeScript
+  or JavaScript file as a leaf, exported or not, each member a namespace exports, and the code at the top level of a
+  file as a leaf `<file>_script`, which a side-effect import such as `import './polyfills'` uses.
+
+- **Leaves of C and C++ files**: the dependency map shows a C or C++ type alias and a struct named only by its
+  `typedef` as leaves, and the member functions a source file defines for a class of a header as a leaf of the source
+  file that points at the header.
+
+- **Leaves of PHP files**: the dependency map shows the code at the top level of a PHP file as a leaf `<file>_script`,
+  also beside the file's classes, which an `include` or `require` of the file uses, and a class outside every
+  namespace under its name alone.
+
+- **Leaves of Rust files**: the dependency map shows a `pub use` of a Rust module as a leaf that the code outside the
+  module importing through it points at, an `impl` block in another file than its type as a leaf of that file, and code
+  under `#[cfg(test)]` only when the run includes tests.
+
+- **Leaves of Delphi files**: the dependency map shows every Delphi type, free routine, constant and variable as a
+  leaf, and a program's main block and a unit's `initialization` and `finalization` as a leaf `<unit>_script`.
+
+- **Leaves of SQL files**: the dependency map shows SQL sequences, types and domains as leaves, what an Oracle package
+  specification declares as leaves below the package, and a package body, an object type body or an `ALTER TABLE` of
+  another file's table as leaves of their own file that point at what they implement or change.
 
 ### Fixed 🐞
 
+- **Delphi routines with conditional declarations**: `dependencyparser` reads a Delphi routine whose local declarations
+  stand between `{$IFDEF}` and `{$ENDIF}`, and the routines after it, instead of losing the rest of the unit.
+
+- **SQL functions in other languages**: `dependencyparser` no longer links the body of a PostgreSQL function written in
+  Perl, Python or C to SQL objects of the same name.
+
+- **C++ classes with an export macro**: `dependencyparser` reads `class LIB_EXPORT Widget` as the class `Widget`, so
+  the code using it links to its header.
+
 - **Same name in several places**: `dependencyparser` links a class that several files declare under one name to the
-  copy nearest to the file that uses it, instead of to whichever copy it read first, in every language but C#.
+  copy nearest to the file that uses it, instead of to whichever copy it read first, a C# partial class to every
+  file of its project that holds a part of it, and a Go function written once per platform to each of its files.
 
 - **Imports in Java and Kotlin**: `dependencyparser` resolves a Java or Kotlin name only by the language's import
   rules, so it no longer links it to a class of the same name that no import makes visible, that two star imports
   make ambiguous, or that a Kotlin import renames with `as`.
+
+- **Imports in Go**: `dependencyparser` finds a Go package through the `go.mod` files and `vendor/` folders of the
+  analysed folder and links a name written through an import only to that package, so it follows dot imports and
+  local modules, tells `model.Creature` from `dto.Creature`, keeps a `_test` package apart from the package it tests,
+  and no longer links a method called on a variable to a type of the same name.
+
+- **Imports in Python**: `dependencyparser` finds a Python module below the folder that holds its package, such as
+  `src/`, and links a name to what Python itself binds it to there, so it follows aliases, relative and wildcard imports
+  with their `__all__`, nested classes and both branches of `try` and `except ImportError`, and no longer links a
+  parameter, a local variable or a method called on a variable to a class of the same name.
+
+- **Imports in TypeScript and JavaScript**: `dependencyparser` finds a TypeScript or JavaScript module where the
+  compiler would, also through a workspace package, a folder's `package.json` or a `.js` specifier of a `.ts` file, and
+  links a name to what the module binds it to, through any form of import, `require` or re-export, so it tells
+  `Creature` from `Creature as CreatureDto` and no longer links a parameter, a local variable or a method called on a
+  variable to a class of the same name.
+
+- **Vue components**: `dependencyparser` links a Vue component to each component its template names, as Vue looks it
+  up in `<script setup>`, the `components` option, a global `app.component` registration and the project, and to what
+  its template expressions read, also when another folder or a `.ts` file imports the component.
+
+- **Angular directives**: `dependencyparser` links an Angular template to every component and directive whose selector
+  matches one of its elements, as Angular matches them, so an attribute directive such as `[appHighlight]` and a
+  structural directive such as `*appRepeat` get their edge.
+
+- **Includes in C and C++**: `dependencyparser` links a C or C++ name only to what the file's includes make visible,
+  directly or through other headers, and looks it up as the compiler does through classes, namespaces, `using`
+  declarations and directives and namespace aliases, so it tells `model::Creature` from `dto::Creature`, follows a
+  forward declaration to the class's body and no longer links a name to a class another program in the folder declares.
+
+- **Imports in PHP**: `dependencyparser` resolves a PHP name as the compiler does, through the `use` declarations of
+  its namespace, aliases, groups and fully qualified names, and links function calls and constants with PHP's fallback
+  to the global ones, so it tells `Dto\Creature` from `Model\Creature` and finds a class in nullable, union and
+  promoted parameter types, `catch`, `instanceof`, attributes and traits.
+
+- **Imports in Rust**: `dependencyparser` resolves a Rust name as the compiler does, with crates named by `Cargo.toml`,
+  modules where the `mod` declarations and `#[path]` put them, and names found through `use`, globs and re-exports, and
+  reads function bodies, calls, constants and macros, so it tells `dto::Creature` from `domain::Creature` and no longer
+  links a name to a type of the same name elsewhere.
+
+- **Units in Delphi**: `dependencyparser` resolves a Delphi name as the compiler does, through the members of its
+  class and of the class's ancestors, the own unit and the units of the `uses` clauses, the last listed first, and
+  reads method bodies, so it tells two units' `TCreature` apart, sees only the interface of another unit and no longer
+  links a parameter or a local variable to a type of the same name.
+
+- **Schemas in SQL**: `dependencyparser` resolves a SQL name as the databases do, through the object's own schema, the
+  schema `SET search_path` sets and the package it is written in, prefers the object a file creates itself, else that
+  of the latest migration, tells a table from a function of the same name, and no longer links a variable, a temporary
+  table or a trigger's `inserted` rows to a table of the same name.
 
 - **Using directives in C#**: `dependencyparser` looks a C# name up in each enclosing namespace before the using
   directives written around it, so a class of the namespace wins over a using at the top of the file, a name two
@@ -46,11 +141,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   counts what it uses for the outer class, links a name to the nested class of the own or the base class before any
   other class of that name, and finds a Java or Kotlin one through an import such as `import …CreatureFacade.Builder`.
 
-- **Type parameters and local classes**: `dependencyparser` no longer links a Java, Kotlin or C# type parameter or a
-  Java or Kotlin local class to a class of the same name elsewhere in the package.
+- **Type parameters and local classes**: `dependencyparser` no longer links a Java, Kotlin, C# or Go type parameter, a
+  C++ template parameter, a Java, Kotlin or C++ local class, or a type or variable declared in a Go function to a
+  declaration of the same name elsewhere in the package.
 
-- **Private Kotlin declarations**: `dependencyparser` links a Kotlin `private` top-level declaration only from its own
-  file, so two files with a private class of the same name each link to their own.
+- **Private Kotlin declarations and C# file types**: `dependencyparser` links a Kotlin `private` top-level declaration
+  or a C# `file` type only from its own file, so two files with such a class of the same name each link to their own.
 
 - **No links between unrelated languages**: in a repository with several languages, `dependencyparser` no longer
   links a name to a declaration of a language that cannot refer to it, such as a Python name to a SQL table.

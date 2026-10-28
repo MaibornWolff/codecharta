@@ -1,0 +1,9 @@
+# cpp.md, declarations, decision 8: an explicit specialization is an implementation part
+file centaur_repository.hpp -> centaur.hpp
+file centaur_repository.hpp -> repository.hpp
+file stable.hpp -> centaur.hpp
+file stable.hpp -> repository.hpp
+leaf centaur_repository.hpp#Repository -> centaur.hpp#Centaur
+leaf centaur_repository.hpp#Repository -> repository.hpp#Repository usage=part_of
+leaf stable.hpp#Stable -> centaur.hpp#Centaur
+leaf stable.hpp#Stable -> repository.hpp#Repository

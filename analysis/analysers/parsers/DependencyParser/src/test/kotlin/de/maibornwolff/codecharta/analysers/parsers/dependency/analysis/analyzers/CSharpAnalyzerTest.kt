@@ -695,6 +695,23 @@ public class TestClass(){ }
         assertThat(fromTopTargets).containsExactly("Settings.Config")
     }
 
+    @Test
+    fun `should let a file type be named in its own file only`() {
+        // Arrange
+        val first = csharpFile("a/First.cs", "namespace A { file class Helper { } public class First { Helper helper; } }")
+        val second = csharpFile("a/Second.cs", "namespace A { file class Helper { } public class Second { Helper helper; } }")
+        val third = csharpFile("a/Third.cs", "namespace A { public class Third { public Helper Shared; } }")
+        val files = arrayOf(first, second, third)
+
+        // Act
+        val firstTargets = internalTargetsOf("First", *files)
+        val thirdTargets = internalTargetsOf("Third", *files)
+
+        // Assert
+        assertThat(firstTargets).containsExactly("A.Helper")
+        assertThat(thirdTargets).isEmpty()
+    }
+
     private fun csharpFile(physicalPath: String, content: String) = FileInfo(SupportedLanguage.C_SHARP, physicalPath, content)
 
     private fun internalTargetsOf(nodeName: String, vararg files: FileInfo): List<String> {

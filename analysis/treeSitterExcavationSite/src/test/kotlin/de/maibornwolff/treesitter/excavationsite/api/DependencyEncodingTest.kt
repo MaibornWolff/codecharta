@@ -42,21 +42,22 @@ class DependencyEncodingTest {
         val result = TreeSitterDependencies.analyze(code, Language.GO)
 
         // Assert
-        assertThat(result.declarations.map { it.name }).containsExactly("AfterTheRange")
-        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactly("AfterTheRange", "RangeBase")
+        val classDeclaration = result.declarations.single { it.type == DeclarationType.CLASS }
+        assertThat(classDeclaration.name).isEqualTo("AfterTheRange")
+        assertThat(classDeclaration.usedTypes.map { it.name }).containsExactly("RangeBase")
     }
 
     @Test
     fun `should extract whole names after the noncharacters in a Python file`() {
         // Arrange
-        val code = "LABEL = \"\uFFFE-\uFFFF\"\n\nclass AfterTheRange(RangeBase):\n    pass\n"
+        val code = "from base import RangeBase\n\nLABEL = \"\uFFFE-\uFFFF\"\n\nclass AfterTheRange(RangeBase):\n    pass\n"
 
         // Act
         val result = TreeSitterDependencies.analyze(code, Language.PYTHON)
 
         // Assert
         assertThat(result.declarations.map { it.name }).containsExactly("AfterTheRange", "LABEL")
-        assertThat(result.declarations.first().usedTypes.map { it.name }).containsExactly("AfterTheRange", "RangeBase")
+        assertThat(result.declarations.first().usedTypes.map { it.name }).containsExactly("RangeBase")
     }
 
     @Test
@@ -68,8 +69,9 @@ class DependencyEncodingTest {
         val result = TreeSitterDependencies.analyze(code, Language.PHP)
 
         // Assert
-        assertThat(result.declarations.map { it.name }).containsExactly("AfterTheRange")
-        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactly("RangeBase")
+        val classDeclaration = result.declarations.single { it.type == DeclarationType.CLASS }
+        assertThat(classDeclaration.name).isEqualTo("AfterTheRange")
+        assertThat(classDeclaration.usedTypes.map { it.name }).containsExactly("RangeBase")
     }
 
     @Test
@@ -82,7 +84,7 @@ class DependencyEncodingTest {
         val result = TreeSitterDependencies.analyze(code, Language.VUE)
 
         // Assert
-        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactly("OrderList")
+        assertThat(result.declarations.first().usedTypes.map { it.name }).containsExactly("OrderList")
         assertThat(result.imports.map { it.path }).containsExactly(listOf("..", "billing", "total"))
     }
 
