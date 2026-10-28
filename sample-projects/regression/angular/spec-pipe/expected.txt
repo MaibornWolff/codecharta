@@ -1,0 +1,7 @@
+# typescript.md, Angular: a template uses the pipe it names
+file app/card.component.html -> shared/money.pipe.ts
+file app/card.component.ts -> app/card.component.html
+file app/card.component.ts -> shared/money.pipe.ts
+leaf app/card.component.html#card_component_html -> shared/money.pipe.ts#MoneyPipe
+leaf app/card.component.ts#CardComponent -> app/card.component.html#card_component_html
+leaf app/card.component.ts#CardComponent -> shared/money.pipe.ts#MoneyPipe

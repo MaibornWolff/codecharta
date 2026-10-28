@@ -1,0 +1,2 @@
+# cpp.md, simple name 2: a member type of an enclosing class
+leaf outer.hpp#B -> outer.hpp#A

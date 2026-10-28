@@ -159,6 +159,13 @@ and `if` in `EDGE_CLAMP_ROLL` are not counted. Complexity: 1 logic + 1 function 
 - The test file is analysed like any other file; no metric marks it as a test.
 
 ## Dependency parser
+
+Since the name rules of `analysis/analysers/parsers/DependencyParser/docs/name-resolution/cpp.md` (2026-10-26): 26 file
+edges, the same with tests; the three wrong `Creature` edges point at `domain/model/creature.h`, and the alias and
+forward-declaration edges are drawn; see the fixes below. The cycle `creature.h <-> fightable.h` is not flagged, as the
+dto copy of `Creature` hides the domain one from the cycle search, which still takes the copies of one path as one
+node (open).
+
 - Commands: both README commands exit 0, no exception. Default run 49 files, `--include-tests` 50 files; the two
   `.cc.json` are byte-identical. `Found a total of 0 cycles`.
 - Result: 24 file edges, 34 leaves, 25 leaf edges, 29 of 51 files in the tree. Expected 110 file edges (117 with
@@ -252,6 +259,8 @@ access through a field (`defender->armor_class.total`) is not expected as an edg
 - Language vs. CodeCharta: C has no module system; the `#include` graph is the dependency graph and is not turned
   into edges. Every edge in the output starts at a field of a struct or union and ends at a type of that name
   somewhere in the project, which is why a duplicated name lands on one file regardless of the includes.
+- Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/cpp.md`): listed
+  per probe in `regression/c/known-gaps.md`.
 - Tests: `test/creature_service_test.c` is dropped by default (49 instead of 50 files) but has no struct, so
   `--include-tests` changes nothing. Scratch probe (`output/probe-dependency.cc.json`): a struct-holding
   `src/wyvern_test.c`, `src/WyvernTest.c` and `src/test_wyvern.c` are analysed in the default run, `test/roost_check.c`
@@ -383,13 +392,13 @@ access through a field (`defender->armor_class.total`) is not expected as an edg
 - Missing: everything that is not a field of a struct or union. `#include` lines, prototypes, function bodies,
   macros, `extern` variables, `typedef` aliases and function pointer typedefs give no leaf and no edge; 22 of 51
   files (11 `.c` files, the test, 9 headers, the `.inc`) are absent from the tree and 89 of 110 expected edges are
-  missing, among them every barrel, umbrella and upward edge. **Decisions derived from Kotlin: accept — everything outside a struct, `typedef` aliases.** **Decision derived from Java: accept — files without a declaration absent from the tree.** **Decision derived from Delphi: accept — function pointer typedefs.** **Decision derived from Objective-C: accept — the skipped `.inc` is named.** **Decision: ignore — reading `.inc`.**
+  missing, among them every barrel, umbrella and upward edge. **Decisions derived from Kotlin: accept — everything outside a struct, `typedef` aliases.** **Decision derived from Java: accept — files without a declaration absent from the tree.** **Decision derived from Delphi: accept — function pointer typedefs.** **Decision derived from Objective-C: accept — the skipped `.inc` is named.** **Decision: ignore — reading `.inc`.** **Partly fixed 2026-10-26 (cpp.md decisions 4 and 7): `typedef` aliases and structs named by a typedef are leaves; includes are followed, also through `.inc`; functions, prototypes, macros and function pointer typedefs stay out.**
 - Wrong: `Creature` resolves to `application/dto/creature.h` in `centaur.h`, `creatures.h` and
-  `encounter_resolver.h`; the domain `Creature` has 0 incoming edges and the only 3 upward edges reported are false. **Decisions derived from Java: accept — a type identified by its simple name resolves to the wrong declaration.**
+  `encounter_resolver.h`; the domain `Creature` has 0 incoming edges and the only 3 upward edges reported are false. **Decisions derived from Java: accept — a type identified by its simple name resolves to the wrong declaration.** **Fixed 2026-10-26 (cpp.md decision 1: a name means only what the include closure declares).**
 - Missing: tag references (`struct Creature *self` in `fightable.h`, `struct Lair *`, `enum SpeedType` in
   `encounter_edge_cases.h`), which hides the one expected cycle; the field of a nested anonymous struct
   (`struct EdgeRoom { struct { ArmorClass armor; } guard; }`); the link between an opaque typedef and its completion
-  (`stable.h` / `stable.c`, `encounter_resolver.h` / `.c`). **Decisions: accept — tag references; accept — the field of a nested anonymous struct; ignore — the opaque typedef and its completion.**
+  (`stable.h` / `stable.c`, `encounter_resolver.h` / `.c`). **Decisions: accept — tag references; accept — the field of a nested anonymous struct; ignore — the opaque typedef and its completion.** **Partly fixed 2026-10-26 (cpp.md decision 5): a tag reference in a field is a use, `fightable.h -> creature.h` is drawn, and an opaque typedef's users point at its completion; tag references in prototypes and the field of a nested anonymous struct stay out.**
 - Bad: `--include-tests` has no effect for C, and a test outside a `test/` directory is not recognised. A `union`
   is reported as `class`. A struct-holding `.c` file is in the tree with 0 outgoing edges
   (`encounter_resolver.c`), which reads as "no dependencies". **Decision derived from C++: accept — a test outside a `test/` directory is not recognised.** **Decisions derived from Kotlin: accept — `--include-tests` without effect; accept — the `.c` file with 0 outgoing edges (both follow from everything outside a struct).** **Decision derived from Go: ignore — `union` as `class`.**

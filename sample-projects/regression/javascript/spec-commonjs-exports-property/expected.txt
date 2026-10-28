@@ -1,0 +1,3 @@
+# typescript.md, binding: exports.A = and module.exports.A = export A, and are no top-level code
+file b.js -> a.js
+leaf b.js#run -> a.js#helper

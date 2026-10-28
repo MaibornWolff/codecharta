@@ -38,11 +38,6 @@ internal object NamespaceUses {
         .filter { path -> path.any { it.trim().contains(CONSTANT_MARKER) } }
         .map { path -> withoutConstantKeyword(path) }
 
-    fun importedNames(useDeclarations: List<SyntaxNode>) = ImportedNames(
-        namesByAlias = aliasedNames(useDeclarations).associate { it.alias.trim() to it.qualifiedName.split(NAMESPACE_SEPARATOR).last() },
-        constants = constantPaths(useDeclarations).map { it.last() }
-    )
-
     private fun qualifiedClausePaths(useDeclarations: List<SyntaxNode>): List<List<String>> = useDeclarations
         .flatMap { TreeTraversal.findAllDescendantsOfType(it, NAMESPACE_USE_CLAUSE) }
         .filter { clause -> clause.children().any { it.type == QUALIFIED_NAME } }
@@ -58,28 +53,15 @@ internal object NamespaceUses {
             .map { member -> prefix + member.trim() }
     }
 
-    private fun aliasedPaths(useDeclarations: List<SyntaxNode>): List<List<String>> =
-        aliasedNames(useDeclarations).map { aliased -> aliased.qualifiedName.split(NAMESPACE_SEPARATOR).map { it.trim() } }
-
     // Only clauses outside a group
-    private fun aliasedNames(useDeclarations: List<SyntaxNode>): List<AliasedName> = useDeclarations
+    private fun aliasedPaths(useDeclarations: List<SyntaxNode>): List<List<String>> = useDeclarations
         .flatMap { useDeclaration -> useDeclaration.children().filter { it.type == NAMESPACE_USE_CLAUSE } }
-        .mapNotNull { clause ->
-            val qualifiedName = clause.children().firstOrNull { it.type == QUALIFIED_NAME } ?: return@mapNotNull null
-            val alias = clause.fieldOfType(ALIAS_FIELD, NAME) ?: return@mapNotNull null
-            AliasedName(qualifiedName.text, alias.text)
-        }
+        .filter { clause -> clause.fieldOfType(ALIAS_FIELD, NAME) != null }
+        .mapNotNull { clause -> clause.children().firstOrNull { it.type == QUALIFIED_NAME } }
+        .map { qualifiedName -> qualifiedName.text.split(NAMESPACE_SEPARATOR).map { it.trim() } }
 
     private fun withoutConstantKeyword(path: List<String>): List<String> {
         if (!path.first().contains(CONSTANT_MARKER)) return path
         return listOf(path.first().replace(CONSTANT_KEYWORD, "")) + path.drop(1)
     }
-
-    private class AliasedName(val qualifiedName: String, val alias: String)
 }
-
-/**
- * @property namesByAlias alias to the name it stands for: `Qux` to `Baz` for `use Foo\Baz as Qux`
- * @property constants the names of the imported constants
- */
-internal class ImportedNames(val namesByAlias: Map<String, String>, val constants: List<String>)

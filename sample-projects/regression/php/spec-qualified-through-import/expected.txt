@@ -1,0 +1,3 @@
+# php.md, class name 4: a qualified name through a namespace import
+file App/Util.php -> Domain/Model/Creature.php
+leaf App/Util.php#Util -> Domain/Model/Creature.php#Creature

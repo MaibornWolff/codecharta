@@ -1,0 +1,6 @@
+# cpp.md, declarations, decision 4: `using N = T` is an alias of its own
+file repo.hpp -> entity.hpp
+file user.hpp -> repo.hpp
+leaf repo.hpp#Entity -> entity.hpp#CreatureEntity
+leaf repo.hpp#Repo -> repo.hpp#Entity
+leaf user.hpp#User -> repo.hpp#Entity

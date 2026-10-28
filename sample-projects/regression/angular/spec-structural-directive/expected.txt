@@ -1,0 +1,17 @@
+# typescript.md, Angular, decision 14: a structural directive is an ng-template element with the directive and its microsyntax keys as attributes
+file app/list.component.html -> shared/repeat.directive.ts
+file app/list.component.html -> shared/track-by.directive.ts
+file app/list.component.html -> shared/unless.directive.ts
+file app/list.component.ts -> app/list.component.html
+file app/list.component.ts -> shared/list-item.directive.ts
+file app/list.component.ts -> shared/repeat.directive.ts
+file app/list.component.ts -> shared/track-by.directive.ts
+file app/list.component.ts -> shared/unless.directive.ts
+leaf app/list.component.html#list_component_html -> shared/repeat.directive.ts#RepeatDirective
+leaf app/list.component.html#list_component_html -> shared/track-by.directive.ts#TrackByDirective
+leaf app/list.component.html#list_component_html -> shared/unless.directive.ts#UnlessDirective
+leaf app/list.component.ts#ListComponent -> app/list.component.html#list_component_html
+leaf app/list.component.ts#ListComponent -> shared/list-item.directive.ts#ListItemDirective
+leaf app/list.component.ts#ListComponent -> shared/repeat.directive.ts#RepeatDirective
+leaf app/list.component.ts#ListComponent -> shared/track-by.directive.ts#TrackByDirective
+leaf app/list.component.ts#ListComponent -> shared/unless.directive.ts#UnlessDirective

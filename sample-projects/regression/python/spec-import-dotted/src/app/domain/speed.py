@@ -1,0 +1,2 @@
+class Speed:
+    pass

@@ -1,0 +1,3 @@
+# go.md, import paths, rule 3: under no go.mod, the folder the import path ends with in at least two segments
+file app/app.go -> domain/model/rider.go
+leaf app/app.go#Run -> domain/model/rider.go#Rider

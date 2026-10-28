@@ -1,0 +1,5 @@
+# rust.md, macros, decision 5: the arguments of a macro call are read as expressions
+file src/check.rs -> src/model.rs
+leaf src/check.rs#check -> src/model.rs#Creature
+leaf src/check.rs#check -> src/model.rs#MAX
+leaf src/check.rs#check -> src/model.rs#roll_d20

@@ -1,0 +1,5 @@
+# rust.md, declarations: a type alias is a declaration that uses what it names
+file src/table.rs -> src/speed.rs
+file src/user.rs -> src/table.rs
+leaf src/table.rs#SpeedTable -> src/speed.rs#SpeedType
+leaf src/user.rs#User -> src/table.rs#SpeedTable

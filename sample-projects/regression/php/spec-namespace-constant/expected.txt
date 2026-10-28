@@ -1,0 +1,3 @@
+# php.md, declarations, decision 1: a namespace constant is a declaration, a read a use
+file app/Cap.php -> lib/limits.php
+leaf app/Cap.php#Cap -> lib/limits.php#MAX usage=constant_access

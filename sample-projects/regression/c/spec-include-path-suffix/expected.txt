@@ -1,0 +1,3 @@
+# cpp.md, include paths 2: the file the include path ends, in whole segments
+file main/centaur.h -> include/game/creature.h
+leaf main/centaur.h#Centaur -> include/game/creature.h#Creature

@@ -1,0 +1,3 @@
+# delphi.md, simple name 2: a nested class sees the members of its enclosing class
+file Game.Model.pas -> Game.Util.pas
+leaf Game.Model.pas#TInner -> Game.Util.pas#Other

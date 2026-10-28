@@ -1,0 +1,5 @@
+# python.md, declarations, decision 2: a re-export leaf is named by the alias it binds
+file app/user.py -> pkg/__init__.py
+file pkg/__init__.py -> pkg/mod.py
+leaf app/user.py#User -> pkg/__init__.py#Bar
+leaf pkg/__init__.py#Bar -> pkg/mod.py#Foo

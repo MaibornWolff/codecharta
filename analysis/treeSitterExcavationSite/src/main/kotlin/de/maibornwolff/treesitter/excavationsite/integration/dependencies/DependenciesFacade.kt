@@ -1,7 +1,15 @@
 package de.maibornwolff.treesitter.excavationsite.integration.dependencies
 
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors.UnitReader
+import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiUnit
+import de.maibornwolff.treesitter.excavationsite.languages.rust.extractors.ModuleReader
+import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustModule
+import de.maibornwolff.treesitter.excavationsite.languages.sql.extractors.ScriptReader
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlScript
+import de.maibornwolff.treesitter.excavationsite.languages.vue.VueDependencyMapping
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ComponentRegistration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DependencyResult
 import de.maibornwolff.treesitter.excavationsite.shared.domain.EmbeddedDeclarations
 import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
@@ -19,19 +27,51 @@ object DependenciesFacade {
         val definition = LanguageRegistry.getLanguageDefinition(language)
         val mapping = checkNotNull(definition.dependencyMapping) { "No dependency mapping for ${language.name}" }
         val wholeFileGrammar = mapping.grammarOfWholeFile
-        val processedContent = if (wholeFileGrammar == null) definition.preprocessor?.invoke(content) ?: content else content
+        val ofLanguage = if (wholeFileGrammar == null) definition.preprocessor?.invoke(content) ?: content else content
+        val processedContent = mapping.preprocessor?.invoke(ofLanguage) ?: ofLanguage
         val grammar = NativeTreeSitter.grammar(wholeFileGrammar ?: LanguageRegistry.getGrammarLibrary(language))
         val embeddedSources = mapping.embeddedSources ?: definition.embeddedSources
         val collected = DependencyCollector(grammar, mapping, embeddedSources).collectDependencies(processedContent)
-        val sources = collected.embeddedSources
+        val analyzedSources = collected.embeddedSources.map { it to analyze(it.content, it.language) }
+        val ofTheFile = analyzedSources.filter { (source, _) -> source.owner == null }
         return collected.ofFile.copy(
-            imports = collected.ofFile.imports + sources.filter { it.owner == null }.flatMap { analyze(it.content, it.language).imports },
-            embedded = sources.mapNotNull { source ->
-                source.owner?.let { owner ->
-                    EmbeddedDeclarations(owner, source.language, analyze(source.content, source.language).declarations)
-                }
+            imports = collected.ofFile.imports + analyzedSources.flatMap { (_, result) -> result.imports },
+            declarations = collected.ofFile.declarations + ofTheFile.flatMap { (_, result) -> result.declarations },
+            embedded = analyzedSources.mapNotNull { (source, result) ->
+                source.owner?.let { owner -> EmbeddedDeclarations(owner, source.language, result.declarations) }
             }
         )
+    }
+
+    /** The Vue components a source registers, those of the script blocks of a source that embeds them included. */
+    fun componentRegistrations(content: String, language: Language): List<ComponentRegistration> {
+        val mapping = LanguageRegistry.getLanguageDefinition(language).dependencyMapping
+        val grammar = NativeTreeSitter.grammar(mapping?.grammarOfWholeFile ?: LanguageRegistry.getGrammarLibrary(language))
+        return FfmSyntaxTree.parse(content, grammar).use { tree ->
+            val sources = mapping?.embeddedSources?.let { tree.readReleasingReachedNodes(it.extract) }.orEmpty()
+            tree.readReleasingReachedNodes(VueDependencyMapping.extractComponentRegistrations) +
+                sources.flatMap { componentRegistrations(it.content, it.language) }
+        }
+    }
+
+    /** What a Rust source declares and writes, for the name lookup of `rust.md`. */
+    fun rustModule(content: String): RustModule {
+        val grammar = NativeTreeSitter.grammar(LanguageRegistry.getGrammarLibrary(Language.RUST))
+        return FfmSyntaxTree.parse(content, grammar).use { it.readReleasingReachedNodes(ModuleReader::read) }
+    }
+
+    /** What a Delphi source declares, for the name lookup of `delphi.md`. */
+    fun delphiUnit(content: String): DelphiUnit {
+        val grammar = NativeTreeSitter.grammar(LanguageRegistry.getGrammarLibrary(Language.DELPHI))
+        val processedContent =
+            LanguageRegistry.getLanguageDefinition(Language.DELPHI).dependencyMapping?.preprocessor?.invoke(content) ?: content
+        return FfmSyntaxTree.parse(processedContent, grammar).use { it.readReleasingReachedNodes(UnitReader::read) }
+    }
+
+    /** What a SQL file creates, changes and names, for the name lookup of `sql.md`. */
+    fun sqlScript(content: String): SqlScript {
+        val grammar = NativeTreeSitter.grammar(LanguageRegistry.getGrammarLibrary(Language.SQL))
+        return FfmSyntaxTree.parse(content, grammar).use { it.readReleasingReachedNodes(ScriptReader::read) }
     }
 
     fun bundlerAliases(

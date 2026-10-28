@@ -1,0 +1,3 @@
+# cpp.md, simple name 3: directive names count in the namespace enclosing both
+file y.hpp -> x.hpp
+leaf y.hpp#U -> x.hpp#N

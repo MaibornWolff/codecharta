@@ -1,0 +1,3 @@
+# php.md, class name 5: an unqualified name means the current namespace's declaration
+file a/Horse.php -> b/Speed.php
+leaf a/Horse.php#Horse -> b/Speed.php#Speed

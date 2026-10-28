@@ -2,6 +2,10 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp
 
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.AliasDeclarationFinder.ALIAS
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.ForwardDeclarationFinder.FORWARD_DECLARATION
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.ImplementationParts.IMPLEMENTATION
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations.NamespaceDeclarationFinder.NAMESPACE
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
@@ -59,7 +63,7 @@ class CppDependencyDeclarationTest {
     }
 
     @Test
-    fun `should skip forward class declaration without body`() {
+    fun `should report a forward class declaration below the forward declaration marker`() {
         // Arrange
         val code = "class Foo;"
 
@@ -67,7 +71,203 @@ class CppDependencyDeclarationTest {
         val result = TreeSitterDependencies.analyze(code, Language.CPP)
 
         // Assert
-        assertThat(result.declarations).isEmpty()
+        assertThat(result.declarations).containsExactly(
+            Declaration(name = "Foo", type = DeclarationType.CLASS, usedTypes = emptySet(), parentPath = listOf(FORWARD_DECLARATION))
+        )
+    }
+
+    @Test
+    fun `should report forward declarations in a namespace, a class and of an enum with their scope`() {
+        // Arrange
+        val code = "namespace g { struct C; enum E : int; }\nstruct H { class Inner; };"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations).containsExactlyInAnyOrder(
+            Declaration(name = "C", type = DeclarationType.CLASS, usedTypes = emptySet(), parentPath = listOf(FORWARD_DECLARATION, "g")),
+            Declaration(name = "E", type = DeclarationType.ENUM, usedTypes = emptySet(), parentPath = listOf(FORWARD_DECLARATION, "g")),
+            Declaration(name = "H", type = DeclarationType.CLASS, usedTypes = emptySet(), parentPath = emptyList()),
+            Declaration(
+                name = "Inner",
+                type = DeclarationType.CLASS,
+                usedTypes = emptySet(),
+                parentPath = listOf(FORWARD_DECLARATION, "H")
+            ),
+            namespaceMarker("g")
+        )
+    }
+
+    @Test
+    fun `should report the tag a typedef names without a body as a forward declaration`() {
+        // Arrange
+        val code = "typedef struct Stable Stable;"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations).containsExactly(
+            Declaration(name = "Stable", type = DeclarationType.CLASS, usedTypes = emptySet(), parentPath = listOf(FORWARD_DECLARATION))
+        )
+    }
+
+    @Test
+    fun `should report typedefs of another name and using aliases below the alias marker with the type they name`() {
+        // Arrange
+        val code = """
+            typedef struct Size Area;
+            typedef int Meters, *MetersPtr;
+            typedef struct Foo { int a; } Bar;
+            namespace n { using Entity = lib::CreatureEntity; }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.filter { it.parentPath.firstOrNull() == ALIAS }).containsExactlyInAnyOrder(
+            Declaration(name = "Area", type = DeclarationType.CLASS, usedTypes = setOf(UsedType("Size")), parentPath = listOf(ALIAS)),
+            Declaration(name = "Meters", type = DeclarationType.CLASS, usedTypes = setOf(UsedType("int")), parentPath = listOf(ALIAS)),
+            Declaration(name = "MetersPtr", type = DeclarationType.CLASS, usedTypes = setOf(UsedType("int")), parentPath = listOf(ALIAS)),
+            Declaration(name = "Bar", type = DeclarationType.CLASS, usedTypes = setOf(UsedType("Foo")), parentPath = listOf(ALIAS)),
+            Declaration(
+                name = "Entity",
+                type = DeclarationType.CLASS,
+                usedTypes = setOf(UsedType("CreatureEntity", namespacePrefix = listOf("lib"))),
+                parentPath = listOf(ALIAS, "n")
+            )
+        )
+    }
+
+    @Test
+    fun `should report no alias for a typedef of a struct of the same name or of a function pointer`() {
+        // Arrange
+        val code = "typedef struct Size Size;\ntypedef struct Point { int x; } Point;\ntypedef int (*Callback)(int);"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.filter { it.parentPath.firstOrNull() == ALIAS }).isEmpty()
+    }
+
+    @Test
+    fun `should report the class an unqualified friend declaration names as forward declared in its namespace`() {
+        // Arrange
+        val code = "namespace app { class T { friend class Util; friend struct lib::Other; friend Third; }; }"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.filter { it.parentPath.firstOrNull() == FORWARD_DECLARATION }).containsExactly(
+            Declaration(
+                name = "Util",
+                type = DeclarationType.CLASS,
+                usedTypes = emptySet(),
+                parentPath = listOf(FORWARD_DECLARATION, "app")
+            )
+        )
+    }
+
+    @Test
+    fun `should name an untagged struct or enum by the typedef that names it`() {
+        // Arrange
+        val code = "typedef struct { Speed speed; } Point, *PointPtr;\ntypedef enum { RED } Color;"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations).containsExactlyInAnyOrder(
+            Declaration(name = "Point", type = DeclarationType.CLASS, usedTypes = setOf(UsedType("Speed")), parentPath = emptyList()),
+            Declaration(name = "Color", type = DeclarationType.ENUM, usedTypes = emptySet(), parentPath = emptyList()),
+            Declaration(name = "PointPtr", type = DeclarationType.CLASS, usedTypes = setOf(UsedType("Point")), parentPath = listOf(ALIAS))
+        )
+    }
+
+    @Test
+    fun `should report nothing for a typedef a macro keeps the parser from reading`() {
+        // Arrange
+        val code = "typedef Foo* FooPtr DEPRECATED;\ntypedef BOX(Foo) Boxed;\ntypedef struct { int x; } Point DEPRECATED;"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.filter { it.parentPath.firstOrNull() != FORWARD_DECLARATION }).isEmpty()
+    }
+
+    @Test
+    fun `should keep member functions defined in the file of their class in the class declaration`() {
+        // Arrange
+        val code = "struct Foo { void bar(); };\nvoid Foo::bar() { Helper helper; }"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations).containsExactly(
+            Declaration(
+                name = "Foo",
+                type = DeclarationType.CLASS,
+                usedTypes = setOf(UsedType("void"), UsedType("Helper")),
+                parentPath = emptyList()
+            )
+        )
+    }
+
+    @Test
+    fun `should report an out-of-line member of a template as an implementation part of the template`() {
+        // Arrange
+        val code = "template <class T> int Pool<T>::size() const { Counter counter{0}; return counter.count; }"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations).containsExactly(
+            Declaration(
+                name = "Pool",
+                type = DeclarationType.CLASS,
+                usedTypes = setOf(UsedType("int"), UsedType("Counter")),
+                parentPath = listOf(IMPLEMENTATION)
+            )
+        )
+    }
+
+    @Test
+    fun `should report an explicit specialization as an implementation part of its template that uses the arguments`() {
+        // Arrange
+        val code = "namespace store { template <> class Repository<Centaur> { Centaur *centaurs; }; }"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations).containsExactly(
+            Declaration(
+                name = "Repository",
+                type = DeclarationType.CLASS,
+                usedTypes = setOf(UsedType("Centaur")),
+                parentPath = listOf(IMPLEMENTATION, "store")
+            ),
+            namespaceMarker("store")
+        )
+    }
+
+    @Test
+    fun `should report no forward declaration for a class named in the type of a field`() {
+        // Arrange
+        val code = "struct Nest { struct Roost *held; };"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.map { it.name }).containsExactly("Nest")
     }
 
     @Test
@@ -89,7 +289,10 @@ class CppDependencyDeclarationTest {
                 type = DeclarationType.CLASS,
                 usedTypes = emptySet(),
                 parentPath = listOf("Outer", "Middle", "Inner")
-            )
+            ),
+            namespaceMarker("Outer"),
+            namespaceMarker("Middle", "Outer"),
+            namespaceMarker("Inner", "Outer", "Middle")
         )
     }
 
@@ -114,7 +317,10 @@ class CppDependencyDeclarationTest {
                 type = DeclarationType.CLASS,
                 usedTypes = emptySet(),
                 parentPath = listOf("Outer", "Middle", "Inner")
-            )
+            ),
+            namespaceMarker("Outer"),
+            namespaceMarker("Middle", "Outer"),
+            namespaceMarker("Inner", "Outer", "Middle")
         )
     }
 
@@ -145,7 +351,8 @@ class CppDependencyDeclarationTest {
                 type = DeclarationType.CLASS,
                 usedTypes = emptySet(),
                 parentPath = listOf("MyApp", "Outer")
-            )
+            ),
+            namespaceMarker("MyApp")
         )
     }
 
@@ -170,7 +377,8 @@ class CppDependencyDeclarationTest {
                 type = DeclarationType.CLASS,
                 usedTypes = emptySet(),
                 parentPath = listOf("MyApp")
-            )
+            ),
+            namespaceMarker("MyApp")
         )
     }
 
@@ -195,7 +403,8 @@ class CppDependencyDeclarationTest {
                 type = DeclarationType.CLASS,
                 usedTypes = emptySet(),
                 parentPath = listOf("MyApp")
-            )
+            ),
+            namespaceMarker("MyApp")
         )
     }
 
@@ -215,7 +424,7 @@ class CppDependencyDeclarationTest {
                 name = "Foo",
                 type = DeclarationType.CLASS,
                 usedTypes = setOf(UsedType(name = "void")),
-                parentPath = emptyList()
+                parentPath = listOf(IMPLEMENTATION)
             )
         )
     }
@@ -237,7 +446,7 @@ class CppDependencyDeclarationTest {
                 name = "Foo",
                 type = DeclarationType.CLASS,
                 usedTypes = setOf(UsedType(name = "void"), UsedType(name = "int"), UsedType(name = "double")),
-                parentPath = emptyList()
+                parentPath = listOf(IMPLEMENTATION)
             )
         )
     }
@@ -276,8 +485,9 @@ class CppDependencyDeclarationTest {
                 name = "Pattern",
                 type = DeclarationType.CLASS,
                 usedTypes = setOf(UsedType(name = "string", namespacePrefix = listOf("std"))),
-                parentPath = listOf("Catch", "TestSpec")
-            )
+                parentPath = listOf(IMPLEMENTATION, "Catch", "TestSpec")
+            ),
+            namespaceMarker("Catch")
         )
     }
 
@@ -295,4 +505,39 @@ class CppDependencyDeclarationTest {
         // Assert
         assertThat(result.declarations).isEmpty()
     }
+
+    @Test
+    fun `should report each named namespace a file opens once below its enclosing namespaces`() {
+        // Arrange
+        val code = """
+            namespace util::log { bool ShouldLog(int category); }
+            namespace util { namespace log { bool ShouldTrace(int category); } }
+            namespace { int hidden; }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations).containsExactly(
+            namespaceMarker("util"),
+            namespaceMarker("log", "util")
+        )
+    }
+
+    @Test
+    fun `should read a class with an export macro before its name as that class with its base and uses`() {
+        // Arrange
+        val code = "class LIB_EXPORT Widget : public Base { Dice dice; };"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.declarations.map { it.name }).containsExactly("Widget")
+        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactlyInAnyOrder("Base", "Dice")
+    }
+
+    private fun namespaceMarker(name: String, vararg enclosing: String) =
+        Declaration(name = name, type = DeclarationType.UNKNOWN, usedTypes = emptySet(), parentPath = listOf(NAMESPACE) + enclosing)
 }

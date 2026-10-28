@@ -1,0 +1,3 @@
+# delphi.md, simple name 1: a generic parameter hides a unit type
+file Game.Box.pas -> Game.Util.pas
+leaf Game.Box.pas#TBox -> Game.Util.pas#TStat

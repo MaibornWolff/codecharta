@@ -1,0 +1,3 @@
+# delphi.md, declarations, decision 7: what a routine declares is no target, its names are the routine's uses
+file Game.Arena.pas -> Game.Model.pas
+leaf Game.Arena.pas#TArena -> Game.Model.pas#TCreature

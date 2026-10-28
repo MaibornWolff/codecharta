@@ -1,0 +1,3 @@
+# typescript.md, declarations and binding: module.exports = X is the default export, the required module itself means it
+file b.js -> svc.js
+leaf b.js#make -> svc.js#Svc

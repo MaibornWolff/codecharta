@@ -1,0 +1,15 @@
+# sql.md, declarations, decision 5: tables, views, materialized views, synonyms, sequences, types, domains, routines
+file app/report.sql -> db/schema.sql
+leaf app/report.sql#cheer -> db/schema.sql#mood
+leaf app/report.sql#cheer -> db/schema.sql#positive_int
+leaf app/report.sql#report -> db/schema.sql#big_orders
+leaf app/report.sql#report -> db/schema.sql#order_count
+leaf app/report.sql#report -> db/schema.sql#order_seq
+leaf app/report.sql#report -> db/schema.sql#order_total
+leaf app/report.sql#report -> db/schema.sql#orders
+leaf db/schema.sql#big_orders -> db/schema.sql#orders
+leaf db/schema.sql#order_count -> db/schema.sql#big_orders
+leaf db/schema.sql#order_total -> db/schema.sql#order_count
+leaf db/schema.sql#orders -> db/schema.sql#mood
+leaf db/schema.sql#orders -> db/schema.sql#order_seq
+leaf db/schema.sql#orders -> db/schema.sql#positive_int

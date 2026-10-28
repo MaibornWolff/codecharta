@@ -1,0 +1,1 @@
+struct Roost { int perches; };

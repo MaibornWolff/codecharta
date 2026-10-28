@@ -1,0 +1,3 @@
+# python.md, declarations: a module-level variable is a target
+file app/use.py -> app/settings.py
+leaf app/use.py#limit -> app/settings.py#MAX_SIZE

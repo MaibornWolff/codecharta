@@ -1,0 +1,6 @@
+# typescript.md, Angular 2, decision 6: a selector one class of the project declares, outside the scope
+file app/card.component.html -> shared/badge.component.ts
+file app/card.component.ts -> app/card.component.html
+leaf app/card.component.html#card_component_html -> shared/badge.component.ts#BadgeComponent
+leaf app/card.component.ts#CardComponent -> app/card.component.html#card_component_html
+leaf shared/badge.component.ts#BadgeComponent -> shared/badge.component.ts#template

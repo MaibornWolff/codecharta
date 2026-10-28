@@ -1,0 +1,1 @@
+# python.md, shared rule 1, name scope: Python names only Python declarations

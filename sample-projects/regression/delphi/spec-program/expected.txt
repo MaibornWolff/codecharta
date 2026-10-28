@@ -1,0 +1,6 @@
+# delphi.md, units, decision 2: a program is a namespace, its main block a script leaf
+file Arena.dpr -> Game.Model.pas
+leaf Arena.dpr#Arena_script -> Arena.dpr#Configure
+leaf Arena.dpr#Arena_script -> Game.Model.pas#Spawn
+leaf Arena.dpr#Configure -> Game.Model.pas#TCreature
+leaf Game.Model.pas#Spawn -> Game.Model.pas#TCreature

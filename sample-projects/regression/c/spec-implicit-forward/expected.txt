@@ -1,0 +1,3 @@
+# cpp.md, declarations: `struct N *` with no visible N declares it
+file nest.h -> roost.h
+leaf nest.h#Nest -> roost.h#Roost

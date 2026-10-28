@@ -1,0 +1,3 @@
+# php.md, declarations, decision 7: a function declared in a block is one of its namespace
+file app/Page.php -> lib/polyfill.php
+leaf app/Page.php#Page -> lib/polyfill.php#slug

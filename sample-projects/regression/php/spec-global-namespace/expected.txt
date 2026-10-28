@@ -1,0 +1,3 @@
+# php.md, declarations, decision 6: outside every namespace the path is the name alone
+file main/Main.php -> lib/Util.php
+leaf main/Main.php#Main -> lib/Util.php#Util

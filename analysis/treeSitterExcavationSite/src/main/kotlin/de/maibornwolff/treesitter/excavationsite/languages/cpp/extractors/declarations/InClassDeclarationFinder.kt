@@ -1,5 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations
 
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.syntax.CppNamespaceWalker
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes.CppLocalNames
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes.UsedTypeExtractor
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
@@ -21,14 +23,14 @@ internal object InClassDeclarationFinder {
         val allDeclarationNodes = TreeTraversal
             .findAllDescendantsOfType(rootNode, *DECLARATION_NODE_TYPES.toTypedArray())
         val nameByStartByte = allDeclarationNodes.associate { node ->
-            node.startByte to TreeTraversal.findFirstChildTextByType(node, TYPE_IDENTIFIER)
+            node.startByte to (TreeTraversal.findFirstChildTextByType(node, TYPE_IDENTIFIER) ?: TypedefNames.nameOfUntagged(node))
         }
         return allDeclarationNodes.mapNotNull { toDeclaration(it, nameByStartByte) }
     }
 
     private fun toDeclaration(node: SyntaxNode, nameByStartByte: Map<Int, String?>): Declaration? {
         // Forward declarations have no body — DC legacy emits no Declaration for them.
-        if (!hasBody(node)) return null
+        if (!hasBody(node) || CppLocalNames.isInFunction(node)) return null
         val name = nameByStartByte[node.startByte] ?: return null
         return Declaration(
             name = name,

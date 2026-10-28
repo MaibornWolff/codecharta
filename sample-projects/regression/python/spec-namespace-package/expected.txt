@@ -1,0 +1,3 @@
+# python.md, import roots 1: a folder without __init__.py is a namespace package below a root
+file tool.py -> svc/app/models.py
+leaf tool.py#Tool -> svc/app/models.py#Model

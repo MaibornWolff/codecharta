@@ -1,0 +1,1 @@
+# cpp.md, declarations, simple name 1, decision 9: a class declared in a function

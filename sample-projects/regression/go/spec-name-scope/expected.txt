@@ -1,0 +1,1 @@
+# README.md, rule 1: a Go name never means a declaration of another language

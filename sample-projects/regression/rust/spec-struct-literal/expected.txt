@@ -1,0 +1,3 @@
+# rust.md, decision 4: a struct literal and a struct pattern are uses
+file src/dig.rs -> src/den.rs
+leaf src/dig.rs#dig -> src/den.rs#Den

@@ -1,0 +1,9 @@
+# php.md: a name below a class (`X::f()`, `X::C`, `X::class`, `X::$p`) is a use of the class
+file App/Herd.php -> Model/Centaur.php
+file App/Herd.php -> Model/Counter.php
+file App/Herd.php -> Model/Factory.php
+file App/Herd.php -> Model/SpeedType.php
+leaf App/Herd.php#Herd -> Model/Centaur.php#Centaur usage=constant_access
+leaf App/Herd.php#Herd -> Model/Counter.php#Counter
+leaf App/Herd.php#Herd -> Model/Factory.php#Factory
+leaf App/Herd.php#Herd -> Model/SpeedType.php#SpeedType usage=constant_access

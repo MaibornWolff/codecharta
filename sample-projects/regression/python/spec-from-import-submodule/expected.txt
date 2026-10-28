@@ -1,0 +1,3 @@
+# python.md, import binds: `from m import N` binds a submodule when m binds no N
+file app/use.py -> app/domain/speed.py
+leaf app/use.py#Use -> app/domain/speed.py#Speed

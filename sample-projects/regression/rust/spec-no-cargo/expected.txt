@@ -1,0 +1,3 @@
+# rust.md, crates: without Cargo.toml a `lib.rs` in `src` is a crate root
+file game/src/arena.rs -> game/src/model.rs
+leaf game/src/arena.rs#Arena -> game/src/model.rs#Creature

@@ -13,6 +13,35 @@ import de.maibornwolff.treesitter.excavationsite.api.UsedType
 // The sentinel name TSE assigns to default export declarations (e.g. `export default ...`)
 const val TSE_DEFAULT_EXPORT_NAME = "DEFAULT_EXPORT"
 
+// The first parent path segment TSE gives a declaration of `declare module 'name'`, whose path is the module name
+const val TSE_AMBIENT_MODULE_SEGMENT = "AMBIENT_MODULE"
+
+// The first parent path segment TSE gives a global JavaScript or TypeScript declaration, and the prefix of a use of a
+// name no module binding binds, which may mean one
+const val TSE_GLOBAL_SEGMENT = "GLOBAL"
+
+// The prefix of a use TSE reports for a tag of a Vue template, which names a component by the tag rules
+const val TSE_COMPONENT_TAG_SEGMENT = "COMPONENT_TAG"
+
+// The sentinel name of a use TSE reports for a JavaScript or TypeScript side-effect import, its specifier as the prefix,
+// and for a PHP include, its path as the prefix
+const val TSE_MODULE_SCRIPT_NAME = "MODULE_SCRIPT"
+
+// The first namespace prefix segment TSE gives a C++ type written with a leading ::, the global namespace
+const val TSE_CPP_GLOBAL_SCOPE = "::"
+
+// The first parent path segment TSE gives the member functions of a C++ class defined outside the file of its body
+const val TSE_IMPLEMENTATION_SEGMENT = "IMPLEMENTATION"
+
+// The first parent path segment TSE gives a C or C++ type alias, which names the type it uses
+const val TSE_ALIAS_SEGMENT = "ALIAS"
+
+// The first parent path segment TSE gives a C or C++ forward declaration, which declares no leaf but makes its name visible
+const val TSE_FORWARD_DECLARATION_SEGMENT = "FORWARD_DECLARATION"
+
+// The first parent path segment TSE gives a C++ namespace a file opens, which declares no leaf
+const val TSE_NAMESPACE_SEGMENT = "NAMESPACE"
+
 // The sentinel name TSE assigns to wildcard re-export declarations (e.g. `export * from '...'`)
 const val WILDCARD_EXPORT_NAME = "*"
 

@@ -51,7 +51,7 @@ internal class RegressionProbe(private val directory: File) {
         val excludePatterns = buildFolders + CodeChartaConstants.GIT_DIRECTORY_EXCLUDE_PATTERN
         val scanner = SourceFileScanner(allowedExtensions = SupportedLanguage.allSuffixes(), excludePatterns = excludePatterns)
         val extraction = ExtractionPipeline(scanner, SilentProgressReporter).run(sources, bypassGitignore = true)
-        val graph = ProcessingPipeline.run(extraction.reports, omitGraphAnalysis = false)
+        val graph = ProcessingPipeline.run(extraction.reports, omitGraphAnalysis = false, analysisRoot = sources)
         val failures = extraction.failures.map { "$FAILED_PREFIX${it.path}: ${it.cause}" }
         return (graph.edges.map { fileLine(it) } + graph.declarationEdges.map { leafLine(it) } + failures).sorted()
     }

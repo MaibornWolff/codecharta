@@ -1,0 +1,3 @@
+# python.md, import roots 2: without a root, the module the path ends with in two segments
+file svc/app/main.py -> svc/app/core.py
+leaf svc/app/main.py#Main -> svc/app/core.py#Foo

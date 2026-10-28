@@ -1,0 +1,5 @@
+# rust.md, modules, decision 12: a file library and binary both load belongs to the library
+file src/main.rs -> src/shared.rs
+file tests/check.rs -> src/shared.rs
+leaf src/main.rs#main -> src/shared.rs#Thing
+leaf tests/check.rs#check -> src/shared.rs#Thing

@@ -1,0 +1,5 @@
+# csharp.md, decision 2: without any .csproj the analysed files are one project, so two copies of a type are its parts
+file second/Checkout.cs -> first/Util.cs
+file second/Checkout.cs -> second/Util.cs
+leaf second/Checkout.cs#Checkout -> first/Util.cs#Util
+leaf second/Checkout.cs#Checkout -> second/Util.cs#Util

@@ -1,0 +1,1 @@
+struct Wyvern { Creature *prey; };

@@ -1,0 +1,4 @@
+# rust.md, use declarations: a group with `self` binds the module
+file src/report.rs -> src/domain/model.rs
+leaf src/report.rs#report -> src/domain/model.rs#Creature
+leaf src/report.rs#report -> src/domain/model.rs#Speed

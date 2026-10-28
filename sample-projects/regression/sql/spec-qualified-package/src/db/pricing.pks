@@ -1,0 +1,4 @@
+CREATE OR REPLACE PACKAGE app.pricing AS
+    FUNCTION total(p_id NUMBER) RETURN NUMBER;
+END pricing;
+/

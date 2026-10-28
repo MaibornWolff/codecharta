@@ -1,0 +1,1 @@
+CREATE SYNONYM dice FOR roll;

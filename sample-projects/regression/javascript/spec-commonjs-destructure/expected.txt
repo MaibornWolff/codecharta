@@ -1,0 +1,4 @@
+# typescript.md, binding: const { A, B: C } = require binds A and C to the exports A and B
+file b.js -> a.js
+leaf b.js#run -> a.js#Svc
+leaf b.js#run -> a.js#helper

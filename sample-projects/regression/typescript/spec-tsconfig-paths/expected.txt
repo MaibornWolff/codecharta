@@ -1,0 +1,3 @@
+# typescript.md, module specifiers 2.1: a tsconfig paths entry
+file views/view.ts -> app/models/user.ts
+leaf views/view.ts#View -> app/models/user.ts#User

@@ -1,0 +1,3 @@
+# typescript.md, Vue tag 2: a binding of script setup, Pascal or kebab case
+file components/List.vue -> components/UserCard.vue
+leaf components/List.vue#List -> components/UserCard.vue#UserCard

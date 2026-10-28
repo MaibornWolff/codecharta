@@ -1,0 +1,3 @@
+# rust.md, simple name 1: a `use` in a block binds there
+file src/spawn.rs -> src/model.rs
+leaf src/spawn.rs#spawn -> src/model.rs#Creature

@@ -23,8 +23,8 @@ fun Node.resolveTypes(project: ProjectNames, nameRules: NameRules = DefaultNameR
         .asSequence()
         .filter { it.resolvedPath != null }
         .filter { !languageDictionary.containsValue(it.resolvedPath) }
-        .filter { it.resolvedPath != pathWithName }
-        .map { Dependency(path = it.resolvedPath!!, type = it.usageSource) }
+        .filter { it.resolvedPath != pathWithName || isImplementationPart }
+        .map { Dependency(path = it.resolvedPath!!, type = it.usageSource, kinds = it.kinds) }
         .toSet()
 
     val nodeDependencies = NodeDependencies(
@@ -44,5 +44,11 @@ fun Node.resolveTypes(project: ProjectNames, nameRules: NameRules = DefaultNameR
 private fun Type.toResolvedType(names: DeclarationNames): Type = copy(
     name = name.split(".").last(),
     genericTypes = genericTypes.map { it.toResolvedType(names) },
-    resolvedPath = alternativeName?.let { names.resolveEither(name, it) } ?: names.resolve(name)
+    resolvedPath = resolvedPathOf(names)
 )
+
+private fun Type.resolvedPathOf(names: DeclarationNames): Path {
+    val ownPath = alternativeName?.let { names.resolveEither(name, it) } ?: names.resolve(name)
+    if (!ownPath.isUnknown()) return ownPath
+    return fallbacks.asSequence().map { it.resolvedPathOf(names) }.firstOrNull { !it.isUnknown() } ?: ownPath
+}

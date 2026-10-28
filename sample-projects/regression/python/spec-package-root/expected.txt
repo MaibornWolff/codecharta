@@ -1,0 +1,5 @@
+# python.md, import roots 1: the folder above a top-level package (src layout, tests beside it)
+file proj/src/app/main.py -> proj/src/app/core.py
+file proj/tests/test_main.py -> proj/src/app/main.py
+leaf proj/src/app/main.py#Main -> proj/src/app/core.py#Foo
+leaf proj/tests/test_main.py#test_main -> proj/src/app/main.py#Main

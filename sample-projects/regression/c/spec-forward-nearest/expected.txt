@@ -1,0 +1,3 @@
+# cpp.md, which file 2, shared rule 2: of several bodies the nearest
+file a/nest.h -> a/roost.h
+leaf a/nest.h#Nest -> a/roost.h#Roost

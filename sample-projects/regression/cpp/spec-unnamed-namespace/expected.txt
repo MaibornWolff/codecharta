@@ -1,0 +1,3 @@
+# cpp.md, declarations: an unnamed namespace adds no segment; the closure keeps it apart
+leaf a.cpp#A -> a.cpp#Helper
+leaf b.cpp#B -> b.cpp#Helper

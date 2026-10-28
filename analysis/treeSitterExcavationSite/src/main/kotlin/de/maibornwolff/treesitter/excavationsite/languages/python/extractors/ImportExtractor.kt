@@ -35,7 +35,14 @@ internal object ImportExtractor {
 
     fun extract(rootNode: SyntaxNode): List<ImportDeclaration> = TreeTraversal
         .findAllDescendantsOfType(rootNode, IMPORT_STATEMENT, IMPORT_FROM_STATEMENT)
-        .flatMap { statement -> if (statement.type == IMPORT_STATEMENT) moduleImports(statement) else memberImports(statement) }
+        .flatMap { importsOf(it) }
+
+    /** The imports of one import statement, none for another statement. */
+    fun importsOf(statement: SyntaxNode): List<ImportDeclaration> = when (statement.type) {
+        IMPORT_STATEMENT -> moduleImports(statement)
+        IMPORT_FROM_STATEMENT -> memberImports(statement)
+        else -> emptyList()
+    }
 
     private fun moduleImports(statement: SyntaxNode): List<ImportDeclaration> {
         val children = statement.children().toList()

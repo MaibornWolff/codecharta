@@ -1,0 +1,3 @@
+# typescript.md, 3: a declaration of a JavaScript script file is global
+file legacy/page.js -> legacy/helpers.js
+leaf legacy/page.js#render -> legacy/helpers.js#legacyHelper

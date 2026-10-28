@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FilePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeDependencies
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
@@ -211,8 +212,8 @@ class FileLevelAggregatorTest {
     }
 
     @Test
-    fun `should point a dependency on a C# declaration in several files at the first file, as long as C# has no rules of its own`() {
-        // Arrange: the second part of a partial class lies nearer to the using file.
+    fun `should point a dependency on a C# declaration in several files of one project at every file`() {
+        // Arrange: a partial class in two files of one project.
         val nodes =
             listOf(
                 declaration("Shop.Order", "Gen/Order.g.cs", language = SupportedLanguage.C_SHARP),
@@ -224,7 +225,7 @@ class FileLevelAggregatorTest {
         val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
 
         // Assert
-        assertThat(edges.single().to.segments).containsExactly("Gen", "Order.g.cs")
+        assertThat(edges.map { it.to.segments }).containsExactlyInAnyOrder(listOf("Gen", "Order.g.cs"), listOf("Model", "Order.cs"))
     }
 
     @Test
@@ -289,9 +290,61 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val filePath = DeclaringFiles.of(nodes).fileFor("orders", FilePath(listOf("db", "report.sql")), SupportedLanguage.SQL)
+        val filePaths = DeclaringFiles.of(nodes).filesFor("orders", FilePath(listOf("db", "report.sql")), SupportedLanguage.SQL)
 
         // Assert
-        assertThat(filePath?.segments).containsExactly("db", "V10__orders.sql")
+        assertThat(filePaths).containsExactly(FilePath(listOf("db", "V10__orders.sql")))
+    }
+
+    @Test
+    fun `should point a dependency that can mean some kinds of declaration only at the copies of these kinds`() {
+        // Arrange
+        val nodes =
+            listOf(
+                declaration("audit", "db/a_function.sql", language = SupportedLanguage.SQL).copy(kind = "routine"),
+                declaration("audit", "db/z_table.sql", language = SupportedLanguage.SQL).copy(kind = "table")
+            )
+
+        // Act
+        val filePaths = DeclaringFiles
+            .of(nodes)
+            .filesFor("audit", FilePath(listOf("db", "report.sql")), SupportedLanguage.SQL, setOf("routine"))
+
+        // Assert
+        assertThat(filePaths).containsExactly(FilePath(listOf("db", "a_function.sql")))
+    }
+
+    @Test
+    fun `should point a dependency at every copy as the copy rules pick them when no copy is of its kinds`() {
+        // Arrange
+        val nodes =
+            listOf(
+                declaration("audit", "db/a_function.sql", language = SupportedLanguage.SQL).copy(kind = "routine"),
+                declaration("audit", "db/z_table.sql", language = SupportedLanguage.SQL).copy(kind = "table")
+            )
+
+        // Act
+        val filePaths = DeclaringFiles
+            .of(nodes)
+            .filesFor("audit", FilePath(listOf("db", "report.sql")), SupportedLanguage.SQL, setOf("sequence"))
+
+        // Assert
+        assertThat(filePaths).containsExactly(FilePath(listOf("db", "z_table.sql")))
+    }
+
+    @Test
+    fun `should point a SQL dependency from an implementation part's own file at the declaration, not at the later part`() {
+        // Arrange
+        val nodes =
+            listOf(
+                declaration("point_t", "db/point_t.sql", language = SupportedLanguage.SQL),
+                declaration("point_t", "db/point_t_body.sql", language = SupportedLanguage.SQL, isFileScoped = true)
+            )
+
+        // Act
+        val filePaths = DeclaringFiles.of(nodes).filesFor("point_t", FilePath(listOf("db", "point_t_body.sql")), SupportedLanguage.SQL)
+
+        // Assert
+        assertThat(filePaths).containsExactly(FilePath(listOf("db", "point_t.sql")))
     }
 }

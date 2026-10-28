@@ -1,0 +1,3 @@
+# php.md, includes, decision 2: an include uses the included file's script leaf
+file app/index.php -> lib/boot.php
+leaf app/index.php#index_script -> lib/boot.php#boot_script

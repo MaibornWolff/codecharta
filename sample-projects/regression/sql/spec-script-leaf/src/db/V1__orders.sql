@@ -1,0 +1,2 @@
+CREATE TABLE orders (id INT);
+CREATE FUNCTION next_id() RETURNS INT AS $$ SELECT 1 $$ LANGUAGE sql;

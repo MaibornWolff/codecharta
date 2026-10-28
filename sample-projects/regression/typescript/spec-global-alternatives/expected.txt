@@ -1,0 +1,5 @@
+# typescript.md, 3, decision 9: globals of one name in several files are alternatives, a use points at each
+file app.ts -> types/a.d.ts
+file app.ts -> types/b.d.ts
+leaf app.ts#sum -> types/a.d.ts#Registry
+leaf app.ts#sum -> types/b.d.ts#Registry

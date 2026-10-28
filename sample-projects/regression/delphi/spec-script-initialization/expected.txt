@@ -1,0 +1,4 @@
+# delphi.md, declarations, decision 2: `initialization` and `finalization` are a script leaf of the unit
+file Game.Bootstrap.pas -> Game.Util.pas
+leaf Game.Bootstrap.pas#Bootstrap_script -> Game.Util.pas#Register
+leaf Game.Bootstrap.pas#Bootstrap_script -> Game.Util.pas#Unregister

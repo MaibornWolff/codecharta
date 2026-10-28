@@ -1,0 +1,3 @@
+# cpp.md, include paths 2, decisions 2 and 12: one segment, the nearest file
+file liba/src/a.h -> liba/inc/config.h
+leaf liba/src/a.h#A -> liba/inc/config.h#Config

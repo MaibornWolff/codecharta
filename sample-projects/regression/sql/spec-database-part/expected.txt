@@ -1,0 +1,3 @@
+# sql.md, objects: a database in front of the schema is left out
+file app/report.sql -> db/orders.sql
+leaf app/report.sql#report -> db/orders.sql#orders

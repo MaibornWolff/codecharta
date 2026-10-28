@@ -1,0 +1,7 @@
+# python.md, 2, decision 5: bindings in if and else are alternatives; a later binding hides them
+file app/shell.py -> app/plain.py
+file app/shell.py -> app/posix.py
+file app/shell.py -> app/windows.py
+leaf app/shell.py#Shell -> app/posix.py#Console
+leaf app/shell.py#Shell -> app/windows.py#Console
+leaf app/shell.py#make -> app/plain.py#Console

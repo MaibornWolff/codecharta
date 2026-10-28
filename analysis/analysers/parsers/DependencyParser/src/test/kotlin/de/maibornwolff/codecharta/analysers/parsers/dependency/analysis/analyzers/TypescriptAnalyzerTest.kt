@@ -42,87 +42,6 @@ class TypescriptAnalyzerTest {
     }
 
     @Test
-    fun `should carry the selector of an Angular component as its template name`() {
-        // Arrange
-        val typescriptCode = """
-            @Component({ selector: 'app-torch', templateUrl: './torch.component.html' })
-            export class TorchComponent {}
-        """.trimIndent()
-
-        // Act
-        val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "torch.component.ts", typescriptCode)).analyze()
-
-        // Assert
-        assertThat(
-            report.nodes
-                .single()
-                .angular
-                ?.declaration
-                ?.templateNames
-        ).containsExactly("app-torch")
-    }
-
-    @Test
-    fun `should carry the template file and the imports of an Angular component`() {
-        // Arrange
-        val typescriptCode = """
-            @Component({ selector: 'app-torch', templateUrl: '../views/torch.component.html', imports: [FlameComponent] })
-            export class TorchComponent {}
-        """.trimIndent()
-
-        // Act
-        val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "app/ui/torch.component.ts", typescriptCode)).analyze()
-
-        // Assert
-        val angular = report.nodes.single().angular
-        assertThat(angular?.templatePath).isEqualTo(Path(listOf("app", "views", "torch_component_html")))
-        assertThat(angular?.declaration?.imports).containsExactly("FlameComponent")
-    }
-
-    @Test
-    fun `should add the inline template of an Angular component as a template node of the component file`() {
-        // Arrange
-        val typescriptCode = """
-            @Component({ selector: 'app-torch', template: `<app-flame />` })
-            export class TorchComponent {}
-        """.trimIndent()
-
-        // Act
-        val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "torch.component.ts", typescriptCode)).analyze()
-
-        // Assert
-        val template = report.nodes.single { it.language == SupportedLanguage.ANGULAR }
-        assertThat(template.pathWithName).isEqualTo(Path(listOf("torch_component", "TorchComponent", "template")))
-        assertThat(template.physicalPath).isEqualTo("torch.component.ts")
-        assertThat(template.usedTypes.map { it.name }).containsExactly("app-flame")
-        assertThat(
-            report.nodes.single { it.language == SupportedLanguage.TYPESCRIPT }.angular?.templatePath
-        ).isEqualTo(template.pathWithName)
-    }
-
-    @Test
-    fun `should give each of two components in one file a template node with only the names of its own template`() {
-        // Arrange
-        val typescriptCode = """
-            @Component({ selector: 'app-torch', template: `<app-flame />` })
-            export class TorchComponent {}
-            @Component({ selector: 'app-lantern', template: `<app-wick />{{ oil | litres }}` })
-            export class LanternComponent {}
-        """.trimIndent()
-
-        // Act
-        val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "light.component.ts", typescriptCode)).analyze()
-
-        // Assert
-        val usedNamesByTemplate = report.nodes
-            .filter { it.language == SupportedLanguage.ANGULAR }
-            .associate { template -> template.pathWithName.parts[1] to template.usedTypes.map { it.name } }
-        assertThat(usedNamesByTemplate).isEqualTo(
-            mapOf("TorchComponent" to listOf("app-flame"), "LanternComponent" to listOf("app-wick", "litres"))
-        )
-    }
-
-    @Test
     fun `should convert exported class to node with type CLASS`() {
         // Arrange
         val typescriptCode = """            
@@ -581,7 +500,7 @@ class TypescriptAnalyzerTest {
     }
 
     @Test
-    fun `should add implicit dependency on index`() {
+    fun `should add only the dependency the specifier names, no guessed index`() {
         // Arrange
         val typescriptCode = """
             import { MyGreatInterface } from 'MyGreatInterface';
@@ -599,13 +518,9 @@ class TypescriptAnalyzerTest {
         ).analyze()
 
         // Assert
-        val expectedDependencies = listOf(
-            Dependency(path = Path(listOf("MyGreatInterface", "MyGreatInterface"))),
-            Dependency(path = Path(listOf("MyGreatInterface", "index", "MyGreatInterface")))
-        )
         val expectedType = Type.simple("MyGreatInterface")
         val node = report.nodes[0]
-        assertThat(node.dependencies).containsAll(expectedDependencies)
+        assertThat(node.dependencies).containsExactly(Dependency(path = Path(listOf("MyGreatInterface", "MyGreatInterface"))))
         assertThat(node.usedTypes).containsExactly(expectedType)
     }
 
@@ -686,7 +601,7 @@ class TypescriptAnalyzerTest {
     }
 
     @Test
-    fun `should add used type identifier with alias to usedTypes of a Node`() {
+    fun `should add a use of a renamed import under the local name it binds to usedTypes of a Node`() {
         // Arrange
         val typescriptCode = """
             import { MyType as MyRenamedType } from './MyType'
@@ -706,7 +621,7 @@ class TypescriptAnalyzerTest {
 
         // Assert
         val expectedTypes = listOf(
-            Type.simple("MyType")
+            Type.simple("MyRenamedType")
         )
         val node = report.nodes[0]
         assertThat(node.usedTypes).containsAll(expectedTypes)
@@ -841,7 +756,7 @@ class TypescriptAnalyzerTest {
     }
 
     @Test
-    fun `should add default export of a file as separate node`() {
+    fun `should make the default export of a name the file does not declare a node default`() {
         // Arrange
         val typescriptCode = """
             export default MyDefaultExport;      
@@ -857,15 +772,23 @@ class TypescriptAnalyzerTest {
         ).analyze()
 
         // Assert
-        val node = report.nodes[0]
-        assertThat(node.dependencies).containsExactly(
-            Dependency(
-                Path(listOf("MyDirectory", "MyClass")),
-                isWildcard = true
-            )
-        )
-        assertThat(node.pathWithName).isEqualTo(Path(listOf("MyDirectory", "MyClass", "MyDirectory_MyClass_DEFAULT_EXPORT")))
+        val node = report.nodes.single()
+        assertThat(node.pathWithName).isEqualTo(Path(listOf("MyDirectory", "MyClass", "default")))
         assertThat(node.usedTypes).containsExactly(Type.simple("MyDefaultExport"))
+    }
+
+    @Test
+    fun `should make no node of its own for the default export of a declaration of the file`() {
+        // Arrange
+        val typescriptCode = """
+            export default class Base {}
+        """.trimIndent()
+
+        // Act
+        val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "MyDirectory/Base.ts", typescriptCode)).analyze()
+
+        // Assert
+        assertThat(report.nodes.map { it.pathWithName }).containsExactly(Path(listOf("MyDirectory", "Base", "Base")))
     }
 
     @Test
@@ -1008,7 +931,7 @@ class TypescriptAnalyzerTest {
     }
 
     @Test
-    fun `should add alias for named commonjs imports to node dependencies`() {
+    fun `should add a renamed commonjs import to node dependencies and its use under the local name`() {
         // Arrange
         val typescriptCode = """
             const { myMethod: alias } = require('myModule');
@@ -1028,7 +951,7 @@ class TypescriptAnalyzerTest {
 
         // Assert
         assertThat(report.nodes[0].dependencies).contains(Dependency(Path(listOf("myModule", "myMethod"))))
-        assertThat(report.nodes[0].usedTypes).contains(Type.simple("myMethod"))
+        assertThat(report.nodes[0].usedTypes).contains(Type.simple("alias"))
     }
 
     @Test
@@ -1550,7 +1473,7 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should resolve namespace alias constructor call to module dependency`() {
-        // Arrange - Logger is only used via new types.Logger() with no type annotation
+        // Arrange
         val typescriptCode = """
             import * as types from './types'
 
@@ -1570,10 +1493,9 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // Assert - Logger is captured as usedType (extracted from new types.Logger() constructor call)
-        // and the wildcard dep on the types module is recorded for project-wide resolution
+        // Assert
         val node = report.nodes.first { it.pathWithName.getName() == "Consumer" }
-        assertThat(node.usedTypes).contains(Type.simple("Logger"))
+        assertThat(node.usedTypes.map { it.name }).contains("types.Logger")
         assertThat(node.dependencies).contains(Dependency(path = Path(listOf("types")), isWildcard = true))
     }
 
@@ -1646,5 +1568,23 @@ class TypescriptAnalyzerTest {
         assertThat(reexport.nodeType).isEqualTo(NodeType.REEXPORT)
         assertThat(reexport.dependencies.filter { !it.isWildcard }.map { it.path })
             .containsExactly(Path(listOf("user.service", "UserService")))
+    }
+
+    @Test
+    fun `should write a use of a namespace around a member as the full path of that namespace`() {
+        // Arrange
+        val typescriptCode = """
+            export namespace Shapes {
+                class Hidden {}
+                export const unit = new Hidden()
+            }
+        """.trimIndent()
+
+        // Act
+        val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "geo/shapes.ts", typescriptCode)).analyze()
+
+        // Assert
+        val unit = report.nodes.single { it.pathWithName == Path(listOf("geo", "shapes", "Shapes", "unit")) }
+        assertThat(unit.usedTypes.map { it.name }).containsExactly("geo.shapes.Shapes")
     }
 }

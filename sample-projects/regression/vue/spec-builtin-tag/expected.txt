@@ -1,0 +1,1 @@
+# typescript.md, Vue tag 1: a Vue built-in comes before a project component of the same name

@@ -1,0 +1,8 @@
+# typescript.md, Angular: the component depends on its templateUrl, the template on the component of its element
+file app/card.component.html -> app/badge.component.ts
+file app/card.component.ts -> app/badge.component.ts
+file app/card.component.ts -> app/card.component.html
+leaf app/badge.component.ts#BadgeComponent -> app/badge.component.ts#template
+leaf app/card.component.html#card_component_html -> app/badge.component.ts#BadgeComponent
+leaf app/card.component.ts#CardComponent -> app/badge.component.ts#BadgeComponent
+leaf app/card.component.ts#CardComponent -> app/card.component.html#card_component_html

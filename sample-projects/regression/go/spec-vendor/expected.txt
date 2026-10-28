@@ -1,0 +1,3 @@
+# go.md, import paths, rule 2: a vendored package below the module's folder
+file app/app.go -> vendor/gopkg.in/yaml.v3/yaml.go
+leaf app/app.go#Run -> vendor/gopkg.in/yaml.v3/yaml.go#Unmarshal

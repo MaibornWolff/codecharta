@@ -4,11 +4,13 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ancestors
 import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 
 /**
  * Functions and type declarations are the declarations of a Go file. A method is none of its own: what it uses is
- * added to the first declaration that carries the name of its receiver type.
+ * added to the first declaration that carries the name of its receiver type. A type declared inside a function is
+ * none either, as no other declaration can name it; what it uses belongs to the function.
  *
  * A type declaration is named after its first type spec, so of a group `type ( A …; B … )` only `A` is found, and a
  * declaration without one, such as the alias `type A = B`, is named [UNKNOWN_NAME].
@@ -27,14 +29,19 @@ internal object DeclarationExtractor {
     private const val RECEIVER_FIELD = "receiver"
     private const val UNKNOWN_NAME = "unknown"
 
+    private val FUNCTIONS = setOf(FUNCTION_DECLARATION, METHOD_DECLARATION, "func_literal")
+
     fun extract(rootNode: SyntaxNode): List<Declaration> {
         val (methods, functionsAndTypes) = TreeTraversal
             .findAllDescendantsOfType(rootNode, TYPE_DECLARATION, FUNCTION_DECLARATION, METHOD_DECLARATION)
+            .filterNot { isInsideFunction(it) }
             .partition { it.type == METHOD_DECLARATION }
         val declarations = functionsAndTypes.map { toDeclaration(it) }.toMutableList()
         methods.forEach { method -> addUsedTypesToReceiverType(method, declarations) }
         return declarations
     }
+
+    private fun isInsideFunction(declaration: SyntaxNode): Boolean = declaration.ancestors().any { it.type in FUNCTIONS }
 
     private fun toDeclaration(declaration: SyntaxNode): Declaration {
         if (declaration.type == FUNCTION_DECLARATION) {

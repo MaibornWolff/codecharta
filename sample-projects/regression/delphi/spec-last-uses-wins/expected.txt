@@ -1,0 +1,3 @@
+# delphi.md, simple name 4: the unit listed last wins
+file Game.User.pas -> Game.B.pas
+leaf Game.User.pas#TUser -> Game.B.pas#TItem

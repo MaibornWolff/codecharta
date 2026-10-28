@@ -1,0 +1,3 @@
+# rust.md, macros: a `#[macro_export]` macro is an item of the crate root
+file src/fight.rs -> src/dice.rs
+leaf src/fight.rs#attack -> src/dice.rs#roll

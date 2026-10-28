@@ -1,0 +1,5 @@
+# python.md, import binds: `from m import N as A` binds A to N of m
+file app/facade.py -> app/domain/creature.py
+file app/facade.py -> app/dto/creature.py
+leaf app/facade.py#Facade -> app/domain/creature.py#Creature
+leaf app/facade.py#Facade -> app/dto/creature.py#Creature

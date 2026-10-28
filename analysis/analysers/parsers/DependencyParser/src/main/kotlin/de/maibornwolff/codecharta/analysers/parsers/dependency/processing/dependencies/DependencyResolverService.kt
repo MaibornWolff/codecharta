@@ -1,13 +1,8 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies
 
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpNameRules
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.java.JavaNameRules
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.DefaultNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileScopedPaths
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.ProjectNames
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.TypeOfUsage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.resolveTypes
@@ -26,7 +21,7 @@ class DependencyResolverService {
         private val BASE_TYPE_USAGES = setOf(TypeOfUsage.INHERITANCE, TypeOfUsage.IMPLEMENTATION)
 
         fun resolveNodes(fileReports: Collection<FileReport>): Collection<Node> {
-            val nodes = AngularTemplateReferences.qualify(applyRustReexportAliases(fileReports.flatMap { it.nodes }))
+            val nodes = AngularTemplateReferences.qualify(fileReports.flatMap { it.nodes })
             val nodesByScope = nodes.groupBy { it.language.nameScope }
             val dictionaryByScope = nodesByScope.mapValues { (_, scopedNodes) -> getDictionary(scopedNodes) }
             val knownNodePathsByScope = nodesByScope.mapValues { (_, scopedNodes) -> getKnownNodePaths(scopedNodes) }
@@ -43,43 +38,22 @@ class DependencyResolverService {
                 )
             }
             val resolvedNodes = nodes.map { node ->
-                node.resolveTypes(projectNamesByLanguage.getValue(node.language), nameRulesFor(node.language))
+                node.resolveTypes(projectNamesByLanguage.getValue(node.language), LanguageRules.namesOf(node.language))
             }
-            return resolvedNodes
-                .map {
-                    nameRulesFor(
-                        it.language
-                    )
-                }.distinct()
-                .fold(resolvedNodes) { current, rules -> rules.afterResolution(current) }
+            val rulesInUse = resolvedNodes.map { LanguageRules.namesOf(it.language) }.distinct()
+            return rulesInUse.fold(resolvedNodes) { current, rules -> rules.afterResolution(current) }
         }
 
-        /**
-         * Folds Rust `pub use` re-export forwarding nodes into aliases on their real definition node,
-         * then drops the forwarding nodes. A consumer importing the flattened `crate::Type` path then
-         * resolves straight to `crate::module::Type` via the alias — instead of through a same-named
-         * forwarding node, which would otherwise capture the definition's own self-references and
-         * fabricate `crate::Type ↔ crate::module::Type` cycles.
-         */
-        private fun applyRustReexportAliases(nodes: List<Node>): List<Node> {
-            val (reexports, rest) = nodes.partition {
-                it.language == SupportedLanguage.RUST && it.nodeType == NodeType.REEXPORT
-            }
-            if (reexports.isEmpty()) return nodes
-            val byPath = rest.associateBy { it.pathWithName.withDots() }
-            reexports.forEach { reexport ->
-                val target = reexport.dependencies.firstOrNull { !it.isWildcard }?.path ?: return@forEach
-                byPath[target.withDots()]?.pathWithName?.withAlias(reexport.pathWithName)
-            }
-            return rest
+        // An implementation part depends on the class of its own path, which is no cycle
+        fun mapNodeInfo(node: Node): NodeInformation {
+            val id = node.pathWithName.withDots()
+            return NodeInformation(
+                id = id,
+                dependencies = node.resolvedNodeDependencies.internalDependencies
+                    .map { it.withDots() }
+                    .filterTo(HashSet()) { it != id }
+            )
         }
-
-        fun mapNodeInfo(node: Node) = NodeInformation(
-            id = node.pathWithName.withDots(),
-            dependencies = node.resolvedNodeDependencies.internalDependencies
-                .map { it.withDots() }
-                .toSet()
-        )
 
         fun getDictionary(nodes: List<Node>) = nodes.map { it.pathWithName }.groupBy { it.parts.last() }
 
@@ -98,12 +72,6 @@ class DependencyResolverService {
                 .groupBy({ it.pathWithName.withDots() }, { it.physicalPath })
                 .mapValues { (_, files) -> files.toSet() }
             return FileScopedPaths(filesByPath)
-        }
-
-        private fun nameRulesFor(language: SupportedLanguage): NameRules = when (language) {
-            SupportedLanguage.C_SHARP -> CSharpNameRules
-            SupportedLanguage.JAVA, SupportedLanguage.KOTLIN -> JavaNameRules
-            else -> DefaultNameRules
         }
 
         private fun standardLibraryFor(language: SupportedLanguage): StandardLibrary = when (language) {

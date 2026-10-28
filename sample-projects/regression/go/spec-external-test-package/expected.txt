@@ -1,0 +1,5 @@
+# go.md, declarations, decision 4: an external test package is a package of its own
+file store/store_test.go -> store/store.go
+leaf store/store.go#Open -> store/store.go#setup
+leaf store/store_test.go#TestOpen -> store/store_test.go#setup
+leaf store/store_test.go#setup -> store/store.go#Open

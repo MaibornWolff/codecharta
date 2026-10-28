@@ -7,8 +7,20 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLa
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
+import java.io.File
 
 class GoAnalyzerCrossPackageCallsTest {
+    @TempDir
+    lateinit var projectRoot: File
+
+    // The module the analysed files import their project packages from
+    private fun fileInfoOf(physicalPath: String, content: String): FileInfo {
+        mapOf("go.mod" to "module example.com/sbom\n", "resources/resources.go" to "package resources\n", "log/log.go" to "package log\n")
+            .forEach { (path, text) -> projectRoot.resolve(path).also { it.parentFile.mkdirs() }.writeText(text) }
+        return FileInfo(SupportedLanguage.GO, physicalPath, content, projectRoot)
+    }
+
     @Test
     fun `should detect resources LoadConfigFile function call from schema package`() {
         // Arrange - schema package calling resources.LoadConfigFile()
@@ -21,6 +33,7 @@ class GoAnalyzerCrossPackageCallsTest {
                 "os"
                 "sync"
 
+                "example.com/sbom/resources"
             )
 
             type LicensePolicyConfig struct {
@@ -57,11 +70,7 @@ class GoAnalyzerCrossPackageCallsTest {
             }
         """.trimIndent()
 
-        val fileInfo = FileInfo(
-            language = SupportedLanguage.GO,
-            physicalPath = "/test/schema/license_policy_config.go",
-            content = schemaFileContent
-        )
+        val fileInfo = fileInfoOf("schema/license_policy_config.go", schemaFileContent)
 
         // Act
         val analyzer = GoAnalyzer(fileInfo)
@@ -89,6 +98,8 @@ class GoAnalyzerCrossPackageCallsTest {
         // Arrange - cmd package calling log.FormatIndentedInterfaceAsJson()
         val cmdFileContent = """
             package cmd
+
+            import "example.com/sbom/log"
 
             const (
                 ERROR_DETAIL_JSON_DEFAULT_PREFIX = ""
@@ -129,11 +140,7 @@ class GoAnalyzerCrossPackageCallsTest {
             }
         """.trimIndent()
 
-        val fileInfo = FileInfo(
-            language = SupportedLanguage.GO,
-            physicalPath = "/test/cmd/validate_format.go",
-            content = cmdFileContent
-        )
+        val fileInfo = fileInfoOf("cmd/validate_format.go", cmdFileContent)
 
         // Act
         val analyzer = GoAnalyzer(fileInfo)
@@ -162,6 +169,8 @@ class GoAnalyzerCrossPackageCallsTest {
         val cmdFileContent = """
             package cmd
 
+            import "example.com/sbom/log"
+
             type ValidationErrorResult struct {
                 resultMap map[string]interface{}
             }
@@ -188,11 +197,7 @@ class GoAnalyzerCrossPackageCallsTest {
             }
         """.trimIndent()
 
-        val fileInfo = FileInfo(
-            language = SupportedLanguage.GO,
-            physicalPath = "/test/cmd/validate_format.go",
-            content = cmdFileContent
-        )
+        val fileInfo = fileInfoOf("cmd/validate_format.go", cmdFileContent)
 
         // Act
         val analyzer = GoAnalyzer(fileInfo)

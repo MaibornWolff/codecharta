@@ -26,6 +26,17 @@ internal val DECLARATION_NODE_TYPES = setOf(
     INTERNAL_MODULE
 )
 
+internal const val AMBIENT_DECLARATION = "ambient_declaration"
+private const val EXPRESSION_STATEMENT = "expression_statement"
+
+/** The declarations a statement makes: the statement itself, what a `declare` statement declares, or a namespace. */
+internal fun declarationsOf(statement: SyntaxNode): List<SyntaxNode> = when (statement.type) {
+    in DECLARATION_NODE_TYPES -> listOf(statement)
+    AMBIENT_DECLARATION -> statement.children().filter { it.type in DECLARATION_NODE_TYPES }.toList()
+    EXPRESSION_STATEMENT -> statement.children().filter { it.type == INTERNAL_MODULE }.toList()
+    else -> emptyList()
+}
+
 internal fun hasExportClause(node: SyntaxNode): Boolean = node.children().any { it.type == EXPORT_CLAUSE }
 
 internal fun hasSource(node: SyntaxNode): Boolean = node.children().any { it.type == STRING }

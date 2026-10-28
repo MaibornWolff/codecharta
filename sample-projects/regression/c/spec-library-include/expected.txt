@@ -1,0 +1,1 @@
+# cpp.md, include paths 3: a system header declares nothing of the project

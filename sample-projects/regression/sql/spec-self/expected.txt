@@ -1,0 +1,1 @@
+# Shared rule 4: an object that names itself draws no edge

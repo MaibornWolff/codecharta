@@ -1,0 +1,3 @@
+# rust.md, paths: `::x` names the crate `x`
+file crates/app/src/lib.rs -> crates/model/src/lib.rs
+leaf crates/app/src/lib.rs#Arena -> crates/model/src/lib.rs#Creature

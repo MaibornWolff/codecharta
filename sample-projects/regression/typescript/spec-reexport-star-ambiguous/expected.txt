@@ -1,0 +1,5 @@
+# typescript.md, declarations, decision 8: a name two export * offer is exported by neither
+file lib/index.ts -> lib/a.ts
+file user.ts -> lib/index.ts
+leaf lib/index.ts#OnlyA -> lib/a.ts#OnlyA
+leaf user.ts#User -> lib/index.ts#OnlyA

@@ -66,7 +66,7 @@ data class ImportDeclaration(
 
 enum class ImportKind {
     STANDARD,  // e.g., Java `import`, Kotlin `import`, C# `using`, C++ `using namespace`/`using X::Y`
-    INCLUDE,   // C++ `#include`, PHP `require`/`include` — the adapter resolves the path
+    INCLUDE,   // C++ `#include` — the adapter resolves the path
     REEXPORT,  // Rust `pub use`
     MEMBER     // Python `from module import name` — the last path segment is the imported name
 }
@@ -76,7 +76,7 @@ data class Declaration(
     val type: DeclarationType,              // CLASS, INTERFACE, ENUM, RECORD, ANNOTATION, FUNCTION, VARIABLE, REEXPORT, SCRIPT
     val usedTypes: Set<UsedType>,           // types referenced inside this declaration
     val parentPath: List<String> = [],      // namespace/package path: ["com", "example"]
-    val angular: AngularDeclaration? = null, // what an Angular decorator declares: templateNames, templateUrl, imports, ...
+    val angular: AngularDeclaration? = null, // what an Angular decorator declares: selectors, pipeName, templateUrl, imports, ...
     val isFileScoped: Boolean = false       // only its own file can name it: Kotlin `private` top level, a C# `file` type
 )
 
@@ -85,7 +85,8 @@ data class UsedType(
     val genericTypes: List<UsedType> = [],  // [UsedType("String")] for List<String>
     val namespacePrefix: List<String> = [], // ["A", "B"] for A::B::Settings; [] for unqualified
     val usage: TypeUsage = USAGE,           // how the declaration uses the type; only PHP tells the ways apart
-    val alternativeName: String? = null     // "ObsoleteAttribute" for the C# attribute [Obsolete]; null elsewhere
+    val alternativeName: String? = null,    // "ObsoleteAttribute" for the C# attribute [Obsolete]; null elsewhere
+    val fallbacks: List<UsedType> = []      // what the use means, in order, when it names nothing; Python and PHP
 )
 ```
 
@@ -96,13 +97,13 @@ data class UsedType(
 | Kind | Source | Adapter handling |
 |---|---|---|
 | `STANDARD` (default) | Java `import`, Kotlin `import`, C# `using`, C++ `using namespace` / `using X::Y`, Rust `use` | Consumed as-is — the `path` is already the canonical reference |
-| `INCLUDE` | C++ `#include "…"` or `#include <…>`, PHP `require`/`include` (and their `_once` forms) of a single-quoted path directly behind the keyword, not in parentheses | Adapter resolves relative paths (`./`, `../`): for C++ against the file's physical path, rewriting the final segment's `.` → `_` to match DC's node-naming convention; for PHP against the namespace of the file plus its file name, or the physical path where it has no namespace, dropping the `.php` ending |
-| `REEXPORT` | Rust `pub use module::Type` (incl. `pub(crate) use`) | Adapter models it as a forwarding node — a crate flattens its public API via `pub use`, so consumers import the short `crate::Type` path; the forwarding node `crate::Type` points at the real `crate::module::Type` so the consumer's reference resolves transitively |
-| `MEMBER` | Python `from module import name` and `from module import *` | The last path segment is the imported name (none for a wildcard). A relative module starts with one `.` segment per leading dot, which the adapter resolves against the module path of the file. A name can live in `module.py` or in `module/__init__.py`, so the adapter emits a dependency on both |
+| `INCLUDE` | C++ `#include "…"` or `#include <…>` | The adapter reads the include lines of the files itself (`CppIncludes`), as its include rules need `"…"` apart from `<…>`, which this triple drops. A PHP `require` or `include` is no import but a use, see "Namespace-prefix handling" |
+| `REEXPORT` | Rust `pub use module::Type` (incl. `pub(crate) use`) in `analyze()` | DC's legacy adapter models it as a forwarding node. The dependency parser reads Rust through `rustModule()` instead, see "Rust module facts" |
+| `MEMBER` | Python `from module import name` and `from module import *` | The last path segment is the imported name (none for a wildcard). A relative module starts with one `.` segment per leading dot, which the adapter resolves against the module path of the file. The adapter makes the names a package's `__init__.py` imports re-export leaves; the uses of a declaration need no import, as the extractor reports each with the module it binds |
 
 Without the `INCLUDE` tag, a C++ DC adapter cannot tell `#include "foo"` (needs path normalization) from `using foo;` (must not be normalized) — both produce the same `(path, isWildcard, namespacePath)` triple. TSE extractors tag the AST source; adapters branch on `kind`.
 
-Java, Kotlin, C#, TypeScript, JavaScript, Go, Delphi and Vue leave the field at its default (`STANDARD`).
+Java, Kotlin, C#, TypeScript, JavaScript, Go, PHP, Delphi and Vue leave the field at its default (`STANDARD`).
 
 ### Namespace-prefix handling
 
@@ -113,42 +114,67 @@ Java, Kotlin, C#, TypeScript, JavaScript, Go, Delphi and Vue leave the field at 
 | Language | Typical style | Does `namespacePrefix` carry info? |
 |---|---|---|
 | Java, Kotlin, C# | Import types at the top, use short names inline. Qualified inline usage (`com.other.Settings s`) is rare and idiomatically discouraged. | No — always empty. The import list already carries the neighborhood info the resolver needs. |
-| C++ | `using namespace` is discouraged in headers because it pollutes scope. Writing `cppcheck::Settings` inline is **the normal way** to reference cross-namespace types. | Yes — populated on every qualified inline reference. |
-| TypeScript, JavaScript, Go, Vue | Import-aliased usage (`pkg.Type`) is idiomatic but stored as a dotted string in `UsedType.name`; the resolver splits on `.`. | No — always empty. |
-| Python | `import shop.orders` followed by `shop.orders.Order` is how a module import is used. | Yes — every attribute access `a.b.C` is the used type `C` with the prefix `[a, b]`; the adapter keeps those whose prefix is an imported module or its alias. |
-| PHP | Has namespaces similar to C++. A declared type (return, parameter, property) is taken as written, qualifier included, in `UsedType.name`; a qualified base class, interface or instantiated class is left out. | No — always empty. |
-| Rust | A `use` brings most types into scope, but fully-qualified inline references (`crate::a::Foo`, `super::B`) without a `use` are legal and common. | Yes — populated for `scoped_type_identifier` references (the scope segments before the final name, verbatim incl. `crate`/`self`/`super`). |
+| C++ | `using namespace` is discouraged in headers because it pollutes scope. Writing `cppcheck::Settings` inline is **the normal way** to reference cross-namespace types. | Yes — populated on every qualified reference, in a type or an expression (`SpeedType::WALKING`); a leading `::` is the first segment `::`. |
+| Go | Import-aliased usage (`pkg.Type`) is idiomatic but stored as a dotted string in `UsedType.name`; the resolver splits on `.`. | No — always empty. |
+| TypeScript, JavaScript, Vue | A name means the binding the compiler sees: a local one hides it, else an import or a declaration of the module, else a global. | Only as a marker — the extractor leaves out what a local binding hides and reports a name through a module binding as that binding plus the members read behind it (`ns.Shapes.Circle`, `dynamic_import_<offset>.A`), a renamed import under its local name. The prefix is `GLOBAL` for a name no module binding binds, `COMPONENT_TAG` for a tag of a Vue template, and the specifier for a side-effect import (name `MODULE_SCRIPT`) and for `export { default as B } from` (name `DEFAULT_EXPORT`). |
+| Python | A name means whatever binds it where it is used: a declaration of the module, an import, a wildcard import. | Yes — the extractor finds the binding Python sees for each name and reports the use with the module the name is looked up in as prefix (empty for the own module, one `.` per leading dot for a relative import, a last `*` for a wildcard import) and the name with the attribute names behind it as `name` (`Order.Line`); `fallbacks` hold what the use means when a wildcard import does not bind the name. |
+| PHP | Names are resolved per file, through the `use` imports of the namespace block, the current namespace, `namespace\` and fully qualified names. | Yes — the extractor resolves every name as the compiler does and reports it as its namespace plus its name; a function or constant PHP may look up globally carries the global name in `fallbacks`. An include is a use named `MODULE_SCRIPT` with the path it names as prefix, relative to the including file, a first empty segment for an absolute path. |
+| Rust | A `use` brings most types into scope, but fully-qualified inline references (`crate::a::Foo`, `super::B`) without a `use` are legal and common. | In `analyze()`, populated for `scoped_type_identifier` references (the scope segments before the final name, verbatim incl. `crate`/`self`/`super`). `rustModule()` writes each path whole, see "Rust module facts". |
 
-**How a DC-side adapter consumes it:** when building a node's `dependencies` set, emit a synthetic `Dependency(Path(namespacePrefix), isWildcard = true)` per `UsedType` that has a non-empty prefix. This mirrors what DC's legacy C++ analyzer did implicitly via `TypeExtractionService.extractTypeWithFoundNamespacesAsDependencies`: for every qualified usage, add a wildcard pointing at the type's neighborhood so the resolver can match the short name against classes declared there.
+**How an adapter consumes it:** the C++ adapter looks the written name, prefix included, up as the compiler does
+(`docs/name-resolution/cpp.md` of the dependency parser). DC's legacy adapters instead, when building a node's `dependencies` set, emit a synthetic `Dependency(Path(namespacePrefix), isWildcard = true)` per `UsedType` that has a non-empty prefix. This mirrors what DC's legacy C++ analyzer did implicitly via `TypeExtractionService.extractTypeWithFoundNamespacesAsDependencies`: for every qualified usage, add a wildcard pointing at the type's neighborhood so the resolver can match the short name against classes declared there.
 
 The resolver itself needs no changes — the existing wildcard-matching loop in `Node.resolveTypeImport` already prepends wildcards to type names and looks for project matches.
 
 ### Usage of a type
 
 `UsedType.usage` says how a declaration uses a type: `INHERITANCE`, `IMPLEMENTATION`, `CONSTANT_ACCESS`,
-`RETURN_VALUE`, `INSTANTIATION`, `ARGUMENT`, or `USAGE` for any other way. Only the PHP extractor fills it; every
-other language leaves it at `USAGE`. Two used types that differ only in `usage` are two entries of the set. DC
+`RETURN_VALUE`, `INSTANTIATION`, `ARGUMENT`, or `USAGE` for any other way. The PHP extractor fills every kind (a function call, a constant read, a trait, an attribute or an include is `USAGE`, a constant read `CONSTANT_ACCESS`); Java,
+Kotlin and C# report `INHERITANCE` and `IMPLEMENTATION`, C++ `INHERITANCE`; every other use stays `USAGE`. Two used types that differ only in `usage` are two entries of the set. DC
 identifies a type by its name alone, so its adapter keeps the first: the order of the set decides which usage a
 dependency gets.
 
 ### Declarations without a name of their own
 
-- `DeclarationType.SCRIPT` (PHP): a file that declares nothing is one declaration with an empty name that carries
-  what the whole file uses. The adapter names it `<file>.script`.
+- `DeclarationType.SCRIPT` (PHP): the top-level code of a file, every statement outside the declarations, `namespace`,
+  `use`, `declare` and `define` calls, is one declaration with an empty name next to the file's declarations, which
+  carries what that code uses; a file without such code has none. The adapter names it `<file>.script` at the file's
+  path.
 - `DeclarationType.SCRIPT` (SQL): the statements outside any `CREATE` of a file, such as an `INSERT … SELECT` of a
   migration, are one declaration with an empty name next to the objects the file creates.
 - A Vue component is one `CLASS` named `DEFAULT_EXPORT`, like the default export of a JavaScript file. Its used types
   are the components its template names. The adapter names it after the file.
-- An Angular template is one `SCRIPT` with an empty name. Its used types are its elements, but for Angular's own
-  `ng-container`, `ng-template` and `ng-content`, and the names of the pipes it uses; the adapter resolves the ones a
-  component or pipe declares and drops the rest, such as plain HTML elements.
+- An Angular template is one `SCRIPT` with an empty name. Its used types are the names of the pipes it uses; its
+  elements, each with its tag, attributes, bindings and classes, are `AngularDeclaration.elements`, which the adapter
+  matches against the selectors of the project's components and directives.
 
-### Template names
+### Marked C and C++ declarations
 
-An Angular template refers to a component by the element its selector names (`<app-cave-map>`) and to a pipe by its
-pipe name (`| goldCoins`), not by the class name. The TypeScript extractor reads them off the `@Component` and `@Pipe`
-decorators into `Declaration.angular.templateNames`: every element of a selector list, lowercased, and the pipe name. Attribute
-and class selectors name no element and are left out. The adapter matches the used types of a template against them.
+C and C++ mark a declaration that is no class body by its first parent path segment, followed by its namespaces and
+classes:
+
+- `FORWARD_DECLARATION`: a forward declaration (`class Creature;`), also the tag of `typedef struct Stable Stable;`
+  and the class of an unqualified `friend class Util;`, in the namespace around it. It declares no leaf but makes the
+  name visible.
+- `ALIAS`: a type alias, `using Entity = CreatureEntity;` or a `typedef` of another name, whose used type is the type
+  it names. A `typedef` a macro keeps the parser from reading is none.
+- `IMPLEMENTATION`: the member functions a file defines for a class whose body lies in another file, and the explicit
+  or partial specializations of a template, under the class's or template's name.
+
+A class tag without a body in a type (`struct Roost *held;`) is a used type whose `fallbacks` hold the path of the
+declaration it makes when no visible declaration has its name, written from `::`. A name a template parameter, or a
+class or alias declared earlier in the function body, means is no used type; a class or alias declared in a function
+is no declaration.
+
+### Selectors and pipe names
+
+An Angular template refers to a component or directive by an element its selector matches (`<app-cave-map>`,
+`<div appHighlight>`) and to a pipe by its pipe name (`| goldCoins`), not by the class name. The TypeScript extractor
+reads them off the `@Component`, `@Directive` and `@Pipe` decorators: `AngularDeclaration.selectors` holds each
+alternative of a selector list (`AngularSelectorParser`: tag, attributes with values, classes, `:not(…)` parts),
+`pipeName` the pipe name. A template's elements are read the same way (`TemplateElements`), a structural directive
+as an `ng-template` element of its own (`StructuralDirectives`); the adapter matches them as Angular's
+`SelectorMatcher` does.
 
 ### Embedded sources
 
@@ -168,6 +194,64 @@ a preprocessor. `DependenciesFacade` analyses each source in its own language:
 Metrics and text extraction parse only the script of a Vue file, with the JavaScript grammar and a preprocessor that
 cuts the script out. Dependency extraction needs the template as well, so `VueDependencyMapping` sets
 `grammarOfWholeFile` to the Vue grammar: the whole, unprocessed file is then parsed with it.
+
+### Rust module facts
+
+`TreeSitterDependencies.rustModule(content)` returns a `RustModule` (types in `languages/rust/model`), what the Rust
+name lookup of the dependency parser (`docs/name-resolution/rust.md`) needs from one file; the parser reads Rust only
+through it, `analyze()` stays for other consumers. Every fact carries the chain of inline modules it stands in
+(`inlinePath`) and whether `#[cfg(test)]` marks it, on itself or on an inline module around it:
+
+- `modDeclarations`: `mod m;` and `mod m { … }`, with `#[path]` and `#[macro_use]`.
+- `items`: structs (a tuple or unit struct also in the value namespace), enums with their variants, unions, traits,
+  type aliases, functions, consts, statics, `macro_rules!` (with `#[macro_export]`), with their visibility and the
+  `paths` they write.
+- `uses`: one entry per name a `use` binds (`binding` null for a glob or `as _`), `self` in a group naming the group's
+  path, a leading `::` as an empty first segment.
+- `impls`: the base path of the type and of the trait an `impl` names, and the `paths` it writes.
+- `externCrates`: `extern crate x as y;`.
+
+A `RustPath` is a path as written, in the namespace the compiler looks it up in: `TYPE` for a type position, `VALUE`
+for an expression or pattern, `MACRO` for `m!`, `ANY` for the tokens of a macro's arguments, which tree-sitter does not
+parse and which are read as the expressions they almost always are. Signature and body count alike; what a generic
+parameter, a local variable, a pattern or an item of an enclosing block binds is left out, a name a block `use` imports
+is written as its path, and the globs of enclosing blocks come along as `blockGlobs`. A field or method on a value is no
+path, nor is the body of a `macro_rules!`. A lower-case identifier pattern binds a name, an upper-case one is a path.
+
+### Delphi unit facts
+
+`TreeSitterDependencies.delphiUnit(content)` returns a `DelphiUnit` (types in `languages/delphi/model`), what the
+Delphi name lookup of the dependency parser (`docs/name-resolution/delphi.md`) needs from one file; the parser reads
+Delphi only through it, `analyze()` stays for other consumers:
+
+- the kind (unit, program, library), the unit name as its segments, and the interface and implementation `uses`; a
+  program's or library's single `uses` counts as its implementation `uses`.
+- `declarations`: every type (class, record, interface, helper, enum, any other type), free routine, constant and
+  variable, with its section, the outer types of a member type, its members, base types and generic parameters.
+- `names` per declaration and in `script` (a program's main block, a unit's `initialization` and `finalization`): each
+  name as written, up to the first call or index, with the section it stands in and the type whose members it sees
+  first. A method body counts for its type; what a routine declares inside itself (parameters, `Result`, `Self`, local
+  constants, variables, types and routines, inline and loop variables) is left out, ignoring case as the compiler does.
+  An attribute is marked, so `[Table]` can mean `TableAttribute`.
+
+### SQL script facts
+
+`TreeSitterDependencies.sqlScript(content)` returns a `SqlScript` (types in `languages/sql/model`), what the SQL name
+lookup of the dependency parser (`docs/name-resolution/sql.md`) needs from one file; the parser reads SQL only through
+it, `analyze()` stays for other consumers:
+
+- `objects`: every table, view, synonym, sequence, type, domain, routine, trigger, package specification, package body
+  and object type body a statement creates, with its name as written (without a database in front of the schema) and
+  the default schema `SET search_path`, `SET SCHEMA` or `ALTER SESSION SET CURRENT_SCHEMA` set before it; `ALTER`,
+  `CREATE INDEX … ON` and `COMMENT ON` as a change of the object they name. The grammar leaves sequences, types,
+  domains, changes and schema settings as plain tokens, which the readers spell out.
+- `members` of a package or object type body: its routines, and the constants, variables, types, cursors and
+  exceptions a package declares.
+- `names` per object, member and in `statements` (the statements outside every object, grouped by default schema):
+  each name in its comparable parts with the kind of object its position asks for, relation, routine, type, sequence,
+  a possible package member (`pricing.c_max`, or a plain identifier inside a package) or, for what a synonym stands
+  for, any. What a local hides is left out: parameters, variables, cursors, nested routines, loop variables, common
+  table expressions, temporary tables a routine creates and the rows a trigger sees.
 
 ### Bundler aliases
 
@@ -299,27 +383,25 @@ A different concatenation order with the same types produces identical dependenc
 |---|---|---|
 | **Java** | inheritance, variables, annotations, methodInvocations, constructorCalls, thrownTypes, fields, methods | `JavaAnalyzer.kt` |
 | **Kotlin** | inheritance, properties, parameters, returnTypes, annotations, constructorCalls, callExpressions | `KotlinAnalyzer.kt` |
-| **TypeScript** | typeIdentifiers, constructorCalls, memberAccesses, methodCalls, extensions, relevantIdentifiers | `TypeScriptAnalyzer.kt` |
-| **PHP** | imported constants, inherited, implemented, constant owners, return, argument, instantiations, properties, static call owners, traits | `UsedTypesExtractor.kt` |
+| **TypeScript** | typeIdentifiers (annotations and type predicates), constructorCalls, memberAccesses, extensions, relevantIdentifiers | `TypeScriptAnalyzer.kt` |
+| **PHP** | constant reads, inherited, implemented, constant owners, return, argument, instantiations, properties, other types, static member owners, traits, attributes, `instanceof`, anonymous class headers, function calls, includes | `UsedTypesExtractor.kt` |
 | **C#** | constructors, methods, casts, genericParams, genericConstraints, inherited, variables, objectCreations, memberAccesses, attributes, isTypeChecks | `CsharpAnalyzer.kt` |
 | **C++** | processor list order: typeDecl, inheritance, methods, typeDef, alias, generic, define | `BodyProcessor.kt` |
 | **Go** | for a function: parameter types, result types, methods called through a selector, functions called directly, package-qualified types; then for every declaration all type identifiers and qualified types in source order. The used types of a method are appended to its receiver type | `GoAnalyzer.kt` |
-| **Python** | all identifiers in source order, then all attribute accesses in source order | `PythonAnalyzer.kt` |
-| **JavaScript** | Same as TypeScript (shared `UsedTypeExtractor`): typeIdentifiers, constructorCalls, memberAccesses, methodCalls, extensions, relevantIdentifiers, constraintTypes, typeAliasRhsTypes, jsxComponents. DC legacy was imports-only; TSE adds full used-type extraction. | `JavascriptAnalyzer.kt` |
-| **Vue** | template components in source order; the script imports are imports, which the adapter appends as used types | `VueAnalyzer.kt` |
-| **Angular template** | elements and pipes in source order | N/A — TSE-native, no DC legacy |
-| **Delphi** | inheritance, parameters, returnTypes, fieldTypes, propertyTypes, constTypes, variableTypes, constructorCalls, methodCalls, castTypes, attributeTypes, genericConstraintTypes | N/A — TSE-native, no DC legacy |
+| **Python** | every name a binding gives a meaning, in source order, as the binding Python sees there (scopes of functions, comprehensions and class bodies, then the module, by position); one use per alternative binding in branches of one `if` or `try` | `PythonAnalyzer.kt` |
+| **JavaScript** | Same as TypeScript (shared `UsedTypeExtractor`): typeIdentifiers, constructorCalls, memberAccesses, extensions, relevantIdentifiers, constraintTypes, typeAliasRhsTypes, jsxComponents. DC legacy was imports-only; TSE adds full used-type extraction. | `JavascriptAnalyzer.kt` |
+| **Vue** | the template's tags in source order, marked `COMPONENT_TAG`; `<script setup>` and the template's expressions are an embedded source of the component | `VueAnalyzer.kt` |
+| **Angular template** | pipes in source order; the elements are `AngularDeclaration.elements` | N/A — TSE-native, no DC legacy |
+| **Delphi** | in `analyze()`: inheritance, parameters, returnTypes, fieldTypes, propertyTypes, constTypes, variableTypes, constructorCalls, methodCalls, castTypes, attributeTypes, genericConstraintTypes. The dependency parser reads Delphi through `delphiUnit()` instead, see "Delphi unit facts" | N/A — TSE-native, no DC legacy |
 | **Rust** | supertraits, fields (named + tuple), parameters, returnTypes, genericBounds, whereBounds, associatedBounds, typeAliasRhs, constStaticTypes; then per-target `impl` folding appends the impl'd trait followed by the impl method-signature types | N/A — TSE-native, no DC legacy |
-| **SQL** | the objects referenced (`FROM`, `JOIN`, `INTO`, `UPDATE`, `DELETE`, `MERGE`, `USING`, `INSERT`, `TRUNCATE`, `REFERENCES`, `EXEC`, `CALL`, `PERFORM`, the table of a trigger) and the routines called, in source order | N/A — TSE-native, no DC legacy |
+| **SQL** | in `analyze()`: the objects referenced (`FROM`, `JOIN`, `INTO`, `UPDATE`, `DELETE`, `MERGE`, `USING`, `INSERT`, `TRUNCATE`, `REFERENCES`, `EXEC`, `CALL`, `PERFORM`, the table of a trigger) and the routines called, in source order. The dependency parser reads SQL through `sqlScript()` instead, see "SQL script facts" | N/A — TSE-native, no DC legacy |
 
-### JavaScript vs TypeScript: DEFAULT_EXPORT copy behavior
+### Default exports of JavaScript and TypeScript
 
-For `export default function Foo` / `export default class Foo` (named inline default export), JavaScript and TypeScript intentionally diverge:
-
-- **JavaScript**: emits both the named declaration (`Foo`) AND a second `Declaration(name="DEFAULT_EXPORT", type=<same>)`. This matches DC's legacy `JavascriptAnalyzer`, which produced both nodes.
-- **TypeScript**: emits only the named declaration (`Foo`). No `DEFAULT_EXPORT` copy. This matches DC's legacy `TypeScriptAnalyzer`.
-
-This asymmetry is a DC legacy compatibility shim, not a principled semantic choice. It is implemented in `JavascriptDependencyMapping.extractJsDeclarations()`.
+JavaScript and TypeScript report a default export alike (`DefaultExportClassifier`): `export default class Foo` or
+`function Foo` is the declaration `Foo`; `export default Foo` a `REEXPORT` named `DEFAULT_EXPORT` that uses `Foo`; an
+anonymous one (`export default {…}`, `export default () => 1`) and CommonJS `module.exports = …` or TypeScript
+`export = …` a declaration `DEFAULT_EXPORT`, which the adapter names `default`.
 
 ## Namespace models: single-namespace vs multi-namespace languages
 
@@ -334,10 +416,9 @@ One namespace per file. `packagePath` is authoritative; `parentPath` carries onl
 | Java | `package_declaration` | empty |
 | Kotlin | `package_header` | parent class chain only (package not duplicated) |
 | Go | names of the package clauses, not a path; the adapter depends on them as the own package of the file and takes the directory of the file as its package path, where there is one | empty |
-| PHP | `namespace` declaration, otherwise empty and the adapter uses the file path | empty |
 | Python / JavaScript / Vue | always empty; the adapter uses the file path | empty |
-| Delphi | `unit` declaration | empty (top-level types only in v1) |
-| SQL | always empty: an object is used by its name alone, without imports | the schema an object is created in, or the package of a routine of a PL/SQL package body |
+| Delphi | `unit` declaration | empty in `analyze()` (top-level types only); `delphiUnit()` gives a member type its `outerTypes` |
+| SQL | always empty: an object is used by its name alone, without imports | in `analyze()` the schema an object is created in, or the package of a routine of a PL/SQL package body; `sqlScript()` gives the name as written and the default schema |
 
 DC adapters for Class 1 build the node path as `packagePath + parentPath + name` (Kotlin) or `packagePath + name` (Java). The self-wildcard import is emitted once per file from `packagePath`.
 
@@ -348,11 +429,12 @@ Multiple top-level namespaces per file are legal, and nested namespaces scope th
 | Language | `packagePath` source | `parentPath` content |
 |---|---|---|
 | C# | first declared namespace (informational only) | full namespace chain + parent class chain |
-| C++ (planned) | first declared namespace (informational only) | full namespace chain + parent class chain |
+| C++ | first declared namespace (informational only) | full namespace chain + parent class chain, after a marker segment for a forward declaration, alias or implementation part |
+| PHP | first declared namespace (informational only) | the namespace of the block a declaration stands in; for a `define`, the namespace its name gives |
 | TypeScript ambient modules (planned) | file path | ambient module path per declaration |
-| Rust | always empty (file-module path is filesystem-derived; DC derives it from `physicalPath`) | in-file inline-`mod` chain (`mod a { mod b { … } }`) |
+| Rust | always empty (the module path follows from the `mod` declarations; the dependency parser builds the module tree from `rustModule()`) | in-file inline-`mod` chain (`mod a { mod b { … } }`) |
 
-DC's C# adapter (`CSharpAnalyzer` on `feat/tse-csharp-integration`) **ignores `result.packagePath`** and derives everything from `declaration.parentPath`: the node's `pathWithName` is `parentPath + name`, scoped imports match on `parentPath`, and the self-wildcard import is emitted **per declaration** from its own `parentPath`. C++ will follow the same pattern when migrated.
+DC's C# adapter (`CSharpAnalyzer` on `feat/tse-csharp-integration`) **ignores `result.packagePath`** and derives everything from `declaration.parentPath`: the node's `pathWithName` is `parentPath + name`, scoped imports match on `parentPath`, and the self-wildcard import is emitted **per declaration** from its own `parentPath`. The C++ and PHP adapters (`CppAnalyzer`, `PhpAnalyzer`) do the same.
 
 ### Guidance when adding a new language
 

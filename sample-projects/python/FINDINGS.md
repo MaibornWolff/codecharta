@@ -194,6 +194,9 @@ Rounds 1 and 2, re-read from the fresh output:
 - Upward edges: `armor_class.py -> creature_util.py` and `creature.py -> application/__init__.py`, as expected. None new.
 - Leaf kinds: `class` for every class including the `Enum` subclasses and the ABCs; `function` for module-level functions (53 leaves from `encounter_edge_cases.py`, `traced`, `roll_d20`); `unknown` for the `__init__.py` re-export leaves; `variable` for module-level assignments (`logger` x3, `__all__` x3, `T`, `MAX_HIT_POINTS`, `USE_NATURAL_ARMOR`, `speed_module`, `Brawler`). Nested classes, nested functions and methods are not leaves (`Ambush.Trap`, `initiative_of`). A decorator naming a function of the same file gives an intra-file leaf edge (`decorated -> elif_chain`). Too coarse rather than wrong: Python has no `enum` / `interface` syntax.
 - Native vs. resolved: Python has modules, packages, absolute and relative imports, but no compile-time types. CodeCharta resolves the names used inside a class or function against the imports of the file. `PythonAnalyzer.toNode` returns a `variable` declaration with empty dependencies and used types, which matches the missing `TypeVar(..., bound=Fightable)` edge; a `type` statement produces no declaration.
+- Known gaps of the name rules (`analysis/analysers/parsers/DependencyParser/docs/name-resolution/python.md`): listed
+  per probe in `regression/python/known-gaps.md`. Since those rules (2026-10-23) a name means the binding Python sees,
+  through import roots such as `src/`; with them the project draws 72 file edges, 77 with tests; see the fixes below.
 - `src/` layout (variant `output/variants/dependency-src-layout.cc.json`, the same sources copied under `src/`): 43 file edges instead of 70, and no edge carries `isCyclic` or `isPointingUpwards`.
 
 ## Domain language parser
@@ -287,10 +290,10 @@ Rounds 1 and 2, re-read from the fresh output:
 
 ### Dependency parser
 - Missing: `.pyw` files are not analysed and nothing says so (`creature_window.pyw`, 2 edges). **Decision: accept (derived from C++).**
-- Wrong: `application/creature_facade.py` imports `Creature` from the domain and `Creature as CreatureDto` from the DTO package; only the domain edge exists, `application/dto/creature.py` has no incoming edge from the facade. **Decision: accept (derived from Java).**
-- Wrong: the `src/` layout variant keeps 43 of 70 edges and no cycle or upward flag. **Decision: accept.**
+- Wrong: `application/creature_facade.py` imports `Creature` from the domain and `Creature as CreatureDto` from the DTO package; only the domain edge exists, `application/dto/creature.py` has no incoming edge from the facade. **Decision: accept (derived from Java).** **Fixed 2026-10-23 (python.md: an import binds the name it imports under its alias).**
+- Wrong: the `src/` layout variant keeps 43 of 70 edges and no cycle or upward flag. **Decision: accept.** **Fixed 2026-10-23 (python.md import roots): the `src/` layout draws the same edges as the plain one.**
 - Missing: string type hints: `"Creature"` in `domain/service/lair.py`, `typing.List["Centaur"]` in `domain/service/stable.py`. **Decision: accept — the hint whose name is imported (`stable.py`); `"Creature"` in `lair.py` has no import and cannot be resolved.**
-- Missing: the `except ImportError:` fallback import in `application/encounter.py` (-> `fallback_dice.py`). **Decision: accept.**
+- Missing: the `except ImportError:` fallback import in `application/encounter.py` (-> `fallback_dice.py`). **Decision: accept.** **Fixed 2026-10-23 (python.md decision 5: both branches count).**
 - Missing: module-level statements carry no usages in `encounter_edge_cases.py`: `Brawler = TypeVar("Brawler", bound=Fightable)` gives no edge to `fightable.py`, PEP 695 `type Bestiary = list[CreatureType]` gives no edge to `creature_type.py` and no leaf. **Decision: accept.**
 - Missing: `importlib.import_module("de.sots.cellarsandcentaurs.domain.model.speed")` in `application/speed_loader.py`. **Decision: ignore.**
 - Wrong: `domain/model/__init__.py -> armor_class.py` is not flagged `isCyclic` although `armor_class.py -> creature_util.py -> domain/model/__init__.py` is. **Decision: ignore — cycles are found at declaration level, documented; the file edge comes only from the re-export leaf `ArmorClass`, which nothing uses (derived from Kotlin).**

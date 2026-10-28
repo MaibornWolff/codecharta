@@ -1,0 +1,4 @@
+# cpp.md, simple name 2: a member type inherited from a base class
+file derived.hpp -> base.hpp
+leaf derived.hpp#Derived -> base.hpp#Base usage=inheritance
+leaf derived.hpp#Derived -> base.hpp#Item

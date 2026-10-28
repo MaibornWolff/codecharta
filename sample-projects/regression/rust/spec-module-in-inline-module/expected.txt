@@ -1,0 +1,3 @@
+# rust.md, modules: `mod m;` inside an inline module loads from its folder
+file src/user.rs -> src/outer/inner.rs
+leaf src/user.rs#User -> src/outer/inner.rs#Deep

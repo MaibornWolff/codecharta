@@ -1,0 +1,3 @@
+# cpp.md, declarations, decision 7: a typedef names an untagged struct
+file shape.h -> point.h
+leaf shape.h#Shape -> point.h#Point

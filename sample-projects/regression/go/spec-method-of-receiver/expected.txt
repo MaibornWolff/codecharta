@@ -1,0 +1,3 @@
+# go.md, declarations: a method's uses are those of its receiver type
+file shop/cart.go -> model/money.go
+leaf shop/cart.go#Cart -> model/money.go#Money

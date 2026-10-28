@@ -20,7 +20,10 @@ object FederationAliasResolver {
         consumerConfig: FederationConfigResult,
         resolver: FederationConfigResolver,
         analysisRoot: File
-    ): Path? {
+    ): Path? = resolveFile(import, consumerConfig, resolver)?.let { toRelativePath(it, analysisRoot, stripExtension = true) }
+
+    /** The file the producer module exposes under the imported path. */
+    fun resolveFile(import: DirectImport, consumerConfig: FederationConfigResult, resolver: FederationConfigResolver): File? {
         val importPath = import.directPath
 
         // Parse import: "Shared/Utils" -> remoteName="Shared", subPath="Utils"
@@ -42,10 +45,7 @@ object FederationAliasResolver {
         val exposedKey = "./$subPath"
         val exposedPath = producerConfig.data.exposes[exposedKey] ?: return null
 
-        // Resolve to actual file path
-        val resolvedFile = producerConfig.moduleDir.resolve(exposedPath).canonicalFile
-
-        return toRelativePath(resolvedFile, analysisRoot, stripExtension = true)
+        return producerConfig.moduleDir.resolve(exposedPath).canonicalFile
     }
 
     private fun parseImportPath(importPath: String): Pair<String, String>? {

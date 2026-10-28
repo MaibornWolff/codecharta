@@ -1,0 +1,1 @@
+# go.md, rule 3: two dot-imported packages that both declare the name make it ambiguous

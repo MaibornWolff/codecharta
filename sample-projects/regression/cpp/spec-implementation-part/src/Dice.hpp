@@ -1,0 +1,1 @@
+namespace game { struct Dice {}; }

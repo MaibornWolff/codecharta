@@ -1,13 +1,9 @@
 package de.maibornwolff.treesitter.excavationsite.languages.javascript
 
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.BundlerAliasExtractor
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.DEFAULT_EXPORT
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.DeclarationExtractor
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.DefaultExport
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.DefaultExportClassifier
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.ImportExtractor
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
-import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDependencyMapping
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
@@ -15,19 +11,8 @@ internal object JavascriptDependencyMapping {
     val dependencyMapping = LanguageDependencyMapping(
         extractPackagePath = { emptyList() }, // JS/TS have no package declarations
         extractImports = ImportExtractor::extract,
-        extractDeclarations = ::extractJsDeclarations
+        extractDeclarations = DeclarationExtractor::extract
     )
 
     val extractBundlerAliases: (SyntaxNode) -> List<BundlerAlias> = BundlerAliasExtractor::extract
-
-    // Intentional JS/TS divergence: DC's legacy JS analyzer produces both the named declaration
-    // AND a DEFAULT_EXPORT copy (same DeclarationType) for `export default function/class Foo`.
-    // TypeScript does NOT add the DEFAULT_EXPORT copy. This matches DC main's behavior per language.
-    private fun extractJsDeclarations(rootNode: SyntaxNode): List<Declaration> {
-        val declarations = DeclarationExtractor.extract(rootNode)
-        val shape = DefaultExportClassifier.classify(rootNode)
-        if (shape !is DefaultExport.Named) return declarations
-        val inlineDecl = declarations.firstOrNull { it.name == shape.name } ?: return declarations
-        return declarations + inlineDecl.copy(name = DEFAULT_EXPORT)
-    }
 }

@@ -1,0 +1,5 @@
+# go.md, selector: the import name decides between two packages that declare the same name
+file app/facade.go -> dto/creature.go
+file app/facade.go -> model/creature.go
+leaf app/facade.go#Convert -> dto/creature.go#Creature
+leaf app/facade.go#Convert -> model/creature.go#Creature

@@ -3,7 +3,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.php
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
-import de.maibornwolff.treesitter.excavationsite.api.ImportKind
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import de.maibornwolff.treesitter.excavationsite.api.TypeUsage
@@ -143,30 +142,58 @@ class PhpDependencyTest {
         }
 
         @Test
-        fun `should extract an include of a single-quoted path split at the slashes`() {
+        fun `should not report an include as an import`() {
             // Arrange
-            val code = "require_once './lib/helpers.php';\ninclude '..\\shared\\config.php';"
+            val code = "require_once './lib/helpers.php';\nuse App\\Model\\Order;"
 
             // Act
             val result = analyze(code)
 
             // Assert
-            assertThat(result.imports).containsExactly(
-                ImportDeclaration(path = listOf(".", "lib", "helpers.php"), isWildcard = false, kind = ImportKind.INCLUDE),
-                ImportDeclaration(path = listOf("..", "shared", "config.php"), isWildcard = false, kind = ImportKind.INCLUDE)
+            assertThat(result.imports).containsExactly(ImportDeclaration(path = listOf("App", "Model", "Order"), isWildcard = false))
+        }
+
+        @Test
+        fun `should report an include as a use of the included file's script with its path`() {
+            // Arrange
+            val code = """
+                require_once './lib/helpers.php';
+                include '..\shared\config.php';
+                require "x/view.php";
+                require_once(__DIR__ . '/../lib/boot.php');
+                include dirname(__FILE__) . '/env.php';
+                require '/root/start.php';
+            """.trimIndent()
+
+            // Act
+            val prefixes = analyze(code)
+                .declarations
+                .single()
+                .usedTypes
+                .filter { it.name == "MODULE_SCRIPT" }
+                .map { it.namespacePrefix }
+
+            // Assert
+            assertThat(prefixes).containsExactly(
+                listOf(".", "lib", "helpers.php"),
+                listOf("..", "shared", "config.php"),
+                listOf("x", "view.php"),
+                listOf("..", "lib", "boot.php"),
+                listOf("env.php"),
+                listOf("", "root", "start.php")
             )
         }
 
         @Test
-        fun `should not extract an include of a double-quoted or computed path`() {
+        fun `should not report an include of a computed path`() {
             // Arrange
-            val code = "require \"lib/helpers.php\";\nrequire_once __DIR__ . '/config.php';\nrequire('lib/other.php');"
+            val code = "${'$'}path = 'boot.php';\nrequire ${'$'}path;\nrequire CONFIG_DIR . '/config.php';\nrequire \"${'$'}path/x.php\";"
 
             // Act
-            val result = analyze(code)
+            val usedTypes = analyze(code).declarations.single().usedTypes
 
             // Assert
-            assertThat(result.imports).isEmpty()
+            assertThat(usedTypes.map { it.name }).doesNotContain("MODULE_SCRIPT")
         }
     }
 
@@ -201,6 +228,36 @@ class PhpDependencyTest {
         }
 
         @Test
+        fun `should give each declaration the namespace of the block it stands in as parent path`() {
+            // Arrange
+            val code = "namespace Shop;\nclass Cart {}\nnamespace Admin;\nfunction panel() {}"
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.declarations).extracting({ it.name }, { it.parentPath }).containsExactly(
+                tuple("Cart", listOf("Shop")),
+                tuple("panel", listOf("Admin"))
+            )
+        }
+
+        @Test
+        fun `should give a declaration in braces its namespace and one in the global block none`() {
+            // Arrange
+            val code = "namespace Shop\\Model {\n    class Cart {}\n}\nnamespace {\n    class Legacy {}\n}"
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.declarations).extracting({ it.name }, { it.parentPath }).containsExactly(
+                tuple("Cart", listOf("Shop", "Model")),
+                tuple("Legacy", emptyList<String>())
+            )
+        }
+
+        @Test
         fun `should not extract a method as a function`() {
             // Arrange
             val code = "class Order {\n    function total() {}\n}"
@@ -225,7 +282,7 @@ class PhpDependencyTest {
         }
 
         @Test
-        fun `should extract a constant that is the value of a const as a declaration as well`() {
+        fun `should read the constant that is the value of a const as a use of it`() {
             // Arrange
             val code = "const LIMIT = MAXIMUM;"
 
@@ -233,7 +290,47 @@ class PhpDependencyTest {
             val result = analyze(code)
 
             // Assert
-            assertThat(result.declarations.map { it.name }).containsExactly("LIMIT", "MAXIMUM")
+            assertThat(result.declarations).containsExactly(
+                Declaration("LIMIT", DeclarationType.VARIABLE, setOf(UsedType("MAXIMUM", usage = TypeUsage.CONSTANT_ACCESS)))
+            )
+        }
+
+        @Test
+        fun `should extract a constant of a namespace in braces with its namespace`() {
+            // Arrange
+            val code = "namespace Game {\n    const MAX = 3;\n}"
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.declarations).extracting({ it.name }, { it.parentPath }).containsExactly(tuple("MAX", listOf("Game")))
+        }
+
+        @Test
+        fun `should declare the constant define names in the namespace its name gives`() {
+            // Arrange
+            val code = "namespace App;\ndefine('Game\\\\MAX', LIMIT);\ndefine('MIN', 1);"
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.declarations).extracting({ it.name }, { it.parentPath }, { it.usedTypes }).containsExactly(
+                tuple(
+                    "MAX",
+                    listOf("Game"),
+                    setOf(
+                        UsedType(
+                            "LIMIT",
+                            namespacePrefix = listOf("App"),
+                            usage = TypeUsage.CONSTANT_ACCESS,
+                            fallbacks = listOf(UsedType("LIMIT", usage = TypeUsage.CONSTANT_ACCESS))
+                        )
+                    )
+                ),
+                tuple("MIN", emptyList<String>(), emptySet<UsedType>())
+            )
         }
 
         @Test
@@ -264,6 +361,200 @@ class PhpDependencyTest {
                     usedTypes = setOf(UsedType("Report", usage = TypeUsage.INSTANTIATION))
                 )
             )
+        }
+
+        @Test
+        fun `should extract one unnamed script for the top-level code of a file next to its declarations`() {
+            // Arrange
+            val code = "declare(strict_types=1);\nnamespace App;\nuse App\\Model\\Config;\nclass Kernel {}\n${'$'}config = new Config();"
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.declarations).extracting({ it.name }, { it.type }, { it.usedTypes }).containsExactly(
+                tuple(
+                    "",
+                    DeclarationType.SCRIPT,
+                    setOf(UsedType("Config", namespacePrefix = listOf("App", "Model"), usage = TypeUsage.INSTANTIATION))
+                ),
+                tuple("Kernel", DeclarationType.CLASS, emptySet<UsedType>())
+            )
+        }
+
+        @Test
+        fun `should extract no script for a file of declarations, imports and define calls only`() {
+            // Arrange
+            val code = "namespace App;\nuse App\\Model\\Config;\ndefine('LIMIT', 3);\nfunction run() {}\n?>\n"
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.declarations.map { it.type }).containsExactly(DeclarationType.FUNCTION, DeclarationType.VARIABLE)
+        }
+    }
+
+    @Nested
+    inner class NameResolution {
+        private fun pathsOf(code: String, declarationName: String): List<List<String>> =
+            usedTypesOf(code, declarationName).map { it.namespacePrefix + it.name }
+
+        @Test
+        fun `should resolve an unqualified class name in the current namespace`() {
+            // Arrange
+            val code = "namespace Game\\Model;\nclass Horse {\n    public Speed ${'$'}speed;\n}"
+
+            // Act
+            val paths = pathsOf(code, "Horse")
+
+            // Assert
+            assertThat(paths).containsExactly(listOf("Game", "Model", "Speed"))
+        }
+
+        @Test
+        fun `should resolve a qualified class name through the namespace import of its first segment`() {
+            // Arrange
+            val code = "namespace Game\\App;\nuse Game\\Domain\\Model;\nclass Util {\n    public Model\\Creature ${'$'}creature;\n}"
+
+            // Act
+            val paths = pathsOf(code, "Util")
+
+            // Assert
+            assertThat(paths).containsExactly(listOf("Game", "Domain", "Model", "Creature"))
+        }
+
+        @Test
+        fun `should resolve a qualified class name without an import below the current namespace`() {
+            // Arrange
+            val code = "namespace Game\\App;\nclass Util {\n    public Model\\Creature ${'$'}creature;\n}"
+
+            // Act
+            val paths = pathsOf(code, "Util")
+
+            // Assert
+            assertThat(paths).containsExactly(listOf("Game", "App", "Model", "Creature"))
+        }
+
+        @Test
+        fun `should resolve a name below the namespace keyword in the current namespace`() {
+            // Arrange
+            val code = "namespace Game\\App;\nclass Box {\n    public namespace\\Sub\\Tool ${'$'}tool;\n}"
+
+            // Act
+            val paths = pathsOf(code, "Box")
+
+            // Assert
+            assertThat(paths).containsExactly(listOf("Game", "App", "Sub", "Tool"))
+        }
+
+        @Test
+        fun `should resolve a member of a group import by its alias`() {
+            // Arrange
+            val code = "namespace Game\\App;\nuse Game\\Model\\{Creature, Speed as Pace};\nclass Herd {\n    public Pace ${'$'}pace;\n}"
+
+            // Act
+            val paths = pathsOf(code, "Herd")
+
+            // Assert
+            assertThat(paths).containsExactly(listOf("Game", "Model", "Speed"))
+        }
+
+        @Test
+        fun `should resolve a name only through the imports of its own namespace block`() {
+            // Arrange
+            val code = """
+                namespace Shop;
+                use Shop\Model\Item;
+                class Cart {}
+                namespace Admin;
+                class Panel {
+                    public Item ${'$'}item;
+                }
+            """.trimIndent()
+
+            // Act
+            val paths = pathsOf(code, "Panel")
+
+            // Assert
+            assertThat(paths).containsExactly(listOf("Admin", "Item"))
+        }
+
+        @Test
+        fun `should resolve a called function in the current namespace with the global one as fallback`() {
+            // Arrange
+            val code = "namespace App;\nfunction run() {\n    return helper();\n}"
+
+            // Act
+            val usedTypes = usedTypesOf(code, "run")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(
+                UsedType("helper", namespacePrefix = listOf("App"), fallbacks = listOf(UsedType("helper")))
+            )
+        }
+
+        @Test
+        fun `should resolve a called function through its function import without a fallback`() {
+            // Arrange
+            val code = "namespace App;\nuse function Game\\Dice\\roll;\nfunction hit() {\n    return roll();\n}"
+
+            // Act
+            val usedTypes = usedTypesOf(code, "hit")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(UsedType("roll", namespacePrefix = listOf("Game", "Dice")))
+        }
+
+        @Test
+        fun `should resolve a qualified function name through the namespace import of its first segment`() {
+            // Arrange
+            val code = "namespace App;\nuse Game\\Dice;\nfunction hit() {\n    return Dice\\roll();\n}"
+
+            // Act
+            val paths = pathsOf(code, "hit")
+
+            // Assert
+            assertThat(paths).containsExactly(listOf("Game", "Dice", "roll"))
+        }
+
+        @Test
+        fun `should resolve a constant read through its constant import`() {
+            // Arrange
+            val code = "namespace App;\nuse const Game\\Limits\\MAX;\nfunction cap() {\n    return MAX + \\Game\\MIN;\n}"
+
+            // Act
+            val usedTypes = usedTypesOf(code, "cap")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(
+                UsedType("MAX", namespacePrefix = listOf("Game", "Limits"), usage = TypeUsage.CONSTANT_ACCESS),
+                UsedType("MIN", namespacePrefix = listOf("Game"), usage = TypeUsage.CONSTANT_ACCESS)
+            )
+        }
+
+        @Test
+        fun `should not read a method, property or argument name as a constant`() {
+            // Arrange
+            val code = "namespace App;\nfunction run(${'$'}cart) {\n    return ${'$'}cart->total(limit: 3)->items;\n}"
+
+            // Act
+            val usedTypes = usedTypesOf(code, "run")
+
+            // Assert
+            assertThat(usedTypes).isEmpty()
+        }
+
+        @Test
+        fun `should leave out the own class and the type keywords`() {
+            // Arrange
+            val code = "namespace Game;\nclass Horse {\n    function same(): self {}\n    function count(): int {}\n}"
+
+            // Act
+            val usedTypes = usedTypesOf(code, "Horse")
+
+            // Assert
+            assertThat(usedTypes).isEmpty()
         }
     }
 
@@ -304,7 +595,95 @@ class PhpDependencyTest {
         }
 
         @Test
-        fun `should extract the nullable return type of a method but not of a function`() {
+        fun `should extract every type of a parameter, a property and a catch clause`() {
+            // Arrange
+            val code = """
+                class Svc {
+                    public ?H ${'$'}h = null;
+                    function __construct(private G ${'$'}g) {}
+                    function take(?A ${'$'}a, B|C ${'$'}bc, D&E ${'$'}de, F ...${'$'}fs) {
+                        try {} catch (NotFound | Gone ${'$'}failure) {}
+                        return fn (I ${'$'}i): J => ${'$'}i;
+                    }
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "Svc")
+
+            // Assert
+            assertThat(usedTypes.map { it.name to it.usage }).containsExactly(
+                "J" to TypeUsage.RETURN_VALUE,
+                "G" to TypeUsage.ARGUMENT,
+                "A" to TypeUsage.ARGUMENT,
+                "B" to TypeUsage.ARGUMENT,
+                "C" to TypeUsage.ARGUMENT,
+                "D" to TypeUsage.ARGUMENT,
+                "E" to TypeUsage.ARGUMENT,
+                "F" to TypeUsage.ARGUMENT,
+                "I" to TypeUsage.ARGUMENT,
+                "H" to TypeUsage.USAGE,
+                "NotFound" to TypeUsage.USAGE,
+                "Gone" to TypeUsage.USAGE
+            )
+        }
+
+        @Test
+        fun `should extract the class of an instanceof, an attribute and a static property`() {
+            // Arrange
+            val code = """
+                #[Cached]
+                class Spotter {
+                    #[\Ann\Transactional]
+                    function spot(${'$'}candidate) {
+                        return ${'$'}candidate instanceof Centaur ? Counter::${'$'}count : 0;
+                    }
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypesOf(code, "Spotter")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(
+                UsedType("Counter"),
+                UsedType("Cached"),
+                UsedType("Transactional", namespacePrefix = listOf("Ann")),
+                UsedType("Centaur")
+            )
+        }
+
+        @Test
+        fun `should extract what an interface extends and an enum implements`() {
+            // Arrange
+            val code = "interface Boss extends Fightable, Describable {}\nenum Alignment: string implements Describable {}"
+
+            // Act
+            val typesOfInterface = usedTypesOf(code, "Boss")
+            val typesOfEnum = usedTypesOf(code, "Alignment")
+
+            // Assert
+            assertThat(typesOfInterface).containsExactly(
+                UsedType("Fightable", usage = TypeUsage.INHERITANCE),
+                UsedType("Describable", usage = TypeUsage.INHERITANCE)
+            )
+            assertThat(typesOfEnum).containsExactly(UsedType("Describable", usage = TypeUsage.IMPLEMENTATION))
+        }
+
+        @Test
+        fun `should extract what an anonymous class extends and implements as uses of the declaration around it`() {
+            // Arrange
+            val code = "class Arena {\n    function spawn() {\n        return new class extends Base implements Fightable {};\n    }\n}"
+
+            // Act
+            val usedTypes = usedTypesOf(code, "Arena")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(UsedType("Base"), UsedType("Fightable"))
+        }
+
+        @Test
+        fun `should extract the nullable return type of a method and of a function`() {
             // Arrange
             val code = """
                 class Orders {
@@ -319,11 +698,11 @@ class PhpDependencyTest {
 
             // Assert
             assertThat(typesOfClass).containsExactly(UsedType("Order", usage = TypeUsage.RETURN_VALUE))
-            assertThat(typesOfFunction).isEmpty()
+            assertThat(typesOfFunction).containsExactly(UsedType("Invoice", usage = TypeUsage.RETURN_VALUE))
         }
 
         @Test
-        fun `should leave out a nullable parameter type and a base class written as a qualified name`() {
+        fun `should extract a base class written as a qualified name and a nullable parameter type`() {
             // Arrange
             val code = "class Order extends \\App\\Entity {\n    function pay(?Gateway ${'$'}gateway) {}\n}"
 
@@ -331,11 +710,14 @@ class PhpDependencyTest {
             val usedTypes = usedTypesOf(code, "Order")
 
             // Assert
-            assertThat(usedTypes).isEmpty()
+            assertThat(usedTypes).containsExactly(
+                UsedType("Entity", namespacePrefix = listOf("App"), usage = TypeUsage.INHERITANCE),
+                UsedType("Gateway", usage = TypeUsage.ARGUMENT)
+            )
         }
 
         @Test
-        fun `should extract a qualified return type as written`() {
+        fun `should extract a fully qualified return type as the path it names`() {
             // Arrange
             val code = "function latest(): \\App\\Models\\Order {}"
 
@@ -343,11 +725,13 @@ class PhpDependencyTest {
             val usedTypes = usedTypesOf(code, "latest")
 
             // Assert
-            assertThat(usedTypes).containsExactly(UsedType("\\App\\Models\\Order", usage = TypeUsage.RETURN_VALUE))
+            assertThat(usedTypes).containsExactly(
+                UsedType("Order", namespacePrefix = listOf("App", "Models"), usage = TypeUsage.RETURN_VALUE)
+            )
         }
 
         @Test
-        fun `should replace an alias by the name it stands for`() {
+        fun `should replace an alias by the name it stands for in the namespace it imports`() {
             // Arrange
             val code = "use App\\Models\\Order as Purchase;\nfunction latest(): Purchase {}"
 
@@ -355,11 +739,13 @@ class PhpDependencyTest {
             val usedTypes = usedTypesOf(code, "latest")
 
             // Assert
-            assertThat(usedTypes).containsExactly(UsedType("Order", usage = TypeUsage.RETURN_VALUE))
+            assertThat(
+                usedTypes
+            ).containsExactly(UsedType("Order", namespacePrefix = listOf("App", "Models"), usage = TypeUsage.RETURN_VALUE))
         }
 
         @Test
-        fun `should extract an imported constant first when its name occurs in the declaration`() {
+        fun `should extract an imported constant first where it is read`() {
             // Arrange
             val code = """
                 use const App\Limits\MAXIMUM;
@@ -373,14 +759,14 @@ class PhpDependencyTest {
 
             // Assert
             assertThat(typesOfIsFull).containsExactly(
-                UsedType("MAXIMUM", usage = TypeUsage.CONSTANT_ACCESS),
+                UsedType("MAXIMUM", namespacePrefix = listOf("App", "Limits"), usage = TypeUsage.CONSTANT_ACCESS),
                 UsedType("Cart", usage = TypeUsage.ARGUMENT)
             )
             assertThat(typesOfIsEmpty).containsExactly(UsedType("Cart", usage = TypeUsage.ARGUMENT))
         }
 
         @Test
-        fun `should treat an import with const in a segment as a constant`() {
+        fun `should not take an import with const in a segment for a constant`() {
             // Arrange
             val code = "use App\\Reconstruction\\Order;\nfunction latest(): Order {}"
 
@@ -388,22 +774,35 @@ class PhpDependencyTest {
             val usedTypes = usedTypesOf(code, "latest")
 
             // Assert
-            assertThat(usedTypes).containsExactly(
-                UsedType("Order", usage = TypeUsage.CONSTANT_ACCESS),
-                UsedType("Order", usage = TypeUsage.RETURN_VALUE)
-            )
+            assertThat(
+                usedTypes
+            ).containsExactly(UsedType("Order", namespacePrefix = listOf("App", "Reconstruction"), usage = TypeUsage.RETURN_VALUE))
         }
 
         @Test
-        fun `should give a trait no used types`() {
+        fun `should give a trait the names its body uses, the traits it uses included`() {
             // Arrange
-            val code = "trait Auditable {\n    function audit(Logger ${'$'}logger) {}\n}"
+            val code = "trait Auditable {\n    use Clock;\n    function audit(Logger ${'$'}logger) {}\n}"
 
             // Act
             val usedTypes = usedTypesOf(code, "Auditable")
 
             // Assert
-            assertThat(usedTypes).isEmpty()
+            assertThat(usedTypes).containsExactly(UsedType("Logger", usage = TypeUsage.ARGUMENT), UsedType("Clock"))
+        }
+
+        @Test
+        fun `should leave the names of a function declared inside a function to that function`() {
+            // Arrange
+            val code = "function outer(Outer ${'$'}o) {\n    function inner(Inner ${'$'}i) {}\n}"
+
+            // Act
+            val typesOfOuter = usedTypesOf(code, "outer")
+            val typesOfInner = usedTypesOf(code, "inner")
+
+            // Assert
+            assertThat(typesOfOuter).containsExactly(UsedType("Outer", usage = TypeUsage.ARGUMENT))
+            assertThat(typesOfInner).containsExactly(UsedType("Inner", usage = TypeUsage.ARGUMENT))
         }
     }
 }

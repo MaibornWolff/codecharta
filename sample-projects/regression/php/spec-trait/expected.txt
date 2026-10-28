@@ -1,0 +1,5 @@
+# php.md, decision 4: a trait is a declaration, its body's names are its uses, `use T;` uses it
+file Model/HasSpeed.php -> Model/Speed.php
+file Model/Horse.php -> Model/HasSpeed.php
+leaf Model/HasSpeed.php#HasSpeed -> Model/Speed.php#Speed usage=return_value
+leaf Model/Horse.php#Horse -> Model/HasSpeed.php#HasSpeed

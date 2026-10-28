@@ -1,0 +1,5 @@
+# delphi.md, declarations, decision 1: a free routine is a declaration, a call a use; heading and body are one
+file Game.Centaur.pas -> Game.Dice.pas
+file Game.Dice.pas -> Game.Model.pas
+leaf Game.Centaur.pas#TCentaur -> Game.Dice.pas#RollD20
+leaf Game.Dice.pas#RollD20 -> Game.Model.pas#TCreature

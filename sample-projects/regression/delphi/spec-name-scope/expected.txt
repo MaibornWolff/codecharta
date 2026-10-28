@@ -1,0 +1,3 @@
+# Shared rule 1: a Delphi name means no declaration of another language
+file Game.Arena.pas -> Game.Model.pas
+leaf Game.Arena.pas#TArena -> Game.Model.pas#TCreature

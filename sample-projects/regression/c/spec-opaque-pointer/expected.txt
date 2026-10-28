@@ -1,0 +1,3 @@
+# cpp.md, which file 2, decision 5: an opaque typedef means the body in the source
+file user.h -> stable.c
+leaf user.h#User -> stable.c#Stable

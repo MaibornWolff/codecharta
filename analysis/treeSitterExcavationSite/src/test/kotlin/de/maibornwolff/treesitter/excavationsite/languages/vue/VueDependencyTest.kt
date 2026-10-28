@@ -1,5 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.vue
 
+import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
@@ -51,12 +52,66 @@ class VueDependencyTest {
             val result = analyze(code)
 
             // Assert
-            assertThat(result.declarations.single().usedTypes).isEmpty()
+            assertThat(result.declarations.first().usedTypes).isEmpty()
         }
     }
 
     @Nested
     inner class TemplateComponents {
+        @Test
+        fun `should extract no Vue built-in as a component, however it is written`() {
+            // Arrange
+            val code = """
+                <template>
+                  <transition><keep-alive><KeepAlive><component :is="view" /></KeepAlive></keep-alive></transition>
+                  <TransitionGroup /><teleport /><Suspense /><slot /><OrderList />
+                </template>
+            """.trimIndent()
+
+            // Act
+            val usedComponents = usedComponentsOf(code)
+
+            // Assert
+            assertThat(usedComponents).containsExactly("OrderList")
+        }
+
+        @Test
+        fun `should mark a component of a tag as one, apart from the names of the scripts`() {
+            // Arrange
+            val code = "<template><order-list /></template>"
+
+            // Act
+            val usedType = analyze(code).declarations.single().usedTypes.single()
+
+            // Assert
+            assertThat(usedType.namespacePrefix).containsExactly("COMPONENT_TAG")
+        }
+
+        @Test
+        fun `should extract the tags of a pug template, but not those in its comments, text and keywords`() {
+            // Arrange
+            val code = """
+                <template lang="pug">
+                //- a comment naming CommentCard
+                  CommentChild
+                section.lair
+                  CreatureBadge(:label="x ? 'a' : 'b'")
+                  p Text naming TextCard
+                  if ok
+                    user-card#first.wide
+                  li: StableLink(to="/")
+                  p.
+                    BlockText naming BlockCard
+                </template>
+            """.trimIndent()
+
+            // Act
+            val usedComponents = usedComponentsOf(code)
+
+            // Assert
+            assertThat(usedComponents).containsExactly("CreatureBadge", "UserCard", "StableLink")
+        }
+
         @Test
         fun `should extract the tags that are no HTML elements in Pascal case`() {
             // Arrange
@@ -178,7 +233,28 @@ class VueDependencyTest {
         }
 
         @Test
-        fun `should not extract what a script block declares`() {
+        fun `should hand what a script setup block declares to the component, its imports to the file`() {
+            // Arrange
+            val code = """
+                <script setup lang="ts">
+                import { format } from './format'
+                const label = format(1)
+                </script>
+            """.trimIndent()
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            val embedded = result.embedded.single()
+            assertThat(embedded.owner).isEqualTo("DEFAULT_EXPORT")
+            assertThat(embedded.language).isEqualTo(Language.TYPESCRIPT)
+            assertThat(embedded.declarations.map { it.name }).containsExactly("label")
+            assertThat(result.imports.map { it.path }).containsExactly(listOf(".", "format", "format"))
+        }
+
+        @Test
+        fun `should extract what a plain script block declares as declarations of the file, after the component`() {
             // Arrange
             val code = "<script>export class Helper {}</script>"
 
@@ -186,7 +262,7 @@ class VueDependencyTest {
             val result = analyze(code)
 
             // Assert
-            assertThat(result.declarations.map { it.name }).containsExactly("DEFAULT_EXPORT")
+            assertThat(result.declarations.map { it.name }).containsExactly("DEFAULT_EXPORT", "Helper")
         }
 
         @Test
@@ -199,6 +275,73 @@ class VueDependencyTest {
 
             // Assert
             assertThat(result.imports).isEmpty()
+        }
+    }
+
+    @Nested
+    inner class TemplateExpressions {
+        private fun namesUsedBy(declarations: List<Declaration>): List<String> = declarations.flatMap { it.usedTypes }.map { it.name }
+
+        @Test
+        fun `should hand the names of the template's expressions to the script setup block, a v-for name local`() {
+            // Arrange
+            val code = """
+                <script setup lang="ts">
+                import { format, item, defaults } from './fmt'
+                const items = ['a']
+                </script>
+                <template>
+                  <span :title="defaults.size">{{ format('x') }}</span>
+                  <li v-for="(item, index) in items" @click="format(item)">{{ item + index }}</li>
+                </template>
+            """.trimIndent()
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            val usedNames = namesUsedBy(result.embedded.single().declarations)
+            assertThat(usedNames).containsExactlyInAnyOrder("format", "items", "defaults")
+        }
+
+        @Test
+        fun `should keep the names a slot binds inside the element that binds them`() {
+            // Arrange
+            val code = """
+                <script setup>
+                import { row, label } from './table'
+                </script>
+                <template>
+                  <Grid v-slot="{ row }">{{ row }}</Grid>
+                  <Grid #cell="cell">{{ label(cell) }}</Grid>
+                </template>
+            """.trimIndent()
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            val usedNames = namesUsedBy(result.embedded.single().declarations)
+            assertThat(usedNames).containsExactlyInAnyOrder("label")
+        }
+
+        @Test
+        fun `should hand no template name to a component without a script setup block`() {
+            // Arrange
+            val code = """
+                <script>
+                import { format } from './fmt'
+                export default {}
+                </script>
+                <template>{{ format(1) }}</template>
+            """.trimIndent()
+
+            // Act
+            val result = analyze(code)
+
+            // Assert
+            assertThat(result.embedded).isEmpty()
+            assertThat(namesUsedBy(result.declarations)).doesNotContain("format")
         }
     }
 }

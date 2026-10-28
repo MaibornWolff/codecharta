@@ -1,0 +1,1 @@
+# go.md, rule 4: a predeclared identifier draws no edge
