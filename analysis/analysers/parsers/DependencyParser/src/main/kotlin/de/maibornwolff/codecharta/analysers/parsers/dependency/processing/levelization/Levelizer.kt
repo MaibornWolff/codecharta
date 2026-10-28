@@ -134,7 +134,7 @@ private fun removeCycles(incomingEdgesPerNode: MutableMap<String, Int>, edges: L
         .map { edgesOfSource -> NodeInformation(edgesOfSource.key, edgesOfSource.value.map { it.target }.toSet()) }
         .toSet()
     val edgesToRemove = mutableSetOf<Edge<String>?>()
-    val cycles = CycleAnalyzer.determineCycles(nodeInformation, singleCycle = true)
+    val cycles = CycleAnalyzer.determineCycles(nodeInformation)
     cycles.forEach { cycle ->
         val cycleEdges = cycle.edges
         val nodesInCycle = cycle.edges.flatMap { edge -> listOf(edge.from, edge.to) }.toSet()
