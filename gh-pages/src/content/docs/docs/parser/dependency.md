@@ -106,7 +106,8 @@ declarations:
 - `language` is the language the declaration is written in, lower case, such as `java` or `typescript`; an Angular
   template is `angular`.
 - `usage` names how the source uses the target: `usage`, `inheritance`, `implementation`,
-  `instantiation`, `argument`, `return_value`, `constant_access`, and `part_of` from a part that implements a
+  `instantiation`, `argument`, `return_value`, `constant_access`, `friend` for the class a C++ `friend` declaration
+  names, and `part_of` from a part that implements a
   declaration in another file (C++, Rust, SQL) to that declaration. A pair carries one kind, the first the
   extractor found, as in DependaCharta. PHP reports every kind; Java, Kotlin and C# report `inheritance`
   and `implementation`, C++ `inheritance`; see [known issues](#known-issues).

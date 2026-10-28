@@ -22,6 +22,8 @@ global namespace. The rules shared by every language are in [README.md](README.m
   the class of that path (decision 5). So does an elaborated type specifier that names no visible class
   (`struct Roost *held;`): it declares the class in the innermost namespace around it, as the compiler does. An
   unqualified `friend class Util;` declares `Util` in the innermost namespace around its class, whatever is visible.
+- A `friend class Util;` in a class is a use of `Util` of the kind `friend`: the class lets `Util` use its private
+  members, so the two are coupled, but in a way a reader may want to filter (decision 16).
 - The member functions of a class defined outside it (`void Creature::hit() { … }`, also inside the namespace
   blocks of the class) form the implementation part of the class: a leaf with the class's path in their file, whose
   uses are the uses of these functions, and which uses the class (decision 3). Members defined in the file of the
@@ -123,6 +125,7 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 | Declarations, decision 8: out-of-line template member | `cpp/spec-template-out-of-line-member` | ok |
 | Declarations, decision 14: a function defined with its namespace | `cpp/spec-namespace-qualified-function` | ok |
 | Declarations, decision 15: an export macro before the class name | `cpp/spec-export-macro` | ok |
+| Declarations, decision 16: a friend class | `cpp/spec-friend` | ok |
 | Declarations: unnamed namespace | `cpp/spec-unnamed-namespace` | ok |
 | Include paths 1: relative to the including file | `c/spec-include-relative` | ok |
 | Include paths 2: path ending | `c/spec-include-path-suffix` | ok |
@@ -204,3 +207,6 @@ yet; `known-gaps.md` of the probe's folder says how it deviates.
 15. An upper-case name between `class`, `struct` or `union` and the name of a class with a body is an export macro,
     which the compiler sees as nothing or an attribute, so the class is the name after it; the dependency extraction
     reads it so, metrics read the file as it is (Christian, 2026-10-27).
+16. A friend class is a use of its own kind `friend`, not dropped and not a plain use: the coupling is real, and a cycle
+    through it stays, but the reader can tell it apart (Christian, 2026-10-28, after the edge check found friend
+    edges closing cycles).

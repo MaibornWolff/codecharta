@@ -1,0 +1,5 @@
+# cpp.md, declarations, decision 16: a friend declaration is a use of kind friend, and the cycle through it stays
+file Thief.hpp -> Vault.hpp cyclic upward
+file Vault.hpp -> Thief.hpp cyclic
+leaf Thief.hpp#Thief -> Vault.hpp#Vault cyclic upward
+leaf Vault.hpp#Vault -> Thief.hpp#Thief usage=friend cyclic

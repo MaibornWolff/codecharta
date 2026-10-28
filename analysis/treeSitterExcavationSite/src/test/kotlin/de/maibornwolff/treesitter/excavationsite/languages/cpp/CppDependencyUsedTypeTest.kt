@@ -568,7 +568,7 @@ class CppDependencyUsedTypeTest {
     @Nested
     inner class FriendDeclarations {
         @Test
-        fun `should extract friend class type`() {
+        fun `should extract a friend class as a friend type`() {
             // Arrange
             val code = """
                 class Container {
@@ -581,11 +581,11 @@ class CppDependencyUsedTypeTest {
 
             // Assert
             val container = result.declarations.single { it.name == "Container" }
-            assertThat(container.usedTypes).containsExactly(UsedType(name = "Tester"))
+            assertThat(container.usedTypes).containsExactly(UsedType(name = "Tester", usage = TypeUsage.FRIEND))
         }
 
         @Test
-        fun `should extract qualified friend class type`() {
+        fun `should extract a qualified friend class as a friend type`() {
             // Arrange
             val code = """
                 class Container {
@@ -599,7 +599,7 @@ class CppDependencyUsedTypeTest {
             // Assert
             val container = result.declarations.single { it.name == "Container" }
             assertThat(container.usedTypes).containsExactly(
-                UsedType(name = "Tester", namespacePrefix = listOf("Outer"))
+                UsedType(name = "Tester", namespacePrefix = listOf("Outer"), usage = TypeUsage.FRIEND)
             )
         }
     }

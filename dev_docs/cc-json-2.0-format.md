@@ -116,7 +116,7 @@ the same graph as the *code* declares it — packages and declarations rather th
 `kind`, `usage` and `language` are open lower-case vocabularies, not enums, so a producer can add a value
 without a schema change. Known values: `kind` — `class`, `valueclass`, `interface`, `annotation`, `enum`,
 `function`, `variable`, `reexport`, `script`, `unknown`; `usage` — `usage`, `inheritance`,
-`implementation`, `instantiation`, `argument`, `return_value`, `constant_access`, `part_of`; `language` — `java`,
+`implementation`, `instantiation`, `argument`, `return_value`, `constant_access`, `friend`, `part_of`; `language` — `java`,
 `kotlin`, `csharp`, `cpp`, `go`, `php`, `python`, `typescript`, `javascript`, `vue`, `delphi`, `rust`. A
 reader must not assume a producer fills in every usage, and `ccsh dependencyparser` currently reports more
 than `usage` for PHP only.
