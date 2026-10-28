@@ -75,6 +75,21 @@ class DeclarationCyclesTest {
     }
 
     @Test
+    fun `should find a cycle longer than ten declarations`() {
+        // Arrange
+        val ringSize = 12
+        repeat(ringSize) { index ->
+            write("p/C$index.java", "package p;\npublic class C$index { C${(index + 1) % ringSize} next; }")
+        }
+
+        // Act
+        val graph = graphOf(SupportedLanguage.JAVA)
+
+        // Assert
+        assertThat(cyclicEdgesOf(graph)).hasSize(ringSize)
+    }
+
+    @Test
     fun `should give every cyclic edge of the Java sample a way back`() {
         // Act
         val graph = ProcessingPipeline.run(extractFrom(JAVA_SAMPLE, SupportedLanguage.JAVA), omitGraphAnalysis = false)

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+- **Every cycle of the dependency map**: every edge that lies on a cycle between declarations is shown as cyclic,
+  however long the cycle and however large the tangle around it.
+
 ## [2.3.0] - 2026-10-28
 
 ### Added 🚀

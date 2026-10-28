@@ -23,6 +23,19 @@ class CycleAnalyzer {
             }
         }
 
+        /** The targets of each node that lie on a cycle with it: an edge does exactly when both ends share a component. */
+        fun <K> cyclicTargetsByNode(leaves: Set<NodeInformation<K>>): Map<K, Set<K>> {
+            val stronglyConnectedComponentsWithCycles = StronglyConnectedComponentDetection()
+                .run(leaves)
+                .filter { it.nodes.size > 1 }
+            Logger.info { "Found ${stronglyConnectedComponentsWithCycles.size} strongly connected components" }
+            return stronglyConnectedComponentsWithCycles
+                .flatMap { component ->
+                    val componentIds = component.nodes.map { it.id }.toSet()
+                    component.nodes.map { node -> node.id to node.dependencies.intersect(componentIds) }
+                }.toMap()
+        }
+
         fun <K> List<Cycle<K>>.groupByLeafs() = this
             .flatMap { it.edges }
             .groupBy({ it.from }, { it.to })
