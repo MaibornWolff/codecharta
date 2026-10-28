@@ -13,7 +13,7 @@ private const val PATH_SEPARATOR = "."
 
 internal class LogicalProjection(
     private val resolvedNodes: Collection<Node>,
-    private val cyclicEdgesByDeclaration: Map<String, Set<String>>,
+    private val cycles: DeclarationCycles,
     private val namespaceTree: LevelizedNamespaceTree?,
     private val declaringFiles: DeclaringFiles
 ) {
@@ -88,9 +88,9 @@ internal class LogicalProjection(
         val targetPath = dependency.withDots()
         if (targetPath == sourcePath && !node.isImplementationPart) return emptyList()
         val sourceFile = FilePath.of(node)
-        val isCyclic = targetPath in cyclicEdgesByDeclaration[sourcePath].orEmpty()
         val targetFiles = declaringFiles.filesFor(targetPath, sourceFile, node.language, dependency.kinds)
         return targetFiles.filterNot { targetPath == sourcePath && it == sourceFile }.map { targetFile ->
+            val isCyclic = cycles.isCyclic(DeclarationKey(sourceFile, sourcePath), DeclarationKey(targetFile, targetPath))
             DeclarationEdge(
                 from = addressOf(sourceFile, sourcePath),
                 to = addressOf(targetFile, targetPath),

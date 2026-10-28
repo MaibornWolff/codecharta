@@ -18,22 +18,20 @@ data class AggregatedFileEdge(val from: FilePath, val to: FilePath, val weight: 
  * A logical path declared in several files (a C# partial class, a Go function name reused in a package, two
  * projects with the same package) is one leaf per file. Each copy's dependencies count for the file they are
  * written in, while a dependency *on* the path points at the files [DeclaringFiles] picks for the using file, the
- * same copies the leaf edges target. Cycles are found per logical path, so when two copies in different files
- * reference the same cyclic target, both file edges count as cyclic.
+ * same copies the leaf edges target, and [DeclarationCycles] tells per copy whether it lies on a cycle.
  */
 object FileLevelAggregator {
     internal fun aggregate(
         resolvedNodes: Collection<Node>,
-        cyclicEdgesByDeclaration: Map<String, Set<String>>,
+        cycles: DeclarationCycles = DeclarationCycles.NONE,
         declaringFiles: DeclaringFiles = DeclaringFiles.of(resolvedNodes)
     ): List<AggregatedFileEdge> {
         val weightByEndpoints = LinkedHashMap<Pair<FilePath, FilePath>, Int>()
         val cyclicEndpoints = HashSet<Pair<FilePath, FilePath>>()
 
         resolvedNodes.forEach { node ->
-            val declarationId = node.pathWithName.withDots()
-            val sourceFile = FilePath.of(node)
-            val cyclicTargets = cyclicEdgesByDeclaration[declarationId].orEmpty()
+            val source = DeclarationKey.of(node)
+            val sourceFile = source.file
 
             node.resolvedNodeDependencies.internalDependencies.forEach { dependency ->
                 val targetId = dependency.withDots()
@@ -43,7 +41,7 @@ object FileLevelAggregator {
                 targetFiles.filter { it != sourceFile }.forEach { targetFile ->
                     val endpoints = sourceFile to targetFile
                     weightByEndpoints.merge(endpoints, 1, Int::plus)
-                    if (targetId in cyclicTargets) cyclicEndpoints.add(endpoints)
+                    if (cycles.isCyclic(source, DeclarationKey(targetFile, targetId))) cyclicEndpoints.add(endpoints)
                 }
             }
         }

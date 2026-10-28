@@ -43,7 +43,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges).hasSize(1)
@@ -54,32 +54,36 @@ class FileLevelAggregatorTest {
 
     @Test
     fun `should mark a file edge cyclic when any declaration edge behind it is cyclic`() {
-        // Arrange: only the second class takes part in a cycle.
+        // Arrange: only the second class takes part in a cycle with the target.
         val nodes =
             listOf(
                 declaration("app.First", "app/Source.kt", listOf("app.Target")),
                 declaration("app.Second", "app/Source.kt", listOf("app.Target")),
-                declaration("app.Target", "app/Target.kt")
+                declaration("app.Target", "app/Target.kt", listOf("app.Second"))
             )
-        val cyclicEdges = mapOf("app.Second" to setOf("app.Target"))
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, cyclicEdges)
+        val edges = FileLevelAggregator.aggregate(nodes, DeclarationCycles.of(nodes, DeclaringFiles.of(nodes)))
 
         // Assert
-        assertThat(edges.single().isCyclic).isTrue()
+        assertThat(edges.map { it.isCyclic }).containsExactly(true, true)
     }
 
     @Test
     fun `should leave a file edge non-cyclic when no declaration edge behind it is cyclic`() {
-        // Arrange
-        val nodes = listOf(declaration("app.First", "app/Source.kt", listOf("app.Target")), declaration("app.Target", "app/Target.kt"))
+        // Arrange: the target closes a cycle only with a class of another file.
+        val nodes =
+            listOf(
+                declaration("app.First", "app/Source.kt", listOf("app.Target")),
+                declaration("app.Target", "app/Target.kt", listOf("app.Other")),
+                declaration("app.Other", "app/Other.kt", listOf("app.Target"))
+            )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, mapOf("app.First" to setOf("app.Other")))
+        val edges = FileLevelAggregator.aggregate(nodes, DeclarationCycles.of(nodes, DeclaringFiles.of(nodes)))
 
         // Assert
-        assertThat(edges.single().isCyclic).isFalse()
+        assertThat(edges.single { it.from.segments.last() == "Source.kt" }.isCyclic).isFalse()
     }
 
     @Test
@@ -92,7 +96,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges).isEmpty()
@@ -111,7 +115,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges).isEmpty()
@@ -123,7 +127,7 @@ class FileLevelAggregatorTest {
         val nodes = listOf(declaration("app.First", "app/Source.kt", listOf("app.Ghost")))
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges).isEmpty()
@@ -139,7 +143,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges).hasSize(2)
@@ -152,7 +156,7 @@ class FileLevelAggregatorTest {
         val nodes = listOf(declaration("app.First", "src/app/First.kt", listOf("app.Target")), declaration("app.Target", "src/T.kt"))
 
         // Act
-        val edge = FileLevelAggregator.aggregate(nodes, emptyMap()).single()
+        val edge = FileLevelAggregator.aggregate(nodes).single()
 
         // Assert: the tree keeps the real name; the graph id escapes the extension dot so its
         // dot-joined ids still split on namespace boundaries.
@@ -171,7 +175,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges.single().from.segments).containsExactly("app", "FooB.kt")
@@ -188,7 +192,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges.single().to.segments).containsExactly("app", "FooA.kt")
@@ -205,7 +209,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges.single().to.segments).containsExactly("b", "app", "Config.kt")
@@ -222,7 +226,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges.map { it.to.segments }).containsExactlyInAnyOrder(listOf("Gen", "Order.g.cs"), listOf("Model", "Order.cs"))
@@ -240,7 +244,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges.single().to.segments).containsExactly("near", "a", "Config.java")
@@ -257,7 +261,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges.single().to.segments).containsExactly("lib", "a", "Widget.java")
@@ -274,7 +278,7 @@ class FileLevelAggregatorTest {
             )
 
         // Act
-        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+        val edges = FileLevelAggregator.aggregate(nodes)
 
         // Assert
         assertThat(edges.single().to.segments).containsExactly("db", "V2__orders.sql")

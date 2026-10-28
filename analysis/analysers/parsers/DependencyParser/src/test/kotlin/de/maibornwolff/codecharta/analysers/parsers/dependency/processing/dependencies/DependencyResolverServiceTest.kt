@@ -10,7 +10,6 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Ty
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.TypeOfUsage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.build
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
-import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.model.NodeInformation
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
@@ -488,28 +487,5 @@ class DependencyResolverServiceTest {
             .containsExactly(Dependency(repository.pathWithName))
         assertThat(serviceResolved.resolvedNodeDependencies.externalDependencies)
             .isEmpty()
-    }
-
-    @Test
-    fun `should map a node to its node information`() {
-        // Arrange
-        val node = Node.build(
-            pathWithName = Path(listOf("de", "maibornwolff", "main")),
-            resolvedNodeDependencies = NodeDependencies(
-                setOf(Dependency(Path(listOf("de", "maibornwolff", "helper")))),
-                emptySet()
-            )
-        )
-
-        // Act
-        val nodeInformation = DependencyResolverService.mapNodeInfo(node)
-
-        // Assert
-        val expected = NodeInformation(
-            id = "de.maibornwolff.main",
-            dependencies = setOf("de.maibornwolff.helper")
-        )
-
-        assertThat(nodeInformation).isEqualTo(expected)
     }
 }

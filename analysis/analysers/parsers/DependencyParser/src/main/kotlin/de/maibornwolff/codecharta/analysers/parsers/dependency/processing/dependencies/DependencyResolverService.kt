@@ -7,7 +7,6 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Pr
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.TypeOfUsage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.resolveTypes
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
-import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.model.NodeInformation
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies.dictionaries.CSharpStandardLibrary
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies.dictionaries.CppStandardLibrary
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies.dictionaries.EmptyStandardLibrary
@@ -42,17 +41,6 @@ class DependencyResolverService {
             }
             val rulesInUse = resolvedNodes.map { LanguageRules.namesOf(it.language) }.distinct()
             return rulesInUse.fold(resolvedNodes) { current, rules -> rules.afterResolution(current) }
-        }
-
-        // An implementation part depends on the class of its own path, which is no cycle
-        fun mapNodeInfo(node: Node): NodeInformation<String> {
-            val id = node.pathWithName.withDots()
-            return NodeInformation(
-                id = id,
-                dependencies = node.resolvedNodeDependencies.internalDependencies
-                    .map { it.withDots() }
-                    .filterTo(HashSet()) { it != id }
-            )
         }
 
         fun getDictionary(nodes: List<Node>) = nodes.map { it.pathWithName }.groupBy { it.parts.last() }
