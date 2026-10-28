@@ -76,6 +76,7 @@ fun TypeUsage.toTypeOfUsage(): TypeOfUsage = when (this) {
     TypeUsage.RETURN_VALUE -> TypeOfUsage.RETURN_VALUE
     TypeUsage.INSTANTIATION -> TypeOfUsage.INSTANTIATION
     TypeUsage.ARGUMENT -> TypeOfUsage.ARGUMENT
+    TypeUsage.FRIEND -> TypeOfUsage.FRIEND
 }
 
 fun DeclarationType.toNodeType(): NodeType = when (this) {

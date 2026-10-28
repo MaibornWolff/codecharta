@@ -224,7 +224,7 @@
         "toLeaf": { "type": "string" },
         "attributes": { "type": "object" },
         "usage": {
-          "description": "Every way the source declaration uses the target; folding two edges of one pair unions the ways rather than picking one. An open vocabulary; known values: usage, inheritance, implementation, instantiation, argument, return_value, constant_access, part_of.",
+          "description": "Every way the source declaration uses the target; folding two edges of one pair unions the ways rather than picking one. An open vocabulary; known values: usage, inheritance, implementation, instantiation, argument, return_value, constant_access, friend, part_of.",
           "type": "array",
           "items": { "type": "string" }
         },

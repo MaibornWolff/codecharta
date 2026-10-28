@@ -65,7 +65,10 @@ enum class TypeUsage {
     CONSTANT_ACCESS,
     RETURN_VALUE,
     INSTANTIATION,
-    ARGUMENT
+    ARGUMENT,
+
+    /** Named by a C++ `friend` declaration, which lets it use the private members of the declaring class. */
+    FRIEND
 }
 
 /**
