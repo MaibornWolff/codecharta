@@ -109,6 +109,7 @@ it deviates.
 | Declarations, decision 1: alias, pointer, class reference, procedural, set and array types | `spec-type-kinds` | ok |
 | Declarations: a class without a body, a forward declaration | `spec-class-without-body` | ok |
 | Not supported: both branches of an `{$IFDEF}` around local declarations | `spec-conditional-local-declarations` | ok |
+| Not supported: `begin` and `asm` of one routine in two branches of an `{$IFDEF}` | `spec-conditional-routine-body` | gap |
 | Declarations, decision 1: a free routine | `spec-routine` | ok |
 | Declarations, decision 1: constants, resource strings, variables, thread variables | `spec-const-var` | ok |
 | Declarations, decision 6: an enum value | `spec-enum-value` | ok |
@@ -154,6 +155,8 @@ it deviates.
   their declarations are unknown. Both branches of an `{$IFDEF}` count, as both are in the source; the conditional
   directives themselves are read as spaces, as the grammar takes one between a routine's heading and its local
   declarations for the end of the routine.
+  A routine whose `begin` block and `asm` block stand in two branches, closed by one `end;` after `{$ENDIF}`, reads
+  as a `begin` block without its end, so the routines after it are lost or taken into it (`known-gaps.md`).
 - Declare before use: Pascal lets a name mean only what stands before it, so before the own unit declares `N`, `N`
   means a used unit's `N`; rule 3 takes the own `N` everywhere in the unit.
 - A subrange type (`TLevel = 1..20;`): tree-sitter-pascal 0.10.2 cannot read it, and the declaration after it is
