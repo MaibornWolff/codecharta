@@ -7,13 +7,13 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpProjects
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.delphi.DelphiNameRules
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.golang.GoCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.golang.GoNameRules
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.golang.goCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.java.JavaNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.php.PhpNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.python.PythonNameRules
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.rust.RustCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.rust.RustNameRules
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.rust.rustCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.TypescriptNameRules
@@ -43,9 +43,9 @@ internal object LanguageRules {
     fun copiesOf(language: SupportedLanguage, analysisRoot: File?): CopyRules = when (language) {
         SupportedLanguage.C_SHARP -> CSharpCopyRules(CSharpProjects(analysisRoot))
         SupportedLanguage.SQL -> SqlCopyRules
-        SupportedLanguage.GO -> GoCopyRules
+        SupportedLanguage.GO -> goCopyRules
         SupportedLanguage.CPP -> CppCopyRules(analysisRoot?.let { CppIncludes.of(it) })
-        SupportedLanguage.RUST -> RustCopyRules
+        SupportedLanguage.RUST -> rustCopyRules
         else -> NearestCopy
     }
 }

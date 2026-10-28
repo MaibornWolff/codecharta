@@ -14,7 +14,7 @@ class RustCopyRulesTest {
         val copies = listOf(DeclaringCopy(file("src/model/creature.rs"), false), DeclaringCopy(file("src/app/display.rs"), true))
 
         // Act
-        val files = RustCopyRules.filesFor(copies, file("src/app/display.rs"))
+        val files = rustCopyRules.filesFor(copies, file("src/app/display.rs"))
 
         // Assert
         assertThat(files).containsExactly(file("src/model/creature.rs"))
@@ -26,7 +26,7 @@ class RustCopyRulesTest {
         val copies = listOf(DeclaringCopy(file("src/app/display.rs"), true))
 
         // Act
-        val files = RustCopyRules.filesFor(copies, file("src/app/display.rs"))
+        val files = rustCopyRules.filesFor(copies, file("src/app/display.rs"))
 
         // Assert
         assertThat(files).containsExactly(file("src/app/display.rs"))
@@ -38,7 +38,7 @@ class RustCopyRulesTest {
         val copies = listOf(DeclaringCopy(file("two/src/model.rs"), false), DeclaringCopy(file("one/src/model.rs"), false))
 
         // Act
-        val files = RustCopyRules.filesFor(copies, file("one/src/arena.rs"))
+        val files = rustCopyRules.filesFor(copies, file("one/src/arena.rs"))
 
         // Assert
         assertThat(files).containsExactly(file("one/src/model.rs"))

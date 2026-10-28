@@ -14,7 +14,7 @@ class GoCopyRulesTest {
         val declaringFiles = listOf("fs/open_linux.go", "fs/open_windows.go").map { DeclaringCopy(file(it), isFileScoped = false) }
 
         // Act
-        val files = GoCopyRules.filesFor(declaringFiles, file("core/core.go"))
+        val files = goCopyRules.filesFor(declaringFiles, file("core/core.go"))
 
         // Assert
         assertThat(files).containsExactly(file("fs/open_linux.go"), file("fs/open_windows.go"))
