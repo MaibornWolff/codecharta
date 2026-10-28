@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.10.0] - 2026-10-28
+
 ### Added 🚀
 
 - **Parts and friends in the dependency view**: an edge from the part of a type written in another file to the type, and an edge from a C++ class to a class it declares its friend, have dashes and an arrowhead of their own.
