@@ -27,11 +27,13 @@
                 (checkedChange)="handleScreenshotToClipboardEnabledChanged($event)"
             />
 
-            <cc-setting-toggle
-                [checked]="localSourceEnabled()"
-                [label]="'Open local source files (experimental)'"
-                (checkedChange)="handleLocalSourceEnabledChanged($event)"
-            />
+            @if (canOpenLocalFolders) {
+                <cc-setting-toggle
+                    [checked]="localSourceEnabled()"
+                    [label]="'Open local source files (experimental)'"
+                    (checkedChange)="handleLocalSourceEnabledChanged($event)"
+                />
+            }
 
             <div class="flex flex-wrap gap-3">
                 <cc-reset-settings-button
