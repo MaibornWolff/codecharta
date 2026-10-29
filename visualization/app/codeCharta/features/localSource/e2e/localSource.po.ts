@@ -7,7 +7,7 @@ const SAMPLE_ONE_FOLDER = {
     ParentLeaf: { "smallLeaf.html": "<p>small</p>\n", "otherSmallLeaf.ts": "export {}\n" }
 }
 
-export type StandInPicker = "sampleFolder" | "unrelatedFolder" | "blockedByPolicy" | "missing"
+export type StandInPicker = "sampleFolder" | "sampleFolderWithLargeFiles" | "unrelatedFolder" | "blockedByPolicy" | "missing"
 
 export class LocalSourcePageObject {
     constructor(private readonly page: Page) {}
@@ -43,9 +43,19 @@ export class LocalSourcePageObject {
                         throw new DOMException("Blocked by the administrator", "SecurityError")
                     }
                     const storage = await navigator.storage.getDirectory()
-                    const folderName = picker === "sampleFolder" ? "sample1" : "holiday"
-                    const folder = await storage.getDirectoryHandle(folderName, { create: true })
-                    await fill(folder, picker === "sampleFolder" ? sampleFolder : { "beach.jpg": "sand" })
+                    if (picker === "unrelatedFolder") {
+                        const holiday = await storage.getDirectoryHandle("holiday", { create: true })
+                        await fill(holiday, { "beach.jpg": "sand" })
+                        return holiday
+                    }
+                    const folder = await storage.getDirectoryHandle("sample1", { create: true })
+                    await fill(folder, sampleFolder)
+                    if (picker === "sampleFolderWithLargeFiles") {
+                        await fill(folder, {
+                            "bigLeaf.ts": `export const big = [${"1,".repeat(3 * 1024 * 1024)}1]\n`,
+                            "sample1OnlyLeaf.scss": `.leaf{${"color:red;".repeat(3000)}}\n`
+                        })
+                    }
                     return folder
                 }
             },

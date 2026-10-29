@@ -6,13 +6,22 @@ import { LocalSourceService, SourceLookup } from "../../services/localSource.ser
 import { LocalSourceFolder } from "../../services/localSourceFolders.repository"
 import { vscodeFileLink } from "../../services/localSourcePaths"
 import { sourceLanguageOf } from "../../services/sourceLanguage"
+import { isTooLargeToShow, MAX_SHOWN_SIZE, reasonToLeaveUncoloured, sizeOf } from "../../services/sourceLimits"
 
 interface ShownSource {
     relativePath: string
     lineNumbers: string
     text: string
-    /** The text coloured by its language as HTML; null while it is coloured or when its language is unknown. */
+    /** The text coloured by its language as HTML; null while it is coloured or when it stays plain. */
     highlightedHtml: string | null
+    /** Why a file of a known language stays plain, such as its size; null when it is coloured. */
+    uncolouredReason: string | null
+}
+
+interface TooLargeFile {
+    nodePath: string
+    relativePath: string
+    size: string
 }
 
 interface PendingEditorOpen {
@@ -35,6 +44,8 @@ export class LocalSourceActionsComponent {
 
     readonly isAvailable = this.localSource.isAvailable
     readonly shownSource = signal<ShownSource | null>(null)
+    readonly tooLargeFile = signal<TooLargeFile | null>(null)
+    readonly maxShownSize = MAX_SHOWN_SIZE
     readonly pendingEditorOpen = signal<PendingEditorOpen | null>(null)
     readonly editorRootPath = signal("")
 
@@ -47,25 +58,40 @@ export class LocalSourceActionsComponent {
         if (lookup?.status !== "found") {
             return
         }
-        const text = await lookup.file.text()
-        const lineCount = text.replace(/\n$/, "").split("\n").length
+        const { file, relativePath } = lookup
+        if (isTooLargeToShow(file.size)) {
+            this.tooLargeFile.set({ nodePath, relativePath, size: sizeOf(file.size) })
+            this.sourceDialog().nativeElement.showModal()
+            return
+        }
+        const text = await file.text()
+        const language = sourceLanguageOf(relativePath)
         const shownSource = {
-            relativePath: lookup.relativePath,
-            lineNumbers: Array.from({ length: lineCount }, (_, index) => index + 1).join("\n"),
+            relativePath,
+            lineNumbers: lineNumbersOf(text),
             text,
-            highlightedHtml: null
+            highlightedHtml: null,
+            uncolouredReason: language && reasonToLeaveUncoloured(text, file.size)
         }
         this.shownSource.set(shownSource)
         this.sourceDialog().nativeElement.showModal()
-        await this.highlight(shownSource)
+        if (language && !shownSource.uncolouredReason) {
+            await this.highlight(shownSource, language)
+        }
+    }
+
+    closeSource() {
+        this.shownSource.set(null)
+        this.tooLargeFile.set(null)
+    }
+
+    async openTooLargeFileInEditor(nodePath: string) {
+        this.sourceDialog().nativeElement.close()
+        await this.openInEditor(nodePath)
     }
 
     /** Prism is loaded only once a file is shown, and colours it after it is already readable as plain text. */
-    private async highlight(shownSource: ShownSource) {
-        const language = sourceLanguageOf(shownSource.relativePath)
-        if (language === null) {
-            return
-        }
+    private async highlight(shownSource: ShownSource, language: string) {
         const { highlightSource } = await import("../../services/syntaxHighlighter")
         const highlightedHtml = highlightSource(shownSource.text, language)
         if (this.shownSource() === shownSource) {
@@ -123,4 +149,9 @@ export class LocalSourceActionsComponent {
     private openLink(editorRootPath: string, relativePath: string) {
         window.open(vscodeFileLink(editorRootPath, relativePath), "_blank")
     }
+}
+
+function lineNumbersOf(text: string): string {
+    const lineCount = text.replace(/\n$/, "").split("\n").length
+    return Array.from({ length: lineCount }, (_, index) => index + 1).join("\n")
 }
