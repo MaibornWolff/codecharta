@@ -11,12 +11,12 @@ import {
     untracked,
     viewChild
 } from "@angular/core"
-import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChart.registry"
+import { BoxShots, DependencyGraphChartRegistry } from "../../services/dependencyGraphChart.registry"
 import { AxisWindow, fitWindowOf, Viewport, windowHolding, windowKeepingInPlace } from "../../util/axisWindow"
 import { buildDependencyGraphOption } from "../../util/dependencyGraphOption.builder"
-import { DependencyGraphScene } from "../../util/dependencyGraphScene"
+import { DependencyGraphScene, sceneWithEdgesWithin } from "../../util/dependencyGraphScene"
 import { CORNER_RADIUS_PX, HOVERED_COLOR, HOVERED_LINE_WIDTH_PX } from "../../util/dependencyGraphStyle"
-import { Point, Rectangle } from "../../util/geometry"
+import { clippedTo, Point, Rectangle } from "../../util/geometry"
 import { DependencyGraphLayout, LayoutBox } from "../../util/layoutModel"
 import { DependencyGraphBoxListComponent } from "../dependencyGraphBoxList/dependencyGraphBoxList.component"
 import { DependencyGraphHost } from "./dependencyGraphHost"
@@ -105,7 +105,13 @@ export class DependencyGraphComponent implements OnDestroy {
         dashPeriodPx: POINTED_AT_DASH.dashPx + POINTED_AT_DASH.gapPx
     }
 
-    private readonly chartHost = new DependencyGraphHost(inject(DependencyGraphChartRegistry), {
+    private readonly chartRegistry = inject(DependencyGraphChartRegistry)
+    private readonly boxShots: BoxShots = {
+        pixelRectOf: path => this.pixelRectInViewOf(path),
+        renderWithEdgesWithin: (path, pixelRatio) => this.renderWithEdgesWithin(path, pixelRatio)
+    }
+
+    private readonly chartHost = new DependencyGraphHost(this.chartRegistry, {
         onBoxClicked: path => this.boxClicked.emit(path),
         onBoxToggled: path => this.toggle(path),
         onCycleBadgeClicked: path => this.cycleBadgeClicked.emit(path),
@@ -124,9 +130,11 @@ export class DependencyGraphComponent implements OnDestroy {
         effect(() => this.chartHost.attachTo(this.chartContainer().nativeElement))
         effect(() => this.renderOnceTheContainerIsMeasured())
         effect(() => this.placePointedAtRects())
+        this.chartRegistry.provideBoxShots(this.boxShots)
     }
 
     ngOnDestroy(): void {
+        this.chartRegistry.withdrawBoxShots(this.boxShots)
         this.chartHost.dispose()
     }
 
@@ -140,6 +148,26 @@ export class DependencyGraphComponent implements OnDestroy {
         const pointedAt = this.pointedAtPaths()
         const boxes = pointedAt.size === 0 ? [] : untracked(this.scene).layout.boxes.filter(box => pointedAt.has(box.path))
         this.pointedAtRects.set(boxes.flatMap(box => this.chartHost.pixelRectOf(box) ?? []))
+    }
+
+    private pixelRectInViewOf(path: string): Rectangle | null {
+        const box = untracked(this.scene).layout.boxes.find(candidate => candidate.path === path)
+        if (!box) {
+            return null
+        }
+        const pixelRect = this.chartHost.pixelRectOf(box)
+        const { width, height } = this.chartHost.containerSize()
+        return pixelRect && clippedTo(pixelRect, { x: 0, y: 0, width, height })
+    }
+
+    private renderWithEdgesWithin(path: string, pixelRatio: number): HTMLCanvasElement | null {
+        const viewport = { ...this.chartHost.containerSize(), coveredBottom: untracked(this.coveredBottom) }
+        const shownWindow = this.chartHost.shownWindowFor(viewport)
+        if (!shownWindow) {
+            return null
+        }
+        const option = buildDependencyGraphOption(sceneWithEdgesWithin(untracked(this.scene), path), viewport, shownWindow)
+        return this.chartHost.renderOffScreen(option, viewport, pixelRatio)
     }
 
     protected focusBox(path: string | null): void {

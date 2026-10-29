@@ -122,6 +122,17 @@ export class DependencyGraphHost {
         return { x: left, y: top, width: right - left, height: bottom - top }
     }
 
+    /** Draws an option on a chart of its own that is never shown, so the chart on screen keeps what it shows. */
+    renderOffScreen(option: object, { width, height }: Viewport, pixelRatio: number): HTMLCanvasElement {
+        const offScreenChart = echarts.init(document.createElement("div"), null, { width, height, devicePixelRatio: pixelRatio })
+        try {
+            offScreenChart.setOption(option as echarts.EChartsCoreOption)
+            return offScreenChart.getRenderedCanvas({ pixelRatio, backgroundColor: "transparent" })
+        } finally {
+            offScreenChart.dispose()
+        }
+    }
+
     dispose(): void {
         this.clickGesture.forget()
         this.cancelPointerLeave()

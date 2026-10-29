@@ -23,15 +23,20 @@ export abstract class ChartScreenshotService implements ScreenshotCapture {
     }
 
     async makeScreenshotToFile(): Promise<void> {
-        const canvas = this.renderScreenshotCanvas()
-        downloadPng(canvas.toDataURL(PNG_MIME_TYPE), createPNGFileName(this.filesRepo.getFiles(), this.fileNameSuffix))
+        this.saveToFile(this.renderScreenshotCanvas(), this.fileNameSuffix)
     }
 
     async makeScreenshotToClipboard(): Promise<void> {
-        if (!this.isWriteToClipboardAllowed) {
-            return
+        if (this.isWriteToClipboardAllowed) {
+            await this.copyToClipboard(this.renderScreenshotCanvas())
         }
-        const canvas = this.renderScreenshotCanvas()
+    }
+
+    protected saveToFile(canvas: HTMLCanvasElement, fileNameSuffix: Parameters<typeof createPNGFileName>[1]): void {
+        downloadPng(canvas.toDataURL(PNG_MIME_TYPE), createPNGFileName(this.filesRepo.getFiles(), fileNameSuffix))
+    }
+
+    protected async copyToClipboard(canvas: HTMLCanvasElement): Promise<void> {
         const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, PNG_MIME_TYPE))
         if (!blob) {
             throw new Error(`The ${this.subject} could not be encoded as a png`)
