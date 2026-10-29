@@ -55,7 +55,7 @@ export class LocalSourcePageObject {
 
     async switchOn() {
         await this.page.getByRole("button", { name: "Settings", exact: true, description: "Global Configuration" }).click()
-        await this.page.getByLabel("Open local source files").check()
+        await this.page.getByLabel("Open local source files (experimental)").check()
         await this.page.keyboard.press("Escape")
     }
 

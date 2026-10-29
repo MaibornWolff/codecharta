@@ -234,6 +234,14 @@ describe("GlobalConfigurationDialogComponent", () => {
             expect(mockGlobalSettingsWriteStore.setLocalSourceEnabled).toHaveBeenCalledWith(checked)
         })
 
+        it("should mark the switch for local source files as experimental", () => {
+            // Arrange & Act
+            const labels = [...fixture.nativeElement.querySelectorAll("cc-setting-toggle")].map(toggle => toggle.textContent.trim())
+
+            // Assert
+            expect(labels).toContain("Open local source files (experimental)")
+        })
+
         it("should offer no switch for the dependency view, which a map with dependency data always shows", () => {
             // Arrange & Act
             const labels = [...fixture.nativeElement.querySelectorAll("cc-setting-toggle")].map(toggle => toggle.textContent.trim())
