@@ -1,9 +1,11 @@
+import { signal } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { CodeMapNode, FileSelectionState, NodeType } from "../../../model/codeCharta.model"
 import { FileStoreReadWindow } from "../../../stores/fileStore/fileStore.facade"
 import { LocalDirectoryHandle } from "./fileSystemAccess"
 import { fakeDirectory } from "./fileSystemAccess.mocks"
 import { LocalSourceService } from "./localSource.service"
+import { LocalSourceAvailability } from "./localSourceAvailability"
 import { LocalSourceFolder, LocalSourceFoldersRepository } from "./localSourceFolders.repository"
 
 describe("LocalSourceService", () => {
@@ -34,6 +36,7 @@ describe("LocalSourceService", () => {
     let loadedFileStates: ReturnType<typeof visibleMap>[]
     let savedFolders: Map<string, LocalSourceFolder>
     let picker: jest.Mock
+    const availabilityMock = { isAvailable: signal(true), reportBlocked: jest.fn() }
     let service: LocalSourceService
 
     beforeEach(() => {
@@ -48,6 +51,7 @@ describe("LocalSourceService", () => {
                     provide: FileStoreReadWindow,
                     useValue: { getVisibleFileStates: () => visibleFileStates, getFiles: () => loadedFileStates }
                 },
+                { provide: LocalSourceAvailability, useValue: availabilityMock },
                 {
                     provide: LocalSourceFoldersRepository,
                     useValue: {
@@ -138,6 +142,30 @@ describe("LocalSourceService", () => {
 
             // Assert
             expect(lookup).toEqual({ status: "notFound", relativePath: "src/Gone.kt" })
+        })
+
+        it("should report a picker the browser blocks, so that the local source entries go away", async () => {
+            // Arrange
+            picker.mockRejectedValue(new DOMException("forbidden by policy", "SecurityError"))
+            availabilityMock.reportBlocked.mockClear()
+
+            // Act
+            const lookup = await service.findSource("/root/src/Foo.kt")
+
+            // Assert
+            expect(lookup).toEqual({ status: "blocked" })
+            expect(availabilityMock.reportBlocked).toHaveBeenCalled()
+        })
+
+        it("should pass on a picker failure that is no block", async () => {
+            // Arrange
+            picker.mockRejectedValue(new TypeError("picker broken"))
+
+            // Act
+            const lookup = service.findSource("/root/src/Foo.kt")
+
+            // Assert
+            await expect(lookup).rejects.toThrow("picker broken")
         })
 
         it("should report a cancelled picker", async () => {

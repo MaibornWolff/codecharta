@@ -3,19 +3,21 @@ import { CodeMapNode } from "../../../model/codeCharta.model"
 import { isPartialState } from "../../../model/files/files.helper"
 import { FileStoreReadWindow } from "../../../stores/fileStore/fileStore.facade"
 import { getTopLevelMapName } from "../../../util/nodePathHelper"
-import { findFile, hasReadPermission, isFolderPickerSupported, LocalDirectoryHandle, pickFolder } from "./fileSystemAccess"
+import { FolderAccessBlockedError, findFile, hasReadPermission, LocalDirectoryHandle, pickFolder } from "./fileSystemAccess"
+import { LocalSourceAvailability } from "./localSourceAvailability"
 import { LocalSourceFolder, LocalSourceFoldersRepository } from "./localSourceFolders.repository"
 import { relativePathOf, sampleFilePaths } from "./localSourcePaths"
 
 const FIT_CHECK_SAMPLE_SIZE = 20
 
-export type FolderChoice = { status: "chosen"; folder: LocalSourceFolder } | { status: "cancelled" } | { status: "doesNotFitMap" }
+type FolderRefusal = { status: "cancelled" } | { status: "blocked" } | { status: "doesNotFitMap" }
+
+export type FolderChoice = { status: "chosen"; folder: LocalSourceFolder } | FolderRefusal
 
 export type SourceLookup =
     | { status: "found"; file: File; folder: LocalSourceFolder; relativePath: string }
     | { status: "notFound"; relativePath: string }
-    | { status: "cancelled" }
-    | { status: "doesNotFitMap" }
+    | FolderRefusal
 
 interface MapLocation {
     mapFileName: string
@@ -27,10 +29,11 @@ interface MapLocation {
 export class LocalSourceService {
     private readonly fileStoreReadWindow = inject(FileStoreReadWindow)
     private readonly repository = inject(LocalSourceFoldersRepository)
+    private readonly availability = inject(LocalSourceAvailability)
 
     private readonly changeCount = signal(0)
 
-    readonly isSupported = isFolderPickerSupported()
+    readonly isAvailable = this.availability.isAvailable
     readonly folderChanges = this.changeCount.asReadonly()
 
     isMapRoot(nodePath: string): boolean {
@@ -90,9 +93,9 @@ export class LocalSourceService {
     }
 
     private async chooseFolderFor({ mapFileName, map }: MapLocation): Promise<FolderChoice> {
-        const directory = await pickFolder()
-        if (!directory) {
-            return { status: "cancelled" }
+        const directory = await this.pickFolderReportingBlocks()
+        if ("status" in directory) {
+            return directory
         }
         if (!(await fitsMap(directory, map))) {
             return { status: "doesNotFitMap" }
@@ -100,6 +103,18 @@ export class LocalSourceService {
         const folder = { mapKey: mapFileName, directory, editorRootPath: await this.editorRootPathOfSameFolder(mapFileName, directory) }
         await this.saveFolder(folder)
         return { status: "chosen", folder }
+    }
+
+    private async pickFolderReportingBlocks(): Promise<LocalDirectoryHandle | FolderRefusal> {
+        try {
+            return (await pickFolder()) ?? { status: "cancelled" }
+        } catch (error) {
+            if (!(error instanceof FolderAccessBlockedError)) {
+                throw error
+            }
+            this.availability.reportBlocked()
+            return { status: "blocked" }
+        }
     }
 
     private async editorRootPathOfSameFolder(mapFileName: string, directory: LocalDirectoryHandle): Promise<string | null> {

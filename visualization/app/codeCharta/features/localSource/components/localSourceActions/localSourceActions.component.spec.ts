@@ -1,3 +1,4 @@
+import { signal } from "@angular/core"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { ToastService } from "../../../shared/facade"
@@ -17,7 +18,7 @@ describe("LocalSourceActionsComponent", () => {
     })
 
     const localSourceMock = {
-        isSupported: true,
+        isAvailable: signal(true),
         findSource: jest.fn(),
         chooseFolder: jest.fn(),
         isMapRoot: jest.fn(),

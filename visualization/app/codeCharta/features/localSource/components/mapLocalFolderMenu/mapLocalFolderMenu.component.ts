@@ -24,7 +24,7 @@ export class MapLocalFolderMenuComponent {
     readonly target = signal<MenuTarget | null>(null)
 
     async openFor(mapFileName: string, event: MouseEvent) {
-        if (!this.localSource.isSupported) {
+        if (!this.localSource.isAvailable()) {
             return
         }
         event.preventDefault()

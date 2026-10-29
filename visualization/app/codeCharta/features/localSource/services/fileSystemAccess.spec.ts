@@ -1,4 +1,4 @@
-import { findFile, hasReadPermission, isFolderPickerSupported, pickFolder } from "./fileSystemAccess"
+import { canOpenFoldersHere, FolderAccessBlockedError, findFile, hasReadPermission, pickFolder } from "./fileSystemAccess"
 import { fakeDirectory } from "./fileSystemAccess.mocks"
 
 describe("fileSystemAccess", () => {
@@ -10,24 +10,50 @@ describe("fileSystemAccess", () => {
         ;(window as unknown as { showDirectoryPicker: jest.Mock }).showDirectoryPicker = picker
     }
 
-    describe("isFolderPickerSupported", () => {
-        it("should not be supported where the browser lacks the folder picker", () => {
+    describe("canOpenFoldersHere", () => {
+        const ORIGIN = "https://codecharta.example"
+
+        function aPage({ hasPicker = true, frame = "none" }: { hasPicker?: boolean; frame?: "none" | "sameOrigin" | "otherOrigin" }) {
+            const page = { location: { origin: ORIGIN } } as unknown as Window & Record<string, unknown>
+            if (hasPicker) {
+                page.showDirectoryPicker = jest.fn()
+            }
+            const parent = {
+                get location(): { origin: string } {
+                    if (frame === "otherOrigin") {
+                        throw new DOMException("Blocked a frame with origin from accessing a cross-origin frame.", "SecurityError")
+                    }
+                    return { origin: ORIGIN }
+                }
+            }
+            Object.assign(page, { self: page, top: frame === "none" ? page : parent })
+            return page
+        }
+
+        it.each([
+            ["Chrome, Edge and other Chromium browsers on their own page", aPage({}), true],
+            ["the desktop app, which runs Chromium", aPage({}), true],
+            ["a frame of the same origin, such as CodeCharta embedding itself", aPage({ frame: "sameOrigin" }), true],
+            ["Firefox, Safari and mobile browsers, which have no folder picker", aPage({ hasPicker: false }), false],
+            ["a page served without https, which gets no folder picker", aPage({ hasPicker: false }), false],
+            ["a frame of another origin, which may not show the picker", aPage({ frame: "otherOrigin" }), false]
+        ])("should tell for %s whether folders can be opened", (_case, page, canOpen) => {
             // Act
-            const isSupported = isFolderPickerSupported()
+            const answer = canOpenFoldersHere(page)
 
             // Assert
-            expect(isSupported).toBe(false)
+            expect(answer).toBe(canOpen)
         })
 
-        it("should be supported where the browser has the folder picker", () => {
+        it("should ask the page it runs in by default", () => {
             // Arrange
             givenPicker(jest.fn())
 
             // Act
-            const isSupported = isFolderPickerSupported()
+            const answer = canOpenFoldersHere()
 
             // Assert
-            expect(isSupported).toBe(true)
+            expect(answer).toBe(true)
         })
     })
 
@@ -57,15 +83,29 @@ describe("fileSystemAccess", () => {
             expect(pickedFolder).toBeNull()
         })
 
-        it("should pass on any other failure", async () => {
+        it.each([
+            "SecurityError",
+            "NotAllowedError"
+        ])("should report a picker forbidden by a policy or the embedding (%s) as blocked", async errorName => {
             // Arrange
-            givenPicker(jest.fn().mockRejectedValue(new DOMException("no gesture", "SecurityError")))
+            givenPicker(jest.fn().mockRejectedValue(new DOMException("forbidden", errorName)))
 
             // Act
             const picking = pickFolder()
 
             // Assert
-            await expect(picking).rejects.toThrow("no gesture")
+            await expect(picking).rejects.toBeInstanceOf(FolderAccessBlockedError)
+        })
+
+        it("should pass on any other failure", async () => {
+            // Arrange
+            givenPicker(jest.fn().mockRejectedValue(new TypeError("picker broken")))
+
+            // Act
+            const picking = pickFolder()
+
+            // Assert
+            await expect(picking).rejects.toThrow("picker broken")
         })
     })
 

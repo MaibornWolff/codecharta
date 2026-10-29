@@ -203,7 +203,7 @@ describe("MapSelectorComponent", () => {
     it("should show each map's local folder and offer to change it on a right-click of its row", async () => {
         // Arrange
         const localSourceMock = {
-            isSupported: true,
+            isAvailable: signal(true),
             folderChanges: signal(0),
             describeFolder: jest.fn(async (mapFileName: string) =>
                 mapFileName === TEST_FILE_DATA.fileMeta.fileName ? "C:/dev/project" : null

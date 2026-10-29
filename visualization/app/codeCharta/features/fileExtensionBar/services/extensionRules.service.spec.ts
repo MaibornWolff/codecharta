@@ -97,6 +97,7 @@ describe("ExtensionRulesService", () => {
             centerMapZoom: 140,
             maxTreeMapFiles: 100,
             screenshotToClipboardEnabled: false,
+            localSourceEnabled: false,
             isColorMetricLinkedToHeightMetric: false,
             sorting: { option: SortingOption.NAME, orderAscending: true },
             radialFolderValue: RadialFolderValue.Max,

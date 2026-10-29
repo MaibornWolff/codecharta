@@ -6,6 +6,7 @@ import {
     toggleIsColorMetricLinkedToHeightMetric
 } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
 import { setPresentationMode } from "./isPresentationMode/isPresentationMode.actions"
+import { setLocalSourceEnabled } from "./localSourceEnabled/localSourceEnabled.actions"
 import { setMaxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.actions"
 import { setRadialFolderStyle } from "./radialFolderStyle/radialFolderStyle.actions"
 import { setRadialFolderTint } from "./radialFolderTint/radialFolderTint.actions"
@@ -22,6 +23,7 @@ export const preferencesActions = [
     setCenterMapZoom,
     setMaxTreeMapFiles,
     setScreenshotToClipboardEnabled,
+    setLocalSourceEnabled,
     setIsColorMetricLinkedToHeightMetricAction,
     toggleIsColorMetricLinkedToHeightMetric,
     setSortingOption,

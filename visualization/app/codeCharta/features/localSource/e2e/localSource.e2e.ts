@@ -1,0 +1,129 @@
+import { expect, test } from "@playwright/test"
+import { clearIndexedDB, goto } from "../../../../playwright.helper"
+import { ExplorerTreeLevelPageObject } from "../../sidebarExplorer/components/explorerTreeLevel/explorerTreeLevel.po"
+import { LocalSourcePageObject } from "./localSource.po"
+
+const SAMPLE_ONE = "/root/sample1.cc.json"
+const BIG_LEAF = `${SAMPLE_ONE}/bigLeaf.ts`
+const BLOCKED_MESSAGE = "This browser does not let CodeCharta open local folders here"
+
+test.describe("Local source", () => {
+    test.afterEach(async ({ page }) => {
+        await clearIndexedDB(page)
+    })
+
+    async function openMenuOf(page: Parameters<typeof goto>[0], path: string) {
+        const explorer = new ExplorerTreeLevelPageObject(page)
+        if ((await page.locator(`[id='metrics:${BIG_LEAF}']`).count()) === 0) {
+            await explorer.openFolder(SAMPLE_ONE)
+        }
+        await explorer.openContextMenu(path)
+        return page.locator("#codemap-context-menu")
+    }
+
+    test("should offer no local source until the reader switches it on", async ({ page }) => {
+        // Arrange
+        await new LocalSourcePageObject(page).standInForThePicker("sampleFolder")
+        await goto(page)
+
+        // Act
+        const menu = await openMenuOf(page, BIG_LEAF)
+
+        // Assert
+        await expect(menu.getByText("Show Source")).toHaveCount(0)
+        await expect(menu.getByText("Open in VS Code")).toHaveCount(0)
+    })
+
+    test("should show a file from the folder chosen for its map", async ({ page }) => {
+        // Arrange
+        const localSource = new LocalSourcePageObject(page)
+        await localSource.standInForThePicker("sampleFolder")
+        await goto(page)
+        await localSource.switchOn()
+
+        // Act
+        await (await openMenuOf(page, BIG_LEAF)).getByText("Show Source").click()
+
+        // Assert
+        await expect(localSource.sourceDialog()).toBeVisible()
+        await expect(localSource.sourceDialog()).toContainText("bigLeaf.ts")
+        await expect(localSource.sourceDialog()).toContainText("console.log(big)")
+    })
+
+    test("should open a file in VS Code once the folder's full path was entered", async ({ page }) => {
+        // Arrange
+        const localSource = new LocalSourcePageObject(page)
+        await localSource.standInForThePicker("sampleFolder")
+        await goto(page)
+        await localSource.switchOn()
+
+        // Act
+        await (await openMenuOf(page, BIG_LEAF)).getByText("Open in VS Code").click()
+        await localSource.editorDialog().locator("input").fill("C:\\dev\\sample1")
+        await localSource.editorDialog().getByRole("button", { name: "Open" }).click()
+
+        // Assert
+        expect(await localSource.openedLinks()).toEqual(["vscode://file/C:/dev/sample1/bigLeaf.ts"])
+    })
+
+    test("should show each map's local folder in the map selector once it is set", async ({ page }) => {
+        // Arrange
+        const localSource = new LocalSourcePageObject(page)
+        await localSource.standInForThePicker("sampleFolder")
+        await goto(page)
+        await localSource.switchOn()
+
+        // Act
+        await (await openMenuOf(page, SAMPLE_ONE)).getByText("Set Local Folder…").click()
+        await expect(page.getByText('Local folder "sample1" set for this map')).toBeVisible()
+        await page.locator("cc-map-selector .dropdown > button").click()
+
+        // Assert
+        await expect(localSource.folderLines()).toHaveText(["sample1", "No local folder"])
+    })
+
+    test("should refuse a folder that holds none of the map's files", async ({ page }) => {
+        // Arrange
+        const localSource = new LocalSourcePageObject(page)
+        await localSource.standInForThePicker("unrelatedFolder")
+        await goto(page)
+        await localSource.switchOn()
+
+        // Act
+        await (await openMenuOf(page, BIG_LEAF)).getByText("Show Source").click()
+
+        // Assert
+        await expect(page.getByText("The chosen folder contains none of the map's files")).toBeVisible()
+        await expect(localSource.sourceDialog()).toBeHidden()
+    })
+
+    test("should hide the local source for the session once the browser blocks the folder picker", async ({ page }) => {
+        // Arrange
+        const localSource = new LocalSourcePageObject(page)
+        await localSource.standInForThePicker("blockedByPolicy")
+        await goto(page)
+        await localSource.switchOn()
+
+        // Act
+        await (await openMenuOf(page, BIG_LEAF)).getByText("Show Source").click()
+        await expect(page.getByText(BLOCKED_MESSAGE)).toBeVisible()
+        const menuAfterTheBlock = await openMenuOf(page, BIG_LEAF)
+
+        // Assert
+        await expect(menuAfterTheBlock.getByText("Show Source")).toHaveCount(0)
+    })
+
+    test("should offer no local source in a browser without a folder picker, even when switched on", async ({ page }) => {
+        // Arrange
+        const localSource = new LocalSourcePageObject(page)
+        await localSource.standInForThePicker("missing")
+        await goto(page)
+        await localSource.switchOn()
+
+        // Act
+        const menu = await openMenuOf(page, BIG_LEAF)
+
+        // Assert
+        await expect(menu.getByText("Show Source")).toHaveCount(0)
+    })
+})
