@@ -18,6 +18,7 @@ describe("GlobalConfigurationDialogComponent", () => {
     beforeEach(() => {
         mockGlobalSettingsWriteStore = {
             setScreenshotToClipboard: jest.fn(),
+            setLocalSourceEnabled: jest.fn(),
             setWhiteBackground: jest.fn(),
             setHideFlatBuildings: jest.fn(),
             setResetCameraIfNewFileIsLoaded: jest.fn()
@@ -223,6 +224,14 @@ describe("GlobalConfigurationDialogComponent", () => {
 
             // Assert
             expect(mockGlobalSettingsWriteStore.setScreenshotToClipboard).toHaveBeenCalledWith(false)
+        })
+
+        it.each([true, false])("should switch local source files to %s when the toggle changes", checked => {
+            // Act
+            component.handleLocalSourceEnabledChanged(checked)
+
+            // Assert
+            expect(mockGlobalSettingsWriteStore.setLocalSourceEnabled).toHaveBeenCalledWith(checked)
         })
 
         it("should offer no switch for the dependency view, which a map with dependency data always shows", () => {

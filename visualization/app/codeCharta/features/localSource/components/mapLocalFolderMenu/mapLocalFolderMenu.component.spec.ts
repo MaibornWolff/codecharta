@@ -1,3 +1,4 @@
+import { signal } from "@angular/core"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { ToastService } from "../../../shared/facade"
 import { fakeDirectory } from "../../services/fileSystemAccess.mocks"
@@ -6,7 +7,7 @@ import { MapLocalFolderMenuComponent } from "./mapLocalFolderMenu.component"
 
 describe("MapLocalFolderMenuComponent", () => {
     const localSourceMock = {
-        isSupported: true,
+        isAvailable: signal(true),
         describeFolder: jest.fn(),
         chooseFolderForMap: jest.fn(),
         forgetFolder: jest.fn()
@@ -15,7 +16,7 @@ describe("MapLocalFolderMenuComponent", () => {
 
     beforeEach(() => {
         jest.clearAllMocks()
-        localSourceMock.isSupported = true
+        localSourceMock.isAvailable.set(true)
         localSourceMock.describeFolder.mockResolvedValue(null)
     })
 
@@ -38,7 +39,7 @@ describe("MapLocalFolderMenuComponent", () => {
 
     it("should keep the browser's menu where the browser cannot open a folder", async () => {
         // Arrange
-        localSourceMock.isSupported = false
+        localSourceMock.isAvailable.set(false)
         const fixture = await renderMenu()
 
         // Act

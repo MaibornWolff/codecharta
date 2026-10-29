@@ -10,9 +10,25 @@ export interface LocalDirectoryHandle extends FileSystemDirectoryHandle {
 type DirectoryPicker = (options: { id: string; mode: "read" }) => Promise<LocalDirectoryHandle>
 
 const PICKER_ID = "codecharta-local-source"
+/** What a browser throws when a policy or the page's embedding forbids the picker, as opposed to a cancel. */
+const BLOCKING_ERROR_NAMES = new Set(["SecurityError", "NotAllowedError"])
 
-export function isFolderPickerSupported(): boolean {
-    return typeof window !== "undefined" && "showDirectoryPicker" in window
+export class FolderAccessBlockedError extends Error {}
+
+/** Firefox, Safari, mobile browsers and pages without https have no folder picker; a frame of another origin may not show it. */
+export function canOpenFoldersHere(page: Window = window): boolean {
+    return "showDirectoryPicker" in page && !isInFrameOfAnotherOrigin(page)
+}
+
+function isInFrameOfAnotherOrigin(page: Window): boolean {
+    if (page.self === page.top) {
+        return false
+    }
+    try {
+        return page.top.location.origin !== page.location.origin
+    } catch {
+        return true
+    }
 }
 
 export async function pickFolder(): Promise<LocalDirectoryHandle | null> {
@@ -22,6 +38,9 @@ export async function pickFolder(): Promise<LocalDirectoryHandle | null> {
     } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") {
             return null
+        }
+        if (error instanceof DOMException && BLOCKING_ERROR_NAMES.has(error.name)) {
+            throw new FolderAccessBlockedError(error.message)
         }
         throw error
     }

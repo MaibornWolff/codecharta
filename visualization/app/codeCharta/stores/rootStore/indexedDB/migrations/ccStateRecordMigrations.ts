@@ -30,6 +30,7 @@ import { migrateCcStateRecordToV32 } from "./migrateToV32"
 import { migrateCcStateRecordToV33 } from "./migrateToV33"
 import { migrateCcStateRecordToV34 } from "./migrateToV34"
 import { migrateCcStateRecordToV35 } from "./migrateToV35"
+import { migrateCcStateRecordToV36 } from "./migrateToV36"
 
 // The persisted CcState record is migrated forward one version at a time: each vN transform reshapes a
 // (v(N-1))-shaped blob into vN. A blob written at oldVersion runs every transform whose target version is above it.
@@ -65,7 +66,8 @@ export const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate
     { version: 32, migrate: migrateCcStateRecordToV32 },
     { version: 33, migrate: migrateCcStateRecordToV33 },
     { version: 34, migrate: migrateCcStateRecordToV34 },
-    { version: 35, migrate: migrateCcStateRecordToV35 }
+    { version: 35, migrate: migrateCcStateRecordToV35 },
+    { version: 36, migrate: migrateCcStateRecordToV36 }
 ]
 
 export function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {

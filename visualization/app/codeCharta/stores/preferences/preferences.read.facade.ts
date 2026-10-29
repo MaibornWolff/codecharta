@@ -5,6 +5,7 @@ export { dependencyGraphSettingsSelector } from "./store/dependencyGraph/depende
 export { screenshotToClipboardEnabledSelector } from "./store/enableClipboard/screenshotToClipboardEnabled.selector"
 export { isColorMetricLinkedToHeightMetricSelector } from "./store/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
 export { isPresentationModeSelector } from "./store/isPresentationMode/isPresentationMode.selector"
+export { defaultLocalSourceEnabled } from "./store/localSourceEnabled/localSourceEnabled.reducer"
 export { maxTreeMapFilesSelector } from "./store/maxTreeMapFiles/maxTreeMapFiles.selector"
 export { PreferencesReadWindow } from "./store/preferences.readWindow"
 export { defaultPreferences, preferences } from "./store/preferences.reducer"

@@ -30,6 +30,22 @@ describe("LocalSourceFoldersRepository", () => {
         expect(folder).toEqual({ mapKey: "myproject.cc.json", directory, editorRootPath: "C:/dev/myproject" })
     })
 
+    it("should read a saved folder back from the database only once per session", async () => {
+        // Arrange
+        await repository.save({ mapKey: "cached.cc.json", directory, editorRootPath: null })
+        const reader = new LocalSourceFoldersRepository()
+        const firstRead = await reader.find("cached.cc.json")
+        const getSpy = jest.spyOn(IDBObjectStore.prototype, "get")
+
+        // Act
+        const secondRead = await reader.find("cached.cc.json")
+
+        // Assert
+        expect(secondRead).toBe(firstRead)
+        expect(getSpy).not.toHaveBeenCalled()
+        getSpy.mockRestore()
+    })
+
     it("should forget a deleted folder", async () => {
         // Arrange
         await repository.save({ mapKey: "forgotten.cc.json", directory, editorRootPath: null })

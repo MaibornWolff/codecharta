@@ -11,20 +11,19 @@ export class MapLocalFolderComponent {
 
     readonly mapFileName = input.required<string>()
 
-    readonly isSupported = this.localSource.isSupported
+    readonly isAvailable = this.localSource.isAvailable
     readonly folderDescription = signal<string | null>(null)
 
     constructor() {
         effect(() => {
             this.localSource.folderChanges()
-            void this.describeFolder(this.mapFileName())
+            if (this.isAvailable()) {
+                void this.describeFolder(this.mapFileName())
+            }
         })
     }
 
     private async describeFolder(mapFileName: string) {
-        if (!this.isSupported) {
-            return
-        }
         const description = await this.localSource.describeFolder(mapFileName)
         if (mapFileName === this.mapFileName()) {
             this.folderDescription.set(description)

@@ -30,7 +30,7 @@ export class LocalSourceActionsComponent {
     private readonly sourceDialog = viewChild.required<ElementRef<HTMLDialogElement>>("sourceDialog")
     private readonly editorDialog = viewChild.required<ElementRef<HTMLDialogElement>>("editorDialog")
 
-    readonly isSupported = this.localSource.isSupported
+    readonly isAvailable = this.localSource.isAvailable
     readonly shownSource = signal<ShownSource | null>(null)
     readonly pendingEditorOpen = signal<PendingEditorOpen | null>(null)
     readonly editorRootPath = signal("")

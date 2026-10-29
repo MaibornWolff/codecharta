@@ -5,11 +5,11 @@ import { MapLocalFolderComponent } from "./mapLocalFolder.component"
 
 describe("MapLocalFolderComponent", () => {
     const folderChanges = signal(0)
-    const localSourceMock = { isSupported: true, folderChanges, describeFolder: jest.fn() }
+    const localSourceMock = { isAvailable: signal(true), folderChanges, describeFolder: jest.fn() }
 
     beforeEach(() => {
         jest.clearAllMocks()
-        localSourceMock.isSupported = true
+        localSourceMock.isAvailable.set(true)
         localSourceMock.describeFolder.mockResolvedValue(null)
     })
 
@@ -82,7 +82,7 @@ describe("MapLocalFolderComponent", () => {
 
     it("should show nothing where the browser cannot open a folder", async () => {
         // Arrange
-        localSourceMock.isSupported = false
+        localSourceMock.isAvailable.set(false)
 
         // Act
         await renderFolder()

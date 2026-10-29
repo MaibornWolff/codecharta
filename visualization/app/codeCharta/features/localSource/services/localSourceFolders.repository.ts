@@ -16,19 +16,27 @@ const FOLDERS_STORE_NAME = "folders"
 
 @Injectable({ providedIn: "root" })
 export class LocalSourceFoldersRepository {
+    /** A saved handle is read back once per session: every menu and map row asks for it again. */
+    private readonly knownFolders = new Map<string, LocalSourceFolder | null>()
+
     async find(mapKey: string): Promise<LocalSourceFolder | null> {
-        const database = await openLocalSourceDB()
-        return (await database.get(FOLDERS_STORE_NAME, mapKey)) ?? null
+        if (!this.knownFolders.has(mapKey)) {
+            const database = await openLocalSourceDB()
+            this.knownFolders.set(mapKey, (await database.get(FOLDERS_STORE_NAME, mapKey)) ?? null)
+        }
+        return this.knownFolders.get(mapKey)
     }
 
     async save(folder: LocalSourceFolder): Promise<void> {
         const database = await openLocalSourceDB()
         await database.put(FOLDERS_STORE_NAME, folder)
+        this.knownFolders.set(folder.mapKey, folder)
     }
 
     async delete(mapKey: string): Promise<void> {
         const database = await openLocalSourceDB()
         await database.delete(FOLDERS_STORE_NAME, mapKey)
+        this.knownFolders.set(mapKey, null)
     }
 }
 

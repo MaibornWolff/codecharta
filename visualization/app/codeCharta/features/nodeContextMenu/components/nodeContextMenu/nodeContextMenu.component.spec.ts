@@ -1,3 +1,4 @@
+import { signal } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { provideRouter, Router } from "@angular/router"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
@@ -68,7 +69,7 @@ describe("nodeContextMenu component", () => {
     const explorerRevealServiceMock = { revealNode: jest.fn() }
     const dependencyGraphScreenshotMock = { canScreenshotBox: jest.fn(() => false), screenshotBox: jest.fn() }
     const localSourceMock = {
-        isSupported: false,
+        isAvailable: signal(false),
         findSource: jest.fn().mockResolvedValue({ status: "cancelled" }),
         chooseFolder: jest.fn().mockResolvedValue({ status: "cancelled" }),
         isMapRoot: (path: string) => path === "/root"
@@ -107,7 +108,7 @@ describe("nodeContextMenu component", () => {
         activeView = "metrics",
         isLocalSourceSupported = false
     }: RenderMenuOptions = {}) {
-        localSourceMock.isSupported = isLocalSourceSupported
+        localSourceMock.isAvailable.set(isLocalSourceSupported)
         const rightClickedNodeData = node
             ? { nodeId: node.id, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin }
             : null

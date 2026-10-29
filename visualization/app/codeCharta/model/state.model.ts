@@ -71,6 +71,7 @@ export interface Preferences {
     centerMapZoom: number
     maxTreeMapFiles: number
     screenshotToClipboardEnabled: boolean
+    localSourceEnabled: boolean
     isColorMetricLinkedToHeightMetric: boolean
     sorting: Sorting
     radialFolderValue: RadialFolderValue
