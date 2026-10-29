@@ -1,9 +1,11 @@
+import { signal } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { Store, StoreModule } from "@ngrx/store"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { TEST_FILE_DATA, TEST_FILE_DATA_TWO } from "../../../../mocks/dataMocks"
 import { addFile, removeFiles, setStandard } from "../../../../stores/fileStore/store/files.actions"
 import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
+import { LocalSourceService } from "../../../localSource/services/localSource.service"
 import { MapSelectorComponent } from "./mapSelector.component"
 
 describe("MapSelectorComponent", () => {
@@ -196,5 +198,34 @@ describe("MapSelectorComponent", () => {
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(removeFiles({ fileNames: [TEST_FILE_DATA.fileMeta.fileName] }))
+    })
+
+    it("should show each map's local folder and offer to change it on a right-click of its row", async () => {
+        // Arrange
+        const localSourceMock = {
+            isSupported: true,
+            folderChanges: signal(0),
+            describeFolder: jest.fn(async (mapFileName: string) =>
+                mapFileName === TEST_FILE_DATA.fileMeta.fileName ? "C:/dev/project" : null
+            )
+        }
+        await render(MapSelectorComponent, {
+            imports: [StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
+            providers: [{ provide: LocalSourceService, useValue: localSourceMock }]
+        })
+        const store = TestBed.inject(Store)
+        store.dispatch(addFile({ file: TEST_FILE_DATA }))
+        store.dispatch(addFile({ file: TEST_FILE_DATA_TWO }))
+        store.dispatch(setStandard({ files: [TEST_FILE_DATA] }))
+        fireEvent.click(screen.getAllByRole("button")[0])
+
+        // Act
+        const folders = await screen.findAllByText("C:/dev/project")
+        fireEvent.contextMenu(screen.getAllByRole("listitem")[1])
+
+        // Assert
+        expect(folders).toHaveLength(1)
+        expect(screen.getByText("No local folder")).toBeTruthy()
+        expect(await screen.findByText("Set Local Folder…")).toBeTruthy()
     })
 })

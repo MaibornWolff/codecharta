@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { provideRouter, Router } from "@angular/router"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { fireEvent, render, screen } from "@testing-library/angular"
+import { fireEvent, render, screen, within } from "@testing-library/angular"
 import { of } from "rxjs"
 import { pathsWithDependencyLevelsSelector } from "../../../../lenses/dependency/dependencyLens.facade"
 import { hasDomainDataSelector, pathsWithDomainWordsSelector } from "../../../../lenses/domain/domainLens.facade"
@@ -25,6 +25,7 @@ import {
     unfocusNode
 } from "../../../../stores/sharedView/sharedView.write.facade"
 import { rightClickedNodeDataSelector } from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.selector"
+import { LocalSourceService } from "../../../localSource/services/localSource.service"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
 import {
     DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES,
@@ -54,7 +55,22 @@ describe("nodeContextMenu component", () => {
 
     const FOLDER_FOCUS_CAPABILITIES: NodeContextMenuCapabilities = { focusableNodes: "folders", showMapActions: false, showExclude: true }
 
+    const rootNode = {
+        id: 0,
+        name: "root",
+        path: "/root",
+        type: NodeType.FOLDER,
+        attributes: {},
+        children: [folderNode]
+    } as CodeMapNode
+
     const explorerRevealServiceMock = { revealNode: jest.fn() }
+    const localSourceMock = {
+        isSupported: false,
+        findSource: jest.fn().mockResolvedValue({ status: "cancelled" }),
+        chooseFolder: jest.fn().mockResolvedValue({ status: "cancelled" }),
+        isMapRoot: (path: string) => path === "/root"
+    }
 
     beforeEach(() => {
         jest.clearAllMocks()
@@ -72,6 +88,7 @@ describe("nodeContextMenu component", () => {
         isFlattened?: (node: CodeMapNode) => boolean
         isRadialLayout?: boolean
         keptHighlightPaths?: string[]
+        isLocalSourceSupported?: boolean
     }
 
     async function renderMenu({
@@ -85,8 +102,10 @@ describe("nodeContextMenu component", () => {
         isFlattened = () => false,
         isRadialLayout = false,
         keptHighlightPaths = [],
-        activeView = "metrics"
+        activeView = "metrics",
+        isLocalSourceSupported = false
     }: RenderMenuOptions = {}) {
+        localSourceMock.isSupported = isLocalSourceSupported
         const rightClickedNodeData = node
             ? { nodeId: node.id, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin }
             : null
@@ -111,6 +130,7 @@ describe("nodeContextMenu component", () => {
                     ]
                 }),
                 { provide: ExplorerRevealService, useValue: explorerRevealServiceMock },
+                { provide: LocalSourceService, useValue: localSourceMock },
                 { provide: ActiveViewStore, useValue: { activeView$: of(activeView) } },
                 { provide: NODE_CONTEXT_MENU_CAPABILITIES, useValue: capabilities }
             ]
@@ -526,5 +546,61 @@ describe("nodeContextMenu component", () => {
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(removeKeptHighlight({ paths: [folderNode.path, fileNode.path] }))
+    })
+
+    describe("local source", () => {
+        const menu = () => within(document.querySelector<HTMLElement>("#codemap-context-menu"))
+
+        it("should not offer the local source where the browser cannot open a folder", async () => {
+            // Arrange & Act
+            await renderMenu({ isLocalSourceSupported: false })
+
+            // Assert
+            expect(menu().queryByText("Show Source")).toBe(null)
+            expect(menu().queryByText("Open in VS Code")).toBe(null)
+        })
+
+        it("should offer to show a file's source and open it in VS Code", async () => {
+            // Arrange & Act
+            await renderMenu({ isLocalSourceSupported: true })
+
+            // Assert
+            expect(menu().getByText("Show Source")).not.toBe(null)
+            expect(menu().getByText("Open in VS Code")).not.toBe(null)
+            expect(menu().queryByText("Set Local Folder…")).toBe(null)
+        })
+
+        it("should offer to set the local folder on the map's root only", async () => {
+            // Arrange & Act
+            await renderMenu({ node: rootNode, isLocalSourceSupported: true })
+
+            // Assert
+            expect(menu().getByText("Set Local Folder…")).not.toBe(null)
+            expect(menu().queryByText("Show Source")).toBe(null)
+        })
+
+        it.each(["Show Source", "Open in VS Code"])("should close the menu and look up the file for %s", async item => {
+            // Arrange
+            const { dispatchSpy } = await renderMenu({ isLocalSourceSupported: true })
+
+            // Act
+            fireEvent.click(menu().getByText(item))
+
+            // Assert
+            expect(dispatchSpy).toHaveBeenCalledWith(setRightClickedNodeData({ value: null }))
+            expect(localSourceMock.findSource).toHaveBeenCalledWith(fileNode.path)
+        })
+
+        it("should close the menu and ask for the folder on Set Local Folder", async () => {
+            // Arrange
+            const { dispatchSpy } = await renderMenu({ node: rootNode, isLocalSourceSupported: true })
+
+            // Act
+            fireEvent.click(menu().getByText("Set Local Folder…"))
+
+            // Assert
+            expect(dispatchSpy).toHaveBeenCalledWith(setRightClickedNodeData({ value: null }))
+            expect(localSourceMock.chooseFolder).toHaveBeenCalledWith(rootNode.path)
+        })
     })
 })

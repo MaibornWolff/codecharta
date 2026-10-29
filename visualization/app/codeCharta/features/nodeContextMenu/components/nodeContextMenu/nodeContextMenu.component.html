@@ -26,6 +26,26 @@
             </cc-context-menu-item>
         }
 
+        @if (localSourceActions().isSupported && isFile()) {
+            <div class="my-1 border-t border-base-300"></div>
+            <cc-context-menu-item icon="fa-regular fa-file-code" hoverHint="Show the file from your local folder" (itemClick)="showSource()">
+                Show Source
+            </cc-context-menu-item>
+            <cc-context-menu-item icon="fa-solid fa-code" hoverHint="Open the file from your local folder in VS Code" (itemClick)="openInEditor()">
+                Open in VS Code
+            </cc-context-menu-item>
+        }
+        @if (localSourceActions().isSupported && isMapRoot()) {
+            <div class="my-1 border-t border-base-300"></div>
+            <cc-context-menu-item
+                icon="fa-regular fa-folder"
+                hoverHint="Choose the local folder this map was analysed from"
+                (itemClick)="chooseLocalFolder()"
+            >
+                Set Local Folder…
+            </cc-context-menu-item>
+        }
+
         @if (hasViewActions()) {
             <div class="my-1 border-t border-base-300"></div>
         }
@@ -93,3 +113,5 @@
         }
     </cc-floating-menu>
 }
+
+<cc-local-source-actions></cc-local-source-actions>
