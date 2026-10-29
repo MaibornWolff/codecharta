@@ -27,8 +27,10 @@ type and legend in `lenses/dependency/store/dependencyEdge.ts` and `renderer/dep
 
 **Cyclic** (`processing/cycledetection/`):
 
-- Cycles are found between declarations, not files: Tarjan's strongly connected components, then a depth-first search
-  for the cycles inside each component (`CycleAnalyzer`, `DepthFirstSearchCycleDetection`).
+- Cycles are found between declarations, not files, by Tarjan's strongly connected components (`CycleAnalyzer`):
+  an edge lies on a cycle exactly when both its ends are in one component, as the target's way back to the source
+  closes it. No cycle is listed, so a cycle of any length counts; until 2026-10-28 a capped search listed them and
+  missed the long ones and short ones far from its start.
 - A declaration is its file and its logical path (`DeclarationKey` in `DeclarationCycles`), and a use points at the
   copies the copy rules of its language pick, the same the drawn edges target. Two declarations of one path in
   different files (twin source trees, a C# partial class, Go build variants) are apart, so a cycle closes only along
@@ -36,8 +38,7 @@ type and legend in `lenses/dependency/store/dependencyEdge.ts` and `renderer/dep
 - An implementation part (C++ members defined in another file, a Rust `impl` in another file, an SQL body or `ALTER`)
   is one declaration with the declaration of its path, as the compiler sees one type. Its edge to that declaration has
   the kind `part_of` and is cyclic when a cycle enters the type through one part and leaves it through another.
-- The search caps the cycle length by the component's edge count: 10 below 100 edges, 8 below 200, 6 below 400, else 4.
-- A declaration edge is cyclic when it lies on a found cycle; a file edge when any declaration edge behind it is
+- A declaration edge is cyclic when it lies on a cycle; a file edge when any declaration edge behind it is
   (`FileLevelAggregator`). Edges inside one file disappear from the file layer.
 - Every cyclic declaration edge has a way back along cyclic edges, a `part_of` edge walked both ways
   (`cyclicEdgesWithoutWayBack`, a test helper of `DeclarationCyclesTest`).
@@ -83,13 +84,11 @@ and a dashed red edge breaks a cycle that exists only between folders or package
 
 ## Known weak points
 
-1. A cycle longer than the cap is not found: in a large component its edges stay grey or dashed red instead of blue or
-   solid red.
-2. Which edge of a cycle is the solid red one follows a heuristic (fewest incoming weight); another edge of the same
+1. Which edge of a cycle is the solid red one follows a heuristic (fewest incoming weight); another edge of the same
    cycle would be as right.
-3. An equal level counts as upward. After cycle breaking only the removed edges can meet that, but no rule says so.
-4. Name resolution feeds both flags: a missing or wrong edge changes cycles and levels.
-5. An edge into a Rust facade (`mod.rs`, `lib.rs` re-exporting its children) can be flagged upward when the folders
+2. An equal level counts as upward. After cycle breaking only the removed edges can meet that, but no rule says so.
+3. Name resolution feeds both flags: a missing or wrong edge changes cycles and levels.
+4. An edge into a Rust facade (`mod.rs`, `lib.rs` re-exporting its children) can be flagged upward when the folders
    form a cycle; about 800 such edges in nushell are not examined yet (known gap, Christian, 2026-10-28).
 
 Next step proposed (2026-10-23): a spec page for cycles and layering, flag probes (cycle, long cycle, container-only

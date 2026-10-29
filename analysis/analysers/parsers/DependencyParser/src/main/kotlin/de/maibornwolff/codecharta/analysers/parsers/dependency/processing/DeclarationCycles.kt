@@ -3,9 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.processing
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FilePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.CycleAnalyzer
-import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.CycleAnalyzer.Companion.groupByLeafs
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.model.NodeInformation
-import de.maibornwolff.codecharta.util.Logger
 
 /** A declaration as the cycle search tells it apart: the file that declares it and its logical path. */
 internal data class DeclarationKey(val file: FilePath, val logicalPath: String) {
@@ -86,9 +84,7 @@ internal class DeclarationCycles private constructor(
                 .groupBy({ it.first }, { it.second })
                 .map { (source, targets) -> NodeInformation(source, targets.toSet()) }
                 .toSet()
-            val cycles = CycleAnalyzer.determineCycles(nodeInformation)
-            Logger.info { "Found a total of ${cycles.size} cycles" }
-            return cycles.groupByLeafs()
+            return CycleAnalyzer.cyclicTargetsByNode(nodeInformation)
         }
     }
 }
