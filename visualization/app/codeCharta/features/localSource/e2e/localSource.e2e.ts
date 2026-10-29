@@ -34,7 +34,7 @@ test.describe("Local source", () => {
         await expect(menu.getByText("Open in VS Code")).toHaveCount(0)
     })
 
-    test("should show a file from the folder chosen for its map", async ({ page }) => {
+    test("should show a file from the folder chosen for its map, coloured by its language", async ({ page }) => {
         // Arrange
         const localSource = new LocalSourcePageObject(page)
         await localSource.standInForThePicker("sampleFolder")
@@ -48,6 +48,7 @@ test.describe("Local source", () => {
         await expect(localSource.sourceDialog()).toBeVisible()
         await expect(localSource.sourceDialog()).toContainText("bigLeaf.ts")
         await expect(localSource.sourceDialog()).toContainText("console.log(big)")
+        await expect(localSource.sourceDialog().locator(".token.keyword").first()).toHaveText("export")
     })
 
     test("should open a file in VS Code once the folder's full path was entered", async ({ page }) => {

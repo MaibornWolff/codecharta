@@ -10,7 +10,11 @@
         </div>
         <div class="flex min-h-0 flex-1 overflow-auto rounded bg-base-200 font-mono text-xs leading-5">
             <pre class="select-none border-r border-base-300 px-2 text-right opacity-50">{{ shownSource()?.lineNumbers }}</pre>
-            <pre class="flex-1 px-3">{{ shownSource()?.text }}</pre>
+            @if (shownSource()?.highlightedHtml; as highlightedHtml) {
+                <pre class="cc-syntax flex-1 px-3" data-testid="local-source-highlighted"><code [innerHTML]="highlightedHtml"></code></pre>
+            } @else {
+                <pre class="flex-1 px-3">{{ shownSource()?.text }}</pre>
+            }
         </div>
     </div>
     <form method="dialog" class="modal-backdrop">

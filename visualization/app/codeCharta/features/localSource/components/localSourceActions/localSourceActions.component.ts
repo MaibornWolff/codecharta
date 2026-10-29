@@ -5,11 +5,14 @@ import { FOLDER_DOES_NOT_FIT_MAP_MESSAGE, reportFolderChoice } from "../../servi
 import { LocalSourceService, SourceLookup } from "../../services/localSource.service"
 import { LocalSourceFolder } from "../../services/localSourceFolders.repository"
 import { vscodeFileLink } from "../../services/localSourcePaths"
+import { sourceLanguageOf } from "../../services/sourceLanguage"
 
 interface ShownSource {
     relativePath: string
     lineNumbers: string
     text: string
+    /** The text coloured by its language as HTML; null while it is coloured or when its language is unknown. */
+    highlightedHtml: string | null
 }
 
 interface PendingEditorOpen {
@@ -46,12 +49,28 @@ export class LocalSourceActionsComponent {
         }
         const text = await lookup.file.text()
         const lineCount = text.replace(/\n$/, "").split("\n").length
-        this.shownSource.set({
+        const shownSource = {
             relativePath: lookup.relativePath,
             lineNumbers: Array.from({ length: lineCount }, (_, index) => index + 1).join("\n"),
-            text
-        })
+            text,
+            highlightedHtml: null
+        }
+        this.shownSource.set(shownSource)
         this.sourceDialog().nativeElement.showModal()
+        await this.highlight(shownSource)
+    }
+
+    /** Prism is loaded only once a file is shown, and colours it after it is already readable as plain text. */
+    private async highlight(shownSource: ShownSource) {
+        const language = sourceLanguageOf(shownSource.relativePath)
+        if (language === null) {
+            return
+        }
+        const { highlightSource } = await import("../../services/syntaxHighlighter")
+        const highlightedHtml = highlightSource(shownSource.text, language)
+        if (this.shownSource() === shownSource) {
+            this.shownSource.set({ ...shownSource, highlightedHtml })
+        }
     }
 
     async openInEditor(nodePath: string) {

@@ -5,16 +5,22 @@ import { ToastService } from "../../../shared/facade"
 import { fakeDirectory } from "../../services/fileSystemAccess.mocks"
 import { LocalSourceService, SourceLookup } from "../../services/localSource.service"
 import { LocalSourceFolder } from "../../services/localSourceFolders.repository"
+import { highlightSource } from "../../services/syntaxHighlighter"
 import { LocalSourceActionsComponent } from "./localSourceActions.component"
+
+jest.mock("../../services/syntaxHighlighter", () => {
+    const actual = jest.requireActual("../../services/syntaxHighlighter")
+    return { highlightSource: jest.fn(actual.highlightSource) }
+})
 
 describe("LocalSourceActionsComponent", () => {
     const folderWithoutEditorPath: LocalSourceFolder = { mapKey: "map", directory: fakeDirectory("myproject", {}), editorRootPath: null }
     const folderWithEditorPath: LocalSourceFolder = { ...folderWithoutEditorPath, editorRootPath: "C:/dev/myproject" }
-    const found = (folder: LocalSourceFolder, content = "line one\nline two"): SourceLookup => ({
+    const found = (folder: LocalSourceFolder, content = "line one\nline two", relativePath = "src/Foo.kt"): SourceLookup => ({
         status: "found",
-        file: new File([content], "Foo.kt"),
+        file: new File([content], relativePath.slice(relativePath.lastIndexOf("/") + 1)),
         folder,
-        relativePath: "src/Foo.kt"
+        relativePath
     })
 
     const localSourceMock = {
@@ -62,8 +68,54 @@ describe("LocalSourceActionsComponent", () => {
             await component.showSource("/root/src/Foo.kt")
 
             // Assert
-            expect(component.shownSource()).toEqual({ relativePath: "src/Foo.kt", lineNumbers: "1\n2", text: "line one\nline two\n" })
+            expect(component.shownSource()).toEqual(
+                expect.objectContaining({ relativePath: "src/Foo.kt", lineNumbers: "1\n2", text: "line one\nline two\n" })
+            )
             expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled()
+        })
+
+        it("should colour the shown file by its language", async () => {
+            // Arrange
+            localSourceMock.findSource.mockResolvedValue(found(folderWithoutEditorPath, "val answer = 42"))
+            const fixture = await renderActions()
+
+            // Act
+            await fixture.componentInstance.showSource("/root/src/Foo.kt")
+            fixture.detectChanges()
+
+            // Assert
+            const highlighted = screen.getByTestId("local-source-highlighted")
+            expect(highlighted.querySelector(".token.keyword").textContent).toBe("val")
+            expect(highlighted.querySelector(".token.number").textContent).toBe("42")
+        })
+
+        it("should leave a file of a language without a grammar plain", async () => {
+            // Arrange
+            localSourceMock.findSource.mockResolvedValue(found(folderWithoutEditorPath, "DEFINE VARIABLE x.", "orders.p"))
+            const component = (await renderActions()).componentInstance
+
+            // Act
+            await component.showSource("/root/orders.p")
+
+            // Assert
+            expect(component.shownSource().highlightedHtml).toBeNull()
+        })
+
+        it("should not colour a file over the next one shown while the first was being coloured", async () => {
+            // Arrange
+            localSourceMock.findSource.mockResolvedValue(found(folderWithoutEditorPath, "val first = 1", "src/First.kt"))
+            const component = (await renderActions()).componentInstance
+            const shownMeanwhile = { relativePath: "src/Second.kt", lineNumbers: "1", text: "val second = 2", highlightedHtml: null }
+            jest.mocked(highlightSource).mockImplementationOnce(() => {
+                component.shownSource.set(shownMeanwhile)
+                return "coloured first file"
+            })
+
+            // Act
+            await component.showSource("/root/src/First.kt")
+
+            // Assert
+            expect(component.shownSource()).toBe(shownMeanwhile)
         })
 
         it("should warn when the file is not in the chosen folder", async () => {
