@@ -51,7 +51,7 @@ test.describe("Local source", () => {
         await expect(localSource.sourceDialog().locator(".token.keyword").first()).toHaveText("export")
     })
 
-    test("should keep a selection dragged past a line's end on that line", async ({ page }) => {
+    test("should show the text cursor over the code and keep a selection dragged past a line's end on that line", async ({ page }) => {
         // Arrange
         const localSource = new LocalSourcePageObject(page)
         await localSource.standInForThePicker("sampleFolder")
@@ -61,6 +61,7 @@ test.describe("Local source", () => {
         const firstLine = localSource.sourceDialog().locator(".cc-source-code").first()
         await expect(firstLine).toHaveText("export const big = 1")
         const box = await firstLine.boundingBox()
+        const cursorOverTheCode = await firstLine.evaluate(code => getComputedStyle(code).cursor)
 
         // Act
         await page.mouse.move(box.x + 20, box.y + box.height / 2)
@@ -69,6 +70,7 @@ test.describe("Local source", () => {
         await page.mouse.up()
 
         // Assert
+        expect(cursorOverTheCode).toBe("text")
         expect(await page.evaluate(() => window.getSelection().toString())).toMatch(/^[^\n]*= 1$/)
     })
 
