@@ -97,7 +97,7 @@ export class DependencyMapComponent {
         if (!layout) {
             return null
         }
-        const { shownBoxBadges, hierarchy, ...looks } = this.graphModel.settings()
+        const { shownBoxBadges, hierarchy, isHoverHighlighted, ...looks } = this.graphModel.settings()
         return {
             ...looks,
             cycleMarks: this.cycleMarks(),
@@ -105,7 +105,7 @@ export class DependencyMapComponent {
             layout,
             edges: this.graphModel.projectedEdges(),
             edgeMetric: this.graphModel.edgeMetric(),
-            hoveredPath: this.graphModel.boxStandingFor(this.viewStore.hoveredBoxPath() ?? this.hoveredPath()),
+            hoveredPath: isHoverHighlighted ? this.graphModel.boxStandingFor(this.viewStore.hoveredBoxPath() ?? this.hoveredPath()) : null,
             selectedPath: this.inspectorStore.selectedBoxPath(),
             selectedEdgeId: this.inspectorStore.selectedEdgeId(),
             highlightedEdgeIds: this.inspectorStore.highlightedEdgeIds(),
