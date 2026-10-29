@@ -1,0 +1,47 @@
+<dialog #sourceDialog class="modal" aria-label="Source" data-testid="local-source-dialog" (close)="shownSource.set(null)">
+    <div class="modal-box flex h-5/6 w-11/12 max-w-6xl flex-col">
+        <div class="mb-2 flex items-center justify-between gap-4">
+            <h2 class="truncate font-mono text-sm font-bold" [title]="shownSource()?.relativePath">{{ shownSource()?.relativePath }}</h2>
+            <form method="dialog">
+                <button class="btn btn-ghost btn-sm" aria-label="Close source">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </form>
+        </div>
+        <div class="flex min-h-0 flex-1 overflow-auto rounded bg-base-200 font-mono text-xs leading-5">
+            <pre class="select-none border-r border-base-300 px-2 text-right opacity-50">{{ shownSource()?.lineNumbers }}</pre>
+            <pre class="flex-1 px-3">{{ shownSource()?.text }}</pre>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
+
+<dialog #editorDialog class="modal" aria-label="Open in VS Code" data-testid="local-source-editor-dialog">
+    <div class="modal-box">
+        <h2 class="mb-2 text-lg font-bold">Open in VS Code</h2>
+        <p class="py-2 text-sm">
+            The browser does not tell CodeCharta where the folder
+            <span class="font-mono font-semibold">{{ pendingEditorOpen()?.folder?.directory?.name }}</span>
+            lies on your disk. Enter its full path once; it is only kept in this browser.
+        </p>
+        <input
+            type="text"
+            class="input input-bordered w-full font-mono text-sm"
+            [placeholder]="'e.g. C:/dev/' + (pendingEditorOpen()?.folder?.directory?.name ?? '')"
+            [ngModel]="editorRootPath()"
+            (ngModelChange)="editorRootPath.set($event)"
+            (keydown.enter)="confirmEditorRootPath()"
+        />
+        <div class="modal-action">
+            <form method="dialog">
+                <button class="btn">Cancel</button>
+            </form>
+            <button class="btn btn-primary" [disabled]="editorRootPath().trim() === ''" (click)="confirmEditorRootPath()">Open</button>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>

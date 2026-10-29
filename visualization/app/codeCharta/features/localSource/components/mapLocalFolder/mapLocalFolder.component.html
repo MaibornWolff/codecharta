@@ -1,0 +1,10 @@
+@if (isSupported) {
+    <span
+        class="flex items-center gap-1 text-xs opacity-60"
+        data-testid="map-local-folder"
+        title="Local folder of this map — right-click to change it"
+    >
+        <i class="fa-regular fa-folder shrink-0"></i>
+        <span class="truncate font-mono">{{ folderDescription() ?? "No local folder" }}</span>
+    </span>
+}

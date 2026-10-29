@@ -1,0 +1,20 @@
+@if (target(); as menu) {
+    <cc-floating-menu class="w-56" [anchor]="menu.anchor" (dismissed)="close()">
+        <cc-context-menu-item
+            icon="fa-regular fa-folder-open"
+            hoverHint="Choose the local folder this map was analysed from"
+            (itemClick)="chooseFolder(menu.mapFileName)"
+        >
+            Set Local Folder…
+        </cc-context-menu-item>
+        @if (menu.hasFolder) {
+            <cc-context-menu-item
+                icon="fa-solid fa-xmark"
+                hoverHint="Stop using the local folder for this map"
+                (itemClick)="forgetFolder(menu.mapFileName)"
+            >
+                Forget Local Folder
+            </cc-context-menu-item>
+        }
+    </cc-floating-menu>
+}
