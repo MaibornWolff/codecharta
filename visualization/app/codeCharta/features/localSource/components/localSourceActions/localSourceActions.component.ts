@@ -5,18 +5,8 @@ import { FOLDER_DOES_NOT_FIT_MAP_MESSAGE, reportFolderChoice } from "../../servi
 import { LocalSourceService, SourceLookup } from "../../services/localSource.service"
 import { LocalSourceFolder } from "../../services/localSourceFolders.repository"
 import { vscodeFileLink } from "../../services/localSourcePaths"
-import { sourceLanguageOf } from "../../services/sourceLanguage"
-import { isTooLargeToShow, MAX_SHOWN_SIZE, reasonToLeaveUncoloured, sizeOf } from "../../services/sourceLimits"
-
-interface ShownSource {
-    relativePath: string
-    lineNumbers: string
-    text: string
-    /** The text coloured by its language as HTML; null while it is coloured or when it stays plain. */
-    highlightedHtml: string | null
-    /** Why a file of a known language stays plain, such as its size; null when it is coloured. */
-    uncolouredReason: string | null
-}
+import { isTooLargeToShow, MAX_SHOWN_SIZE, sizeOf } from "../../services/sourceLimits"
+import { SourceViewerComponent } from "../sourceViewer/sourceViewer.component"
 
 interface TooLargeFile {
     nodePath: string
@@ -33,17 +23,17 @@ interface PendingEditorOpen {
     selector: "cc-local-source-actions",
     templateUrl: "./localSourceActions.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [FormsModule]
+    imports: [FormsModule, SourceViewerComponent]
 })
 export class LocalSourceActionsComponent {
     private readonly localSource = inject(LocalSourceService)
     private readonly toast = inject(ToastService)
 
-    private readonly sourceDialog = viewChild.required<ElementRef<HTMLDialogElement>>("sourceDialog")
+    private readonly viewer = viewChild.required(SourceViewerComponent)
+    private readonly tooLargeDialog = viewChild.required<ElementRef<HTMLDialogElement>>("tooLargeDialog")
     private readonly editorDialog = viewChild.required<ElementRef<HTMLDialogElement>>("editorDialog")
 
     readonly isAvailable = this.localSource.isAvailable
-    readonly shownSource = signal<ShownSource | null>(null)
     readonly tooLargeFile = signal<TooLargeFile | null>(null)
     readonly maxShownSize = MAX_SHOWN_SIZE
     readonly pendingEditorOpen = signal<PendingEditorOpen | null>(null)
@@ -61,42 +51,15 @@ export class LocalSourceActionsComponent {
         const { file, relativePath } = lookup
         if (isTooLargeToShow(file.size)) {
             this.tooLargeFile.set({ nodePath, relativePath, size: sizeOf(file.size) })
-            this.sourceDialog().nativeElement.showModal()
+            this.tooLargeDialog().nativeElement.showModal()
             return
         }
-        const text = await file.text()
-        const language = sourceLanguageOf(relativePath)
-        const shownSource = {
-            relativePath,
-            lineNumbers: lineNumbersOf(text),
-            text,
-            highlightedHtml: null,
-            uncolouredReason: language && reasonToLeaveUncoloured(text, file.size)
-        }
-        this.shownSource.set(shownSource)
-        this.sourceDialog().nativeElement.showModal()
-        if (language && !shownSource.uncolouredReason) {
-            await this.highlight(shownSource, language)
-        }
-    }
-
-    closeSource() {
-        this.shownSource.set(null)
-        this.tooLargeFile.set(null)
+        await this.viewer().open({ nodePath, relativePath, text: await file.text(), bytes: file.size })
     }
 
     async openTooLargeFileInEditor(nodePath: string) {
-        this.sourceDialog().nativeElement.close()
+        this.tooLargeDialog().nativeElement.close()
         await this.openInEditor(nodePath)
-    }
-
-    /** Prism is loaded only once a file is shown, and colours it after it is already readable as plain text. */
-    private async highlight(shownSource: ShownSource, language: string) {
-        const { highlightSource } = await import("../../services/syntaxHighlighter")
-        const highlightedHtml = highlightSource(shownSource.text, language)
-        if (this.shownSource() === shownSource) {
-            this.shownSource.set({ ...shownSource, highlightedHtml })
-        }
     }
 
     async openInEditor(nodePath: string) {
@@ -149,9 +112,4 @@ export class LocalSourceActionsComponent {
     private openLink(editorRootPath: string, relativePath: string) {
         window.open(vscodeFileLink(editorRootPath, relativePath), "_blank")
     }
-}
-
-function lineNumbersOf(text: string): string {
-    const lineCount = text.replace(/\n$/, "").split("\n").length
-    return Array.from({ length: lineCount }, (_, index) => index + 1).join("\n")
 }

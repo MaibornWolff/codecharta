@@ -5,13 +5,7 @@ import { ToastService } from "../../../shared/facade"
 import { fakeDirectory } from "../../services/fileSystemAccess.mocks"
 import { LocalSourceService, SourceLookup } from "../../services/localSource.service"
 import { LocalSourceFolder } from "../../services/localSourceFolders.repository"
-import { highlightSource } from "../../services/syntaxHighlighter"
 import { LocalSourceActionsComponent } from "./localSourceActions.component"
-
-jest.mock("../../services/syntaxHighlighter", () => {
-    const actual = jest.requireActual("../../services/syntaxHighlighter")
-    return { highlightSource: jest.fn(actual.highlightSource) }
-})
 
 describe("LocalSourceActionsComponent", () => {
     const folderWithoutEditorPath: LocalSourceFolder = { mapKey: "map", directory: fakeDirectory("myproject", {}), editorRootPath: null }
@@ -59,69 +53,19 @@ describe("LocalSourceActionsComponent", () => {
     }
 
     describe("showSource", () => {
-        it("should show the file's lines numbered in the source dialog", async () => {
+        it("should open the found file in the source viewer", async () => {
             // Arrange
-            localSourceMock.findSource.mockResolvedValue(found(folderWithoutEditorPath, "line one\nline two\n"))
-            const component = (await renderActions()).componentInstance
-
-            // Act
-            await component.showSource("/root/src/Foo.kt")
-
-            // Assert
-            expect(component.shownSource()).toEqual(
-                expect.objectContaining({ relativePath: "src/Foo.kt", lineNumbers: "1\n2", text: "line one\nline two\n" })
-            )
-            expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled()
-        })
-
-        it("should colour the shown file by its language", async () => {
-            // Arrange
-            localSourceMock.findSource.mockResolvedValue(found(folderWithoutEditorPath, "val answer = 42"))
+            localSourceMock.findSource.mockResolvedValue(found(folderWithoutEditorPath, "line one\nline two\n", "notes/readme.txt"))
             const fixture = await renderActions()
 
             // Act
-            await fixture.componentInstance.showSource("/root/src/Foo.kt")
+            await fixture.componentInstance.showSource("/root/notes/readme.txt")
             fixture.detectChanges()
 
             // Assert
-            const highlighted = screen.getByTestId("local-source-highlighted")
-            expect(highlighted.querySelector(".token.keyword").textContent).toBe("val")
-            expect(highlighted.querySelector(".token.number").textContent).toBe("42")
-        })
-
-        it("should leave a file of a language without a grammar plain", async () => {
-            // Arrange
-            localSourceMock.findSource.mockResolvedValue(found(folderWithoutEditorPath, "DEFINE VARIABLE x.", "orders.p"))
-            const component = (await renderActions()).componentInstance
-
-            // Act
-            await component.showSource("/root/orders.p")
-
-            // Assert
-            expect(component.shownSource().highlightedHtml).toBeNull()
-        })
-
-        it("should not colour a file over the next one shown while the first was being coloured", async () => {
-            // Arrange
-            localSourceMock.findSource.mockResolvedValue(found(folderWithoutEditorPath, "val first = 1", "src/First.kt"))
-            const component = (await renderActions()).componentInstance
-            const shownMeanwhile = {
-                relativePath: "src/Second.kt",
-                lineNumbers: "1",
-                text: "val second = 2",
-                highlightedHtml: null,
-                uncolouredReason: null
-            }
-            jest.mocked(highlightSource).mockImplementationOnce(() => {
-                component.shownSource.set(shownMeanwhile)
-                return "coloured first file"
-            })
-
-            // Act
-            await component.showSource("/root/src/First.kt")
-
-            // Assert
-            expect(component.shownSource()).toBe(shownMeanwhile)
+            const viewer = screen.getByTestId("local-source-dialog")
+            expect(viewer.textContent).toContain("readme.txt")
+            expect(viewer.querySelectorAll(".cc-source-row")).toHaveLength(2)
         })
 
         it("should not read a file above 5 MB but say so and offer VS Code instead", async () => {
@@ -141,13 +85,13 @@ describe("LocalSourceActionsComponent", () => {
 
             // Assert
             expect(hugeFile.text).not.toHaveBeenCalled()
-            expect(fixture.componentInstance.shownSource()).toBeNull()
+            expect(screen.getByTestId("local-source-dialog").querySelectorAll(".cc-source-row")).toHaveLength(0)
             expect(screen.getByTestId("local-source-too-large").textContent).toContain(
                 "This file is 6.2 MB, too large to show here (at most 5 MB)."
             )
         })
 
-        it("should open a file too large to show in VS Code from the dialog", async () => {
+        it("should open a file too large to show in VS Code from its dialog", async () => {
             // Arrange
             givenFreshClick(true)
             const hugeFile = { size: 6 * 1024 * 1024, text: jest.fn() } as unknown as File
@@ -169,34 +113,38 @@ describe("LocalSourceActionsComponent", () => {
             expect(openSpy).toHaveBeenCalledWith("vscode://file/C:/dev/myproject/dist/main.js", "_blank")
         })
 
-        it("should show a file with minified lines plain and say why", async () => {
+        it("should forget the file too large to show once its dialog closes", async () => {
             // Arrange
-            localSourceMock.findSource.mockResolvedValue(found(folderWithoutEditorPath, `var a=${"1,".repeat(12_000)}1`, "dist/vendor.js"))
+            const hugeFile = { size: 6 * 1024 * 1024, text: jest.fn() } as unknown as File
+            localSourceMock.findSource.mockResolvedValue({
+                status: "found",
+                file: hugeFile,
+                folder: folderWithEditorPath,
+                relativePath: "dist/main.js"
+            })
             const fixture = await renderActions()
+            await fixture.componentInstance.showSource("/root/dist/main.js")
 
             // Act
-            await fixture.componentInstance.showSource("/root/dist/vendor.js")
-            fixture.detectChanges()
+            screen.getByTestId("local-source-too-large-dialog").dispatchEvent(new Event("close"))
 
             // Assert
-            expect(fixture.componentInstance.shownSource().highlightedHtml).toBeNull()
-            expect(screen.getByTestId("local-source-uncoloured-note").textContent).toContain(
-                "Shown without colours: has lines longer than 20,000 characters"
-            )
+            expect(fixture.componentInstance.tooLargeFile()).toBeNull()
         })
 
-        it("should forget the shown file once the dialog closes", async () => {
+        it("should open VS Code when the viewer asks for it", async () => {
             // Arrange
-            localSourceMock.findSource.mockResolvedValue(found(folderWithoutEditorPath))
-            const component = (await renderActions()).componentInstance
-            await component.showSource("/root/src/Foo.kt")
+            givenFreshClick(true)
+            localSourceMock.findSource.mockResolvedValue(found(folderWithEditorPath))
+            const fixture = await renderActions()
+            await fixture.componentInstance.showSource("/root/src/Foo.kt")
+            fixture.detectChanges()
 
             // Act
-            component.closeSource()
+            await userEvent.click(screen.getByTitle("Open the file in VS Code"))
 
             // Assert
-            expect(component.shownSource()).toBeNull()
-            expect(component.tooLargeFile()).toBeNull()
+            expect(openSpy).toHaveBeenCalledWith("vscode://file/C:/dev/myproject/src/Foo.kt", "_blank")
         })
 
         it("should warn when the file is not in the chosen folder", async () => {
@@ -209,7 +157,7 @@ describe("LocalSourceActionsComponent", () => {
 
             // Assert
             expect(toastMock.show).toHaveBeenCalledWith('"src/Foo.kt" is not in the chosen folder', "warning")
-            expect(component.shownSource()).toBeNull()
+            expect(screen.getByTestId("local-source-dialog").querySelectorAll(".cc-source-row")).toHaveLength(0)
         })
 
         it("should warn when the chosen folder does not fit the map", async () => {

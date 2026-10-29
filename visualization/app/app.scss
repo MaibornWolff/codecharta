@@ -131,3 +131,73 @@ cc-metrics-bar > cc-link-color-height-button {
         color: color-mix(in oklab, var(--color-base-content) 75%, transparent);
     }
 }
+
+// The rows of the source viewer are HTML the viewer builds itself (see sourceRows.ts), which only a global
+// stylesheet reaches. Each row spans the whole width, so a selection dragged past a line's end stays on that line.
+.cc-source {
+    --cc-source-gutter-width: 4.5rem;
+    // Draws the gutter below the last line too; the numbers' own background covers it while rows scroll past.
+    background: linear-gradient(
+        to right,
+        var(--color-base-200) var(--cc-source-gutter-width),
+        var(--color-base-300) var(--cc-source-gutter-width) calc(var(--cc-source-gutter-width) + 1px),
+        var(--color-base-100) calc(var(--cc-source-gutter-width) + 1px)
+    );
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.8125rem;
+    line-height: 1.5rem;
+    tab-size: 4;
+
+    .cc-source-block {
+        content-visibility: auto;
+        contain-intrinsic-size: auto 12000px;
+        width: max-content;
+        min-width: 100%;
+    }
+
+    .cc-source-row {
+        display: flex;
+    }
+
+    .cc-source-row-selected {
+        background-color: color-mix(in oklab, var(--color-primary) 10%, transparent);
+    }
+
+    .cc-source-number {
+        position: sticky;
+        left: 0;
+        flex: none;
+        width: var(--cc-source-gutter-width);
+        padding-inline: 0 1rem;
+        border-inline-end: 1px solid var(--color-base-300);
+        background-color: var(--color-base-200);
+        color: color-mix(in oklab, var(--color-base-content) 45%, transparent);
+        text-align: right;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .cc-source-row-selected .cc-source-number {
+        color: var(--color-primary);
+        font-weight: 600;
+    }
+
+    .cc-source-code {
+        flex: 1;
+        padding-inline: 1rem;
+        white-space: pre;
+    }
+
+    &.cc-source-wraps {
+        .cc-source-block {
+            width: auto;
+        }
+
+        .cc-source-code {
+            min-width: 0;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+    }
+}
+

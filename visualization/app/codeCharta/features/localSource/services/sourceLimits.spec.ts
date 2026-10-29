@@ -3,12 +3,12 @@ import { isTooLargeToShow, MAX_SHOWN_SIZE, reasonToLeaveUncoloured, sizeOf } fro
 const MEGABYTE = 1024 * 1024
 
 describe("sourceLimits", () => {
-    it("should name sizes in megabytes, with one decimal only where it adds something", () => {
+    it("should name sizes in the largest whole unit, with one decimal for megabytes only where it adds something", () => {
         // Act
-        const sizes = [sizeOf(5 * MEGABYTE), sizeOf(6.24 * MEGABYTE), sizeOf(0.5 * MEGABYTE)]
+        const sizes = [sizeOf(5 * MEGABYTE), sizeOf(6.24 * MEGABYTE), sizeOf(0.5 * MEGABYTE), sizeOf(2300), sizeOf(512)]
 
         // Assert
-        expect(sizes).toEqual(["5 MB", "6.2 MB", "0.5 MB"])
+        expect(sizes).toEqual(["5 MB", "6.2 MB", "512 KB", "2 KB", "512 B"])
         expect(MAX_SHOWN_SIZE).toBe("5 MB")
     })
 
