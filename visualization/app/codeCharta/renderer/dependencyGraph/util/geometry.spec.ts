@@ -1,4 +1,4 @@
-import { enclosingRectangle, intersects, Rectangle } from "./geometry"
+import { clippedTo, enclosingRectangle, intersects, Rectangle } from "./geometry"
 
 describe("geometry", () => {
     describe("intersects", () => {
@@ -24,6 +24,26 @@ describe("geometry", () => {
 
             // Assert
             expect(intersecting).toBe(false)
+        })
+    })
+
+    describe("clippedTo", () => {
+        const bounds: Rectangle = { x: 0, y: 0, width: 100, height: 80 }
+
+        it("should keep the part of a rectangle within the bounds", () => {
+            // Act
+            const clipped = clippedTo({ x: 60, y: -10, width: 60, height: 30 }, bounds)
+
+            // Assert
+            expect(clipped).toEqual({ x: 60, y: 0, width: 40, height: 20 })
+        })
+
+        it("should leave nothing of a rectangle outside the bounds", () => {
+            // Act
+            const clipped = clippedTo({ x: 100, y: 10, width: 20, height: 20 }, bounds)
+
+            // Assert
+            expect(clipped).toBeNull()
         })
     })
 

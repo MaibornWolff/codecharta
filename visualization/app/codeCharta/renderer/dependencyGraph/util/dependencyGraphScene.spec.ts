@@ -1,5 +1,5 @@
 import { nestingOf } from "./boxNesting"
-import { isEdgeInFocus, isEdgeOfHovered, searchMatcher } from "./dependencyGraphScene"
+import { DependencyGraphScene, isEdgeInFocus, isEdgeOfHovered, sceneWithEdgesWithin, searchMatcher } from "./dependencyGraphScene"
 import { aBox, anEdge } from "./dependencyGraphTestData"
 import { LayoutBox } from "./layoutModel"
 
@@ -104,6 +104,34 @@ describe("isEdgeOfHovered", () => {
         // Assert
         expect(answers).toEqual([true, false])
         expect(isEdgeOfHovered(crossing, null, isInside)).toBe(false)
+    })
+})
+
+describe("sceneWithEdgesWithin", () => {
+    it("should keep only the edges that start and end inside the box, and the rest of the scene", () => {
+        // Arrange
+        const layout = {
+            boxes: [
+                aBox("/root", { parentPath: null }),
+                aBox("/root/app"),
+                aBox("/root/app/a.ts"),
+                aBox("/root/app/b.ts"),
+                aBox("/root/c.ts")
+            ],
+            bands: [],
+            width: 100,
+            height: 100
+        }
+        const inside = anEdge("/root/app/a.ts", "/root/app/b.ts")
+        const leaving = anEdge("/root/app/a.ts", "/root/c.ts")
+        const coming = anEdge("/root/c.ts", "/root/app/b.ts")
+        const scene = { layout, edges: [inside, leaving, coming], selectedPath: "/root/app" } as unknown as DependencyGraphScene
+
+        // Act
+        const sceneOfTheBox = sceneWithEdgesWithin(scene, "/root/app")
+
+        // Assert
+        expect(sceneOfTheBox).toEqual({ ...scene, edges: [inside] })
     })
 })
 

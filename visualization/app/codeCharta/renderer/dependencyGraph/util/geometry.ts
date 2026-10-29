@@ -20,6 +20,15 @@ export function intersects(rectangleA: Rectangle, rectangleB: Rectangle): boolea
     )
 }
 
+/** The part of a rectangle that lies within the bounds; null when none does. */
+export function clippedTo(rectangle: Rectangle, bounds: Rectangle): Rectangle | null {
+    const left = Math.max(rectangle.x, bounds.x)
+    const top = Math.max(rectangle.y, bounds.y)
+    const right = Math.min(rectangle.x + rectangle.width, bounds.x + bounds.width)
+    const bottom = Math.min(rectangle.y + rectangle.height, bounds.y + bounds.height)
+    return right > left && bottom > top ? { x: left, y: top, width: right - left, height: bottom - top } : null
+}
+
 export function enclosingRectangle(rectangles: readonly Rectangle[]): Rectangle {
     if (rectangles.length === 0) {
         return NOTHING_TO_ENCLOSE

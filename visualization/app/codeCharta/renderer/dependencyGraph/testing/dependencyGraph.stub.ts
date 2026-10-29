@@ -19,6 +19,7 @@ export const stubbedChart = {
     convertFromPixel: jest.fn(pixelsAsLayoutUnits),
     convertToPixel: jest.fn(pixelsAsLayoutUnits),
     resize: jest.fn(),
+    getRenderedCanvas: jest.fn(() => document.createElement("canvas")),
     dispose: jest.fn(),
     on: jest.fn((eventName: string, handler: ChartEventHandler) => chartEventHandlers.set(eventName, handler))
 }

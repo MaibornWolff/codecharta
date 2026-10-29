@@ -26,6 +26,7 @@ import {
 } from "../../../../stores/sharedView/sharedView.write.facade"
 import { rightClickedNodeDataSelector } from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.selector"
 import { LocalSourceService } from "../../../localSource/services/localSource.service"
+import { DependencyGraphScreenshotService } from "../../../screenshot/facade"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
 import {
     DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES,
@@ -65,6 +66,7 @@ describe("nodeContextMenu component", () => {
     } as CodeMapNode
 
     const explorerRevealServiceMock = { revealNode: jest.fn() }
+    const dependencyGraphScreenshotMock = { canScreenshotBox: jest.fn(() => false), screenshotBox: jest.fn() }
     const localSourceMock = {
         isSupported: false,
         findSource: jest.fn().mockResolvedValue({ status: "cancelled" }),
@@ -131,6 +133,7 @@ describe("nodeContextMenu component", () => {
                 }),
                 { provide: ExplorerRevealService, useValue: explorerRevealServiceMock },
                 { provide: LocalSourceService, useValue: localSourceMock },
+                { provide: DependencyGraphScreenshotService, useValue: dependencyGraphScreenshotMock },
                 { provide: ActiveViewStore, useValue: { activeView$: of(activeView) } },
                 { provide: NODE_CONTEXT_MENU_CAPABILITIES, useValue: capabilities }
             ]
@@ -601,6 +604,50 @@ describe("nodeContextMenu component", () => {
             // Assert
             expect(dispatchSpy).toHaveBeenCalledWith(setRightClickedNodeData({ value: null }))
             expect(localSourceMock.chooseFolder).toHaveBeenCalledWith(rootNode.path)
+        })
+    })
+
+    describe("folder screenshot", () => {
+        const menu = () => within(document.querySelector<HTMLElement>("#codemap-context-menu"))
+
+        it("should offer a screenshot of a folder whose box the dependency graph shows", async () => {
+            // Arrange
+            dependencyGraphScreenshotMock.canScreenshotBox.mockReturnValue(true)
+
+            // Act
+            await renderMenu({ node: folderNode, activeView: "dependencies" })
+
+            // Assert
+            expect(menu().getByText("Screenshot Folder")).not.toBe(null)
+            expect(dependencyGraphScreenshotMock.canScreenshotBox).toHaveBeenCalledWith(folderNode.path)
+        })
+
+        it.each([
+            ["a folder in another view", folderNode, "metrics", true],
+            ["a file", fileNode, "dependencies", true],
+            ["a folder without a box in view", folderNode, "dependencies", false]
+        ] as const)("should not offer a screenshot for %s", async (_case, node, activeView, isBoxInView) => {
+            // Arrange
+            dependencyGraphScreenshotMock.canScreenshotBox.mockReturnValue(isBoxInView)
+
+            // Act
+            await renderMenu({ node, activeView })
+
+            // Assert
+            expect(menu().queryByText("Screenshot Folder")).toBe(null)
+        })
+
+        it("should close the menu and take the folder's screenshot", async () => {
+            // Arrange
+            dependencyGraphScreenshotMock.canScreenshotBox.mockReturnValue(true)
+            const { dispatchSpy } = await renderMenu({ node: folderNode, activeView: "dependencies" })
+
+            // Act
+            fireEvent.click(menu().getByText("Screenshot Folder"))
+
+            // Assert
+            expect(dispatchSpy).toHaveBeenCalledWith(setRightClickedNodeData({ value: null }))
+            expect(dependencyGraphScreenshotMock.screenshotBox).toHaveBeenCalledWith(folderNode.path, folderNode.name)
         })
     })
 })

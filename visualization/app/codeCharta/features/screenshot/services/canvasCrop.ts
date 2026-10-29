@@ -1,3 +1,5 @@
+import type { Rectangle } from "../../../renderer/dependencyGraph/dependencyGraphRegistry.facade"
+
 export function cropTransparentMargins(canvas: HTMLCanvasElement): HTMLCanvasElement {
     const width = canvas.width
     const height = canvas.height
@@ -24,13 +26,13 @@ export function cropTransparentMargins(canvas: HTMLCanvasElement): HTMLCanvasEle
         return canvas
     }
 
+    return cropToRectangle(canvas, { x: minX, y: minY, width: maxX - minX + 1, height: maxY - minY + 1 })
+}
+
+export function cropToRectangle(canvas: HTMLCanvasElement, { x, y, width, height }: Rectangle): HTMLCanvasElement {
     const croppedCanvas = document.createElement("canvas")
-    croppedCanvas.width = maxX - minX + 1
-    croppedCanvas.height = maxY - minY + 1
-
-    croppedCanvas
-        .getContext("2d")
-        .drawImage(canvas, minX, minY, croppedCanvas.width, croppedCanvas.height, 0, 0, croppedCanvas.width, croppedCanvas.height)
-
+    croppedCanvas.width = width
+    croppedCanvas.height = height
+    croppedCanvas.getContext("2d").drawImage(canvas, x, y, width, height, 0, 0, width, height)
     return croppedCanvas
 }

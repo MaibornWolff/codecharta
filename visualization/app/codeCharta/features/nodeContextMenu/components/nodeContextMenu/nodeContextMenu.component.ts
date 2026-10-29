@@ -6,6 +6,7 @@ import { VIEW_IDS, ViewId } from "../../../../routing/routePaths"
 import { SharedViewReadWindow } from "../../../../stores/sharedView/sharedView.read.facade"
 import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
 import { LocalSourceActionsComponent } from "../../../localSource/facade"
+import { DependencyGraphScreenshotService } from "../../../screenshot/facade"
 import { ContextMenuItemComponent, FloatingMenuComponent } from "../../../shared/facade"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
 import { NODE_CONTEXT_MENU_CAPABILITIES } from "../../nodeContextMenuCapabilities"
@@ -36,6 +37,7 @@ export class NodeContextMenuComponent {
     private readonly writeStore = inject(NodeContextMenuWriteStore)
     private readonly explorerRevealService = inject(ExplorerRevealService)
     private readonly clipboard = inject(CopyToClipboardService)
+    private readonly dependencyGraphScreenshot = inject(DependencyGraphScreenshotService)
 
     private readonly capabilities = inject(NODE_CONTEXT_MENU_CAPABILITIES)
     readonly localSourceActions = viewChild.required(LocalSourceActionsComponent)
@@ -83,6 +85,15 @@ export class NodeContextMenuComponent {
     })
 
     readonly isFolder = computed(() => (this.menuNode()?.children?.length ?? 0) > 0)
+    readonly isFolderScreenshotOffered = computed(() => {
+        const node = this.menuNode()
+        return (
+            node !== null &&
+            this.activeView() === "dependencies" &&
+            this.isFolder() &&
+            this.dependencyGraphScreenshot.canScreenshotBox(node.path)
+        )
+    })
     readonly isFile = computed(() => this.menuNode()?.type === NodeType.FILE)
     readonly isMapRoot = computed(() => {
         const node = this.menuNode()
@@ -147,6 +158,14 @@ export class NodeContextMenuComponent {
         this.close()
         if (node) {
             void this.localSourceActions().chooseFolder(node.path)
+        }
+    }
+
+    screenshotFolder() {
+        const node = this.menuNode()
+        this.close()
+        if (node) {
+            void this.dependencyGraphScreenshot.screenshotBox(node.path, node.name)
         }
     }
 
