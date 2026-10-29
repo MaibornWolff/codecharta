@@ -71,3 +71,63 @@ cc-metrics-bar > cc-link-color-height-button {
     border-start-end-radius: 9999px;
     background-color: var(--color-primary);
 }
+
+// The colours of "Show Source": Prism marks each token with classes inside HTML it builds itself, which only a
+// global stylesheet reaches. The theme's status colours are too light for text, so they are mixed with it.
+.cc-syntax {
+    --cc-syntax-keyword: var(--color-primary);
+    --cc-syntax-string: color-mix(in oklab, var(--color-success) 45%, var(--color-base-content));
+    --cc-syntax-number: color-mix(in oklab, var(--color-error) 70%, var(--color-base-content));
+    --cc-syntax-name: color-mix(in oklab, var(--color-info) 60%, var(--color-base-content));
+    --cc-syntax-tag: color-mix(in oklab, var(--color-accent) 50%, var(--color-base-content));
+
+    .token.comment,
+    .token.prolog,
+    .token.doctype,
+    .token.cdata {
+        color: color-mix(in oklab, var(--color-base-content) 55%, transparent);
+        font-style: italic;
+    }
+
+    .token.keyword,
+    .token.atrule,
+    .token.important,
+    .token.selector {
+        color: var(--cc-syntax-keyword);
+    }
+
+    .token.string,
+    .token.char,
+    .token.template-string,
+    .token.attr-value,
+    .token.regex {
+        color: var(--cc-syntax-string);
+    }
+
+    .token.number,
+    .token.boolean,
+    .token.constant,
+    .token.symbol {
+        color: var(--cc-syntax-number);
+    }
+
+    .token.function,
+    .token.class-name,
+    .token.builtin,
+    .token.annotation,
+    .token.decorator {
+        color: var(--cc-syntax-name);
+    }
+
+    .token.tag,
+    .token.attr-name,
+    .token.property,
+    .token.namespace {
+        color: var(--cc-syntax-tag);
+    }
+
+    .token.operator,
+    .token.punctuation {
+        color: color-mix(in oklab, var(--color-base-content) 75%, transparent);
+    }
+}

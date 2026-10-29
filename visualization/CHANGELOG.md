@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- **Local source files (experimental)**: once switched on in the settings, a file's context menu shows its source from the project folder on your computer or opens it in VS Code, without uploading anything, in Chrome, Edge and the desktop app.
+- **Local source files (experimental)**: once switched on in the settings, a file's context menu shows its source, coloured by its language, from the project folder on your computer or opens it in VS Code, without uploading anything, in Chrome, Edge and the desktop app.
 - **Folder screenshot in the dependency view**: a folder's context menu takes a screenshot of just that folder as the graph shows it, without the edges leading out of it.
 - **Hover highlight in the dependency view**: the highlight of the box under the pointer can be switched off in the edge settings.
 
