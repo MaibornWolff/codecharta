@@ -172,10 +172,12 @@ describe("DependencyBarComponent", () => {
         await userEvent.click(screen.getByRole("button", { name: "Reset edges shown" }))
 
         // Assert
-        const { shownEdgeTypes, isHoverLimitedToShownEdgeTypes } = defaultDependencyGraphSettings
+        const { shownEdgeTypes, isHoverLimitedToShownEdgeTypes, isHoverHighlighted } = defaultDependencyGraphSettings
         expect(shownEdgeTypes).not.toContain("regular")
         expect(dispatch).toHaveBeenCalledWith(
-            setState({ value: { preferences: { dependencyGraph: { shownEdgeTypes, isHoverLimitedToShownEdgeTypes } } } })
+            setState({
+                value: { preferences: { dependencyGraph: { shownEdgeTypes, isHoverLimitedToShownEdgeTypes, isHoverHighlighted } } }
+            })
         )
     })
 
@@ -205,6 +207,33 @@ describe("DependencyBarComponent", () => {
         // Assert
         expect(screen.getByTestId<HTMLInputElement>("dependency-bar-edges-respect-on-hover").checked).toBe(true)
         expect(screen.getByTestId("dependency-bar-edges-hover-note").textContent).toContain("only its edges of the ticked types")
+    })
+
+    it("should stop highlighting the box under the pointer once the reader switches it off", async () => {
+        // Arrange
+        const dispatch = await renderBar()
+
+        // Act
+        await userEvent.click(screen.getByTestId("dependency-bar-edges-highlight-on-hover"))
+
+        // Assert
+        expect(screen.getByTestId<HTMLInputElement>("dependency-bar-edges-highlight-on-hover").labels[0].textContent).toContain(
+            "Highlight on hover"
+        )
+        expect(dispatch).toHaveBeenCalledWith(changed({ isHoverHighlighted: false }))
+    })
+
+    it("should say that the hover highlights nothing, and not offer to hold it to the ticked types, while it is off", async () => {
+        // Arrange
+        const settings = { isHoverHighlighted: false }
+
+        // Act
+        await renderBar({ settings })
+
+        // Assert
+        expect(screen.getByTestId<HTMLInputElement>("dependency-bar-edges-highlight-on-hover").checked).toBe(false)
+        expect(screen.getByTestId<HTMLInputElement>("dependency-bar-edges-respect-on-hover").disabled).toBe(true)
+        expect(screen.getByTestId("dependency-bar-edges-hover-note").textContent).toContain("looks like every other box")
     })
 
     it("should stop showing an edge type the reader unticks", async () => {

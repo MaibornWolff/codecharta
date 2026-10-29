@@ -53,17 +53,31 @@
     }
     <label class="flex cursor-pointer items-center gap-2 border-t border-base-300 px-2 pt-2">
         <input
+            #hoverHighlightCheckbox
+            type="checkbox"
+            class="checkbox checkbox-sm checkbox-primary shrink-0"
+            data-testid="dependency-bar-edges-highlight-on-hover"
+            [checked]="isHoverHighlighted()"
+            (change)="highlightHover(hoverHighlightCheckbox.checked)"
+        />
+        <span class="text-sm">Highlight on hover</span>
+    </label>
+    <label class="flex items-center gap-2 px-2" [class]="isHoverHighlighted() ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'">
+        <input
             #hoverLimitCheckbox
             type="checkbox"
             class="checkbox checkbox-sm checkbox-primary shrink-0"
             data-testid="dependency-bar-edges-respect-on-hover"
             [checked]="isHoverLimited()"
+            [disabled]="!isHoverHighlighted()"
             (change)="limitHover(hoverLimitCheckbox.checked)"
         />
         <span class="text-sm">Respect on hover</span>
     </label>
     <p class="m-0 px-2 text-xs opacity-70" data-testid="dependency-bar-edges-hover-note">
-        @if (isHoverLimited()) {
+        @if (!isHoverHighlighted()) {
+            The box under the pointer looks like every other box: no outline, and its edges neither appear nor stand out.
+        } @else if (isHoverLimited()) {
             The box under the pointer shows only its edges of the ticked types.
         } @else {
             The box under the pointer shows all of its edges, also those of types not ticked.
@@ -73,7 +87,7 @@
         <cc-reset-settings-button
             [settingsKeys]="shownTypesResetKeys"
             [small]="true"
-            tooltip="Show the edges in cycles and those pointing upward again, no plain dependencies, and every edge on hover"
+            tooltip="Show the edges in cycles and those pointing upward again, no plain dependencies, and highlight every edge of the box under the pointer"
             label="Reset edges shown"
         ></cc-reset-settings-button>
         <cc-reset-settings-button

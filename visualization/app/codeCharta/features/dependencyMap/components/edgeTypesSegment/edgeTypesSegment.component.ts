@@ -44,7 +44,8 @@ export class EdgeTypesSegmentComponent {
     readonly sampleRowClass = SAMPLE_ROW_CLASS
     readonly shownTypesResetKeys = [
         "preferences.dependencyGraph.shownEdgeTypes",
-        "preferences.dependencyGraph.isHoverLimitedToShownEdgeTypes"
+        "preferences.dependencyGraph.isHoverLimitedToShownEdgeTypes",
+        "preferences.dependencyGraph.isHoverHighlighted"
     ]
     readonly colorResetKeys = ["preferences.dependencyGraph.edgeColors"]
 
@@ -60,6 +61,7 @@ export class EdgeTypesSegmentComponent {
     readonly shownEntries = computed(() => this.entries().filter(entry => entry.isShown))
     readonly showsEveryColor = computed(() => this.settings().lineStyleShows === "usage")
     readonly isHoverLimited = computed(() => this.settings().isHoverLimitedToShownEdgeTypes)
+    readonly isHoverHighlighted = computed(() => this.settings().isHoverHighlighted)
     readonly chosenLabel = computed(() => nameOfShownEdgeTypes(this.shownTypes(), this.carriedTypes()))
 
     toggle(type: DependencyEdgeType, isShown: boolean): void {
@@ -80,6 +82,10 @@ export class EdgeTypesSegmentComponent {
 
     limitHover(isHoverLimitedToShownEdgeTypes: boolean): void {
         this.writeStore.changeSettings({ isHoverLimitedToShownEdgeTypes })
+    }
+
+    highlightHover(isHoverHighlighted: boolean): void {
+        this.writeStore.changeSettings({ isHoverHighlighted })
     }
 
     recolor(type: DependencyEdgeType, color: string): void {

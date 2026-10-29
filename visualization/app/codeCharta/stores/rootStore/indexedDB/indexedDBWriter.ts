@@ -6,7 +6,7 @@ import { CCSTATE_RECORD_MIGRATIONS, migrateCcStateRecord } from "./migrations/cc
 import { withSeededFileSetting } from "./migrations/seedDefaults"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 34
+export const DB_VERSION = 35
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"

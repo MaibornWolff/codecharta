@@ -48,6 +48,7 @@ export type DependencyHierarchy = "folders" | "packages"
 export interface DependencyGraphSettings {
     shownEdgeTypes: DependencyEdgeType[]
     isHoverLimitedToShownEdgeTypes: boolean
+    isHoverHighlighted: boolean
     edgeColors: DependencyEdgeColors
     lineStyleShows: LineStyleMeaning
     edgeStyle: DependencyEdgeStyle
