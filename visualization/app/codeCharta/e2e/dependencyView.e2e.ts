@@ -48,7 +48,7 @@ test.describe("DependencyView", () => {
         await expect(page.getByText('Screenshot of "ParentLeaf" saved')).toBeVisible()
     })
 
-    test("should keep the hover highlight switched off once the reader turns it off", async ({ page }) => {
+    test("should keep the hover highlight switched off once the reader turns it off, also after a reload", async ({ page }) => {
         // Arrange
         await new ViewSwitcherPageObject(page).switchToDependencies()
         await page.getByTestId("dependency-bar-edges-segment").locator("button[popovertarget]").first().click()
@@ -65,5 +65,9 @@ test.describe("DependencyView", () => {
                     ((await readPersistedPreference(page, "dependencyGraph")) as { isHoverHighlighted?: boolean })?.isHoverHighlighted
             )
             .toBe(false)
+        await goto(page)
+        await new ViewSwitcherPageObject(page).switchToDependencies()
+        await page.getByTestId("dependency-bar-edges-segment").locator("button[popovertarget]").first().click()
+        await expect(page.getByTestId("dependency-bar-edges-highlight-on-hover")).not.toBeChecked()
     })
 })

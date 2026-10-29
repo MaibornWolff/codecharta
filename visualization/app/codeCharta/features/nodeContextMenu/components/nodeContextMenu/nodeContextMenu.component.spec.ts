@@ -619,7 +619,8 @@ describe("nodeContextMenu component", () => {
             await renderMenu({ node: folderNode, activeView: "dependencies" })
 
             // Assert
-            expect(menu().getByText("Screenshot Folder")).not.toBe(null)
+            const divider = screen.getByTestId("folder-screenshot-divider")
+            expect(divider.nextElementSibling.textContent).toContain("Screenshot Folder")
             expect(dependencyGraphScreenshotMock.canScreenshotBox).toHaveBeenCalledWith(folderNode.path)
         })
 
