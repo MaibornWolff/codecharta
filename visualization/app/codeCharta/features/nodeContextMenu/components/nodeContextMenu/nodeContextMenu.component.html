@@ -27,6 +27,7 @@
         }
 
         @if (isFolderScreenshotOffered()) {
+            <div class="my-1 border-t border-base-300" data-testid="folder-screenshot-divider"></div>
             <cc-context-menu-item icon="fa fa-camera" hoverHint="Take a screenshot of this folder as the graph shows it" (itemClick)="screenshotFolder()">
                 Screenshot Folder
             </cc-context-menu-item>
