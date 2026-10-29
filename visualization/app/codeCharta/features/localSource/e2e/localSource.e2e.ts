@@ -113,17 +113,20 @@ test.describe("Local source", () => {
         await expect(menuAfterTheBlock.getByText("Show Source")).toHaveCount(0)
     })
 
-    test("should offer no local source in a browser without a folder picker, even when switched on", async ({ page }) => {
+    test("should offer neither the switch nor the local source in a browser without a folder picker", async ({ page }) => {
         // Arrange
         const localSource = new LocalSourcePageObject(page)
         await localSource.standInForThePicker("missing")
         await goto(page)
-        await localSource.switchOn()
 
         // Act
+        await localSource.openSettings()
+        const switchInTheSettings = page.getByLabel("Open local source files (experimental)")
+        await page.keyboard.press("Escape")
         const menu = await openMenuOf(page, BIG_LEAF)
 
         // Assert
+        await expect(switchInTheSettings).toHaveCount(0)
         await expect(menu.getByText("Show Source")).toHaveCount(0)
     })
 })

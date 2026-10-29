@@ -53,8 +53,13 @@ export class LocalSourcePageObject {
         )
     }
 
-    async switchOn() {
+    async openSettings() {
         await this.page.getByRole("button", { name: "Settings", exact: true, description: "Global Configuration" }).click()
+        await this.page.getByText("Global Configuration").waitFor()
+    }
+
+    async switchOn() {
+        await this.openSettings()
         await this.page.getByLabel("Open local source files (experimental)").check()
         await this.page.keyboard.press("Escape")
     }
