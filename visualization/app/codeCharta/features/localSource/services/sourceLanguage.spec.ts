@@ -24,12 +24,27 @@ describe("sourceLanguageOf", () => {
         ["App.vue", "markup"],
         ["theme.scss", "scss"],
         ["config.YML", "yaml"]
-    ])("should colour %s as %s", (filePath, language) => {
+    ])("should colour %s as %s", (filePath, grammar) => {
         // Act
         const answer = sourceLanguageOf(filePath)
 
         // Assert
-        expect(answer).toBe(language)
+        expect(answer.grammar).toBe(grammar)
+    })
+
+    it.each([
+        ["src/Main.kt", "Kotlin"],
+        ["Service.cs", "C#"],
+        ["src/engine.hpp", "C++"],
+        ["App.vue", "Vue"],
+        ["orders.p", "ABL"],
+        ["src/Makefile", "Plain text"]
+    ])("should name the language of %s %s", (filePath, label) => {
+        // Act
+        const answer = sourceLanguageOf(filePath)
+
+        // Assert
+        expect(answer.label).toBe(label)
     })
 
     it.each([
@@ -42,6 +57,6 @@ describe("sourceLanguageOf", () => {
         const answer = sourceLanguageOf(filePath)
 
         // Assert
-        expect(answer).toBeNull()
+        expect(answer.grammar).toBeNull()
     })
 })

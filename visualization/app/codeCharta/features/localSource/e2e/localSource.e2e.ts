@@ -51,6 +51,51 @@ test.describe("Local source", () => {
         await expect(localSource.sourceDialog().locator(".token.keyword").first()).toHaveText("export")
     })
 
+    test("should keep a selection dragged past a line's end on that line", async ({ page }) => {
+        // Arrange
+        const localSource = new LocalSourcePageObject(page)
+        await localSource.standInForThePicker("sampleFolder")
+        await goto(page)
+        await localSource.switchOn()
+        await (await openMenuOf(page, BIG_LEAF)).getByText("Show Source").click()
+        const firstLine = localSource.sourceDialog().locator(".cc-source-code").first()
+        await expect(firstLine).toHaveText("export const big = 1")
+        const box = await firstLine.boundingBox()
+
+        // Act
+        await page.mouse.move(box.x + 20, box.y + box.height / 2)
+        await page.mouse.down()
+        await page.mouse.move(box.x + box.width - 5, box.y + box.height / 2 + 2, { steps: 10 })
+        await page.mouse.up()
+
+        // Assert
+        expect(await page.evaluate(() => window.getSelection().toString())).toMatch(/^[^\n]*= 1$/)
+    })
+
+    test("should mark a clicked line, wrap lines on request and go back to the map", async ({ page }) => {
+        // Arrange
+        const localSource = new LocalSourcePageObject(page)
+        await localSource.standInForThePicker("sampleFolder")
+        await goto(page)
+        await localSource.switchOn()
+        await (await openMenuOf(page, BIG_LEAF)).getByText("Show Source").click()
+
+        // Act
+        await localSource.sourceDialog().locator(".cc-source-number").nth(1).click()
+        await page.getByTestId("source-viewer-wrap").click()
+        const statusLine = await page.getByTestId("source-viewer-line").innerText()
+        const wraps = await localSource
+            .sourceDialog()
+            .locator(".cc-source")
+            .evaluate(viewer => viewer.classList.contains("cc-source-wraps"))
+        await page.getByTestId("source-viewer-back").click()
+
+        // Assert
+        expect(statusLine).toBe("Ln 2")
+        expect(wraps).toBe(true)
+        await expect(localSource.sourceDialog()).toBeHidden()
+    })
+
     test("should open a file in VS Code once the folder's full path was entered", async ({ page }) => {
         // Arrange
         const localSource = new LocalSourcePageObject(page)

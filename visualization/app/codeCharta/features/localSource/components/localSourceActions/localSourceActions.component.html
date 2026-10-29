@@ -1,33 +1,20 @@
-<dialog #sourceDialog class="modal" aria-label="Source" data-testid="local-source-dialog" (close)="closeSource()">
-    <div class="modal-box flex flex-col" [class]="tooLargeFile() ? '' : 'h-5/6 w-11/12 max-w-6xl'">
-        <div class="mb-2 flex items-center justify-between gap-4">
-            <h2 class="truncate font-mono text-sm font-bold" [title]="shownSource()?.relativePath ?? tooLargeFile()?.relativePath">
-                {{ shownSource()?.relativePath ?? tooLargeFile()?.relativePath }}
-            </h2>
-            <form method="dialog">
-                <button class="btn btn-ghost btn-sm" aria-label="Close source">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </form>
-        </div>
-        @if (tooLargeFile(); as tooLarge) {
+<cc-source-viewer (openInEditor)="openInEditor($event)"></cc-source-viewer>
+
+<dialog #tooLargeDialog class="modal" aria-label="File too large" data-testid="local-source-too-large-dialog" (close)="tooLargeFile.set(null)">
+    @if (tooLargeFile(); as tooLarge) {
+        <div class="modal-box">
+            <h2 class="mb-2 truncate font-mono text-sm font-bold" [title]="tooLarge.relativePath">{{ tooLarge.relativePath }}</h2>
             <div class="flex flex-col items-start gap-4 py-2" data-testid="local-source-too-large">
                 <p class="text-sm">This file is {{ tooLarge.size }}, too large to show here (at most {{ maxShownSize }}).</p>
-                <button class="btn btn-primary btn-sm" (click)="openTooLargeFileInEditor(tooLarge.nodePath)">Open in VS Code</button>
+                <div class="modal-action mt-0 w-full">
+                    <form method="dialog">
+                        <button class="btn btn-sm">Close</button>
+                    </form>
+                    <button class="btn btn-primary btn-sm" (click)="openTooLargeFileInEditor(tooLarge.nodePath)">Open in VS Code</button>
+                </div>
             </div>
-        }
-        @if (shownSource()?.uncolouredReason; as reason) {
-            <p class="mb-2 text-xs opacity-70" data-testid="local-source-uncoloured-note">Shown without colours: {{ reason }}</p>
-        }
-        <div class="flex min-h-0 flex-1 overflow-auto rounded bg-base-200 font-mono text-xs leading-5" [class.hidden]="tooLargeFile()">
-            <pre class="select-none border-r border-base-300 px-2 text-right opacity-50">{{ shownSource()?.lineNumbers }}</pre>
-            @if (shownSource()?.highlightedHtml; as highlightedHtml) {
-                <pre class="cc-syntax flex-1 px-3" data-testid="local-source-highlighted"><code [innerHTML]="highlightedHtml"></code></pre>
-            } @else {
-                <pre class="flex-1 px-3">{{ shownSource()?.text }}</pre>
-            }
         </div>
-    </div>
+    }
     <form method="dialog" class="modal-backdrop">
         <button>close</button>
     </form>
