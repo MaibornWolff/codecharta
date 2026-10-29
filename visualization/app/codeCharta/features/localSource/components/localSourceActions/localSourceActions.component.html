@@ -1,14 +1,25 @@
-<dialog #sourceDialog class="modal" aria-label="Source" data-testid="local-source-dialog" (close)="shownSource.set(null)">
-    <div class="modal-box flex h-5/6 w-11/12 max-w-6xl flex-col">
+<dialog #sourceDialog class="modal" aria-label="Source" data-testid="local-source-dialog" (close)="closeSource()">
+    <div class="modal-box flex flex-col" [class]="tooLargeFile() ? '' : 'h-5/6 w-11/12 max-w-6xl'">
         <div class="mb-2 flex items-center justify-between gap-4">
-            <h2 class="truncate font-mono text-sm font-bold" [title]="shownSource()?.relativePath">{{ shownSource()?.relativePath }}</h2>
+            <h2 class="truncate font-mono text-sm font-bold" [title]="shownSource()?.relativePath ?? tooLargeFile()?.relativePath">
+                {{ shownSource()?.relativePath ?? tooLargeFile()?.relativePath }}
+            </h2>
             <form method="dialog">
                 <button class="btn btn-ghost btn-sm" aria-label="Close source">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </form>
         </div>
-        <div class="flex min-h-0 flex-1 overflow-auto rounded bg-base-200 font-mono text-xs leading-5">
+        @if (tooLargeFile(); as tooLarge) {
+            <div class="flex flex-col items-start gap-4 py-2" data-testid="local-source-too-large">
+                <p class="text-sm">This file is {{ tooLarge.size }}, too large to show here (at most {{ maxShownSize }}).</p>
+                <button class="btn btn-primary btn-sm" (click)="openTooLargeFileInEditor(tooLarge.nodePath)">Open in VS Code</button>
+            </div>
+        }
+        @if (shownSource()?.uncolouredReason; as reason) {
+            <p class="mb-2 text-xs opacity-70" data-testid="local-source-uncoloured-note">Shown without colours: {{ reason }}</p>
+        }
+        <div class="flex min-h-0 flex-1 overflow-auto rounded bg-base-200 font-mono text-xs leading-5" [class.hidden]="tooLargeFile()">
             <pre class="select-none border-r border-base-300 px-2 text-right opacity-50">{{ shownSource()?.lineNumbers }}</pre>
             @if (shownSource()?.highlightedHtml; as highlightedHtml) {
                 <pre class="cc-syntax flex-1 px-3" data-testid="local-source-highlighted"><code [innerHTML]="highlightedHtml"></code></pre>

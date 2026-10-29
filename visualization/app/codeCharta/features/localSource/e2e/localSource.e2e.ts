@@ -83,6 +83,38 @@ test.describe("Local source", () => {
         await expect(localSource.folderLines()).toHaveText(["sample1", "No local folder"])
     })
 
+    test("should not show a file above 5 MB, but offer to open it in VS Code", async ({ page }) => {
+        // Arrange
+        const localSource = new LocalSourcePageObject(page)
+        await localSource.standInForThePicker("sampleFolderWithLargeFiles")
+        await goto(page)
+        await localSource.switchOn()
+
+        // Act
+        await (await openMenuOf(page, BIG_LEAF)).getByText("Show Source").click()
+
+        // Assert
+        await expect(page.getByTestId("local-source-too-large")).toContainText("This file is 6 MB, too large to show here (at most 5 MB).")
+        await expect(page.getByTestId("local-source-too-large").getByRole("button", { name: "Open in VS Code" })).toBeVisible()
+    })
+
+    test("should show a file with minified lines without colours and say why", async ({ page }) => {
+        // Arrange
+        const localSource = new LocalSourcePageObject(page)
+        await localSource.standInForThePicker("sampleFolderWithLargeFiles")
+        await goto(page)
+        await localSource.switchOn()
+
+        // Act
+        await (await openMenuOf(page, `${SAMPLE_ONE}/sample1OnlyLeaf.scss`)).getByText("Show Source").click()
+
+        // Assert
+        await expect(page.getByTestId("local-source-uncoloured-note")).toHaveText(
+            "Shown without colours: has lines longer than 20,000 characters"
+        )
+        await expect(localSource.sourceDialog().locator(".token")).toHaveCount(0)
+    })
+
     test("should refuse a folder that holds none of the map's files", async ({ page }) => {
         // Arrange
         const localSource = new LocalSourcePageObject(page)

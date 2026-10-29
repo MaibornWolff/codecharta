@@ -105,7 +105,13 @@ describe("LocalSourceActionsComponent", () => {
             // Arrange
             localSourceMock.findSource.mockResolvedValue(found(folderWithoutEditorPath, "val first = 1", "src/First.kt"))
             const component = (await renderActions()).componentInstance
-            const shownMeanwhile = { relativePath: "src/Second.kt", lineNumbers: "1", text: "val second = 2", highlightedHtml: null }
+            const shownMeanwhile = {
+                relativePath: "src/Second.kt",
+                lineNumbers: "1",
+                text: "val second = 2",
+                highlightedHtml: null,
+                uncolouredReason: null
+            }
             jest.mocked(highlightSource).mockImplementationOnce(() => {
                 component.shownSource.set(shownMeanwhile)
                 return "coloured first file"
@@ -116,6 +122,81 @@ describe("LocalSourceActionsComponent", () => {
 
             // Assert
             expect(component.shownSource()).toBe(shownMeanwhile)
+        })
+
+        it("should not read a file above 5 MB but say so and offer VS Code instead", async () => {
+            // Arrange
+            const hugeFile = { size: 6.2 * 1024 * 1024, text: jest.fn() } as unknown as File
+            localSourceMock.findSource.mockResolvedValue({
+                status: "found",
+                file: hugeFile,
+                folder: folderWithoutEditorPath,
+                relativePath: "dist/main.js"
+            })
+            const fixture = await renderActions()
+
+            // Act
+            await fixture.componentInstance.showSource("/root/dist/main.js")
+            fixture.detectChanges()
+
+            // Assert
+            expect(hugeFile.text).not.toHaveBeenCalled()
+            expect(fixture.componentInstance.shownSource()).toBeNull()
+            expect(screen.getByTestId("local-source-too-large").textContent).toContain(
+                "This file is 6.2 MB, too large to show here (at most 5 MB)."
+            )
+        })
+
+        it("should open a file too large to show in VS Code from the dialog", async () => {
+            // Arrange
+            givenFreshClick(true)
+            const hugeFile = { size: 6 * 1024 * 1024, text: jest.fn() } as unknown as File
+            localSourceMock.findSource.mockResolvedValue({
+                status: "found",
+                file: hugeFile,
+                folder: folderWithEditorPath,
+                relativePath: "dist/main.js"
+            })
+            const fixture = await renderActions()
+            await fixture.componentInstance.showSource("/root/dist/main.js")
+            fixture.detectChanges()
+
+            // Act
+            await userEvent.click(screen.getByRole("button", { name: "Open in VS Code", hidden: true }))
+
+            // Assert
+            expect(HTMLDialogElement.prototype.close).toHaveBeenCalled()
+            expect(openSpy).toHaveBeenCalledWith("vscode://file/C:/dev/myproject/dist/main.js", "_blank")
+        })
+
+        it("should show a file with minified lines plain and say why", async () => {
+            // Arrange
+            localSourceMock.findSource.mockResolvedValue(found(folderWithoutEditorPath, `var a=${"1,".repeat(12_000)}1`, "dist/vendor.js"))
+            const fixture = await renderActions()
+
+            // Act
+            await fixture.componentInstance.showSource("/root/dist/vendor.js")
+            fixture.detectChanges()
+
+            // Assert
+            expect(fixture.componentInstance.shownSource().highlightedHtml).toBeNull()
+            expect(screen.getByTestId("local-source-uncoloured-note").textContent).toContain(
+                "Shown without colours: has lines longer than 20,000 characters"
+            )
+        })
+
+        it("should forget the shown file once the dialog closes", async () => {
+            // Arrange
+            localSourceMock.findSource.mockResolvedValue(found(folderWithoutEditorPath))
+            const component = (await renderActions()).componentInstance
+            await component.showSource("/root/src/Foo.kt")
+
+            // Act
+            component.closeSource()
+
+            // Assert
+            expect(component.shownSource()).toBeNull()
+            expect(component.tooLargeFile()).toBeNull()
         })
 
         it("should warn when the file is not in the chosen folder", async () => {
