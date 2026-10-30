@@ -92,7 +92,7 @@ describe("LocalSourceActionsComponent", () => {
             // Assert
             expect(hugeFile.text).not.toHaveBeenCalled()
             expect(screen.getByTestId("local-source-dialog").querySelectorAll(".cc-source-row")).toHaveLength(0)
-            expect(screen.getByTestId("local-source-too-large").textContent).toContain(
+            expect(screen.getByTestId("local-source-not-shown").textContent).toContain(
                 "This file is 6.2 MB, too large to show here (at most 5 MB)."
             )
         })
@@ -118,7 +118,7 @@ describe("LocalSourceActionsComponent", () => {
 
             // Act
             await userEvent.click(
-                within(screen.getByTestId("local-source-too-large")).getByRole("button", { name: "Open in VS Code", hidden: true })
+                within(screen.getByTestId("local-source-not-shown")).getByRole("button", { name: "Open in VS Code", hidden: true })
             )
 
             // Assert
@@ -139,10 +139,10 @@ describe("LocalSourceActionsComponent", () => {
             await fixture.componentInstance.showSource("/root/dist/main.js")
 
             // Act
-            screen.getByTestId("local-source-too-large-dialog").dispatchEvent(new Event("close"))
+            screen.getByTestId("local-source-not-shown-dialog").dispatchEvent(new Event("close"))
 
             // Assert
-            expect(fixture.componentInstance.tooLargeFile()).toBeNull()
+            expect(fixture.componentInstance.notShownFile()).toBeNull()
         })
 
         it("should open VS Code when the viewer asks for it", async () => {
@@ -234,6 +234,36 @@ describe("LocalSourceActionsComponent", () => {
                 expect(toastMock.show).not.toHaveBeenCalled()
             })
 
+            it.each([
+                [{ status: "doesNotFitMap" }, "does not match this map"],
+                [{ status: "notFound", relativePath: "src/Foo.kt" }, '"src/Foo.kt" is not in the chosen folder']
+            ])("should keep the dialog open and say why on %j", async (lookup, reason) => {
+                // Arrange
+                const fixture = await askForFolder()
+                localSourceMock.chooseFolderAndFindSource.mockResolvedValue(lookup)
+
+                // Act
+                await userEvent.click(screen.getByRole("button", { name: "Select folder…", hidden: true }))
+                fixture.detectChanges()
+
+                // Assert
+                expect(screen.getByTestId("local-source-folder-problem").textContent).toContain(reason)
+                expect(HTMLDialogElement.prototype.close).not.toHaveBeenCalled()
+            })
+
+            it("should close the dialog so that a failing folder choice can be read", async () => {
+                // Arrange
+                await askForFolder()
+                localSourceMock.chooseFolderAndFindSource.mockRejectedValue(new Error("storage gone"))
+
+                // Act
+                await userEvent.click(screen.getByRole("button", { name: "Select folder…", hidden: true }))
+
+                // Assert
+                expect(toastMock.show).toHaveBeenCalledWith("Could not read the local folder: storage gone", "error")
+                expect(HTMLDialogElement.prototype.close).toHaveBeenCalled()
+            })
+
             it("should forget the request once the dialog closes", async () => {
                 // Arrange
                 const fixture = await askForFolder()
@@ -244,6 +274,119 @@ describe("LocalSourceActionsComponent", () => {
                 // Assert
                 expect(fixture.componentInstance.folderRequest()).toBeNull()
             })
+        })
+
+        it("should offer Close first when the file is missing from the saved folder", async () => {
+            // Arrange
+            localSourceMock.findSource.mockResolvedValue({
+                status: "folderNeeded",
+                mapFileName: "myproject.cc.json",
+                relativePath: "src/Foo.kt",
+                missingFrom: "myproject"
+            })
+            const fixture = await renderActions()
+
+            // Act
+            await fixture.componentInstance.showSource("/root/src/Foo.kt")
+            fixture.detectChanges()
+
+            // Assert
+            expect(screen.getByTestId("local-source-folder-missing").textContent).toContain("moved or been deleted")
+            expect(screen.getByRole("button", { name: "Close", hidden: true }).classList).toContain("btn-primary")
+            expect(screen.getByRole("button", { name: "Select another folder…", hidden: true }).classList).not.toContain("btn-primary")
+        })
+
+        it("should show the encoding a file was read in", async () => {
+            // Arrange
+            const latin1 = new File([new Uint8Array([0x47, 0x72, 0xfc, 0xdf, 0x65])], "Foo.kt")
+            localSourceMock.findSource.mockResolvedValue({
+                status: "found",
+                file: latin1,
+                folder: folderWithoutEditorPath,
+                relativePath: "src/Foo.kt"
+            })
+            const fixture = await renderActions()
+
+            // Act
+            await fixture.componentInstance.showSource("/root/src/Foo.kt")
+            fixture.detectChanges()
+
+            // Assert
+            expect(screen.getByTestId("source-viewer-encoding").textContent).toBe("Windows-1252")
+            expect(screen.getByTestId("local-source-dialog").textContent).toContain("Grüße")
+        })
+
+        it("should explain instead of showing a file that is not text", async () => {
+            // Arrange
+            const binary = new File([new Uint8Array([0x89, 0x50, 0x00, 0x01])], "logo.png")
+            localSourceMock.findSource.mockResolvedValue({
+                status: "found",
+                file: binary,
+                folder: folderWithoutEditorPath,
+                relativePath: "logo.png"
+            })
+            const fixture = await renderActions()
+
+            // Act
+            await fixture.componentInstance.showSource("/root/logo.png")
+            fixture.detectChanges()
+
+            // Assert
+            expect(screen.getByTestId("local-source-not-shown").textContent).toContain("not a text file")
+            expect(screen.getByTestId("local-source-dialog").querySelectorAll(".cc-source-row")).toHaveLength(0)
+        })
+
+        it("should report a file that cannot be read", async () => {
+            // Arrange
+            const unreadable = { size: 10, arrayBuffer: jest.fn().mockRejectedValue(new Error("file gone")) } as unknown as File
+            localSourceMock.findSource.mockResolvedValue({
+                status: "found",
+                file: unreadable,
+                folder: folderWithoutEditorPath,
+                relativePath: "a.kt"
+            })
+            const component = (await renderActions()).componentInstance
+
+            // Act
+            await component.showSource("/root/a.kt")
+
+            // Assert
+            expect(toastMock.show).toHaveBeenCalledWith("Could not read the local folder: file gone", "error")
+        })
+
+        it("should drop a lookup that a newer request overtook while the browser asked for permission", async () => {
+            // Arrange
+            let answerFirstLookup: (lookup: SourceLookup) => void
+            localSourceMock.findSource.mockReturnValueOnce(new Promise(resolve => (answerFirstLookup = resolve)))
+            localSourceMock.findSource.mockResolvedValueOnce(found(folderWithoutEditorPath, "second\n", "second.kt"))
+            const fixture = await renderActions()
+            const firstRequest = fixture.componentInstance.showSource("/root/first.kt")
+            await fixture.componentInstance.showSource("/root/second.kt")
+
+            // Act
+            answerFirstLookup(found(folderWithoutEditorPath, "first\n", "first.kt"))
+            await firstRequest
+            fixture.detectChanges()
+
+            // Assert
+            expect(screen.getByTestId("local-source-dialog").textContent).toContain("second.kt")
+            expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalledTimes(1)
+        })
+
+        it("should drop a lookup once its view has left the page", async () => {
+            // Arrange
+            let answerLookup: (lookup: SourceLookup) => void
+            localSourceMock.findSource.mockReturnValue(new Promise(resolve => (answerLookup = resolve)))
+            const fixture = await renderActions()
+            const request = fixture.componentInstance.showSource("/root/first.kt")
+            fixture.nativeElement.remove()
+
+            // Act
+            answerLookup(found(folderWithoutEditorPath))
+            await request
+
+            // Assert
+            expect(HTMLDialogElement.prototype.showModal).not.toHaveBeenCalled()
         })
 
         it("should warn when the file is not in the chosen folder", async () => {
@@ -268,7 +411,10 @@ describe("LocalSourceActionsComponent", () => {
             await component.showSource("/root/src/Foo.kt")
 
             // Assert
-            expect(toastMock.show).toHaveBeenCalledWith("The chosen folder contains none of the map's files", "warning")
+            expect(toastMock.show).toHaveBeenCalledWith(
+                "The chosen folder does not match this map: too few of its files are in it",
+                "warning"
+            )
         })
 
         it("should report a folder that cannot be read", async () => {
@@ -423,7 +569,10 @@ describe("LocalSourceActionsComponent", () => {
             await component.chooseFolder("/root")
 
             // Assert
-            expect(toastMock.show).toHaveBeenCalledWith("The chosen folder contains none of the map's files", "warning")
+            expect(toastMock.show).toHaveBeenCalledWith(
+                "The chosen folder does not match this map: too few of its files are in it",
+                "warning"
+            )
         })
     })
 })

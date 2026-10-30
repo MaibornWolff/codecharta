@@ -28,10 +28,16 @@ export class LocalSourceFoldersRepository {
         return this.knownFolders.get(mapKey)
     }
 
-    async save(folder: LocalSourceFolder): Promise<void> {
+    /** Merges into what is saved now rather than what this tab knows, as another tab may have changed it since. */
+    async update(mapKey: string, change: Partial<Omit<LocalSourceFolder, "mapKey">>): Promise<LocalSourceFolder> {
         const database = await openLocalSourceDB()
-        await database.put(FOLDERS_STORE_NAME, folder)
-        this.knownFolders.set(folder.mapKey, folder)
+        const transaction = database.transaction(FOLDERS_STORE_NAME, "readwrite")
+        const saved = await transaction.store.get(mapKey)
+        const folder: LocalSourceFolder = { mapKey, directory: null, editorRootPath: null, ...saved, ...change }
+        await transaction.store.put(folder)
+        await transaction.done
+        this.knownFolders.set(mapKey, folder)
+        return folder
     }
 
     async delete(mapKey: string): Promise<void> {

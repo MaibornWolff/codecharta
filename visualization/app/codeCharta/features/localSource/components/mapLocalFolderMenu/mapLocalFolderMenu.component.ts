@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from "@
 import { ContextMenuItemComponent, FloatingMenuAnchor, FloatingMenuComponent, ToastService } from "../../../shared/facade"
 import { reportFolderChoice } from "../../services/folderChoiceToast"
 import { LocalSourceService } from "../../services/localSource.service"
+import { READING_FAILED, reportingFailure } from "../../services/reportingFailure"
 import { EditorFolderDialogComponent } from "../editorFolderDialog/editorFolderDialog.component"
 
 interface MenuTarget {
@@ -38,12 +39,17 @@ export class MapLocalFolderMenuComponent {
 
     async chooseFolder(mapFileName: string) {
         this.close()
-        reportFolderChoice(this.toast, await this.localSource.chooseFolderForMap(mapFileName))
+        const choice = await reportingFailure(this.toast, READING_FAILED, () => this.localSource.chooseFolderForMap(mapFileName))
+        if (choice) {
+            reportFolderChoice(this.toast, choice)
+        }
     }
 
     async setEditorFolder(mapFileName: string) {
         this.close()
-        const folder = await this.localSource.describeFolder(mapFileName)
-        this.editorFolderDialog().ask({ mapFileName, editorRootPath: folder?.editorRootPath ?? null, fileToOpen: null })
+        await reportingFailure(this.toast, READING_FAILED, async () => {
+            const folder = await this.localSource.describeFolder(mapFileName)
+            this.editorFolderDialog().ask({ mapFileName, editorRootPath: folder?.editorRootPath ?? null, fileToOpen: null })
+        })
     }
 }

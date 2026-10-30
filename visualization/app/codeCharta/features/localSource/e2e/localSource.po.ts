@@ -7,7 +7,13 @@ const SAMPLE_ONE_FOLDER = {
     ParentLeaf: { "smallLeaf.html": "<p>small</p>\n", "otherSmallLeaf.ts": "export {}\n" }
 }
 
-export type StandInPicker = "sampleFolder" | "sampleFolderWithLargeFiles" | "unrelatedFolder" | "blockedByPolicy" | "missing"
+export type StandInPicker =
+    | "sampleFolder"
+    | "sampleFolderWithLargeFiles"
+    | "sampleFolderWithLongFile"
+    | "unrelatedFolder"
+    | "blockedByPolicy"
+    | "missing"
 
 export class LocalSourcePageObject {
     constructor(private readonly page: Page) {}
@@ -59,6 +65,9 @@ export class LocalSourcePageObject {
                     }
                     const folder = await storage.getDirectoryHandle("sample1", { create: true })
                     await fill(folder, sampleFolder)
+                    if (picker === "sampleFolderWithLongFile") {
+                        await fill(folder, { "bigLeaf.ts": "export const line = 1\n".repeat(600) })
+                    }
                     if (picker === "sampleFolderWithLargeFiles") {
                         await fill(folder, {
                             "bigLeaf.ts": `export const big = [${"1,".repeat(3 * 1024 * 1024)}1]\n`,

@@ -38,6 +38,30 @@ describe("MapLocalFolderMenuComponent", () => {
         return event
     }
 
+    it("should report a folder choice that fails", async () => {
+        // Arrange
+        localSourceMock.chooseFolderForMap.mockRejectedValue(new Error("storage gone"))
+        const fixture = await renderMenu()
+
+        // Act
+        await fixture.componentInstance.chooseFolder("myproject.cc.json")
+
+        // Assert
+        expect(toastMock.show).toHaveBeenCalledWith("Could not read the local folder: storage gone", "error")
+    })
+
+    it("should report saved settings that cannot be read", async () => {
+        // Arrange
+        localSourceMock.describeFolder.mockRejectedValue(new Error("storage gone"))
+        const fixture = await renderMenu()
+
+        // Act
+        await fixture.componentInstance.setEditorFolder("myproject.cc.json")
+
+        // Assert
+        expect(toastMock.show).toHaveBeenCalledWith("Could not read the local folder: storage gone", "error")
+    })
+
     it("should keep the browser's menu where the browser cannot open a folder", async () => {
         // Arrange
         localSourceMock.isAvailable.set(false)

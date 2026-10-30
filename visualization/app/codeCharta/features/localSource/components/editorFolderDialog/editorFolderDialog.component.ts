@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signal, viewChild } from "@angular/core"
 import { FormsModule } from "@angular/forms"
+import { ToastService } from "../../../shared/facade"
+import { handLinkToTheSystem } from "../../services/handLinkToTheSystem"
 import { LocalSourceService } from "../../services/localSource.service"
-import { handLinkToTheSystem, mapNameOf, vscodeFileLink } from "../../services/localSourcePaths"
+import { cleanedFolderPath, isAbsoluteFolderPath, mapNameOf, vscodeFileLink } from "../../services/localSourcePaths"
+import { reportingFailure, SAVING_FAILED } from "../../services/reportingFailure"
 
 export interface EditorFolderRequest {
     mapFileName: string
@@ -18,12 +21,15 @@ export interface EditorFolderRequest {
 })
 export class EditorFolderDialogComponent {
     private readonly localSource = inject(LocalSourceService)
+    private readonly toast = inject(ToastService)
     private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")
 
     readonly request = signal<EditorFolderRequest | null>(null)
     readonly editorRootPath = signal("")
     readonly mapName = computed(() => mapNameOf(this.request()?.mapFileName ?? ""))
     readonly fileName = computed(() => this.request()?.fileToOpen?.split("/").at(-1) ?? "")
+    readonly isUsablePath = computed(() => isAbsoluteFolderPath(cleanedFolderPath(this.editorRootPath())))
+    readonly showsPathProblem = computed(() => cleanedFolderPath(this.editorRootPath()) !== "" && !this.isUsablePath())
     readonly confirmsKnownPath = computed(() => Boolean(this.request()?.fileToOpen && this.request()?.editorRootPath))
 
     ask(request: EditorFolderRequest) {
@@ -34,14 +40,14 @@ export class EditorFolderDialogComponent {
 
     async confirm() {
         const request = this.request()
-        const editorRootPath = this.editorRootPath().trim()
-        if (!request || editorRootPath === "") {
+        const editorRootPath = cleanedFolderPath(this.editorRootPath())
+        if (!request || !this.isUsablePath()) {
             return
         }
         if (request.fileToOpen !== null) {
             handLinkToTheSystem(vscodeFileLink(editorRootPath, request.fileToOpen))
         }
         this.dialog().nativeElement.close()
-        await this.localSource.saveEditorRootPath(request.mapFileName, editorRootPath)
+        await reportingFailure(this.toast, SAVING_FAILED, () => this.localSource.saveEditorRootPath(request.mapFileName, editorRootPath))
     }
 }

@@ -165,6 +165,19 @@ describe("fileSystemAccess", () => {
             expect(file).toBeNull()
         })
 
+        it("should return null for a name this system's folders cannot hold", async () => {
+            // Arrange
+            const refusingDirectory = {
+                getFileHandle: jest.fn().mockRejectedValue(new TypeError("Name is not allowed"))
+            } as unknown as FileSystemDirectoryHandle
+
+            // Act
+            const file = await findFile(refusingDirectory, "a\\b.kt")
+
+            // Assert
+            expect(file).toBeNull()
+        })
+
         it("should return null when a folder on the way is a file", async () => {
             // Act
             const file = await findFile(directory, "README.md/Foo.kt")

@@ -17,6 +17,7 @@ import { LocalSourceFolder, LocalSourceFoldersRepository } from "./localSourceFo
 import { relativePathOf, sampleFilePaths } from "./localSourcePaths"
 
 const FIT_CHECK_SAMPLE_SIZE = 20
+const MIN_SHARE_OF_FITTING_SAMPLES = 0.5
 
 type FolderRefusal = { status: "cancelled" } | { status: "blocked" } | { status: "doesNotFitMap" }
 
@@ -30,7 +31,6 @@ export type SourceLookup =
     | FolderRefusal
 
 export interface LocalFolderDescription {
-    /** All the browser tells about the folder chosen with the picker. */
     folderName: string | null
     editorRootPath: string | null
 }
@@ -129,8 +129,8 @@ export class LocalSourceService {
     }
 
     async saveEditorRootPath(mapFileName: string, editorRootPath: string): Promise<void> {
-        const savedFolder = await this.repository.find(mapFileName)
-        await this.saveFolder({ mapKey: mapFileName, directory: savedFolder?.directory ?? null, editorRootPath })
+        await this.repository.update(mapFileName, { editorRootPath })
+        this.markFoldersChanged()
     }
 
     private async findSourceInChosenFolder(location: MapLocation): Promise<SourceLookup> {
@@ -151,9 +151,8 @@ export class LocalSourceService {
         if (!(await fitsMap(directory, map))) {
             return { status: "doesNotFitMap" }
         }
-        const savedFolder = await this.repository.find(mapFileName)
-        const folder = { mapKey: mapFileName, directory, editorRootPath: savedFolder?.editorRootPath ?? null }
-        await this.saveFolder(folder)
+        const folder = await this.repository.update(mapFileName, { directory })
+        this.markFoldersChanged()
         return { status: "chosen", folder }
     }
 
@@ -177,11 +176,6 @@ export class LocalSourceService {
             this.availability.reportBlocked()
             return { status: "blocked" }
         }
-    }
-
-    private async saveFolder(folder: LocalSourceFolder): Promise<void> {
-        await this.repository.save(folder)
-        this.markFoldersChanged()
     }
 
     private markFoldersChanged() {
@@ -212,5 +206,6 @@ export class LocalSourceService {
 async function fitsMap(directory: LocalDirectoryHandle, map: CodeMapNode): Promise<boolean> {
     const samples = sampleFilePaths(map, FIT_CHECK_SAMPLE_SIZE)
     const foundFiles = await Promise.all(samples.map(samplePath => findFile(directory, samplePath)))
-    return foundFiles.some(file => file !== null)
+    const fittingSamples = foundFiles.filter(file => file !== null).length
+    return fittingSamples >= Math.max(1, samples.length * MIN_SHARE_OF_FITTING_SAMPLES)
 }

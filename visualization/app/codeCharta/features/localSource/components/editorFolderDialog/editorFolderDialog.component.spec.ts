@@ -45,6 +45,31 @@ describe("EditorFolderDialogComponent", () => {
         expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled()
     })
 
+    it("should refuse a path that is not absolute and say what is needed", async () => {
+        // Arrange
+        const fixture = await ask()
+
+        // Act
+        await userEvent.type(pathInput(), "~/dev/project")
+        fixture.detectChanges()
+
+        // Assert
+        expect(screen.getByTestId("local-source-editor-path-problem").textContent).toContain("Enter the full path")
+        expect(screen.getByRole<HTMLButtonElement>("button", { name: "Save", hidden: true }).disabled).toBe(true)
+    })
+
+    it("should save a copied path without its quotes", async () => {
+        // Arrange
+        await ask()
+
+        // Act
+        await userEvent.type(pathInput(), '"C:\\dev\\project"')
+        await userEvent.click(screen.getByRole("button", { name: "Save", hidden: true }))
+
+        // Assert
+        expect(localSourceMock.saveEditorRootPath).toHaveBeenCalledWith("myproject.cc.json", "C:\\dev\\project")
+    })
+
     it("should only save the path when no file is waiting to open", async () => {
         // Arrange
         await ask()
