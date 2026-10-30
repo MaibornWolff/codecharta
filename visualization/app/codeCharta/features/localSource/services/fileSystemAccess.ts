@@ -60,10 +60,10 @@ export async function findFile(directory: FileSystemDirectoryHandle, relativePat
         return null
     }
     try {
-        let folder = directory
-        for (const segment of segments) {
-            folder = await folder.getDirectoryHandle(segment)
-        }
+        const folder = await segments.reduce(
+            (parent, segment) => parent.then(folder => folder.getDirectoryHandle(segment)),
+            Promise.resolve(directory)
+        )
         const fileHandle = await folder.getFileHandle(fileName)
         return await fileHandle.getFile()
     } catch (error) {

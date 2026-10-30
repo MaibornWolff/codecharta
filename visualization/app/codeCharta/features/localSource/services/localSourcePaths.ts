@@ -21,7 +21,9 @@ export function vscodeFileLink(editorRootPath: string, relativePath: string): st
     const rootPath = editorRootPath
         .trim()
         .replaceAll("\\", "/")
-        .replace(/^\/+|\/+$/g, "")
+        .split("/")
+        .filter(segment => segment !== "")
+        .join("/")
     const fullPath = `${rootPath}/${relativePath}`
     const encodedPath = encodeURI(fullPath).replaceAll("#", "%23").replaceAll("?", "%3F")
     return `vscode://file/${encodedPath}`

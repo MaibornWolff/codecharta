@@ -11,22 +11,22 @@ export function fakeDirectory(name: string, tree: FakeFolderTree, permission: Pe
         kind: "directory",
         queryPermission: jest.fn().mockResolvedValue(permission),
         requestPermission: jest.fn().mockResolvedValue(permission),
-        getDirectoryHandle: jest.fn(async (childName: string) => {
+        getDirectoryHandle: jest.fn((childName: string) => {
             const child = tree[childName]
             if (child === undefined) {
-                throw new DOMException("missing", "NotFoundError")
+                return Promise.reject(new DOMException("missing", "NotFoundError"))
             }
             if (typeof child === "string") {
-                throw new DOMException("a file", "TypeMismatchError")
+                return Promise.reject(new DOMException("a file", "TypeMismatchError"))
             }
-            return fakeDirectory(childName, child, permission)
+            return Promise.resolve(fakeDirectory(childName, child, permission))
         }),
-        getFileHandle: jest.fn(async (childName: string) => {
+        getFileHandle: jest.fn((childName: string) => {
             const child = tree[childName]
             if (typeof child !== "string") {
-                throw new DOMException("missing", "NotFoundError")
+                return Promise.reject(new DOMException("missing", "NotFoundError"))
             }
-            return { getFile: async () => new File([child], childName) }
+            return Promise.resolve({ getFile: () => Promise.resolve(new File([child], childName)) })
         })
     } as unknown as LocalDirectoryHandle
 }
