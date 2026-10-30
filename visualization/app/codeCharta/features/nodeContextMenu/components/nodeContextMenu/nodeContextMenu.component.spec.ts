@@ -26,7 +26,7 @@ import {
     unfocusNode
 } from "../../../../stores/sharedView/sharedView.write.facade"
 import { rightClickedNodeDataSelector } from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.selector"
-import { LocalSourceService } from "../../../localSource/services/localSource.service"
+import { LocalSourceService } from "../../../localSource/facade"
 import { DependencyGraphScreenshotService } from "../../../screenshot/facade"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
 import {

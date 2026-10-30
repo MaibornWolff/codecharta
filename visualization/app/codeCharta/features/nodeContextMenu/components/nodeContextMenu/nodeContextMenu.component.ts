@@ -138,42 +138,30 @@ export class NodeContextMenuComponent {
     }
 
     showSource() {
-        const node = this.menuNode()
-        this.close()
-        if (node) {
-            void this.localSourceActions().showSource(node.path)
-        }
+        this.closeAndActOnNode(node => this.localSourceActions().showSource(node.path))
     }
 
     openInEditor() {
-        const node = this.menuNode()
-        this.close()
-        if (node) {
-            void this.localSourceActions().openInEditor(node.path)
-        }
+        this.closeAndActOnNode(node => this.localSourceActions().openInEditor(node.path))
     }
 
     chooseLocalFolder() {
-        const node = this.menuNode()
-        this.close()
-        if (node) {
-            void this.localSourceActions().chooseFolder(node.path)
-        }
+        this.closeAndActOnNode(node => this.localSourceActions().chooseFolder(node.path))
     }
 
     screenshotFolder() {
-        const node = this.menuNode()
-        this.close()
-        if (node) {
-            void this.dependencyGraphScreenshot.screenshotBox(node.path, node.name)
-        }
+        this.closeAndActOnNode(node => this.dependencyGraphScreenshot.screenshotBox(node.path, node.name))
     }
 
     setEditorFolder() {
+        this.closeAndActOnNode(node => this.localSourceActions().setEditorFolder(node.path))
+    }
+
+    private closeAndActOnNode(action: (node: NonNullable<ReturnType<typeof this.menuNode>>) => Promise<void>) {
         const node = this.menuNode()
         this.close()
         if (node) {
-            void this.localSourceActions().setEditorFolder(node.path)
+            void action(node)
         }
     }
 
