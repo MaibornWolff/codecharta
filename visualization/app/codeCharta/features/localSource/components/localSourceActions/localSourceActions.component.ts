@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChild } from "@angular/core"
-import { FormsModule } from "@angular/forms"
 import { ToastService } from "../../../shared/facade"
 import { FOLDER_DOES_NOT_FIT_MAP_MESSAGE, reportFolderChoice } from "../../services/folderChoiceToast"
-import { LocalSourceService, SourceLookup } from "../../services/localSource.service"
-import { LocalSourceFolder } from "../../services/localSourceFolders.repository"
-import { vscodeFileLink } from "../../services/localSourcePaths"
+import { EditorTarget, LocalSourceService, SourceLookup } from "../../services/localSource.service"
+import { handLinkToTheSystem, mapNameOf, vscodeFileLink } from "../../services/localSourcePaths"
 import { isTooLargeToShow, MAX_SHOWN_SIZE, sizeOf } from "../../services/sourceLimits"
+import { EditorFolderDialogComponent } from "../editorFolderDialog/editorFolderDialog.component"
 import { SourceViewerComponent } from "../sourceViewer/sourceViewer.component"
 
 interface TooLargeFile {
@@ -14,16 +13,18 @@ interface TooLargeFile {
     size: string
 }
 
-interface PendingEditorOpen {
-    folder: LocalSourceFolder
+interface FolderRequest {
+    nodePath: string
+    mapName: string
     relativePath: string
+    missingFrom: string | null
 }
 
 @Component({
     selector: "cc-local-source-actions",
     templateUrl: "./localSourceActions.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [FormsModule, SourceViewerComponent]
+    imports: [EditorFolderDialogComponent, SourceViewerComponent]
 })
 export class LocalSourceActionsComponent {
     private readonly localSource = inject(LocalSourceService)
@@ -31,24 +32,38 @@ export class LocalSourceActionsComponent {
 
     private readonly viewer = viewChild.required(SourceViewerComponent)
     private readonly tooLargeDialog = viewChild.required<ElementRef<HTMLDialogElement>>("tooLargeDialog")
-    private readonly editorDialog = viewChild.required<ElementRef<HTMLDialogElement>>("editorDialog")
+    private readonly folderDialog = viewChild.required<ElementRef<HTMLDialogElement>>("folderDialog")
+    private readonly editorFolderDialog = viewChild.required(EditorFolderDialogComponent)
 
     readonly isAvailable = this.localSource.isAvailable
+    readonly folderRequest = signal<FolderRequest | null>(null)
     readonly tooLargeFile = signal<TooLargeFile | null>(null)
     readonly maxShownSize = MAX_SHOWN_SIZE
-    readonly pendingEditorOpen = signal<PendingEditorOpen | null>(null)
-    readonly editorRootPath = signal("")
 
     isMapRoot(nodePath: string): boolean {
         return this.localSource.isMapRoot(nodePath)
     }
 
     async showSource(nodePath: string) {
-        const lookup = await this.findSource(nodePath)
-        if (lookup?.status !== "found") {
-            return
+        const lookup = await this.reportingProblems(() => this.localSource.findSource(nodePath))
+        if (lookup?.status === "folderNeeded") {
+            const { mapFileName, relativePath, missingFrom } = lookup
+            this.folderRequest.set({ nodePath, mapName: mapNameOf(mapFileName), relativePath, missingFrom })
+            this.folderDialog().nativeElement.showModal()
+        } else if (lookup?.status === "found") {
+            await this.show(nodePath, lookup.relativePath, lookup.file)
         }
-        const { file, relativePath } = lookup
+    }
+
+    async selectFolder(nodePath: string) {
+        this.folderDialog().nativeElement.close()
+        const lookup = await this.reportingProblems(() => this.localSource.chooseFolderAndFindSource(nodePath))
+        if (lookup?.status === "found") {
+            await this.show(nodePath, lookup.relativePath, lookup.file)
+        }
+    }
+
+    private async show(nodePath: string, relativePath: string, file: File) {
         if (isTooLargeToShow(file.size)) {
             this.tooLargeFile.set({ nodePath, relativePath, size: sizeOf(file.size) })
             this.tooLargeDialog().nativeElement.showModal()
@@ -63,40 +78,34 @@ export class LocalSourceActionsComponent {
     }
 
     async openInEditor(nodePath: string) {
-        const lookup = await this.findSource(nodePath)
-        if (lookup?.status !== "found") {
+        const target = await this.findEditorTarget(nodePath)
+        if (!target) {
             return
         }
-        const { folder, relativePath } = lookup
-        // Browsers only hand a link to the editor while the click that asked for it is fresh; after a picker or
-        // a permission prompt it is not, so the dialog's Open button supplies a new click.
-        if (folder.editorRootPath && navigator.userActivation?.isActive) {
-            this.openLink(folder.editorRootPath, relativePath)
+        const { mapFileName, relativePath, editorRootPath } = target
+        // Browsers only hand a link to the editor while the click that asked for it is fresh, so a stale one
+        // is renewed by the dialog's button.
+        if (editorRootPath && navigator.userActivation?.isActive) {
+            handLinkToTheSystem(vscodeFileLink(editorRootPath, relativePath))
             return
         }
-        this.pendingEditorOpen.set({ folder, relativePath })
-        this.editorRootPath.set(folder.editorRootPath ?? "")
-        this.editorDialog().nativeElement.showModal()
+        this.editorFolderDialog().ask({ mapFileName, editorRootPath, fileToOpen: relativePath })
+    }
+
+    async setEditorFolder(nodePath: string) {
+        const target = await this.findEditorTarget(nodePath)
+        if (target) {
+            this.editorFolderDialog().ask({ mapFileName: target.mapFileName, editorRootPath: target.editorRootPath, fileToOpen: null })
+        }
     }
 
     async chooseFolder(nodePath: string) {
         reportFolderChoice(this.toast, await this.localSource.chooseFolder(nodePath))
     }
 
-    async confirmEditorRootPath() {
-        const pending = this.pendingEditorOpen()
-        const editorRootPath = this.editorRootPath().trim()
-        if (!pending || editorRootPath === "") {
-            return
-        }
-        this.openLink(editorRootPath, pending.relativePath)
-        this.editorDialog().nativeElement.close()
-        await this.localSource.saveEditorRootPath(pending.folder, editorRootPath)
-    }
-
-    private async findSource(nodePath: string): Promise<SourceLookup | null> {
+    private async reportingProblems(findSource: () => Promise<SourceLookup>): Promise<SourceLookup | null> {
         try {
-            const lookup = await this.localSource.findSource(nodePath)
+            const lookup = await findSource()
             if (lookup.status === "notFound") {
                 this.toast.show(`"${lookup.relativePath}" is not in the chosen folder`, "warning")
             } else if (lookup.status === "doesNotFitMap") {
@@ -109,7 +118,12 @@ export class LocalSourceActionsComponent {
         }
     }
 
-    private openLink(editorRootPath: string, relativePath: string) {
-        window.open(vscodeFileLink(editorRootPath, relativePath), "_blank")
+    private async findEditorTarget(nodePath: string): Promise<EditorTarget | null> {
+        try {
+            return await this.localSource.editorTargetOf(nodePath)
+        } catch (error) {
+            this.toast.show(`Could not read the local folder: ${(error as Error).message}`, "error")
+            return null
+        }
     }
 }

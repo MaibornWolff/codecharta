@@ -10,12 +10,13 @@ describe("MapLocalFolderMenuComponent", () => {
         isAvailable: signal(true),
         describeFolder: jest.fn(),
         chooseFolderForMap: jest.fn(),
-        forgetFolder: jest.fn()
+        saveEditorRootPath: jest.fn()
     }
     const toastMock = { show: jest.fn() }
 
     beforeEach(() => {
         jest.clearAllMocks()
+        HTMLDialogElement.prototype.showModal = jest.fn()
         localSourceMock.isAvailable.set(true)
         localSourceMock.describeFolder.mockResolvedValue(null)
     })
@@ -32,7 +33,7 @@ describe("MapLocalFolderMenuComponent", () => {
 
     async function rightClick(fixture: Awaited<ReturnType<typeof renderMenu>>) {
         const event = new MouseEvent("contextmenu", { clientX: 10, clientY: 20, cancelable: true })
-        await fixture.componentInstance.openFor("myproject.cc.json", event)
+        fixture.componentInstance.openFor("myproject.cc.json", event)
         fixture.detectChanges()
         return event
     }
@@ -50,7 +51,7 @@ describe("MapLocalFolderMenuComponent", () => {
         expect(fixture.componentInstance.target()).toBeNull()
     })
 
-    it("should open at the right-click and offer only to set the folder while none is set", async () => {
+    it("should open at the right-click and offer to set each folder", async () => {
         // Arrange
         const fixture = await renderMenu()
 
@@ -61,6 +62,7 @@ describe("MapLocalFolderMenuComponent", () => {
         expect(event.defaultPrevented).toBe(true)
         expect(fixture.componentInstance.target()?.anchor).toEqual({ x: 10, y: 20 })
         expect(screen.getByText("Set Local Folder…")).not.toBe(null)
+        expect(screen.getByText("Set VS Code Folder…")).not.toBe(null)
         expect(screen.queryByText("Forget Local Folder")).toBe(null)
     })
 
@@ -81,18 +83,33 @@ describe("MapLocalFolderMenuComponent", () => {
         expect(fixture.componentInstance.target()).toBeNull()
     })
 
-    it("should forget the map's folder", async () => {
+    it("should ask for the VS Code folder, showing the one already set", async () => {
         // Arrange
-        localSourceMock.describeFolder.mockResolvedValue("myproject")
+        localSourceMock.describeFolder.mockResolvedValue({ folderName: null, editorRootPath: "C:/dev/myproject" })
         const fixture = await renderMenu()
         await rightClick(fixture)
 
         // Act
-        fireEvent.click(screen.getByText("Forget Local Folder"))
+        fireEvent.click(screen.getByText("Set VS Code Folder…"))
+        await fixture.whenStable()
+        fixture.detectChanges()
+
+        // Assert
+        expect(fixture.componentInstance.target()).toBeNull()
+        expect(screen.getByLabelText<HTMLInputElement>("Full path of the folder", { selector: "input" })).not.toBe(null)
+        expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled()
+    })
+
+    it("should ask for the VS Code folder of a map without any folder", async () => {
+        // Arrange
+        const fixture = await renderMenu()
+        await rightClick(fixture)
+
+        // Act
+        fireEvent.click(screen.getByText("Set VS Code Folder…"))
         await fixture.whenStable()
 
         // Assert
-        expect(localSourceMock.forgetFolder).toHaveBeenCalledWith("myproject.cc.json")
-        expect(fixture.componentInstance.target()).toBeNull()
+        expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled()
     })
 })

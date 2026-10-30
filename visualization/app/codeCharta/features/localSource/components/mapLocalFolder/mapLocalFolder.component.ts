@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from "@angular/core"
-import { LocalSourceService } from "../../services/localSource.service"
+import { LocalFolderDescription, LocalSourceService } from "../../services/localSource.service"
 
 @Component({
     selector: "cc-map-local-folder",
@@ -12,7 +12,7 @@ export class MapLocalFolderComponent {
     readonly mapFileName = input.required<string>()
 
     readonly isAvailable = this.localSource.isAvailable
-    readonly folderDescription = signal<string | null>(null)
+    readonly folder = signal<LocalFolderDescription | null>(null)
 
     constructor() {
         effect(() => {
@@ -26,7 +26,7 @@ export class MapLocalFolderComponent {
     private async describeFolder(mapFileName: string) {
         const description = await this.localSource.describeFolder(mapFileName)
         if (mapFileName === this.mapFileName()) {
-            this.folderDescription.set(description)
+            this.folder.set(description)
         }
     }
 }

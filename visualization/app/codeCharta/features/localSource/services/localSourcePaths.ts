@@ -13,6 +13,10 @@ export function relativePathOf(nodePath: string, mapFolderName: string | null = 
     return segments.join("/")
 }
 
+export function mapNameOf(mapFileName: string): string {
+    return mapFileName.replace(/(\.cc)?\.json(\.gz)?$/, "")
+}
+
 export function vscodeFileLink(editorRootPath: string, relativePath: string): string {
     const rootPath = editorRootPath
         .trim()
@@ -21,6 +25,13 @@ export function vscodeFileLink(editorRootPath: string, relativePath: string): st
     const fullPath = `${rootPath}/${relativePath}`
     const encodedPath = encodeURI(fullPath).replaceAll("#", "%23").replaceAll("?", "%3F")
     return `vscode://file/${encodedPath}`
+}
+
+/** A click on a link: `window.open` would leave an empty tab behind, as nothing ever loads in it. */
+export function handLinkToTheSystem(link: string): void {
+    const anchor = document.createElement("a")
+    anchor.href = link
+    anchor.click()
 }
 
 export function sampleFilePaths(root: CodeMapNode, sampleSize: number): string[] {

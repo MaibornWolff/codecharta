@@ -20,30 +20,31 @@
     </form>
 </dialog>
 
-<dialog #editorDialog class="modal" aria-label="Open in VS Code" data-testid="local-source-editor-dialog">
-    <div class="modal-box">
-        <h2 class="mb-2 text-lg font-bold">Open in VS Code</h2>
-        <p class="py-2 text-sm">
-            The browser does not tell CodeCharta where the folder
-            <span class="font-mono font-semibold">{{ pendingEditorOpen()?.folder?.directory?.name }}</span>
-            lies on your disk. Enter its full path once; it is only kept in this browser.
-        </p>
-        <input
-            type="text"
-            class="input input-bordered w-full font-mono text-sm"
-            [placeholder]="'e.g. C:/dev/' + (pendingEditorOpen()?.folder?.directory?.name ?? '')"
-            [ngModel]="editorRootPath()"
-            (ngModelChange)="editorRootPath.set($event)"
-            (keydown.enter)="confirmEditorRootPath()"
-        />
-        <div class="modal-action">
-            <form method="dialog">
-                <button class="btn">Cancel</button>
-            </form>
-            <button class="btn btn-primary" [disabled]="editorRootPath().trim() === ''" (click)="confirmEditorRootPath()">Open</button>
+<dialog #folderDialog class="modal" aria-label="Select the project folder" data-testid="local-source-folder-dialog" (close)="folderRequest.set(null)">
+    @if (folderRequest(); as request) {
+        <div class="modal-box">
+            <h2 class="mb-2 text-lg font-bold">Select the project folder</h2>
+            @if (request.missingFrom) {
+                <p class="py-2 text-sm" data-testid="local-source-folder-missing">
+                    <span class="font-mono font-semibold">{{ request.relativePath }}</span> is not in the folder
+                    <span class="font-mono font-semibold">{{ request.missingFrom }}</span>.
+                </p>
+            }
+            <p class="py-2 text-sm">
+                Please select the root folder of <span class="font-mono font-semibold">{{ request.mapName }}</span> so its files can be viewed in the
+                browser. They stay on your computer; nothing is uploaded.
+            </p>
+            <div class="modal-action">
+                <form method="dialog">
+                    <button class="btn">Cancel</button>
+                </form>
+                <button class="btn btn-primary" (click)="selectFolder(request.nodePath)">Select folder…</button>
+            </div>
         </div>
-    </div>
+    }
     <form method="dialog" class="modal-backdrop">
         <button>close</button>
     </form>
 </dialog>
+
+<cc-editor-folder-dialog></cc-editor-folder-dialog>

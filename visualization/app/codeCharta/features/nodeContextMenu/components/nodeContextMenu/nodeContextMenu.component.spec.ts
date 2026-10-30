@@ -72,6 +72,7 @@ describe("nodeContextMenu component", () => {
         isAvailable: signal(false),
         findSource: jest.fn().mockResolvedValue({ status: "cancelled" }),
         chooseFolder: jest.fn().mockResolvedValue({ status: "cancelled" }),
+        editorTargetOf: jest.fn().mockResolvedValue(null),
         isMapRoot: (path: string) => path === "/root"
     }
 
@@ -583,7 +584,10 @@ describe("nodeContextMenu component", () => {
             expect(menu().queryByText("Show Source")).toBe(null)
         })
 
-        it.each(["Show Source", "Open in VS Code"])("should close the menu and look up the file for %s", async item => {
+        it.each([
+            ["Show Source", () => localSourceMock.findSource],
+            ["Open in VS Code", () => localSourceMock.editorTargetOf]
+        ])("should close the menu and look up the file for %s", async (item, lookup) => {
             // Arrange
             const { dispatchSpy } = await renderMenu({ isLocalSourceSupported: true })
 
@@ -592,7 +596,19 @@ describe("nodeContextMenu component", () => {
 
             // Assert
             expect(dispatchSpy).toHaveBeenCalledWith(setRightClickedNodeData({ value: null }))
-            expect(localSourceMock.findSource).toHaveBeenCalledWith(fileNode.path)
+            expect(lookup()).toHaveBeenCalledWith(fileNode.path)
+        })
+
+        it("should close the menu and look up the map on Set VS Code Folder", async () => {
+            // Arrange
+            const { dispatchSpy } = await renderMenu({ node: rootNode, isLocalSourceSupported: true })
+
+            // Act
+            fireEvent.click(menu().getByText("Set VS Code Folder…"))
+
+            // Assert
+            expect(dispatchSpy).toHaveBeenCalledWith(setRightClickedNodeData({ value: null }))
+            expect(localSourceMock.editorTargetOf).toHaveBeenCalledWith(rootNode.path)
         })
 
         it("should close the menu and ask for the folder on Set Local Folder", async () => {

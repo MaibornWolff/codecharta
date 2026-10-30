@@ -4,7 +4,8 @@ import { LocalDirectoryHandle } from "./fileSystemAccess"
 
 export interface LocalSourceFolder {
     mapKey: string
-    directory: LocalDirectoryHandle
+    /** The folder chosen with the picker and the path for VS Code are set independently of each other. */
+    directory: LocalDirectoryHandle | null
     editorRootPath: string | null
 }
 
@@ -37,6 +38,12 @@ export class LocalSourceFoldersRepository {
         const database = await openLocalSourceDB()
         await database.delete(FOLDERS_STORE_NAME, mapKey)
         this.knownFolders.set(mapKey, null)
+    }
+
+    async deleteAll(): Promise<void> {
+        const database = await openLocalSourceDB()
+        await database.clear(FOLDERS_STORE_NAME)
+        this.knownFolders.clear()
     }
 }
 

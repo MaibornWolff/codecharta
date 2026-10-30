@@ -9,11 +9,13 @@ import { METRIC_DATA } from "../../../../../mocks/dataMocks"
 import { nodeMetricDataSelector } from "../../../../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"
 import { setState } from "../../../../../stores/rootStore/state.actions"
 import { defaultState } from "../../../../../stores/rootStore/state.manager"
+import { LocalSourceService } from "../../../../localSource/facade"
 import { ConfirmResetMapDialogComponent } from "./confirmResetMapDialog.component"
 
 describe("ConfirmResetMapDialogComponent", () => {
     let mockedCcStatePersistence: { read: jest.Mock; delete: jest.Mock }
     let mockedLoadFilesUseCase: { reloadAfterReset: jest.Mock }
+    const mockedLocalSource = { forgetAllFolders: jest.fn().mockResolvedValue(undefined) }
 
     beforeEach(() => {
         mockedCcStatePersistence = { read: jest.fn(), delete: jest.fn().mockResolvedValue(undefined) }
@@ -25,6 +27,7 @@ describe("ConfirmResetMapDialogComponent", () => {
                 { provide: State, useValue: { getValue: () => defaultState } },
                 { provide: CcStatePersistence, useValue: mockedCcStatePersistence },
                 { provide: LoadFilesUseCase, useValue: mockedLoadFilesUseCase },
+                { provide: LocalSourceService, useValue: mockedLocalSource },
                 provideMockStore({
                     selectors: [
                         {
@@ -63,6 +66,7 @@ describe("ConfirmResetMapDialogComponent", () => {
 
         // Assert
         expect(mockedCcStatePersistence.delete).toHaveBeenCalled()
+        expect(mockedLocalSource.forgetAllFolders).toHaveBeenCalled()
         expect(dispatchSpy).toHaveBeenCalledWith(setState({ value: defaultState }))
         expect(mockedLoadFilesUseCase.reloadAfterReset).toHaveBeenCalled()
     })

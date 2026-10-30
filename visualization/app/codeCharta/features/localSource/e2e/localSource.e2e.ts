@@ -43,6 +43,7 @@ test.describe("Local source", () => {
 
         // Act
         await (await openMenuOf(page, BIG_LEAF)).getByText("Show Source").click()
+        await localSource.selectFolderInTheDialog()
 
         // Assert
         await expect(localSource.sourceDialog()).toBeVisible()
@@ -58,6 +59,7 @@ test.describe("Local source", () => {
         await goto(page)
         await localSource.switchOn()
         await (await openMenuOf(page, BIG_LEAF)).getByText("Show Source").click()
+        await localSource.selectFolderInTheDialog()
         const firstLine = localSource.sourceDialog().locator(".cc-source-code").first()
         await expect(firstLine).toHaveText("export const big = 1")
         const box = await firstLine.boundingBox()
@@ -81,6 +83,7 @@ test.describe("Local source", () => {
         await goto(page)
         await localSource.switchOn()
         await (await openMenuOf(page, BIG_LEAF)).getByText("Show Source").click()
+        await localSource.selectFolderInTheDialog()
 
         // Act
         await localSource.sourceDialog().locator(".cc-source-number").nth(1).click()
@@ -112,6 +115,10 @@ test.describe("Local source", () => {
 
         // Assert
         expect(await localSource.openedLinks()).toEqual(["vscode://file/C:/dev/sample1/bigLeaf.ts"])
+        expect(await localSource.blankTabs()).toEqual([])
+        await localSource.openMapSelector()
+        await expect(page.getByTestId("map-local-folder-name").first()).toContainText("not set")
+        await expect(page.getByTestId("map-local-folder-editor-path").first()).toContainText("C:\\dev\\sample1")
     })
 
     test("should show each map's local folder in the map selector once it is set", async ({ page }) => {
@@ -124,10 +131,53 @@ test.describe("Local source", () => {
         // Act
         await (await openMenuOf(page, SAMPLE_ONE)).getByText("Set Local Folder…").click()
         await expect(page.getByText('Local folder "sample1" set for this map')).toBeVisible()
-        await page.locator("cc-map-selector .dropdown > button").click()
+        await localSource.openMapSelector()
 
         // Assert
-        await expect(localSource.folderLines()).toHaveText(["sample1", "No local folder"])
+        await expect(page.getByTestId("map-local-folder-name").first()).toContainText("sample1")
+        await expect(page.getByTestId("map-local-folder-editor-path").first()).toContainText("not set")
+        await expect(page.getByTestId("map-local-folder-name").nth(1)).toContainText("not set")
+    })
+
+    test("should set a map's VS Code folder from the map selector and open files with it, with no local folder set", async ({ page }) => {
+        // Arrange
+        const localSource = new LocalSourcePageObject(page)
+        await localSource.standInForThePicker("blockedByPolicy")
+        await goto(page)
+        await localSource.switchOn()
+        await localSource.openMapSelector()
+
+        // Act
+        await page.locator("cc-map-selector li").first().click({ button: "right" })
+        await page.getByText("Set VS Code Folder…").click()
+        await localSource.editorDialog().locator("input").fill("/home/dev/sample1")
+        await localSource.editorDialog().getByRole("button", { name: "Save" }).click()
+        await expect(page.getByTestId("map-local-folder-editor-path").first()).toContainText("/home/dev/sample1")
+        await page.locator("cc-map-selector .dropdown > button").click()
+        await (await openMenuOf(page, BIG_LEAF)).getByText("Open in VS Code").click()
+
+        // Assert
+        await expect.poll(() => localSource.openedLinks()).toEqual(["vscode://file/home/dev/sample1/bigLeaf.ts"])
+        await expect(page.getByText(BLOCKED_MESSAGE)).toHaveCount(0)
+    })
+
+    test("should forget a map's local folder when the map is removed", async ({ page }) => {
+        // Arrange
+        const localSource = new LocalSourcePageObject(page)
+        await localSource.standInForThePicker("sampleFolder")
+        await goto(page)
+        await localSource.switchOn()
+        await (await openMenuOf(page, SAMPLE_ONE)).getByText("Set Local Folder…").click()
+        await expect(page.getByText('Local folder "sample1" set for this map')).toBeVisible()
+        await expect.poll(() => localSource.savedFolderKeys()).toEqual(["sample1.cc.json"])
+
+        // Act
+        await localSource.openMapSelector()
+        await page.locator("cc-map-selector li").first().getByTitle("Remove map").click()
+        await page.getByRole("button", { name: "Apply" }).click()
+
+        // Assert
+        await expect.poll(() => localSource.savedFolderKeys()).toEqual([])
     })
 
     test("should not show a file above 5 MB, but offer to open it in VS Code", async ({ page }) => {
@@ -139,6 +189,7 @@ test.describe("Local source", () => {
 
         // Act
         await (await openMenuOf(page, BIG_LEAF)).getByText("Show Source").click()
+        await localSource.selectFolderInTheDialog()
 
         // Assert
         await expect(page.getByTestId("local-source-too-large")).toContainText("This file is 6 MB, too large to show here (at most 5 MB).")
@@ -154,6 +205,7 @@ test.describe("Local source", () => {
 
         // Act
         await (await openMenuOf(page, `${SAMPLE_ONE}/sample1OnlyLeaf.scss`)).getByText("Show Source").click()
+        await localSource.selectFolderInTheDialog()
 
         // Assert
         await expect(page.getByTestId("local-source-uncoloured-note")).toHaveText(
@@ -171,6 +223,7 @@ test.describe("Local source", () => {
 
         // Act
         await (await openMenuOf(page, BIG_LEAF)).getByText("Show Source").click()
+        await localSource.selectFolderInTheDialog()
 
         // Assert
         await expect(page.getByText("The chosen folder contains none of the map's files")).toBeVisible()
@@ -186,11 +239,31 @@ test.describe("Local source", () => {
 
         // Act
         await (await openMenuOf(page, BIG_LEAF)).getByText("Show Source").click()
+        await localSource.selectFolderInTheDialog()
         await expect(page.getByText(BLOCKED_MESSAGE)).toBeVisible()
         const menuAfterTheBlock = await openMenuOf(page, BIG_LEAF)
 
         // Assert
         await expect(menuAfterTheBlock.getByText("Show Source")).toHaveCount(0)
+    })
+
+    test("should explain the folder before opening the browser's picker, and open nothing when cancelled", async ({ page }) => {
+        // Arrange
+        const localSource = new LocalSourcePageObject(page)
+        await localSource.standInForThePicker("sampleFolder")
+        await goto(page)
+        await localSource.switchOn()
+
+        // Act
+        await (await openMenuOf(page, BIG_LEAF)).getByText("Show Source").click()
+        const folderDialog = localSource.folderDialog()
+        await expect(folderDialog).toContainText("so its files can be viewed in the browser")
+        await folderDialog.getByRole("button", { name: "Cancel" }).click()
+
+        // Assert
+        await expect(folderDialog).toHaveCount(0)
+        expect(await localSource.savedFolderKeys()).toEqual([])
+        await expect(localSource.sourceDialog()).toBeHidden()
     })
 
     test("should offer neither the switch nor the local source in a browser without a folder picker", async ({ page }) => {

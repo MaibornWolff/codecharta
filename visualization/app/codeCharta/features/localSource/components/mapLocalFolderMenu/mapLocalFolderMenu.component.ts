@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core"
+import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from "@angular/core"
 import { ContextMenuItemComponent, FloatingMenuAnchor, FloatingMenuComponent, ToastService } from "../../../shared/facade"
 import { reportFolderChoice } from "../../services/folderChoiceToast"
 import { LocalSourceService } from "../../services/localSource.service"
+import { EditorFolderDialogComponent } from "../editorFolderDialog/editorFolderDialog.component"
 
 interface MenuTarget {
     mapFileName: string
     anchor: FloatingMenuAnchor
-    hasFolder: boolean
 }
 
 // A fixed menu inside a transformed dropdown is placed relative to the dropdown, not the window, so the
@@ -15,22 +15,21 @@ interface MenuTarget {
     selector: "cc-map-local-folder-menu",
     templateUrl: "./mapLocalFolderMenu.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [ContextMenuItemComponent, FloatingMenuComponent]
+    imports: [ContextMenuItemComponent, EditorFolderDialogComponent, FloatingMenuComponent]
 })
 export class MapLocalFolderMenuComponent {
     private readonly localSource = inject(LocalSourceService)
     private readonly toast = inject(ToastService)
+    private readonly editorFolderDialog = viewChild.required(EditorFolderDialogComponent)
 
     readonly target = signal<MenuTarget | null>(null)
 
-    async openFor(mapFileName: string, event: MouseEvent) {
+    openFor(mapFileName: string, event: MouseEvent) {
         if (!this.localSource.isAvailable()) {
             return
         }
         event.preventDefault()
-        const anchor = { x: event.clientX, y: event.clientY }
-        const hasFolder = (await this.localSource.describeFolder(mapFileName)) !== null
-        this.target.set({ mapFileName, anchor, hasFolder })
+        this.target.set({ mapFileName, anchor: { x: event.clientX, y: event.clientY } })
     }
 
     close() {
@@ -42,8 +41,9 @@ export class MapLocalFolderMenuComponent {
         reportFolderChoice(this.toast, await this.localSource.chooseFolderForMap(mapFileName))
     }
 
-    async forgetFolder(mapFileName: string) {
+    async setEditorFolder(mapFileName: string) {
         this.close()
-        await this.localSource.forgetFolder(mapFileName)
+        const folder = await this.localSource.describeFolder(mapFileName)
+        this.editorFolderDialog().ask({ mapFileName, editorRootPath: folder?.editorRootPath ?? null, fileToOpen: null })
     }
 }
