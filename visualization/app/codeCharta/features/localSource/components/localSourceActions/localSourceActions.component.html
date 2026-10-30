@@ -1,16 +1,16 @@
 <cc-source-viewer (openInEditor)="openInEditor($event)"></cc-source-viewer>
 
-<dialog #tooLargeDialog class="modal" aria-label="File too large" data-testid="local-source-too-large-dialog" (close)="tooLargeFile.set(null)">
-    @if (tooLargeFile(); as tooLarge) {
+<dialog #notShownDialog class="modal" aria-label="File not shown" data-testid="local-source-not-shown-dialog" (close)="notShownFile.set(null)">
+    @if (notShownFile(); as notShown) {
         <div class="modal-box">
-            <h2 class="mb-2 truncate font-mono text-sm font-bold" [title]="tooLarge.relativePath">{{ tooLarge.relativePath }}</h2>
-            <div class="flex flex-col items-start gap-4 py-2" data-testid="local-source-too-large">
-                <p class="text-sm">This file is {{ tooLarge.size }}, too large to show here (at most {{ maxShownSize }}).</p>
+            <h2 class="mb-2 truncate font-mono text-sm font-bold" [title]="notShown.relativePath">{{ notShown.relativePath }}</h2>
+            <div class="flex flex-col items-start gap-4 py-2" data-testid="local-source-not-shown">
+                <p class="text-sm">{{ notShown.reason }}</p>
                 <div class="modal-action mt-0 w-full">
                     <form method="dialog">
                         <button class="btn btn-sm">Close</button>
                     </form>
-                    <button class="btn btn-primary btn-sm" (click)="openTooLargeFileInEditor(tooLarge.nodePath)">Open in VS Code</button>
+                    <button class="btn btn-primary btn-sm" (click)="openNotShownFileInEditor(notShown.nodePath)">Open in VS Code</button>
                 </div>
             </div>
         </div>
@@ -27,18 +27,25 @@
             @if (request.missingFrom) {
                 <p class="py-2 text-sm" data-testid="local-source-folder-missing">
                     <span class="font-mono font-semibold">{{ request.relativePath }}</span> is not in the folder
-                    <span class="font-mono font-semibold">{{ request.missingFrom }}</span>.
+                    <span class="font-mono font-semibold">{{ request.missingFrom }}</span>. It may have moved or been deleted since the map was
+                    analysed. If this is the wrong folder, select the right one.
+                </p>
+            } @else {
+                <p class="py-2 text-sm">
+                    Please select the root folder of <span class="font-mono font-semibold">{{ request.mapName }}</span> so its files can be viewed in
+                    the browser. They stay on your computer; nothing is uploaded.
                 </p>
             }
-            <p class="py-2 text-sm">
-                Please select the root folder of <span class="font-mono font-semibold">{{ request.mapName }}</span> so its files can be viewed in the
-                browser. They stay on your computer; nothing is uploaded.
-            </p>
+            @if (request.problem; as problem) {
+                <p class="py-2 text-sm text-error" role="alert" data-testid="local-source-folder-problem">{{ problem }}</p>
+            }
             <div class="modal-action">
                 <form method="dialog">
-                    <button class="btn">Cancel</button>
+                    <button class="btn" [class.btn-primary]="request.missingFrom">{{ request.missingFrom ? "Close" : "Cancel" }}</button>
                 </form>
-                <button class="btn btn-primary" (click)="selectFolder(request.nodePath)">Select folder…</button>
+                <button class="btn" [class.btn-primary]="!request.missingFrom" (click)="selectFolder(request.nodePath)">
+                    {{ request.missingFrom ? "Select another folder…" : "Select folder…" }}
+                </button>
             </div>
         </div>
     }

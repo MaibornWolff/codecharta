@@ -4,13 +4,14 @@
     aria-label="Source"
     data-testid="local-source-dialog"
     (close)="handleClosed()"
+    (keydown)="$event.stopPropagation()"
 >
     @if (source(); as shown) {
         <div class="flex h-full flex-col">
             <header class="flex h-12 shrink-0 items-center gap-3 border-b border-base-300 px-3">
                 <button type="button" class="btn btn-ghost btn-sm" data-testid="source-viewer-back" (click)="close()">
                     <i class="fa-solid fa-arrow-left"></i>
-                    Back to map
+                    Back
                 </button>
                 <div class="h-6 border-l border-base-300"></div>
                 <i class="fa-regular fa-file-code text-base-content/60"></i>
@@ -47,7 +48,10 @@
             </header>
 
             <div
-                class="cc-source cc-syntax min-h-0 flex-1 overflow-auto"
+                #scroller
+                class="cc-source cc-syntax min-h-0 flex-1 overflow-auto focus:outline-none"
+                tabindex="0"
+                aria-label="Source code"
                 [class.cc-source-wraps]="wrapsLines()"
                 [attr.data-testid]="isColoured() ? 'local-source-highlighted' : 'local-source-plain'"
                 [innerHTML]="rowsHtml()"
@@ -58,7 +62,12 @@
                 <span>{{ shown.language.label }}</span>
                 <span>{{ shown.lineCount }} {{ shown.lineCount === 1 ? "line" : "lines" }}</span>
                 <span>{{ shown.size }}</span>
-                <span>UTF-8</span>
+                <span data-testid="source-viewer-encoding">{{ shown.encoding }}</span>
+                @if (copyFailed()) {
+                    <span class="text-error" data-testid="source-viewer-copy-failed">
+                        <i class="fa-solid fa-triangle-exclamation"></i> The browser did not allow copying
+                    </span>
+                }
                 @if (isColouring()) {
                     <span><span class="loading loading-spinner loading-xs align-middle"></span> Colouring…</span>
                 }

@@ -192,8 +192,8 @@ test.describe("Local source", () => {
         await localSource.selectFolderInTheDialog()
 
         // Assert
-        await expect(page.getByTestId("local-source-too-large")).toContainText("This file is 6 MB, too large to show here (at most 5 MB).")
-        await expect(page.getByTestId("local-source-too-large").getByRole("button", { name: "Open in VS Code" })).toBeVisible()
+        await expect(page.getByTestId("local-source-not-shown")).toContainText("This file is 6 MB, too large to show here (at most 5 MB).")
+        await expect(page.getByTestId("local-source-not-shown").getByRole("button", { name: "Open in VS Code" })).toBeVisible()
     })
 
     test("should show a file with minified lines without colours and say why", async ({ page }) => {
@@ -214,6 +214,29 @@ test.describe("Local source", () => {
         await expect(localSource.sourceDialog().locator(".token")).toHaveCount(0)
     })
 
+    test("should keep a long file's real size and scroll it with the arrow keys", async ({ page }) => {
+        // Arrange
+        const localSource = new LocalSourcePageObject(page)
+        await localSource.standInForThePicker("sampleFolderWithLongFile")
+        await goto(page)
+        await localSource.switchOn()
+        await (await openMenuOf(page, BIG_LEAF)).getByText("Show Source").click()
+        await localSource.selectFolderInTheDialog()
+        const code = localSource.sourceDialog().getByLabel("Source code")
+        await expect(code).toContainText("export const line = 1")
+
+        // Act
+        await page.keyboard.press("ArrowDown")
+
+        // Assert
+        await expect.poll(() => code.evaluate(element => element.scrollTop)).toBeGreaterThan(0)
+        const size = await code.evaluate(element => ({
+            hasHorizontalScrollbar: element.scrollWidth > element.clientWidth,
+            height: element.scrollHeight
+        }))
+        expect(size).toEqual({ hasHorizontalScrollbar: false, height: 600 * 24 })
+    })
+
     test("should refuse a folder that holds none of the map's files", async ({ page }) => {
         // Arrange
         const localSource = new LocalSourcePageObject(page)
@@ -226,7 +249,7 @@ test.describe("Local source", () => {
         await localSource.selectFolderInTheDialog()
 
         // Assert
-        await expect(page.getByText("The chosen folder contains none of the map's files")).toBeVisible()
+        await expect(localSource.folderDialog().getByTestId("local-source-folder-problem")).toContainText("does not match this map")
         await expect(localSource.sourceDialog()).toBeHidden()
     })
 

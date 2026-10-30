@@ -1,5 +1,5 @@
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { handLinkToTheSystem, relativePathOf, sampleFilePaths, vscodeFileLink } from "./localSourcePaths"
+import { cleanedFolderPath, isAbsoluteFolderPath, relativePathOf, sampleFilePaths, vscodeFileLink } from "./localSourcePaths"
 
 describe("localSourcePaths", () => {
     describe("relativePathOf", () => {
@@ -60,6 +60,28 @@ describe("localSourcePaths", () => {
             expect(link).toBe("vscode://file/home/dev/myproject/src/Foo.kt")
         })
 
+        it("should keep the start of a network path", () => {
+            // Arrange
+            const editorRootPath = "\\\\wsl$\\Ubuntu\\home\\me\\project"
+
+            // Act
+            const link = vscodeFileLink(editorRootPath, "src/Foo.kt")
+
+            // Assert
+            expect(link).toBe("vscode://file//wsl$/Ubuntu/home/me/project/src/Foo.kt")
+        })
+
+        it("should leave out the quotes around a copied path", () => {
+            // Arrange
+            const editorRootPath = '"C:\\dev\\myproject"'
+
+            // Act
+            const link = vscodeFileLink(editorRootPath, "src/Foo.kt")
+
+            // Assert
+            expect(link).toBe("vscode://file/C:/dev/myproject/src/Foo.kt")
+        })
+
         it("should encode characters a link would otherwise misread", () => {
             // Arrange
             const editorRootPath = "/home/dev/my project"
@@ -72,23 +94,31 @@ describe("localSourcePaths", () => {
         })
     })
 
-    describe("handLinkToTheSystem", () => {
-        it("should click a link, which unlike a new window leaves no empty tab behind", () => {
-            // Arrange
-            const clicked: string[] = []
-            const clickSpy = jest.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (this: HTMLAnchorElement) {
-                clicked.push(this.href)
-            })
-            const openSpy = jest.spyOn(window, "open")
-
+    describe("cleanedFolderPath", () => {
+        it("should drop the quotes Windows puts around a copied path", () => {
             // Act
-            handLinkToTheSystem("vscode://file/C:/dev/Foo.kt")
+            const path = cleanedFolderPath(' "C:\\dev\\my project" ')
 
             // Assert
-            expect(clicked).toEqual(["vscode://file/C:/dev/Foo.kt"])
-            expect(openSpy).not.toHaveBeenCalled()
-            clickSpy.mockRestore()
-            openSpy.mockRestore()
+            expect(path).toBe("C:\\dev\\my project")
+        })
+    })
+
+    describe("isAbsoluteFolderPath", () => {
+        it.each(["/home/dev/project", "C:\\dev", "c:/dev", "\\\\server\\share", "//server/share"])("should accept %s", path => {
+            // Act
+            const isAbsolute = isAbsoluteFolderPath(path)
+
+            // Assert
+            expect(isAbsolute).toBe(true)
+        })
+
+        it.each(["~/dev/project", "dev/project", "C:dev", ""])("should refuse '%s'", path => {
+            // Act
+            const isAbsolute = isAbsoluteFolderPath(path)
+
+            // Assert
+            expect(isAbsolute).toBe(false)
         })
     })
 
@@ -108,15 +138,15 @@ describe("localSourcePaths", () => {
             expect(samples).toEqual(["A.kt", "src/B.kt", "src/deep/C.kt"])
         })
 
-        it("should stop at the sample size", () => {
+        it("should spread the samples over the whole map when it has more files than the sample size", () => {
             // Arrange
-            const root = folder("root", [file("A.kt"), file("B.kt"), file("C.kt")])
+            const root = folder("root", [file("README.md"), file("LICENSE"), folder("src", [file("A.kt"), file("B.kt")])])
 
             // Act
             const samples = sampleFilePaths(root, 2)
 
             // Assert
-            expect(samples).toEqual(["A.kt", "B.kt"])
+            expect(samples).toEqual(["README.md", "src/A.kt"])
         })
 
         it("should skip folders without children", () => {

@@ -1,7 +1,7 @@
-// The TypeScript DOM library knows the handles, but not yet the picker and the permission calls of the
-// File System Access API (Chromium only), so this declares the part CodeCharta uses.
 const READ_ONLY = { mode: "read" } as const
 
+// The TypeScript DOM library knows the handles, but not yet the picker and the permission calls of the
+// File System Access API (Chromium only), so this declares the part CodeCharta uses.
 export interface LocalDirectoryHandle extends FileSystemDirectoryHandle {
     queryPermission(descriptor: typeof READ_ONLY): Promise<PermissionState>
     requestPermission(descriptor: typeof READ_ONLY): Promise<PermissionState>
@@ -67,9 +67,17 @@ export async function findFile(directory: FileSystemDirectoryHandle, relativePat
         const fileHandle = await folder.getFileHandle(fileName)
         return await fileHandle.getFile()
     } catch (error) {
-        if (error instanceof DOMException && (error.name === "NotFoundError" || error.name === "TypeMismatchError")) {
+        if (isMissingEntry(error)) {
             return null
         }
         throw error
     }
+}
+
+/** A map from another system can hold a name this one cannot have, such as one with a backslash: a TypeError. */
+function isMissingEntry(error: unknown): boolean {
+    return (
+        error instanceof TypeError ||
+        (error instanceof DOMException && (error.name === "NotFoundError" || error.name === "TypeMismatchError"))
+    )
 }

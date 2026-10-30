@@ -13,7 +13,8 @@ describe("SourceViewerComponent", () => {
         nodePath: `/root/${relativePath}`,
         relativePath,
         text,
-        bytes: text.length
+        bytes: text.length,
+        encoding: "UTF-8"
     })
     let writeText: jest.Mock
 
@@ -97,6 +98,17 @@ describe("SourceViewerComponent", () => {
             expect(back).toHaveBeenCalledTimes(1)
         })
 
+        it("should add only one history entry when a second file opens over the first", async () => {
+            // Arrange
+            const { fixture } = await openViewer(aFile("val answer = 42\n"))
+
+            // Act
+            await fixture.componentInstance.open(aFile("val other = 1\n"))
+
+            // Assert
+            expect(pushState).toHaveBeenCalledTimes(1)
+        })
+
         it("should ignore the browser going back while it is closed", async () => {
             // Arrange
             await render(SourceViewerComponent)
@@ -107,6 +119,43 @@ describe("SourceViewerComponent", () => {
             // Assert
             expect(HTMLDialogElement.prototype.close).not.toHaveBeenCalled()
         })
+    })
+
+    it("should keep the keys it gets from the map behind it", async () => {
+        // Arrange
+        await openViewer(aFile("val answer = 42\n"))
+        const keysAtTheWindow = jest.fn()
+        window.addEventListener("keydown", keysAtTheWindow)
+
+        // Act
+        screen
+            .getByLabelText("Source code", { selector: "div" })
+            .dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }))
+
+        // Assert
+        window.removeEventListener("keydown", keysAtTheWindow)
+        expect(keysAtTheWindow).not.toHaveBeenCalled()
+    })
+
+    it("should put the focus on the code so that keys scroll it", async () => {
+        // Act
+        await openViewer(aFile("val answer = 42\n"))
+
+        // Assert
+        expect(document.activeElement).toBe(screen.getByLabelText("Source code", { selector: "div" }))
+    })
+
+    it("should say so when the browser does not allow copying", async () => {
+        // Arrange
+        const { fixture } = await openViewer(aFile("val answer = 42\n"))
+        writeText.mockRejectedValue(new DOMException("denied", "NotAllowedError"))
+
+        // Act
+        await userEvent.click(screen.getByRole("button", { name: "Copy", hidden: true }))
+        fixture.detectChanges()
+
+        // Assert
+        expect(screen.getByTestId("source-viewer-copy-failed").textContent).toContain("did not allow copying")
     })
 
     it("should colour the file by its language, one row per line", async () => {

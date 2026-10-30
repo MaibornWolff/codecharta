@@ -24,6 +24,19 @@ describe("LocalSourceService", () => {
         attributes: {},
         children: [{ name: "main.py", type: NodeType.FILE, attributes: {} }]
     } as CodeMapNode
+    const manyFilesMap = {
+        name: "root",
+        type: NodeType.FOLDER,
+        attributes: {},
+        children: [
+            {
+                name: "src",
+                type: NodeType.FOLDER,
+                attributes: {},
+                children: ["Foo.kt", "File1.kt", "File2.kt", "File3.kt"].map(name => ({ name, type: NodeType.FILE, attributes: {} }))
+            }
+        ]
+    } as CodeMapNode
     const projectFolder = () => fakeDirectory("myproject", { src: { "Foo.kt": "class Foo", "Bar.kt": "class Bar" } })
     const otherFolder = () => fakeDirectory("other", { "main.py": "print()" })
     const unrelatedFolder = () => fakeDirectory("holiday", { "beach.jpg": "…" })
@@ -57,8 +70,10 @@ describe("LocalSourceService", () => {
                     provide: LocalSourceFoldersRepository,
                     useValue: {
                         find: async (mapKey: string) => savedFolders.get(mapKey) ?? null,
-                        save: async (folder: LocalSourceFolder) => {
-                            savedFolders.set(folder.mapKey, folder)
+                        update: async (mapKey: string, change: Partial<LocalSourceFolder>) => {
+                            const folder = { mapKey, directory: null, editorRootPath: null, ...savedFolders.get(mapKey), ...change }
+                            savedFolders.set(mapKey, folder)
+                            return folder
                         },
                         delete: async (mapKey: string) => {
                             savedFolders.delete(mapKey)
@@ -287,6 +302,18 @@ describe("LocalSourceService", () => {
             // Assert
             expect(choice.status).toBe("chosen")
             expect(savedFolders.has("other.cc.json")).toBe(true)
+        })
+
+        it("should refuse a folder that holds only a few of the map's files", async () => {
+            // Arrange
+            picker.mockResolvedValue(fakeDirectory("sibling", { src: { "Foo.kt": "another project's file" } }))
+            visibleFileStates = [visibleMap("myproject.cc.json", manyFilesMap)]
+
+            // Act
+            const choice = await service.chooseFolder("/root/src/File0.kt")
+
+            // Assert
+            expect(choice).toEqual({ status: "doesNotFitMap" })
         })
 
         it("should refuse a folder that contains none of the map's files", async () => {

@@ -22,11 +22,16 @@
                 (keydown.enter)="confirm()"
             />
         </label>
+        @if (showsPathProblem()) {
+            <p class="mt-2 text-sm text-error" data-testid="local-source-editor-path-problem">
+                Enter the full path, starting with / or a drive such as C:\
+            </p>
+        }
         <div class="modal-action">
             <form method="dialog">
                 <button class="btn">Cancel</button>
             </form>
-            <button class="btn btn-primary" [disabled]="editorRootPath().trim() === ''" (click)="confirm()">
+            <button class="btn btn-primary" [disabled]="!isUsablePath()" (click)="confirm()">
                 {{ request()?.fileToOpen ? "Open in VS Code" : "Save" }}
             </button>
         </div>

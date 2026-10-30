@@ -1,4 +1,16 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, output, signal, viewChild } from "@angular/core"
+import {
+    afterNextRender,
+    ChangeDetectionStrategy,
+    Component,
+    computed,
+    ElementRef,
+    Injector,
+    inject,
+    output,
+    signal,
+    viewChild
+} from "@angular/core"
+import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
 import { SourceLanguage, sourceLanguageOf } from "../../services/sourceLanguage"
 import { reasonToLeaveUncoloured, sizeOf } from "../../services/sourceLimits"
 import { highlightedRowsHtml, lineCountOf, plainRowsHtml } from "../../services/sourceRows"
@@ -8,6 +20,7 @@ export interface ViewedFile {
     relativePath: string
     text: string
     bytes: number
+    encoding: string
 }
 
 interface ViewedSource extends ViewedFile {
@@ -22,18 +35,21 @@ interface ViewedSource extends ViewedFile {
 type CopiedPart = "path" | "content"
 
 const WRAP_STORAGE_KEY = "codecharta.sourceViewer.wrapsLines"
-const COPY_FEEDBACK_MS = 1500
 const SELECTED_ROW_CLASS = "cc-source-row-selected"
 
 @Component({
     selector: "cc-source-viewer",
     templateUrl: "./sourceViewer.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { "(window:popstate)": "closeAfterBrowserWentBack()" }
+    host: { "(window:popstate)": "closeAfterBrowserWentBack()" },
+    providers: [CopyToClipboardService]
 })
 export class SourceViewerComponent {
     private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")
-    private copyFeedbackTimeout?: ReturnType<typeof setTimeout>
+    private readonly scroller = viewChild<ElementRef<HTMLElement>>("scroller")
+    private readonly injector = inject(Injector)
+    private readonly clipboard = inject(CopyToClipboardService)
+    private readonly lastCopiedPart = signal<CopiedPart>("path")
     private holdsHistoryEntry = false
 
     readonly openInEditor = output<string>()
@@ -44,11 +60,8 @@ export class SourceViewerComponent {
     readonly isColouring = signal(false)
     readonly selectedLine = signal<number | null>(null)
     readonly wrapsLines = signal(readWrapsLines())
-    readonly copiedPart = signal<CopiedPart | null>(null)
-
-    constructor() {
-        inject(DestroyRef).onDestroy(() => clearTimeout(this.copyFeedbackTimeout))
-    }
+    readonly copiedPart = computed(() => (this.clipboard.copied() ? this.lastCopiedPart() : null))
+    readonly copyFailed = signal(false)
 
     async open(file: ViewedFile) {
         const language = sourceLanguageOf(file.relativePath)
@@ -66,10 +79,15 @@ export class SourceViewerComponent {
         this.rowsHtml.set(plainRowsHtml(file.text))
         this.isColoured.set(false)
         this.selectedLine.set(null)
+        this.copyFailed.set(false)
         this.dialog().nativeElement.showModal()
-        // The state stays as it is: the router keeps its own bookkeeping in it.
-        history.pushState(history.state, "")
-        this.holdsHistoryEntry = true
+        // The code is what arrow keys and page keys should scroll, and it only exists after this render.
+        afterNextRender(() => this.scroller()?.nativeElement.focus(), { injector: this.injector })
+        if (!this.holdsHistoryEntry) {
+            // The state stays as it is: the router keeps its own bookkeeping in it.
+            history.pushState(history.state, "")
+            this.holdsHistoryEntry = true
+        }
         if (language.grammar && !source.uncolouredReason) {
             await this.colour(source, language.grammar)
         }
@@ -101,10 +119,13 @@ export class SourceViewerComponent {
     }
 
     async copy(part: CopiedPart, source: ViewedSource) {
-        await navigator.clipboard.writeText(part === "path" ? source.relativePath : source.text)
-        this.copiedPart.set(part)
-        clearTimeout(this.copyFeedbackTimeout)
-        this.copyFeedbackTimeout = setTimeout(() => this.copiedPart.set(null), COPY_FEEDBACK_MS)
+        this.lastCopiedPart.set(part)
+        try {
+            await this.clipboard.copy(part === "path" ? source.relativePath : source.text)
+            this.copyFailed.set(false)
+        } catch {
+            this.copyFailed.set(true)
+        }
     }
 
     requestEditor(source: ViewedSource) {
