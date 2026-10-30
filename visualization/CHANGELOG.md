@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Folder screenshot in the dependency view**: a folder's context menu takes a screenshot of just that folder as the graph shows it, without the edges leading out of it.
 - **Hover highlight in the dependency view**: the highlight of the box under the pointer can be switched off in the edge settings.
 
+### Fixed 🐞
+
+- **Dialogs and the back button**: going back or forward to another view closes a dialog open in the view you leave, so it no longer comes back drawn under the side panels.
+
 ## [2.10.0] - 2026-10-28
 
 ### Added 🚀

@@ -49,6 +49,66 @@ describe("SourceViewerComponent", () => {
         expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled()
     })
 
+    describe("history entry", () => {
+        let pushState: jest.SpyInstance
+        let back: jest.SpyInstance
+
+        beforeEach(() => {
+            pushState = jest.spyOn(window.history, "pushState").mockImplementation(() => undefined)
+            back = jest.spyOn(window.history, "back").mockImplementation(() => undefined)
+        })
+
+        afterEach(() => {
+            pushState.mockRestore()
+            back.mockRestore()
+        })
+
+        const closeEventOfDialog = () => screen.getByTestId("local-source-dialog").dispatchEvent(new Event("close"))
+
+        it("should add a history entry when it opens", async () => {
+            // Act
+            await openViewer(aFile("val answer = 42\n"))
+
+            // Assert
+            expect(pushState).toHaveBeenCalledTimes(1)
+        })
+
+        it("should close without going back again when the browser went back", async () => {
+            // Arrange
+            await openViewer(aFile("val answer = 42\n"))
+
+            // Act
+            window.dispatchEvent(new PopStateEvent("popstate"))
+            closeEventOfDialog()
+
+            // Assert
+            expect(HTMLDialogElement.prototype.close).toHaveBeenCalledTimes(1)
+            expect(back).not.toHaveBeenCalled()
+        })
+
+        it("should remove its history entry when it is closed some other way", async () => {
+            // Arrange
+            await openViewer(aFile("val answer = 42\n"))
+
+            // Act
+            closeEventOfDialog()
+
+            // Assert
+            expect(back).toHaveBeenCalledTimes(1)
+        })
+
+        it("should ignore the browser going back while it is closed", async () => {
+            // Arrange
+            await render(SourceViewerComponent)
+
+            // Act
+            window.dispatchEvent(new PopStateEvent("popstate"))
+
+            // Assert
+            expect(HTMLDialogElement.prototype.close).not.toHaveBeenCalled()
+        })
+    })
+
     it("should colour the file by its language, one row per line", async () => {
         // Act
         await openViewer(aFile("val answer = 42\nfun greet() = 1\n"))

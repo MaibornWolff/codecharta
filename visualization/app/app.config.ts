@@ -14,6 +14,7 @@ import { metricsBarEffects } from "app/codeCharta/features/metricsBar/effects/me
 import { navBarEffects } from "app/codeCharta/features/navBar/effects/navBar.effects"
 import { sharedEffects } from "app/codeCharta/features/shared/effects/shared.effects"
 import { loadEffects } from "app/codeCharta/load/effects/load.effects"
+import { CloseDialogsOfLeftViewEffect } from "app/codeCharta/routing/closeDialogsOfLeftView.effect"
 import { KeepAliveRouteReuseStrategy } from "app/codeCharta/routing/keepAliveRouteReuse.strategy"
 import { QueryPreservingHashLocationStrategy } from "app/codeCharta/routing/queryPreservingHashLocation.strategy"
 import { routePaths } from "app/codeCharta/routing/routePaths"
@@ -56,6 +57,7 @@ export const appConfig: ApplicationConfig = {
             ...metricsBarEffects,
             ...labelSettingsEffects,
             ...localSourceEffects,
+            CloseDialogsOfLeftViewEffect,
             ...fileExtensionBarEffects,
             ...navBarEffects,
             ...sharedEffects,
