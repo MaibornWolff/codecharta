@@ -169,6 +169,14 @@ export class NodeContextMenuComponent {
         }
     }
 
+    setEditorFolder() {
+        const node = this.menuNode()
+        this.close()
+        if (node) {
+            void this.localSourceActions().setEditorFolder(node.path)
+        }
+    }
+
     showInView(view: ViewId) {
         const node = this.menuNode()
         if (node) {

@@ -8,6 +8,7 @@ import { ChangelogFacade } from "app/codeCharta/features/changelog/facade"
 import { codeMapEffects } from "app/codeCharta/features/codeMap/effects/codeMap.effects"
 import { fileExtensionBarEffects } from "app/codeCharta/features/fileExtensionBar/effects/fileExtensionBar.effects"
 import { labelSettingsEffects } from "app/codeCharta/features/labelSettings/effects/labelSettings.effects"
+import { localSourceEffects } from "app/codeCharta/features/localSource/effects/localSource.effects"
 import { mapExplorerEffects } from "app/codeCharta/features/mapExplorer/effects/mapExplorer.effects"
 import { metricsBarEffects } from "app/codeCharta/features/metricsBar/effects/metricsBar.effects"
 import { navBarEffects } from "app/codeCharta/features/navBar/effects/navBar.effects"
@@ -54,6 +55,7 @@ export const appConfig: ApplicationConfig = {
             ...codeMapEffects,
             ...metricsBarEffects,
             ...labelSettingsEffects,
+            ...localSourceEffects,
             ...fileExtensionBarEffects,
             ...navBarEffects,
             ...sharedEffects,

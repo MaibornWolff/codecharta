@@ -46,6 +46,19 @@ describe("LocalSourceFoldersRepository", () => {
         getSpy.mockRestore()
     })
 
+    it("should forget every folder at once", async () => {
+        // Arrange
+        await repository.save({ mapKey: "first.cc.json", directory, editorRootPath: null })
+        await repository.save({ mapKey: "second.cc.json", directory, editorRootPath: "C:/dev/second" })
+
+        // Act
+        await repository.deleteAll()
+
+        // Assert
+        expect(await repository.find("first.cc.json")).toBeNull()
+        expect(await new LocalSourceFoldersRepository().find("second.cc.json")).toBeNull()
+    })
+
     it("should forget a deleted folder", async () => {
         // Arrange
         await repository.save({ mapKey: "forgotten.cc.json", directory, editorRootPath: null })

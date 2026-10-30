@@ -3,7 +3,15 @@ import { CodeMapNode } from "../../../model/codeCharta.model"
 import { isPartialState } from "../../../model/files/files.helper"
 import { FileStoreReadWindow } from "../../../stores/fileStore/fileStore.facade"
 import { getTopLevelMapName } from "../../../util/nodePathHelper"
-import { FolderAccessBlockedError, findFile, hasReadPermission, LocalDirectoryHandle, pickFolder } from "./fileSystemAccess"
+import { ToastService } from "../../shared/facade"
+import {
+    canOpenFoldersHere,
+    FolderAccessBlockedError,
+    findFile,
+    hasReadPermission,
+    LocalDirectoryHandle,
+    pickFolder
+} from "./fileSystemAccess"
 import { LocalSourceAvailability } from "./localSourceAvailability"
 import { LocalSourceFolder, LocalSourceFoldersRepository } from "./localSourceFolders.repository"
 import { relativePathOf, sampleFilePaths } from "./localSourcePaths"
@@ -17,7 +25,23 @@ export type FolderChoice = { status: "chosen"; folder: LocalSourceFolder } | Fol
 export type SourceLookup =
     | { status: "found"; file: File; folder: LocalSourceFolder; relativePath: string }
     | { status: "notFound"; relativePath: string }
+    /** Asking the browser for a folder needs a click of its own, so the caller explains first and then chooses. */
+    | { status: "folderNeeded"; mapFileName: string; relativePath: string; missingFrom: string | null }
     | FolderRefusal
+
+export interface LocalFolderDescription {
+    /** All the browser tells about the folder chosen with the picker. */
+    folderName: string | null
+    editorRootPath: string | null
+}
+
+export interface EditorTarget {
+    mapFileName: string
+    relativePath: string
+    editorRootPath: string | null
+}
+
+const FORGETTING_FAILED_MESSAGE = "The local folder of a removed map could not be forgotten"
 
 interface MapLocation {
     mapFileName: string
@@ -30,6 +54,7 @@ export class LocalSourceService {
     private readonly fileStoreReadWindow = inject(FileStoreReadWindow)
     private readonly repository = inject(LocalSourceFoldersRepository)
     private readonly availability = inject(LocalSourceAvailability)
+    private readonly toast = inject(ToastService)
 
     private readonly changeCount = signal(0)
 
@@ -50,7 +75,17 @@ export class LocalSourceService {
         if (file) {
             return { status: "found", file, folder: savedFolder, relativePath: location.relativePath }
         }
-        return this.findSourceInChosenFolder(location)
+        return {
+            status: "folderNeeded",
+            mapFileName: location.mapFileName,
+            relativePath: location.relativePath,
+            missingFrom: savedFolder?.directory.name ?? null
+        }
+    }
+
+    async chooseFolderAndFindSource(nodePath: string): Promise<SourceLookup> {
+        const location = this.locate(nodePath)
+        return location ? this.findSourceInChosenFolder(location) : { status: "notFound", relativePath: nodePath }
     }
 
     async chooseFolder(nodePath: string): Promise<FolderChoice> {
@@ -65,21 +100,37 @@ export class LocalSourceService {
         return fileState ? this.chooseFolderFor({ mapFileName, map: fileState.file.map, relativePath: "" }) : { status: "cancelled" }
     }
 
-    /** The full path once it was entered for the editor, as only that tells where the folder lies; else the folder's name. */
-    async describeFolder(mapFileName: string): Promise<string | null> {
+    async describeFolder(mapFileName: string): Promise<LocalFolderDescription | null> {
         const folder = await this.repository.find(mapFileName)
-        return folder ? (folder.editorRootPath ?? folder.directory.name) : null
+        return folder && { folderName: folder.directory?.name ?? null, editorRootPath: folder.editorRootPath }
     }
 
-    async forgetFolder(mapFileName: string): Promise<void> {
-        await this.repository.delete(mapFileName)
-        this.markFoldersChanged()
+    /** Also while the feature is switched off: what a removed project left behind must not stay in the browser. */
+    async forgetFoldersOf(mapFileNames: string[]): Promise<void> {
+        if (mapFileNames.length > 0 && canOpenFoldersHere()) {
+            await this.forgettingFolders(() => Promise.all(mapFileNames.map(mapFileName => this.repository.delete(mapFileName))))
+        }
     }
 
-    async saveEditorRootPath(folder: LocalSourceFolder, editorRootPath: string): Promise<LocalSourceFolder> {
-        const updatedFolder = { ...folder, editorRootPath }
-        await this.saveFolder(updatedFolder)
-        return updatedFolder
+    async forgetAllFolders(): Promise<void> {
+        if (canOpenFoldersHere()) {
+            await this.forgettingFolders(() => this.repository.deleteAll())
+        }
+    }
+
+    async editorTargetOf(nodePath: string): Promise<EditorTarget | null> {
+        const location = this.locate(nodePath)
+        if (!location) {
+            return null
+        }
+        const { mapFileName, relativePath } = location
+        const folder = await this.repository.find(mapFileName)
+        return { mapFileName, relativePath, editorRootPath: folder?.editorRootPath ?? null }
+    }
+
+    async saveEditorRootPath(mapFileName: string, editorRootPath: string): Promise<void> {
+        const savedFolder = await this.repository.find(mapFileName)
+        await this.saveFolder({ mapKey: mapFileName, directory: savedFolder?.directory ?? null, editorRootPath })
     }
 
     private async findSourceInChosenFolder(location: MapLocation): Promise<SourceLookup> {
@@ -100,9 +151,20 @@ export class LocalSourceService {
         if (!(await fitsMap(directory, map))) {
             return { status: "doesNotFitMap" }
         }
-        const folder = { mapKey: mapFileName, directory, editorRootPath: await this.editorRootPathOfSameFolder(mapFileName, directory) }
+        const savedFolder = await this.repository.find(mapFileName)
+        const folder = { mapKey: mapFileName, directory, editorRootPath: savedFolder?.editorRootPath ?? null }
         await this.saveFolder(folder)
         return { status: "chosen", folder }
+    }
+
+    /** Removing the project goes on regardless, so a failure here is reported instead of stopping it. */
+    private async forgettingFolders(forget: () => Promise<unknown>): Promise<void> {
+        try {
+            await forget()
+            this.markFoldersChanged()
+        } catch {
+            this.toast.show(FORGETTING_FAILED_MESSAGE, "warning")
+        }
     }
 
     private async pickFolderReportingBlocks(): Promise<LocalDirectoryHandle | FolderRefusal> {
@@ -117,11 +179,6 @@ export class LocalSourceService {
         }
     }
 
-    private async editorRootPathOfSameFolder(mapFileName: string, directory: LocalDirectoryHandle): Promise<string | null> {
-        const savedFolder = await this.repository.find(mapFileName)
-        return savedFolder && (await savedFolder.directory.isSameEntry(directory)) ? savedFolder.editorRootPath : null
-    }
-
     private async saveFolder(folder: LocalSourceFolder): Promise<void> {
         await this.repository.save(folder)
         this.markFoldersChanged()
@@ -133,7 +190,7 @@ export class LocalSourceService {
 
     private async readableSavedFolder(mapFileName: string): Promise<LocalSourceFolder | null> {
         const folder = await this.repository.find(mapFileName)
-        return folder && (await hasReadPermission(folder.directory)) ? folder : null
+        return folder?.directory && (await hasReadPermission(folder.directory)) ? folder : null
     }
 
     private locate(nodePath: string): MapLocation | null {

@@ -51,6 +51,13 @@
             >
                 Set Local Folder…
             </cc-context-menu-item>
+            <cc-context-menu-item
+                icon="fa-solid fa-code"
+                hoverHint="Enter the folder's full path, which opens its files in VS Code"
+                (itemClick)="setEditorFolder()"
+            >
+                Set VS Code Folder…
+            </cc-context-menu-item>
         }
 
         @if (hasViewActions()) {

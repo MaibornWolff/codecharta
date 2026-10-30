@@ -206,7 +206,7 @@ describe("MapSelectorComponent", () => {
             isAvailable: signal(true),
             folderChanges: signal(0),
             describeFolder: jest.fn(async (mapFileName: string) =>
-                mapFileName === TEST_FILE_DATA.fileMeta.fileName ? "C:/dev/project" : null
+                mapFileName === TEST_FILE_DATA.fileMeta.fileName ? { folderName: "project", editorRootPath: "C:/dev/project" } : null
             )
         }
         await render(MapSelectorComponent, {
@@ -225,7 +225,7 @@ describe("MapSelectorComponent", () => {
 
         // Assert
         expect(folders).toHaveLength(1)
-        expect(screen.getByText("No local folder")).toBeTruthy()
+        expect(screen.getAllByText("not set")).toHaveLength(2)
         expect(await screen.findByText("Set Local Folder…")).toBeTruthy()
     })
 })

@@ -6,10 +6,9 @@ export interface FakeFolderTree {
 }
 
 export function fakeDirectory(name: string, tree: FakeFolderTree, permission: PermissionState = "granted"): LocalDirectoryHandle {
-    const directory = {
+    return {
         name,
         kind: "directory",
-        isSameEntry: jest.fn(async (other: unknown) => other === directory),
         queryPermission: jest.fn().mockResolvedValue(permission),
         requestPermission: jest.fn().mockResolvedValue(permission),
         getDirectoryHandle: jest.fn(async (childName: string) => {
@@ -30,5 +29,4 @@ export function fakeDirectory(name: string, tree: FakeFolderTree, permission: Pe
             return { getFile: async () => new File([child], childName) }
         })
     } as unknown as LocalDirectoryHandle
-    return directory
 }

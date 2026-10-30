@@ -18,9 +18,18 @@ export class LocalSourcePageObject {
             ({ picker, sampleFolder }) => {
                 const pageWindow = window as unknown as Record<string, unknown>
                 pageWindow.openedLinks = []
+                pageWindow.blankTabs = []
                 pageWindow.open = (url: string) => {
-                    ;(pageWindow.openedLinks as string[]).push(url)
+                    ;(pageWindow.blankTabs as string[]).push(url)
                     return null
+                }
+                const clickLink = HTMLAnchorElement.prototype.click
+                HTMLAnchorElement.prototype.click = function (this: HTMLAnchorElement) {
+                    if (this.protocol === "vscode:") {
+                        ;(pageWindow.openedLinks as string[]).push(this.href)
+                    } else {
+                        clickLink.call(this)
+                    }
                 }
                 if (picker === "missing") {
                     delete pageWindow.showDirectoryPicker
@@ -78,12 +87,46 @@ export class LocalSourcePageObject {
         return this.page.evaluate(() => (window as unknown as { openedLinks: string[] }).openedLinks)
     }
 
+    blankTabs(): Promise<string[]> {
+        return this.page.evaluate(() => (window as unknown as { blankTabs: string[] }).blankTabs)
+    }
+
+    /** Only the keys: reading a saved handle back crashes the Chromium of the Linux sandbox. */
+    savedFolderKeys(): Promise<string[]> {
+        return this.page.evaluate(
+            () =>
+                new Promise<string[]>((resolve, reject) => {
+                    const opening = indexedDB.open("CodeChartaLocalSource", 1)
+                    opening.onerror = () => reject(opening.error)
+                    opening.onsuccess = () => {
+                        const reading = opening.result.transaction("folders").objectStore("folders").getAllKeys()
+                        reading.onsuccess = () => {
+                            opening.result.close()
+                            resolve(reading.result as string[])
+                        }
+                    }
+                })
+        )
+    }
+
+    openMapSelector() {
+        return this.page.locator("cc-map-selector .dropdown > button").click()
+    }
+
+    folderDialog() {
+        return this.page.getByTestId("local-source-folder-dialog").locator("visible=true")
+    }
+
+    selectFolderInTheDialog() {
+        return this.folderDialog().getByRole("button", { name: "Select folder…" }).click()
+    }
+
     sourceDialog() {
         return this.page.getByTestId("local-source-dialog")
     }
 
     editorDialog() {
-        return this.page.getByTestId("local-source-editor-dialog")
+        return this.page.getByTestId("local-source-editor-dialog").locator("visible=true")
     }
 
     folderLines() {
