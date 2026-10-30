@@ -52,7 +52,6 @@ export function isEdgeOfHovered(edge: GraphEdge, hoveredPath: string | null, isI
     return hoveredPath !== null && isInside(edge.fromPath, hoveredPath) !== isInside(edge.toPath, hoveredPath)
 }
 
-/** The scene with only the edges that start and end inside a box, so that nothing leaves it. */
 export function sceneWithEdgesWithin(scene: DependencyGraphScene, boxPath: string): DependencyGraphScene {
     const { isInside } = lookupsOf(scene.layout)
     return { ...scene, edges: scene.edges.filter(edge => isInside(edge.fromPath, boxPath) && isInside(edge.toPath, boxPath)) }

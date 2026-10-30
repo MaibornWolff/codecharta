@@ -20,7 +20,6 @@ export function isTooLargeToShow(bytes: number): boolean {
     return bytes > MAX_SHOWN_BYTES
 }
 
-/** Why a file is shown without colours; null when it can be coloured. */
 export function reasonToLeaveUncoloured(text: string, bytes: number): string | null {
     if (bytes > MAX_COLOURED_BYTES) {
         return `larger than ${sizeOf(MAX_COLOURED_BYTES)}`

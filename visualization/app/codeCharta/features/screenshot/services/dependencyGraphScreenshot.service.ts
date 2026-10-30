@@ -25,7 +25,6 @@ export class DependencyGraphScreenshotService extends ChartScreenshotService {
         return this.chartRegistry.boxShots.pixelRectOf(path) !== null
     }
 
-    /** Copies or saves the part of the box in view, as the screenshot setting says. */
     async screenshotBox(path: string, boxName: string): Promise<void> {
         try {
             const canvas = this.renderBoxCanvas(path)
