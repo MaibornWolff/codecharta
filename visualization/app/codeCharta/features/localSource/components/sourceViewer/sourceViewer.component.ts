@@ -28,11 +28,13 @@ const SELECTED_ROW_CLASS = "cc-source-row-selected"
 @Component({
     selector: "cc-source-viewer",
     templateUrl: "./sourceViewer.component.html",
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { "(window:popstate)": "closeAfterBrowserWentBack()" }
 })
 export class SourceViewerComponent {
     private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")
     private copyFeedbackTimeout?: ReturnType<typeof setTimeout>
+    private holdsHistoryEntry = false
 
     readonly openInEditor = output<string>()
 
@@ -65,6 +67,9 @@ export class SourceViewerComponent {
         this.isColoured.set(false)
         this.selectedLine.set(null)
         this.dialog().nativeElement.showModal()
+        // The state stays as it is: the router keeps its own bookkeeping in it.
+        history.pushState(history.state, "")
+        this.holdsHistoryEntry = true
         if (language.grammar && !source.uncolouredReason) {
             await this.colour(source, language.grammar)
         }
@@ -74,9 +79,20 @@ export class SourceViewerComponent {
         this.dialog().nativeElement.close()
     }
 
+    closeAfterBrowserWentBack() {
+        if (this.holdsHistoryEntry) {
+            this.holdsHistoryEntry = false
+            this.close()
+        }
+    }
+
     handleClosed() {
         this.source.set(null)
         this.rowsHtml.set("")
+        if (this.holdsHistoryEntry) {
+            this.holdsHistoryEntry = false
+            history.back()
+        }
     }
 
     toggleWrapsLines() {
