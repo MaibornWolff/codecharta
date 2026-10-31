@@ -202,7 +202,7 @@ jobs:
           path: visualization/dist/bundler/browser
 
       - name: Setup the JDK to run ccsh with
-        uses: actions/setup-java@v5.2.0
+        uses: actions/setup-java@v5.7.0
         with:
           distribution: 'temurin'
           java-version: 25
@@ -211,7 +211,7 @@ jobs:
         run: sh ./.github/workflows/scripts/build_demo_files.sh
 
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4.8.0
+        uses: JamesIves/github-pages-deploy-action@v4.9.0
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}
           branch: gh-pages
