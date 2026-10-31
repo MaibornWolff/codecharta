@@ -19,6 +19,7 @@ import { ThreeRendererService } from "./threeRenderer.service"
 type BuildingSelectedEvents = {
     onBuildingSelected: (data: { building: CodeMapBuilding }) => void
     onBuildingDeselected: () => void
+    onKeptHighlightFocusChanged: (filePaths: ReadonlySet<string> | null) => void
 }
 
 @Injectable({ providedIn: "root" })
@@ -236,15 +237,16 @@ export class ThreeSceneService implements OnDestroy {
         this.folderLabelMaterials.select(this.selected)
     }
 
-    /** While on, the kept highlight greys the buildings outside it instead of darkening them. */
-    setGreysOutsideKeptHighlight(greysOutsideKeptHighlight: boolean) {
-        if (this.greysOutsideKeptHighlight === greysOutsideKeptHighlight) {
-            return
-        }
+    /** While set, the map is about these files: the kept highlight greys the buildings outside it instead of
+     * darkening them, and whoever draws labels hears of it. */
+    setKeptHighlightFocus(filePaths: ReadonlySet<string> | null) {
+        const greysOutsideKeptHighlight = filePaths !== null
+        const greyingChanged = this.greysOutsideKeptHighlight !== greysOutsideKeptHighlight
         this.greysOutsideKeptHighlight = greysOutsideKeptHighlight
-        if (this.mapMesh && this.constantHighlight.size > 0) {
+        if (greyingChanged && this.mapMesh && this.constantHighlight.size > 0) {
             this.paintKeptHighlight()
         }
+        this.eventEmitter.emit("onKeptHighlightFocusChanged", filePaths)
     }
 
     /** Shows the highlight the store keeps, which another view can change while this mesh is not drawn. */

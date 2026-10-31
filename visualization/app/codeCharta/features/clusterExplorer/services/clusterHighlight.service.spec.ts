@@ -3,18 +3,15 @@ import { BehaviorSubject } from "rxjs"
 import { ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
 import { NodeInteraction } from "../../../stores/sharedView/sharedView.write.facade"
-import { CodeMapRenderService } from "../../codeMap/facade"
 import { ClusterHighlightService } from "./clusterHighlight.service"
 
 describe("ClusterHighlightService", () => {
     let kept$: BehaviorSubject<string[]>
     let service: ClusterHighlightService
-    const setGreysOutsideKeptHighlight = jest.fn()
-    const showLabelsOnlyFor = jest.fn()
+    const setKeptHighlightFocus = jest.fn()
 
     beforeEach(() => {
-        setGreysOutsideKeptHighlight.mockClear()
-        showLabelsOnlyFor.mockClear()
+        setKeptHighlightFocus.mockClear()
         kept$ = new BehaviorSubject<string[]>([])
         const nodeInteraction: Partial<NodeInteraction> = {
             keepHighlight: (paths: string[]) => kept$.next([...new Set([...kept$.value, ...paths])]),
@@ -23,8 +20,7 @@ describe("ClusterHighlightService", () => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: NodeInteraction, useValue: nodeInteraction },
-                { provide: ThreeSceneService, useValue: { setGreysOutsideKeptHighlight } },
-                { provide: CodeMapRenderService, useValue: { showLabelsOnlyFor } },
+                { provide: ThreeSceneService, useValue: { setKeptHighlightFocus } },
                 { provide: SharedViewReadWindow, useValue: { keptHighlightPaths$: kept$ } }
             ]
         })
@@ -115,80 +111,57 @@ describe("ClusterHighlightService", () => {
         expect(service.pinnedClusterId()).toBeNull()
     })
 
-    it("should grey the rest of the map only while hovering", () => {
+    it("should focus the map on the hovered files only while hovering", () => {
         // Arrange & Act
         service.hover(["/a"])
-        const whileHovering = setGreysOutsideKeptHighlight.mock.lastCall
-        service.endHover()
-
-        // Assert
-        expect(whileHovering).toEqual([true])
-        expect(setGreysOutsideKeptHighlight).toHaveBeenLastCalledWith(false)
-    })
-
-    it("should keep the rest of the map grey while pinned, after the hover ended", () => {
-        // Arrange
-        service.hover(["/a"])
-
-        // Act
-        service.togglePin("cluster", ["/a"])
-        service.endHover()
-
-        // Assert
-        expect(setGreysOutsideKeptHighlight).toHaveBeenLastCalledWith(true)
-    })
-
-    it("should stop greying when unpinned", () => {
-        // Arrange
-        service.togglePin("cluster", ["/a"])
-        service.endHover()
-
-        // Act
-        service.togglePin("cluster", ["/a"])
-        service.endHover()
-
-        // Assert
-        expect(setGreysOutsideKeptHighlight).toHaveBeenLastCalledWith(false)
-    })
-
-    it("should stop greying when something else ends the pin", () => {
-        // Arrange
-        service.togglePin("cluster", ["/a"])
-
-        // Act
-        kept$.next([])
-        TestBed.tick()
-
-        // Assert
-        expect(setGreysOutsideKeptHighlight).toHaveBeenLastCalledWith(false)
-    })
-
-    it("should label only the hovered files and every file again afterwards", () => {
-        // Arrange & Act
-        service.hover(["/a"])
-        const whileHovering = showLabelsOnlyFor.mock.lastCall
+        const whileHovering = setKeptHighlightFocus.mock.lastCall
         service.endHover()
 
         // Assert
         expect(whileHovering).toEqual([new Set(["/a"])])
-        expect(showLabelsOnlyFor).toHaveBeenLastCalledWith(null)
+        expect(setKeptHighlightFocus).toHaveBeenLastCalledWith(null)
     })
 
-    it("should label the pinned and the hovered files together, and the pinned ones once the hover ended", () => {
+    it("should keep the map focused while pinned, after the hover ended", () => {
+        // Arrange
+        service.hover(["/a"])
+
+        // Act
+        service.togglePin("cluster", ["/a"])
+        service.endHover()
+
+        // Assert
+        expect(setKeptHighlightFocus).toHaveBeenLastCalledWith(new Set(["/a"]))
+    })
+
+    it("should focus on the pinned and the hovered files together, and the pinned ones once the hover ended", () => {
         // Arrange
         service.togglePin("pinned", ["/a"])
 
         // Act
         service.hover(["/b"])
-        const whileHovering = showLabelsOnlyFor.mock.lastCall
+        const whileHovering = setKeptHighlightFocus.mock.lastCall
         service.endHover()
 
         // Assert
         expect(whileHovering).toEqual([new Set(["/b", "/a"])])
-        expect(showLabelsOnlyFor).toHaveBeenLastCalledWith(new Set(["/a"]))
+        expect(setKeptHighlightFocus).toHaveBeenLastCalledWith(new Set(["/a"]))
     })
 
-    it("should label every file again when something else ends the pin", () => {
+    it("should end the focus when unpinned", () => {
+        // Arrange
+        service.togglePin("cluster", ["/a"])
+        service.endHover()
+
+        // Act
+        service.togglePin("cluster", ["/a"])
+        service.endHover()
+
+        // Assert
+        expect(setKeptHighlightFocus).toHaveBeenLastCalledWith(null)
+    })
+
+    it("should end the focus when something else ends the pin", () => {
         // Arrange
         service.togglePin("cluster", ["/a"])
 
@@ -197,6 +170,6 @@ describe("ClusterHighlightService", () => {
         TestBed.tick()
 
         // Assert
-        expect(showLabelsOnlyFor).toHaveBeenLastCalledWith(null)
+        expect(setKeptHighlightFocus).toHaveBeenLastCalledWith(null)
     })
 })

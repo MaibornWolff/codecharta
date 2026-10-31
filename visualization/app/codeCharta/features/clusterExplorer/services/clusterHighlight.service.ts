@@ -3,7 +3,6 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
 import { NodeInteraction } from "../../../stores/sharedView/sharedView.write.facade"
-import { CodeMapRenderService } from "../../codeMap/facade"
 
 interface ClusterPin {
     clusterId: string
@@ -17,7 +16,6 @@ interface ClusterPin {
 export class ClusterHighlightService {
     private readonly nodeInteraction = inject(NodeInteraction)
     private readonly threeSceneService = inject(ThreeSceneService)
-    private readonly codeMapRenderService = inject(CodeMapRenderService)
     private readonly keptHighlightPaths = toSignal(inject(SharedViewReadWindow).keptHighlightPaths$, { requireSync: true })
 
     private readonly pin = signal<ClusterPin | null>(null)
@@ -81,8 +79,7 @@ export class ClusterHighlightService {
     private showActiveClusterOnMap(): void {
         const pinnedPaths = this.pinnedClusterId() === null ? null : this.pin()?.filePaths
         const isActive = this.hoveredPaths !== null || Boolean(pinnedPaths)
-        this.threeSceneService.setGreysOutsideKeptHighlight(isActive)
-        this.codeMapRenderService.showLabelsOnlyFor(isActive ? new Set([...(this.hoveredPaths ?? []), ...(pinnedPaths ?? [])]) : null)
+        this.threeSceneService.setKeptHighlightFocus(isActive ? new Set([...(this.hoveredPaths ?? []), ...(pinnedPaths ?? [])]) : null)
     }
 
     private releasePin(): void {
