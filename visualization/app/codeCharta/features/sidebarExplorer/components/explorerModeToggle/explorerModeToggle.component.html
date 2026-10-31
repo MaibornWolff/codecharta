@@ -1,5 +1,5 @@
 <fieldset class="join mx-2 mt-2 flex" aria-label="Explorer mode">
-    @for (mode of modes; track mode.id) {
+    @for (mode of modes(); track mode.id) {
         <button
             type="button"
             class="btn btn-sm join-item flex-1 normal-case font-normal"

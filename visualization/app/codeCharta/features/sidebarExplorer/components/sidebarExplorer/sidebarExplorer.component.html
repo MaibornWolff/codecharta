@@ -15,11 +15,13 @@
 } @else {
     <cc-explorer-header></cc-explorer-header>
     <ng-content select="[headerChips]"></ng-content>
-    @if (capabilities.showSearch) {
+    @if (capabilities.showSearch && showsListTools()) {
         <cc-explorer-search-bar></cc-explorer-search-bar>
     }
     <cc-explorer-focus-banner></cc-explorer-focus-banner>
-    <cc-explorer-sort-control></cc-explorer-sort-control>
+    @if (showsListTools()) {
+        <cc-explorer-sort-control></cc-explorer-sort-control>
+    }
     <div #scrollHost class="flex-1 overflow-auto px-1 py-1">
         @if (isFilesMode()) {
             <cc-explorer-tree></cc-explorer-tree>

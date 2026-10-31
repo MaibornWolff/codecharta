@@ -3,6 +3,7 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { EXPLORER_CAPABILITIES } from "../../explorerCapabilities"
 import { EXPLORER_COUNTS, ExplorerCounts } from "../../explorerCounts.port"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
+import { ExplorerModeService } from "../../services/explorerMode.service"
 import { ExplorerCountChipComponent } from "../explorerCountChip/explorerCountChip.component"
 import { ExplorerModeToggleComponent } from "../explorerModeToggle/explorerModeToggle.component"
 
@@ -18,10 +19,11 @@ export class ExplorerHeaderComponent {
     private readonly collapseService = inject(ExplorerCollapseService)
 
     private readonly capabilities = inject(EXPLORER_CAPABILITIES)
+    private readonly modeService = inject(ExplorerModeService)
 
     readonly showCounts = this.capabilities.showCounts
     readonly canFlatten = this.capabilities.canFlatten
-    readonly showModeToggle = this.capabilities.modes.length > 1
+    readonly showModeToggle = computed(() => this.modeService.modes().length > 1)
 
     private readonly countsSource = this.showCounts ? inject(EXPLORER_COUNTS) : null
 

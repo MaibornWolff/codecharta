@@ -46,6 +46,22 @@ describe("SidebarExplorerComponent", () => {
         expect(container.querySelector("cc-explorer-tree")).not.toBe(null)
     })
 
+    it("should drop the search bar and the sort control while a mode that hides them is open", async () => {
+        // Arrange
+        TestBed.resetTestingModule()
+        const hidingMode: ExplorerMode = { ...WORDS_MODE, hidesListTools: true }
+        configureWithCapabilities({ modes: [FILES_EXPLORER_MODE, hidingMode] })
+        const { container, fixture } = await render(SidebarExplorerComponent)
+
+        // Act
+        fixture.debugElement.injector.get(ExplorerModeService).activate(hidingMode.id)
+        fixture.detectChanges()
+
+        // Assert
+        expect(container.querySelector("cc-explorer-search-bar")).toBe(null)
+        expect(container.querySelector("cc-explorer-sort-control")).toBe(null)
+    })
+
     it("should render the rules popovers and search bar by default", async () => {
         // Arrange & Act
         const { container } = await render(SidebarExplorerComponent)
