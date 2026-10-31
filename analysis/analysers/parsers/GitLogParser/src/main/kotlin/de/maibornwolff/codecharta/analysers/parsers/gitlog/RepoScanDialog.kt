@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.gitlog
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.InputValidator
 import de.maibornwolff.codecharta.dialogProvider.promptConfirm
@@ -33,7 +34,7 @@ class RepoScanDialog {
             return listOfNotNull(
                 "--repo-path=$repoPath",
                 if (commitRef.isNotEmpty()) "--commit=$commitRef" else null,
-                RepoScanCommand.AUTHOR_OWNERSHIP_FLAG.takeIf { authorOwnership }
+                AuthorOwnershipScan.FLAG.takeIf { authorOwnership }
             )
         }
 

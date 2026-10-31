@@ -52,7 +52,7 @@ class RepoScanCommand(private val printsOwnershipHints: Boolean = true) : Analys
     private var commit: String? = null
 
     @CommandLine.Option(
-        names = [AUTHOR_OWNERSHIP_FLAG],
+        names = [AuthorOwnershipScan.FLAG],
         description = ["add the share of each file's lines last changed by each author, by number instead of name (blames every file)"]
     )
     private var authorOwnership = false
@@ -62,7 +62,6 @@ class RepoScanCommand(private val printsOwnershipHints: Boolean = true) : Analys
 
     companion object {
         const val NAME = "repo-scan"
-        const val AUTHOR_OWNERSHIP_FLAG = "--author-ownership"
         const val DESCRIPTION =
             "git log parser repo-scan - generates cc.json from an automatically generated git-log file"
     }

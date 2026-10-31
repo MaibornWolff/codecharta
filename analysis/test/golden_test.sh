@@ -96,11 +96,9 @@ commit_ownership_fixture_file() {
 
 check_gitlogparser_author_ownership() {
   echo " -- expect GitLogParser repo-scan to write the same pseudonymous author ownership on every run"
-  OWNERSHIP_REPO="${TEMP_DIR}/author_ownership_repo"
+  OWNERSHIP_REPO="$(mktemp -d "${TEMP_DIR}/author_ownership_repo.XXXXXX")"
   ACTUAL_OWNERSHIP_FIRST="${TEMP_DIR}/actual_author_ownership_first.cc.json"
   ACTUAL_OWNERSHIP_SECOND="${TEMP_DIR}/actual_author_ownership_second.cc.json"
-  rm -rf "${OWNERSHIP_REPO}"
-  mkdir -p "${OWNERSHIP_REPO}"
   git -C "${OWNERSHIP_REPO}" init -q
   commit_ownership_fixture_file "Golden First" "1\n2\n3\n4\n"
   commit_ownership_fixture_file "Golden Second" "1\n2\n3\nfour\n"

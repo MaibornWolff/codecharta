@@ -1,0 +1,292 @@
+{
+  "meta": {
+    "projectName": "sampleProjectWithClusters",
+    "apiVersion": "2.0"
+  },
+  "files": [
+    {
+      "id": "164ddff4bb1345e1",
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "id": "fabeab231626f275",
+          "name": "src",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "5a49618736a14b4c",
+              "name": "main",
+              "type": "Folder",
+              "children": [
+                {
+                  "id": "2f6cb0760e30e5d6",
+                  "name": "file1.java",
+                  "type": "File"
+                },
+                {
+                  "id": "59690b3e49b79bb1",
+                  "name": "file2.java",
+                  "type": "File"
+                }
+              ]
+            },
+            {
+              "id": "bd9e7e1effe8c340",
+              "name": "test",
+              "type": "Folder",
+              "children": [
+                {
+                  "id": "b2b4d567edf4cea5",
+                  "name": "otherFile.java",
+                  "type": "File"
+                }
+              ]
+            },
+            {
+              "id": "b843373ed21f54b2",
+              "name": "folder3",
+              "type": "Folder",
+              "children": [
+                {
+                  "id": "a92b30d94d09a0a6",
+                  "name": "otherFile2.java",
+                  "type": "File"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "67b244db227eade7",
+          "name": "file1",
+          "type": "File",
+          "link": ""
+        },
+        {
+          "id": "6b3af9761a62ef20",
+          "name": "file2",
+          "type": "File",
+          "link": ""
+        },
+        {
+          "id": "fa66e6a27b38b5d6",
+          "name": "foo",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "4b1c000f72e63906",
+              "name": "file1",
+              "type": "File",
+              "link": ""
+            },
+            {
+              "id": "63365a07b92031da",
+              "name": "file2",
+              "type": "File",
+              "link": ""
+            },
+            {
+              "id": "4054fc8c29bc976b",
+              "name": "file3",
+              "type": "File",
+              "link": ""
+            }
+          ],
+          "link": ""
+        },
+        {
+          "id": "9ddf1ca1f8fac423",
+          "name": "something",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "008e5faf226cb4c3",
+              "name": "file2",
+              "type": "File",
+              "link": ""
+            }
+          ],
+          "link": ""
+        },
+        {
+          "id": "529d2f58d41525ba",
+          "name": "else",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "f8d959dac7424a5d",
+              "name": "file3",
+              "type": "File",
+              "link": ""
+            }
+          ],
+          "link": ""
+        },
+        {
+          "id": "623cd5bbc533da43",
+          "name": "whatever",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "e8c35cda7e9ec606",
+              "name": "file2",
+              "type": "File",
+              "link": ""
+            }
+          ],
+          "link": ""
+        }
+      ]
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "2f6cb0760e30e5d6": {
+          "nloc": 80.0
+        },
+        "59690b3e49b79bb1": {
+          "nloc": 80.0
+        },
+        "b2b4d567edf4cea5": {
+          "nloc": 80.0
+        },
+        "a92b30d94d09a0a6": {
+          "nloc": 80.0
+        },
+        "67b244db227eade7": {
+          "rloc": 1.0
+        },
+        "6b3af9761a62ef20": {
+          "rloc": 1.0
+        },
+        "4b1c000f72e63906": {
+          "rloc": 1.0
+        },
+        "63365a07b92031da": {
+          "rloc": 1.0
+        },
+        "4054fc8c29bc976b": {
+          "rloc": 1.0
+        },
+        "008e5faf226cb4c3": {
+          "rloc": 1.0
+        },
+        "f8d959dac7424a5d": {
+          "rloc": 1.0
+        },
+        "e8c35cda7e9ec606": {
+          "rloc": 1.0
+        }
+      },
+      "attributeDescriptors": {},
+      "attributeTypes": {}
+    },
+    "dependency": {
+      "edges": [
+        {
+          "fromId": "67b244db227eade7",
+          "toId": "63365a07b92031da",
+          "attributes": {
+            "pairingRate": 90.0,
+            "avgCommits": 5.0,
+            "anotherMetric": 25.0
+          }
+        },
+        {
+          "fromId": "4b1c000f72e63906",
+          "toId": "6b3af9761a62ef20",
+          "attributes": {
+            "pairingRate": 90.0,
+            "avgCommits": 5.0,
+            "anotherMetric": 25.0
+          }
+        },
+        {
+          "fromId": "63365a07b92031da",
+          "toId": "4054fc8c29bc976b",
+          "attributes": {
+            "pairingRate": 42.0,
+            "avgCommits": 3.0
+          }
+        },
+        {
+          "fromId": "008e5faf226cb4c3",
+          "toId": "f8d959dac7424a5d",
+          "attributes": {
+            "pairingRate": 80.0,
+            "avgCommits": 3.0
+          }
+        }
+      ],
+      "attributeTypes": {},
+      "attributeDescriptors": {},
+      "namespaces": {
+        "com.example": {
+          "level": 0
+        }
+      },
+      "leaves": {
+        "2f6cb0760e30e5d6": {
+          "FirstClass": {
+            "kind": "class",
+            "language": "java",
+            "namespace": "com.example",
+            "level": 1
+          }
+        },
+        "59690b3e49b79bb1": {
+          "SecondClass": {
+            "kind": "class",
+            "language": "java",
+            "namespace": "com.example",
+            "level": 0
+          }
+        }
+      },
+      "leafEdges": [
+        {
+          "fromId": "2f6cb0760e30e5d6",
+          "fromLeaf": "FirstClass",
+          "toId": "59690b3e49b79bb1",
+          "toLeaf": "SecondClass",
+          "attributes": {
+            "dependencies": 1
+          },
+          "usage": [
+            "inheritance"
+          ]
+        }
+      ]
+    },
+    "clusters": {
+      "clusterings": {
+        "author-ownership": {
+          "title": "Author ownership",
+          "membership": "weighted",
+          "weightBasis": "loc",
+          "analyzers": [
+            "gitlogparser"
+          ],
+          "clusters": [
+            {
+              "id": "a1b2c3d-author-1",
+              "name": "Author 1",
+              "members": [
+                {
+                  "nodeId": "2f6cb0760e30e5d6",
+                  "weight": 0.75
+                },
+                {
+                  "nodeId": "59690b3e49b79bb1",
+                  "weight": 1.0
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

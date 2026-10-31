@@ -9,23 +9,34 @@ import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.model.carriesData
+import de.maibornwolff.codecharta.model.nodeIdsOf
 
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
     fun merge(): Project = when {
-        areAllAPIVersionsCompatible() ->
-            ProjectBuilder(nodes = mergeProjectNodes(), blacklist = mergeBlacklist())
-                .withCommitHash(mergedCommitHash)
-                .buildFromLenses(
-                    LensSet(
-                        metrics = mergedMetricsLens,
-                        dependency = mergedDependencyLens,
-                        domain = mergedDomainLens,
-                        clusters = mergedClustersLens,
-                        opaqueLenses = mergedOpaqueLenses
-                    )
-                )
+        areAllAPIVersionsCompatible() -> mergeCompatibleProjects()
 
         else -> throw MergeException("API versions not supported.")
+    }
+
+    private fun mergeCompatibleProjects(): Project {
+        val mergedNodes = mergeProjectNodes()
+        return ProjectBuilder(nodes = mergedNodes, blacklist = mergeBlacklist())
+            .withCommitHash(mergedCommitHash)
+            .buildFromLenses(
+                LensSet(
+                    metrics = mergedMetricsLens,
+                    dependency = mergedDependencyLens,
+                    domain = mergedDomainLens,
+                    clusters = clustersResolvedAgainst(mergedNodes),
+                    opaqueLenses = mergedOpaqueLenses
+                )
+            )
+    }
+
+    // A resolver can leave a node out of the merged tree, and a member must not outlive its node
+    private fun clustersResolvedAgainst(mergedNodes: List<MutableNode>): ClustersLens {
+        if (!mergedClustersLens.carriesData) return mergedClustersLens
+        return mergedClustersLens.droppingUnresolvedMembers(nodeIdsOf(mergedNodes.single().toNode()))
     }
 
     private val mergedOpaqueLenses: Map<String, JsonElement> by lazy {

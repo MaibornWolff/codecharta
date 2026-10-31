@@ -42,7 +42,6 @@ open class ProjectBuilder(
 
     private var domainLens: DomainLens? = null
 
-    // Assembling drops every member whose node the built tree no longer has, whatever filtered it out.
     private var clustersLens: ClustersLens = ClustersLens()
 
     // Only the tables the builder itself fills; edges, attribute types and descriptors come from the
@@ -142,14 +141,11 @@ open class ProjectBuilder(
     }
 
     private fun assembleProject(lenses: LensSet): Project {
-        val builtNodes = nodes.map { it.toNode() }.toList()
-        val resolvedClusters =
-            if (lenses.clusters.carriesData) lenses.clusters.droppingUnresolvedMembers(nodeIdsOf(builtNodes.single())) else lenses.clusters
         val project =
             Project(
                 projectName = DUMMY_PROJECT_NAME,
-                nodes = builtNodes,
-                lenses = lenses.copy(clusters = resolvedClusters),
+                nodes = nodes.map { it.toNode() }.toList(),
+                lenses = lenses,
                 blacklist = blacklist.toList(),
                 commitHash = commitHash
             )
