@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **Author ownership**: `--author-ownership` on `ccsh analyse` and `gitlogparser repo-scan` adds each author's share of
+  each file's lines to the map, by number instead of name.
+
 ## [2.3.0] - 2026-10-28
 
 ### Added 🚀

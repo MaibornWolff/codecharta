@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.gitlog
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
@@ -50,7 +51,7 @@ class LogScanCommand : AnalyserInterface {
     @CommandLine.Option(names = ["--add-author"], description = ["add an array of authors to every file"])
     private var addAuthor = false
 
-    @CommandLine.Option(names = [RepoScanCommand.AUTHOR_OWNERSHIP_FLAG], hidden = true)
+    @CommandLine.Option(names = [AuthorOwnershipScan.FLAG], hidden = true)
     private var authorOwnership = false
 
     override val name = NAME
@@ -62,10 +63,7 @@ class LogScanCommand : AnalyserInterface {
     }
 
     override fun call(): Unit? {
-        require(!authorOwnership) {
-            "${RepoScanCommand.AUTHOR_OWNERSHIP_FLAG} needs the repository to run git blame, which a log file cannot provide. " +
-                "Use 'gitlogparser ${RepoScanCommand.NAME} ${RepoScanCommand.AUTHOR_OWNERSHIP_FLAG}' instead."
-        }
+        require(!authorOwnership) { AuthorOwnershipScan.NEEDS_REPOSITORY_HINT }
         require(InputHelper.isInputValidAndNotNull(arrayOf(gitLogFile), canInputContainFolders = false)) {
             "Input invalid file for GitLogScan, stopping execution..."
         }

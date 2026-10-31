@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.tools.analyse
 
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.RepoScanCommand
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.SVNLogParser
 import java.io.File
 
@@ -42,7 +43,7 @@ class HistoryFinder(private val svnLogWriter: SvnLogWriter, private val homeFold
     private fun gitHistory(request: AnalyseRequest): ConfiguredAnalyser = ConfiguredAnalyser(
         RepoScanCommand(printsOwnershipHints = false),
         listOf("--repo-path", request.analysedFolder.path) +
-            listOfNotNull(RepoScanCommand.AUTHOR_OWNERSHIP_FLAG.takeIf { request.authorOwnership }),
+            listOfNotNull(AuthorOwnershipScan.FLAG.takeIf { request.authorOwnership }),
         readsProjectFolder = false
     )
 

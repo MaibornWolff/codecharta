@@ -371,11 +371,40 @@ class StructureModifierTest {
     }
 
     @Test
+    fun `should re-key the cluster members onto the new paths when setting a new root`() {
+        // Act
+        val cliResult = executeForOutput("", arrayOf(CLUSTERS_PROJECT, "-s=/root/src"))
+
+        // Assert
+        assertThat(cliResult).contains("\"nodeId\":\"$ID_OF_MAIN_FILE1_AFTER_SET_ROOT\",\"weight\":0.75")
+        assertThat(cliResult).doesNotContain(ID_OF_SRC_MAIN_FILE1)
+    }
+
+    @Test
+    fun `should re-key the cluster members onto the new paths when moving nodes`() {
+        // Act
+        val cliResult = executeForOutput("", arrayOf(CLUSTERS_PROJECT, "-f=/root/src/main", "-t=/root/moved"))
+
+        // Assert
+        assertThat(cliResult).contains("\"nodeId\":\"$ID_OF_MAIN_FILE1_AFTER_MOVE\",\"weight\":0.75")
+        assertThat(cliResult).doesNotContain(ID_OF_SRC_MAIN_FILE1)
+    }
+
+    @Test
+    fun `should drop the cluster members of removed nodes and a cluster left without any`() {
+        // Act
+        val cliResult = executeForOutput("", arrayOf(CLUSTERS_PROJECT, "-r=/root/src/main"))
+
+        // Assert
+        assertThat(cliResult).doesNotContain("clusterings")
+    }
+
+    @Test
     fun `should refuse to restructure a project carrying an opaque lens that references node ids`() {
         // when
         val exitCode = CommandLine(StructureModifier()).execute(SECURITY_PROJECT, "-s=/root/src")
 
-        // then - only `domain` can be re-keyed; a lens of unknown shape refuses rather than orphan its ids
+        // then - only the typed lenses can be re-keyed; a lens of unknown shape refuses rather than orphan its ids
         assertThat(exitCode).isEqualTo(1)
     }
 
@@ -396,6 +425,7 @@ class StructureModifierTest {
 
     companion object {
         private const val DOMAIN_PROJECT = "src/test/resources/sample_project_with_domain.cc.json"
+        private const val CLUSTERS_PROJECT = "src/test/resources/sample_project_with_clusters.cc.json"
         private const val SECURITY_PROJECT = "src/test/resources/sample_project_with_security.cc.json"
 
         // sha-256("<type><canonical path>") truncated to 16 chars, the same rule the 2.0 writer applies.

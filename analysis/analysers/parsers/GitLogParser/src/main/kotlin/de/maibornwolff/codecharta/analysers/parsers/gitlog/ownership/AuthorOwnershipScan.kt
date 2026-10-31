@@ -85,6 +85,9 @@ class AuthorOwnershipScan(private val repositoryFolder: File) {
     }
 
     companion object {
+        const val FLAG = "--author-ownership"
+        const val NEEDS_REPOSITORY_HINT =
+            "$FLAG needs the repository to run git blame, which a log file cannot provide. Use 'gitlogparser repo-scan $FLAG' instead."
         const val PERSONAL_DATA_NOTE =
             "Note: the author numbers in this map are pseudonymous. Anyone with the repository can match them to people, " +
                 "so the map may still be personal data under GDPR."

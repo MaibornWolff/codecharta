@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.commit.CommitAnalysisContext
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.RepoScanCommand
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.FileExtension
@@ -68,7 +68,7 @@ class AnalyseTool(
     private var commit: String? = null
 
     @CommandLine.Option(
-        names = [RepoScanCommand.AUTHOR_OWNERSHIP_FLAG],
+        names = [AuthorOwnershipScan.FLAG],
         description = ["adds the share of each file's lines last changed by each author, by number instead of name (needs the git history)"]
     )
     private var authorOwnership = false
@@ -97,7 +97,7 @@ class AnalyseTool(
         if (!folder.isDirectory) throw AnalysisException("The folder ${folder.path} does not exist.")
         val leftOutSources = leftOutSources()
         if (authorOwnership && VersionControl.GIT.label in leftOutSources) {
-            throw AnalysisException("${RepoScanCommand.AUTHOR_OWNERSHIP_FLAG} needs the git history, which --without leaves out.")
+            throw AnalysisException("${AuthorOwnershipScan.FLAG} needs the git history, which --without leaves out.")
         }
         val console = AnalysisConsole(output, quiet)
         val commitRef = commitRef()
