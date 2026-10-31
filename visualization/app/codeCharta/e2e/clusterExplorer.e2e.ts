@@ -3,6 +3,7 @@ import { goto } from "../../playwright.helper"
 import { NavBarFolderButtonPageObject } from "../features/navBar/components/navBarFolderButton/navBarFolderButton.po"
 
 const TRANSPARENT = "rgba(0, 0, 0, 0)"
+const FILE_WITH_REAL_NAMES = "./app/codeCharta/resources/sample_with_real_author_names.cc.json"
 const FILE_WITH_CLUSTERS = "./app/codeCharta/resources/sample_with_clusters.cc.json"
 
 async function openClustersTab(page: Page) {
@@ -108,6 +109,44 @@ test.describe("Cluster explorer", () => {
 
         // Assert
         await expect(labelOutsideCluster).toHaveCount(0)
+    })
+
+    test("should show only the hovered cluster while another one stays pinned", async ({ page }) => {
+        // Arrange
+        await openClustersTab(page)
+        const labelOfPinnedOnly = page.locator("cc-code-map").getByText("bigLeaf.ts")
+        await row(page, "Author 1").click()
+        await page.getByText("share of files").hover()
+        await expect(labelOfPinnedOnly).toBeVisible()
+
+        // Act
+        await row(page, "Author 3").hover()
+
+        // Assert
+        await expect(labelOfPinnedOnly).toHaveCount(0)
+        await expect(row(page, "Author 1")).toHaveAttribute("aria-pressed", "true")
+
+        // Act
+        await page.getByText("share of files").hover()
+
+        // Assert
+        await expect(labelOfPinnedOnly).toBeVisible()
+    })
+
+    test("should warn when a map shows real author names, and only then", async ({ page }) => {
+        // Arrange & Act
+        await openClustersTab(page)
+
+        // Assert
+        await expect(page.getByTestId("cluster-explorer-real-names")).toHaveCount(0)
+
+        // Act
+        await new NavBarFolderButtonPageObject(page).openFiles([FILE_WITH_REAL_NAMES])
+        await page.getByTestId("explorer-mode-clusters").click()
+
+        // Assert
+        await expect(page.getByTestId("cluster-explorer-real-names")).toContainText("real author names")
+        await expect(row(page, "Ann Example")).toBeVisible()
     })
 
     test("should mark only the pinned row with a primary border", async ({ page }) => {

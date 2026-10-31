@@ -1,5 +1,11 @@
 import { ClusteringData } from "../../model/codeCharta.model"
 
+const CLUSTERING_KEY_WITH_REAL_NAMES = "author-ownership-with-names"
+
+export function showsRealNames(clusteringKey: string | undefined): boolean {
+    return clusteringKey === CLUSTERING_KEY_WITH_REAL_NAMES
+}
+
 const REPOSITORY_MARKER_OF_CLUSTER_ID = /^([0-9a-f]+)-author-\d+$/
 
 /** The marker of each cluster's repository, by cluster id, and empty unless two repositories meet in this clustering. */

@@ -1,4 +1,4 @@
-import { clearKeptHighlight, keepHighlight, removeKeptHighlight } from "./keptHighlightPaths.actions"
+import { clearKeptHighlight, keepHighlight, removeKeptHighlight, replaceKeptHighlight } from "./keptHighlightPaths.actions"
 import { keptHighlightPaths } from "./keptHighlightPaths.reducer"
 
 describe("keptHighlightPaths", () => {
@@ -24,5 +24,13 @@ describe("keptHighlightPaths", () => {
 
         // Assert
         expect(result).toEqual([])
+    })
+
+    it("should replace everything kept with the given paths", () => {
+        // Arrange & Act
+        const result = keptHighlightPaths(["/a", "/b"], replaceKeptHighlight({ paths: ["/c"] }))
+
+        // Assert
+        expect(result).toEqual(["/c"])
     })
 })

@@ -13,6 +13,12 @@
 } @else {
     <span class="text-sm font-semibold" data-testid="cluster-explorer-title">{{ clusteringOptions()[0]?.title }}</span>
 }
+@if (showsRealNames()) {
+    <div role="alert" class="alert alert-warning mt-2 px-2 py-1 text-xs" data-testid="cluster-explorer-real-names">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>This map shows real author names, which are personal data. Take care where you share it.</span>
+    </div>
+}
 <div class="mt-2 text-right text-xs opacity-60">share of files</div>
 <ul class="mt-1 flex flex-col gap-1" data-testid="cluster-explorer-list">
     @for (row of shares().rows; track row.id) {
