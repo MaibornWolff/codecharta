@@ -27,4 +27,13 @@ describe("reportingFailure", () => {
         expect(result).toBeNull()
         expect(toast.show).toHaveBeenCalledWith("Could not do it: storage gone", "error")
     })
+
+    it("should show a generic reason when the thrown value is not an error", async () => {
+        // Act
+        const result = await reportingFailure(toast, "Could not do it", () => Promise.reject("storage gone"))
+
+        // Assert
+        expect(result).toBeNull()
+        expect(toast.show).toHaveBeenCalledWith("Could not do it: unknown error", "error")
+    })
 })
