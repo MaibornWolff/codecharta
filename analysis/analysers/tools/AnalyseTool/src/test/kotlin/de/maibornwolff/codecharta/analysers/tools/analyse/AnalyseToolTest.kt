@@ -85,6 +85,36 @@ class AnalyseToolTest {
     }
 
     @Test
+    fun `should write real names only when asked to and warn last`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        commitAll()
+
+        // Act
+        analyse(projectFolder.path, "--output-file=${mapFile.path}", "--author-ownership", "--with-author-names")
+
+        // Assert
+        val clusters = readMap(mapFile).lenses.clusters
+        assertThat(AuthorOwnershipScan.carriesRealNames(clusters)).isTrue()
+        assertThat(output.toString().trim().lines().last()).isEqualTo(AuthorOwnershipScan.REAL_NAMES_WARNING)
+        assertThat(output.toString()).doesNotContain(AuthorOwnershipScan.PERSONAL_DATA_NOTE)
+    }
+
+    @Test
+    fun `should refuse real names without author ownership`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        commitAll()
+
+        // Act
+        val exitCode = analyse(projectFolder.path, "--output-file=${mapFile.path}", "--with-author-names")
+
+        // Assert
+        assertThat(exitCode).isNotZero()
+        assertThat(output.toString()).contains(AuthorOwnershipScan.NEEDS_OWNERSHIP_HINT)
+    }
+
+    @Test
     fun `should refuse author ownership when the git history is left out`() {
         // Arrange
         writeSource("src/App.kt", APP_SOURCE)

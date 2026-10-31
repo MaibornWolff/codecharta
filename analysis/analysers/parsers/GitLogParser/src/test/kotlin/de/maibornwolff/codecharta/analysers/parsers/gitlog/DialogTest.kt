@@ -168,6 +168,33 @@ class DialogTest {
     }
 
     @Test
+    fun `should ask for real names only after author ownership and default to no`() {
+        // Arrange
+        val repoFolderName = "src/test/resources/my/"
+        mockkObject(RepoScanDialog.Companion)
+        var defaulted: List<String> = listOf()
+        var chosen: List<String> = listOf()
+
+        // Act
+        testSession { terminal ->
+            val typeRepo: suspend RunScope.() -> Unit = {
+                terminal.type(repoFolderName)
+                terminal.press(Keys.ENTER)
+            }
+            val pressEnter: suspend RunScope.() -> Unit = { terminal.press(Keys.ENTER) }
+            val pressYes: suspend RunScope.() -> Unit = { terminal.press(Keys.LEFT, Keys.ENTER) }
+            every { RepoScanDialog.Companion.testCallback() } returnsMany
+                listOf(typeRepo, pressEnter, pressYes, pressEnter, typeRepo, pressEnter, pressYes, pressYes)
+            defaulted = RepoScanDialog.collectAnalyserArgs(this)
+            chosen = RepoScanDialog.collectAnalyserArgs(this)
+        }
+
+        // Assert
+        assertThat(defaulted).contains("--author-ownership").doesNotContain("--with-author-names")
+        assertThat(chosen).contains("--author-ownership", "--with-author-names")
+    }
+
+    @Test
     fun `should output correct arguments for standard questions`() {
         val isSilent = false
         val addAuthor = false

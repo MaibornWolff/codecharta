@@ -31,13 +31,14 @@ the clusters of one clustering; pick another by its title if the map has several
 - Each row shows the cluster's **share of files**: every file shown on the map counts the same, whatever its size, and
   excluding files or focusing a folder changes the shares. A 5-line file counts as much as a 5,000-line one.
 - **Not attributed** is the share nobody holds, such as binary files and uncommitted lines.
-- Hover a row to light every shown file with any share on the map, turn the rest grey and label only those files. Click it to keep them lit,
+- Hover a row to show only its files on the map, whatever else is kept lit: they stay in colour with labels, and the
+  rest turns grey. Click it to keep them lit,
   which marks the row with a border; click again to let go.
 - Authors appear as numbers, such as **Author 3**. If the map joins two repositories, each row also shows a short
   marker for its repository, because their numbers count separately.
 
 Author numbers are pseudonymous: anyone with the repository can match them to people, so such a map may still be
-personal data under GDPR.
+personal data under GDPR. A map made with `--with-author-names` lists real names instead, and the tab warns about it.
 
 ## Searching
 

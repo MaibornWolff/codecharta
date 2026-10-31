@@ -31,10 +31,18 @@ class RepoScanDialog {
                 onInputReady = testCallback()
             )
 
+            val withAuthorNames = authorOwnership &&
+                session.promptConfirm(
+                    message = "Write REAL author names into the map instead of numbers? Anyone who gets the map can read them.",
+                    initialChoice = false,
+                    onInputReady = testCallback()
+                )
+
             return listOfNotNull(
                 "--repo-path=$repoPath",
                 if (commitRef.isNotEmpty()) "--commit=$commitRef" else null,
-                AuthorOwnershipScan.FLAG.takeIf { authorOwnership }
+                AuthorOwnershipScan.FLAG.takeIf { authorOwnership },
+                AuthorOwnershipScan.NAMES_FLAG.takeIf { withAuthorNames }
             )
         }
 

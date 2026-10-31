@@ -34,11 +34,18 @@ class Dialog {
                 initialChoice = false,
                 onInputReady = testCallback()
             )
+            val withAuthorNames = authorOwnership &&
+                session.promptConfirm(
+                    message = "Write REAL author names into the map instead of numbers? Anyone who gets the map can read them.",
+                    initialChoice = false,
+                    onInputReady = testCallback()
+                )
             return listOfNotNull(
                 projectFolder,
                 outputFile.ifBlank { null }?.let { "--output-file=$it" },
                 exclude.ifBlank { null }?.let { "--exclude=$it" },
-                AuthorOwnershipScan.FLAG.takeIf { authorOwnership }
+                AuthorOwnershipScan.FLAG.takeIf { authorOwnership },
+                AuthorOwnershipScan.NAMES_FLAG.takeIf { withAuthorNames }
             )
         }
 

@@ -39,6 +39,7 @@ back through it.
 | `--without=NAME[,NAME...]` | parsers or histories to leave out, such as `--without=dependencyparser,svn`         |
 | `--local-changes`          | maps only the files that differ from the remote tracking branch                     |
 | `--author-ownership`       | adds each author's share of each file by number, from `git blame`                   |
+| `--with-author-names`      | writes real author names instead of numbers (needs `--author-ownership`)            |
 | `--commit=REF`             | maps the codebase at a git commit, tag, branch or date                              |
 | `-p, --parallel`           | runs the analysers at the same time                                                 |
 | `-nc, --not-compressed`    | writes the map uncompressed                                                         |
@@ -69,6 +70,10 @@ It needs the git history, so it cannot be combined with `--without=git`.
 
 The numbers are pseudonymous, not anonymous: anyone with the repository can match them to people, so the map may
 still be personal data under GDPR. Treat and share it accordingly.
+
+`--with-author-names`, next to `--author-ownership`, opts out of this: the map then holds real names as git has them, under
+a clustering titled **Author ownership (real names)**, and still no emails. The command warns about it last, even with
+`--silent`, and the Explorer's Clusters tab shows a warning for such a map.
 
 ## What is not in the map
 

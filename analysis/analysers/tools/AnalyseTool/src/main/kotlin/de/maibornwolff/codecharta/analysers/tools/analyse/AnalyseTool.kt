@@ -73,6 +73,12 @@ class AnalyseTool(
     )
     private var authorOwnership = false
 
+    @CommandLine.Option(
+        names = [AuthorOwnershipScan.NAMES_FLAG],
+        description = ["writes the real names of the authors into the map instead of numbers (personal data, needs --author-ownership)"]
+    )
+    private var withAuthorNames = false
+
     @CommandLine.Option(names = ["-p", "--parallel"], description = ["runs the analysers at the same time"])
     private var parallel = false
 
@@ -95,6 +101,7 @@ class AnalyseTool(
     private fun run(): Int {
         val folder = projectFolder ?: workingFolder
         if (!folder.isDirectory) throw AnalysisException("The folder ${folder.path} does not exist.")
+        if (withAuthorNames && !authorOwnership) throw AnalysisException(AuthorOwnershipScan.NEEDS_OWNERSHIP_HINT)
         val leftOutSources = leftOutSources()
         if (authorOwnership && VersionControl.GIT.label in leftOutSources) {
             throw AnalysisException("${AuthorOwnershipScan.FLAG} needs the git history, which --without leaves out.")
@@ -120,7 +127,8 @@ class AnalyseTool(
         analysedFolder = checkout.inputDir,
         commitHash = checkout.shortHash,
         localChanges = localChanges,
-        authorOwnership = authorOwnership
+        authorOwnership = authorOwnership,
+        withAuthorNames = withAuthorNames
     )
 
     private fun commitRef(): String? {

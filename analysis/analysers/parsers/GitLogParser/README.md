@@ -40,6 +40,10 @@ scan blames every file, so it takes longer. `log-scan` has no repository to blam
 The numbers are pseudonymous, not anonymous: anyone with the repository can match them to people, so the map may
 still be personal data under GDPR. Treat and share it accordingly.
 
+`--with-author-names`, next to `--author-ownership`, opts out of this: the map then holds real names as git has them, under
+a clustering titled **Author ownership (real names)**, and still no emails. The command warns about it last, even with
+`--silent`, and the Explorer's Clusters tab shows a warning for such a map.
+
 ## Usage and Parameters
 
 As this parser can generate metrics based on a given git-log file or given a git repository (where the git-log is then generated on the fly), some parameters are only available in the log-scan mode or the repo-scan mode.
@@ -50,6 +54,7 @@ As this parser can generate metrics based on a given git-log file or given a git
 | `repo-scan`                         | use repo-scan mode - generates cc.json from an automatically generated git-log file |
 | `--add-author`                      | add an array of authors to every file                                               |
 | `--author-ownership`                | add each author's share of each file by number, from `git blame` (repo-scan only)   |
+| `--with-author-names`               | write real author names instead of numbers (needs `--author-ownership`)             |
 | `--git-log=FILE`                    | git-log file to parse (only available for log-scan mode!)                           |
 | `-h, --help`                        | displays help and exits                                                             |
 | `-nc, --not-compressed`             | save uncompressed output File                                                       |
