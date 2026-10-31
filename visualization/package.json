@@ -83,7 +83,7 @@
     "dequal": "^2.0.3",
     "echarts": "6.1.0",
     "echarts-wordcloud": "2.1.0",
-    "electron": "44.4.2",
+    "electron": "44.9.1",
     "fake-indexeddb": "^6.2.5",
     "fflate": "^0.8.2",
     "hotkeys-js": "^4.0.3",
