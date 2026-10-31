@@ -11,6 +11,8 @@ import org.junit.jupiter.api.TestInstance
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
+import java.io.PrintWriter
+import java.io.StringWriter
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LogScanCommandTest {
@@ -20,6 +22,21 @@ class LogScanCommandTest {
     @AfterEach
     fun afterTest() {
         unmockkAll()
+    }
+
+    @Test
+    fun `should reject author ownership with a hint to repo-scan`() {
+        // Arrange
+        val commandLine = CommandLine(LogScanCommand())
+        val errors = StringWriter()
+        commandLine.err = PrintWriter(errors)
+
+        // Act
+        val exitCode = commandLine.execute("--git-log=any.log", "--repo-files=any.txt", "--author-ownership")
+
+        // Assert
+        Assertions.assertThat(exitCode).isNotZero()
+        Assertions.assertThat(errors.toString()).contains("repo-scan --author-ownership")
     }
 
     @Test

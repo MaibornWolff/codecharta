@@ -84,6 +84,45 @@ check_gitlogparser_repo_scan() {
   validate "${ACTUAL_GITLOG_JSON_REPO_SCAN}"
 }
 
+commit_ownership_fixture_file() {
+  local author="$1"
+  local content="$2"
+  printf "%b" "$content" >"${OWNERSHIP_REPO}/app.kt"
+  git -C "${OWNERSHIP_REPO}" add -A
+  GIT_AUTHOR_NAME="$author" GIT_AUTHOR_EMAIL="$author@example.org" GIT_AUTHOR_DATE="2024-01-01T12:00:00Z" \
+    GIT_COMMITTER_NAME="$author" GIT_COMMITTER_EMAIL="$author@example.org" GIT_COMMITTER_DATE="2024-01-01T12:00:00Z" \
+    git -C "${OWNERSHIP_REPO}" -c commit.gpgsign=false commit -q -m "change"
+}
+
+check_gitlogparser_author_ownership() {
+  echo " -- expect GitLogParser repo-scan to write the same pseudonymous author ownership on every run"
+  OWNERSHIP_REPO="${TEMP_DIR}/author_ownership_repo"
+  ACTUAL_OWNERSHIP_FIRST="${TEMP_DIR}/actual_author_ownership_first.cc.json"
+  ACTUAL_OWNERSHIP_SECOND="${TEMP_DIR}/actual_author_ownership_second.cc.json"
+  rm -rf "${OWNERSHIP_REPO}"
+  mkdir -p "${OWNERSHIP_REPO}"
+  git -C "${OWNERSHIP_REPO}" init -q
+  commit_ownership_fixture_file "Golden First" "1\n2\n3\n4\n"
+  commit_ownership_fixture_file "Golden Second" "1\n2\n3\nfour\n"
+
+  "${CCSH}" gitlogparser repo-scan --repo-path "${OWNERSHIP_REPO}" --author-ownership -o "${ACTUAL_OWNERSHIP_FIRST}" --silent=true -nc
+  "${CCSH}" gitlogparser repo-scan --repo-path "${OWNERSHIP_REPO}" --author-ownership -o "${ACTUAL_OWNERSHIP_SECOND}" --silent=true -nc
+  validate "${ACTUAL_OWNERSHIP_FIRST}"
+  if ! diff -q -- "${ACTUAL_OWNERSHIP_FIRST}" "${ACTUAL_OWNERSHIP_SECOND}"; then
+    exit_with_err "Two runs of the author ownership differ"
+  fi
+  if grep -q "Golden" "${ACTUAL_OWNERSHIP_FIRST}"; then
+    exit_with_err "The author ownership wrote a name"
+  fi
+  for expected in \
+    '"id":"154c603-author-1","name":"Author 1","members":[{"nodeId":"ed41804914e906d4","weight":0.75}]' \
+    '"id":"154c603-author-2","name":"Author 2","members":[{"nodeId":"ed41804914e906d4","weight":0.25}]'; do
+    if ! grep -qF -- "$expected" "${ACTUAL_OWNERSHIP_FIRST}"; then
+      exit_with_err "The author ownership is missing $expected"
+    fi
+  done
+}
+
 check_csvexporter() {
   echo " -- expect CSVexporter to produce correct csv table"
   ACTUAL_CSVEXPORT="${TEMP_DIR}/actual_csvexport.csv"
@@ -341,6 +380,7 @@ run_tests() {
 
   check_gitlogparser_log_scan
   check_gitlogparser_repo_scan
+  check_gitlogparser_author_ownership
   check_csvexporter
   check_edgefilter
   check_mergefilter

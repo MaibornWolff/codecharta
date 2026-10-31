@@ -141,6 +141,33 @@ class DialogTest {
     }
 
     @Test
+    fun `should add author ownership only when it is chosen in the repo-scan dialog`() {
+        // Arrange
+        val repoFolderName = "src/test/resources/my/"
+        mockkObject(RepoScanDialog.Companion)
+        var declined: List<String> = listOf()
+        var chosen: List<String> = listOf()
+
+        // Act
+        testSession { terminal ->
+            val typeRepo: suspend RunScope.() -> Unit = {
+                terminal.type(repoFolderName)
+                terminal.press(Keys.ENTER)
+            }
+            val pressEnter: suspend RunScope.() -> Unit = { terminal.press(Keys.ENTER) }
+            val pressYes: suspend RunScope.() -> Unit = { terminal.press(Keys.LEFT, Keys.ENTER) }
+            every { RepoScanDialog.Companion.testCallback() } returnsMany
+                listOf(typeRepo, pressEnter, pressEnter, typeRepo, pressEnter, pressYes)
+            declined = RepoScanDialog.collectAnalyserArgs(this)
+            chosen = RepoScanDialog.collectAnalyserArgs(this)
+        }
+
+        // Assert
+        assertThat(declined).doesNotContain("--author-ownership")
+        assertThat(chosen).contains("--author-ownership")
+    }
+
+    @Test
     fun `should output correct arguments for standard questions`() {
         val isSilent = false
         val addAuthor = false

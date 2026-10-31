@@ -19,7 +19,7 @@ class HistoryFinder(private val svnLogWriter: SvnLogWriter, private val homeFold
     private fun lookUp(versionControl: VersionControl, request: AnalyseRequest, workFolder: File): Lookup = when {
         versionControl.label in request.leftOut -> Lookup(skipped = versionControl.skipped(SkippedSource.LEFT_OUT_REASON))
         request.commitHash != null && versionControl == VersionControl.SVN -> Lookup(skipped = versionControl.skipped(AT_COMMIT_REASON))
-        versionControl.isRootOf(request.projectFolder) -> historyOf(versionControl, request.analysedFolder, workFolder)
+        versionControl.isRootOf(request.projectFolder) -> historyOf(versionControl, request, workFolder)
         else -> Lookup(skipped = versionControl.skipped(whyNotRootOf(versionControl, request.projectFolder)))
     }
 
@@ -33,13 +33,18 @@ class HistoryFinder(private val svnLogWriter: SvnLogWriter, private val homeFold
             "Analyse ${root.path} to include it."
     }
 
-    private fun historyOf(versionControl: VersionControl, projectFolder: File, workFolder: File): Lookup = when (versionControl) {
-        VersionControl.GIT -> Lookup(History(versionControl, gitHistory(projectFolder)))
-        VersionControl.SVN -> svnHistory(projectFolder, workFolder)
+    private fun historyOf(versionControl: VersionControl, request: AnalyseRequest, workFolder: File): Lookup = when (versionControl) {
+        VersionControl.GIT -> Lookup(History(versionControl, gitHistory(request)))
+        VersionControl.SVN -> svnHistory(request.analysedFolder, workFolder)
     }
 
-    private fun gitHistory(projectFolder: File): ConfiguredAnalyser =
-        ConfiguredAnalyser(RepoScanCommand(), listOf("--repo-path", projectFolder.path), readsProjectFolder = false)
+    // The analyse run prints the ownership hints itself, after the map line, so the scan keeps them back.
+    private fun gitHistory(request: AnalyseRequest): ConfiguredAnalyser = ConfiguredAnalyser(
+        RepoScanCommand(printsOwnershipHints = false),
+        listOf("--repo-path", request.analysedFolder.path) +
+            listOfNotNull(RepoScanCommand.AUTHOR_OWNERSHIP_FLAG.takeIf { request.authorOwnership }),
+        readsProjectFolder = false
+    )
 
     private fun svnHistory(projectFolder: File, workFolder: File): Lookup {
         val logFile = File(workFolder, SVN_LOG_FILE_NAME)

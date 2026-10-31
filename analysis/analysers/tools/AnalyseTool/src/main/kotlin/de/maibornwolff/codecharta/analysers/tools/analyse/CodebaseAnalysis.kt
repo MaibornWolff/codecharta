@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.tools.analyse
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeResolverStrategy
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.ProjectMerger
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -31,6 +32,7 @@ class CodebaseAnalysis(
             console.printSeparated("Analysis done: ${countedFiles(mapped.project)} with $sources")
             console.println("Map: ${request.outputFile.path}")
             printSkipped(selection.skipped + inHistoryOrder(search.skipped + mapped.failedHistories))
+            if (mapped.project.lenses.clusters.carriesData) printOwnershipHints(request)
         } finally {
             workFolder.deleteRecursively()
         }
@@ -95,6 +97,11 @@ class CodebaseAnalysis(
         if (skipped.isEmpty()) return
         console.println("Not in the map:")
         skipped.forEach { console.println("  ${it.name}: ${it.reason}") }
+    }
+
+    private fun printOwnershipHints(request: AnalyseRequest) {
+        if (AuthorOwnershipScan(request.analysedFolder).isShallowClone()) console.println(AuthorOwnershipScan.SHALLOW_CLONE_WARNING)
+        console.println(AuthorOwnershipScan.PERSONAL_DATA_NOTE)
     }
 
     private fun countedFiles(project: Project): String {

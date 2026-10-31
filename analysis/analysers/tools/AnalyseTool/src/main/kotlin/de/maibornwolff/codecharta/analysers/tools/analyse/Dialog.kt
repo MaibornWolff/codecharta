@@ -3,7 +3,9 @@ package de.maibornwolff.codecharta.analysers.tools.analyse
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.RepoScanCommand
 import de.maibornwolff.codecharta.dialogProvider.InputType
+import de.maibornwolff.codecharta.dialogProvider.promptConfirm
 import de.maibornwolff.codecharta.dialogProvider.promptDefaultDirectoryAssistedInput
 import de.maibornwolff.codecharta.dialogProvider.promptInput
 
@@ -27,10 +29,16 @@ class Dialog {
                 allowEmptyInput = true,
                 onInputReady = testCallback()
             )
+            val authorOwnership = session.promptConfirm(
+                message = "Add numbered author ownership? Anyone with the repository can match the numbers to people.",
+                initialChoice = false,
+                onInputReady = testCallback()
+            )
             return listOfNotNull(
                 projectFolder,
                 outputFile.ifBlank { null }?.let { "--output-file=$it" },
-                exclude.ifBlank { null }?.let { "--exclude=$it" }
+                exclude.ifBlank { null }?.let { "--exclude=$it" },
+                RepoScanCommand.AUTHOR_OWNERSHIP_FLAG.takeIf { authorOwnership }
             )
         }
 

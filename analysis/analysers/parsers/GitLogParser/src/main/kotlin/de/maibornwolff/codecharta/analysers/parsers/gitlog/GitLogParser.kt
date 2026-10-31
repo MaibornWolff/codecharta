@@ -12,7 +12,9 @@ import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNums
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.helper.GitPathUnquoter
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
+import de.maibornwolff.codecharta.model.ClustersLens
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.nodeIdsOf
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.CodeChartaConstants
@@ -155,7 +157,8 @@ class GitLogParser(
         outputFilePath: String?,
         addAuthor: Boolean,
         silent: Boolean,
-        compress: Boolean
+        compress: Boolean,
+        authorOwnership: ClustersLens = ClustersLens()
     ) {
         var project =
             createProjectFromLog(
@@ -165,7 +168,7 @@ class GitLogParser(
                 metricsFactory,
                 addAuthor,
                 silent
-            )
+            ).withClusters(authorOwnership)
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         if (pipedProject != null) {
@@ -173,6 +176,13 @@ class GitLogParser(
         }
 
         ProjectSerializer.serializeToFileOrStream(project, outputFilePath, output, compress)
+    }
+
+    // The log maps only files it saw; a file tracked at HEAD without a log entry has no node to join onto.
+    private fun Project.withClusters(clusters: ClustersLens): Project {
+        if (!clusters.carriesData) return this
+        val lensesWithClusters = lenses.copy(clusters = clusters.keepingMembersOf(nodeIdsOf(rootNode)))
+        return Project(projectName, listOf(rootNode), apiVersion, lensesWithClusters, blacklist, commitHash)
     }
 
     private fun getLogParserStrategyByInputFormat(formatName: InputFormatNames): LogParserStrategy = when (formatName) {
