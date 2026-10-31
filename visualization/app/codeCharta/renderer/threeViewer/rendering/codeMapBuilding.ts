@@ -16,6 +16,9 @@ export class CodeMapBuilding {
     private _dimmedColorVector: Vector3
     private _highlightedDeltaColorVector: Vector3
     private _dimmedDeltaColorVector: Vector3
+    // Worked out on first use: most maps never grey a building, and a map holds many buildings.
+    private _greyedColorVector?: Vector3
+    private _greyedDeltaColorVector?: Vector3
 
     constructor(id: number, box: Box3, node: Node, color: string) {
         this._id = id
@@ -52,6 +55,8 @@ export class CodeMapBuilding {
         this._dimmedColorVector = this._computeColorVector(this._defaultColor, 20)
         this._highlightedDeltaColorVector = this._computeColorVector(this._defaultDeltaColor, -10)
         this._dimmedDeltaColorVector = this._computeColorVector(this._defaultDeltaColor, 20)
+        this._greyedColorVector = undefined
+        this._greyedDeltaColorVector = undefined
     }
 
     private _computeColorVector(color: string, lightnessChange: number): Vector3 {
@@ -118,6 +123,20 @@ export class CodeMapBuilding {
         return this._dimmedDeltaColorVector
     }
 
+    getGreyedColorVector() {
+        this._greyedColorVector ??= this._computeGreyedVector(this._defaultColor)
+        return this._greyedColorVector
+    }
+
+    getGreyedDeltaColorVector() {
+        this._greyedDeltaColorVector ??= this._computeGreyedVector(this._defaultDeltaColor)
+        return this._greyedDeltaColorVector
+    }
+
+    private _computeGreyedVector(color: string): Vector3 {
+        return ColorConverter.getVector3(ColorConverter.hexToHSL(color).withoutSaturation().toHex())
+    }
+
     resetColor() {
         this._color = this._defaultColor
         this._deltaColor = this._defaultDeltaColor
@@ -164,6 +183,7 @@ export class CodeMapBuilding {
         this._deltaColor = color
         this._highlightedDeltaColorVector = this._computeColorVector(color, -10)
         this._dimmedDeltaColorVector = this._computeColorVector(color, 20)
+        this._greyedDeltaColorVector = undefined
     }
 
     setDeltaColor(color: string) {

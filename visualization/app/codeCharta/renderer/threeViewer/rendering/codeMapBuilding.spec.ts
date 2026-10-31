@@ -211,4 +211,45 @@ describe("CodeMapBuilding cached color vectors", () => {
         const dimmedSum = dimmed.x + dimmed.y + dimmed.z
         expect(highlightedSum).toBeGreaterThan(dimmedSum)
     })
+
+    describe("getGreyedColorVector", () => {
+        it("should remove the colour and keep the lightness", () => {
+            // Arrange
+            const red = new CodeMapBuilding(0, null, TEST_NODE_ROOT, "#ff0000")
+
+            // Act
+            const greyed = red.getGreyedColorVector()
+
+            // Assert
+            expect(greyed.x).toBeCloseTo(0.5, 1)
+            expect(greyed.y).toBeCloseTo(greyed.x, 5)
+            expect(greyed.z).toBeCloseTo(greyed.x, 5)
+        })
+
+        it("should follow the colour a building is given later", () => {
+            // Arrange
+            const building = new CodeMapBuilding(0, null, TEST_NODE_ROOT, "#ff0000")
+            const before = building.getGreyedColorVector().x
+
+            // Act
+            building.resetDefaultColor("#ffffff")
+
+            // Assert
+            expect(building.getGreyedColorVector().x).toBeGreaterThan(before)
+        })
+    })
+
+    describe("getGreyedDeltaColorVector", () => {
+        it("should follow the delta colour a building is given", () => {
+            // Arrange
+            const building = new CodeMapBuilding(0, null, TEST_NODE_ROOT, "#ff0000")
+            const before = building.getGreyedDeltaColorVector().x
+
+            // Act
+            building.setInitialDeltaColor("#ffffff")
+
+            // Assert
+            expect(building.getGreyedDeltaColorVector().x).toBeGreaterThan(before)
+        })
+    })
 })

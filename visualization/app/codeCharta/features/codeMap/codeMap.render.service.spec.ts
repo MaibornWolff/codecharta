@@ -24,6 +24,7 @@ import { nodeMetricDataSelector } from "../../renderer/renderModel/nodeMetricDat
 import { ColorCategoryCountsStore } from "../../renderer/threeViewer/stores/colorCategoryCounts.store"
 import { ThreeSceneService } from "../../renderer/threeViewer/threeSceneService"
 import { ThreeStatsService } from "../../renderer/threeViewer/threeStats.service"
+import { ThreeRendererService } from "../../renderer/threeViewer/threeViewer.facade"
 import { FileStoreReadWindow } from "../../stores/fileStore/fileStore.facade"
 import { setFiles } from "../../stores/fileStore/store/files.actions"
 import {
@@ -122,6 +123,8 @@ describe("codeMapRenderService", () => {
         mockedFocusedNodeSelector.mockReturnValue(undefined)
     }
 
+    const threeRendererService = { render: jest.fn() } as unknown as ThreeRendererService
+
     function rebuildService() {
         codeMapRenderService = new CodeMapRenderService(
             codeMapStore,
@@ -131,7 +134,8 @@ describe("codeMapRenderService", () => {
             codeMapArrowService,
             threeStatsService,
             codeMapMouseEventService,
-            new ColorCategoryCountsStore()
+            new ColorCategoryCountsStore(),
+            threeRendererService
         )
         codeMapRenderService["showCouplingArrows"] = jest.fn()
     }
@@ -402,6 +406,60 @@ describe("codeMapRenderService", () => {
             // Assert
             const result: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF]
             expect(sortedNodes).toEqual(result)
+        })
+    })
+
+    describe("showLabelsOnlyFor", () => {
+        const labelledNames = () => (labelSettingsFacade.addLeafLabel as jest.Mock).mock.calls.map(([node]) => node.path)
+
+        beforeEach(() => {
+            codeMapRenderService["unflattenedNodes"] = TEST_NODES
+            store.dispatch(setAmountOfTopLabels({ value: TEST_NODES.length }))
+            store.dispatch(setLabelMode({ value: LabelMode.Height }))
+        })
+
+        it("should label only the given files and redraw", () => {
+            // Arrange
+            const onlyLeaf = TEST_NODES.find(node => node.isLeaf)
+
+            // Act
+            codeMapRenderService.showLabelsOnlyFor(new Set([onlyLeaf.path]))
+
+            // Assert
+            expect(labelledNames()).toEqual([onlyLeaf.path])
+            expect(threeRendererService.render).toHaveBeenCalled()
+        })
+
+        it("should label every file again once lifted", () => {
+            // Arrange
+            codeMapRenderService.showLabelsOnlyFor(new Set(["/nothing"]))
+            ;(labelSettingsFacade.addLeafLabel as jest.Mock).mockClear()
+
+            // Act
+            codeMapRenderService.showLabelsOnlyFor(null)
+
+            // Assert
+            expect(labelledNames().length).toBeGreaterThan(0)
+        })
+
+        it("should do nothing when no restriction was set", () => {
+            // Arrange & Act
+            codeMapRenderService.showLabelsOnlyFor(null)
+
+            // Assert
+            expect(labelSettingsFacade.addLeafLabel).not.toHaveBeenCalled()
+        })
+
+        it("should keep the restriction when the labels are drawn anew", () => {
+            // Arrange
+            codeMapRenderService.showLabelsOnlyFor(new Set(["/nothing"]))
+            ;(labelSettingsFacade.addLeafLabel as jest.Mock).mockClear()
+
+            // Act
+            codeMapRenderService["setLabels"](TEST_NODES)
+
+            // Assert
+            expect(labelSettingsFacade.addLeafLabel).not.toHaveBeenCalled()
         })
     })
 

@@ -73,6 +73,7 @@ export class CodeMapMesh {
     private _prevHighlightedIds: Set<number> | null = null
     private _prevSelectedId: number | null = null
     private _prevIsPresentationMode: boolean | null = null
+    private greysOutsideHighlight = false
 
     constructor(nodes: Node[], state: CcState, isDeltaState: boolean) {
         this.initMaterial()
@@ -165,6 +166,22 @@ export class CodeMapMesh {
         this.mapGeomDesc.setScales(scale)
     }
 
+    /** Whether a highlight greys the buildings outside it instead of darkening them. */
+    setGreysOutsideHighlight(greysOutsideHighlight: boolean) {
+        if (this.greysOutsideHighlight !== greysOutsideHighlight) {
+            this.greysOutsideHighlight = greysOutsideHighlight
+            this._prevHighlightedIds = null
+        }
+    }
+
+    private paintOutsideHighlight(building: CodeMapBuilding) {
+        if (this.greysOutsideHighlight) {
+            this.setInstanceColor(building.id, building.getGreyedColorVector(), building.getGreyedDeltaColorVector())
+        } else {
+            this.setInstanceColor(building.id, building.getDimmedColorVector(), building.getDimmedDeltaColorVector())
+        }
+    }
+
     highlightBuilding(
         highlightedBuildingIds: Set<number>,
         primaryBuilding: CodeMapBuilding,
@@ -213,7 +230,7 @@ export class CodeMapMesh {
         if (highlightedBuildingIds.has(building.id) || constantHighlight.has(building.id)) {
             this.setInstanceColor(building.id, building.getHighlightedColorVector(), building.getHighlightedDeltaColorVector())
         } else {
-            this.setInstanceColor(building.id, building.getDimmedColorVector(), building.getDimmedDeltaColorVector())
+            this.paintOutsideHighlight(building)
         }
     }
 
@@ -305,7 +322,7 @@ export class CodeMapMesh {
             if (!building || this.isBuildingSelected(selected, building)) {
                 continue
             }
-            this.setInstanceColor(building.id, building.getDimmedColorVector(), building.getDimmedDeltaColorVector())
+            this.paintOutsideHighlight(building)
         }
     }
 
@@ -340,7 +357,7 @@ export class CodeMapMesh {
                 this.adjustSurroundingBuildingColors(primaryBuilding, building)
                 this.setInstanceColor(building.id, building.getColorVector(), building.getDeltaColorVector())
             } else {
-                this.setInstanceColor(building.id, building.getDimmedColorVector(), building.getDimmedDeltaColorVector())
+                this.paintOutsideHighlight(building)
             }
         }
     }

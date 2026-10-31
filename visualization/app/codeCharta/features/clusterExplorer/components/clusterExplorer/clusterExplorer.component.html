@@ -19,8 +19,9 @@
         <li>
             <button
                 type="button"
-                class="w-full cursor-pointer rounded px-1 py-1 text-left hover:bg-base-200"
-                [class.bg-base-300]="row.id === pinnedClusterId()"
+                class="w-full cursor-pointer rounded-lg border-2 px-1 py-1 text-left hover:bg-base-200"
+                [class.border-primary]="row.id === pinnedClusterId()"
+                [class.border-transparent]="row.id !== pinnedClusterId()"
                 [attr.aria-pressed]="row.id === pinnedClusterId()"
                 [attr.title]="row.filePaths.length + (row.filePaths.length === 1 ? ' file' : ' files')"
                 data-testid="cluster-explorer-row"

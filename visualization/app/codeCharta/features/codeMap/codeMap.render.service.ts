@@ -9,6 +9,7 @@ import {
     ColorCategoryCountsStore,
     createTreemapNodes,
     StreetLayoutGenerator,
+    ThreeRendererService,
     ThreeSceneService,
     ThreeStatsService
 } from "../../renderer/threeViewer/threeViewer.facade"
@@ -31,6 +32,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
     }
     private unflattenedNodes
     private visibleSortedNodes: Node[] | undefined
+    private labelledPaths: ReadonlySet<string> | null = null
     private readonly subscription: Subscription
 
     constructor(
@@ -41,7 +43,8 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
         private readonly codeMapArrowService: CodeMapArrowService,
         private readonly threeStatsService: ThreeStatsService,
         private readonly codeMapMouseEventService: CodeMapMouseEventService,
-        private readonly colorCategoryCountsStore: ColorCategoryCountsStore
+        private readonly colorCategoryCountsStore: ColorCategoryCountsStore,
+        private readonly threeRendererService: ThreeRendererService
     ) {
         this.subscription = this.fileStoreReadWindow.isLoadingFile$
             .pipe(tap(isLoadingFile => (isLoadingFile ? this.onFileLoadingStarted() : this.onFileLoadingFinished())))
@@ -119,6 +122,24 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
             this.setLabels(this.unflattenedNodes)
             this.codeMapMouseEventService.drawLabelSelectedBuilding(this.threeSceneService.getSelectedBuilding())
         }
+    }
+
+    /** While set, the top labels are picked among these files alone; null lets every file have one again. */
+    showLabelsOnlyFor(paths: ReadonlySet<string> | null) {
+        if (paths === null && this.labelledPaths === null) {
+            return
+        }
+        this.labelledPaths = paths
+        if (this.unflattenedNodes === undefined) {
+            return
+        }
+        this.setLabels(this.unflattenedNodes)
+        this.codeMapMouseEventService.drawLabelSelectedBuilding(this.threeSceneService.getSelectedBuilding())
+        this.threeRendererService.render()
+    }
+
+    private mayHaveLabel(node: Node) {
+        return this.labelledPaths === null || this.labelledPaths.has(node.path)
     }
 
     getNodes(map: CodeMapNode) {
@@ -232,7 +253,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
                     colorLabelTypes
                         .filter(colorType => colorLabelOptions[colorType])
                         .flatMap(colorType => this.nodesByColor[colorType])
-                        .filter(node => Number.isFinite(node.attributes[colorMetric])),
+                        .filter(node => Number.isFinite(node.attributes[colorMetric]) && this.mayHaveLabel(node)),
                     node => node.attributes[colorMetric]
                 )
                 this.setBuildingLabel(selectedColorNodes, highestNodeInSet)
@@ -240,7 +261,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
                 // rank by rendered height, not the raw metric: with invertHeight or
                 // direction-1 metrics the tallest buildings are not the highest values
                 const nodes = selectTopNodes(
-                    sortedNodes.filter(node => node.isLeaf),
+                    sortedNodes.filter(node => node.isLeaf && this.mayHaveLabel(node)),
                     node => node.height ?? 0
                 )
                 this.setBuildingLabel(nodes, highestNodeInSet)
