@@ -31,13 +31,13 @@ class AuthorOwnershipScanTest {
         return output.trim()
     }
 
-    private fun commitFile(path: String, content: String, author: String = "Ann <ann@x.org>") {
+    private fun commitFile(path: String, content: String, author: String = "Ann <ann@x.org>", message: String = "change") {
         File(repository, path).apply {
             parentFile.mkdirs()
             writeText(content)
         }
         git("add", "-A")
-        git("commit", "-q", "-m", "change", author = author)
+        git("commit", "-q", "-m", message, author = author)
     }
 
     private fun clusters() = AuthorOwnershipScan(repository).lens().clusterings.getValue("author-ownership").clusters
@@ -99,6 +99,75 @@ class AuthorOwnershipScanTest {
 
         // Assert
         assertThat(names).containsExactly("Author 1")
+    }
+
+    @Test
+    fun `should split a line equally among the author and everyone co-authoring the commit`() {
+        // Arrange
+        commitFile(
+            "a.kt",
+            "1\n2\n",
+            message = "change\n\nCo-authored-by: Bob <bob@x.org>\nCo-Authored-By: Claude Opus <noreply@anthropic.com>"
+        )
+
+        // Act
+        val weights = clusters().map { it.name to it.members.single().weight }
+
+        // Assert
+        assertThat(weights).containsExactly("Author 1" to 0.3333, "Author 2" to 0.3333, "Author 3" to 0.3333)
+    }
+
+    @Test
+    fun `should count a person once who is both author and co-author of a commit`() {
+        // Arrange
+        commitFile("a.kt", "1\n", message = "change\n\nCo-authored-by: Ann <other@x.org>")
+
+        // Act
+        val weights = clusters().map { it.name to it.members.single().weight }
+
+        // Assert
+        assertThat(weights).containsExactly("Author 1" to 1.0)
+    }
+
+    @Test
+    fun `should apply the mailmap to a co-author`() {
+        // Arrange
+        commitFile(".mailmap", "Bob <bob@x.org> Old Bob <old@x.org>\n")
+        commitFile("a.kt", "1\n", author = "Bob <bob@x.org>", message = "change\n\nCo-authored-by: Old Bob <old@x.org>")
+
+        // Act
+        val member = clusters().single { it.members.any { member -> member.nodeId == idOf("a.kt") } }.members.single {
+            it.nodeId ==
+                idOf("a.kt")
+        }
+
+        // Assert
+        assertThat(member.weight).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should number a co-author by the first commit they appear in`() {
+        // Arrange
+        commitFile("a.kt", "1\n", message = "change\n\nCo-authored-by: Zed <zed@x.org>")
+        commitFile("b.kt", "1\n", author = "Bob <bob@x.org>")
+
+        // Act
+        val membersOfBob = membersOf("Author 3")
+
+        // Assert
+        assertThat(membersOfBob).containsExactly(ClusterMember(idOf("b.kt"), 1.0))
+    }
+
+    @Test
+    fun `should read a co-author without an email`() {
+        // Arrange
+        commitFile("a.kt", "1\n2\n", message = "change\n\nCo-authored-by: Just A Name")
+
+        // Act
+        val weights = clusters().map { it.members.single().weight }
+
+        // Assert
+        assertThat(weights).containsExactly(0.5, 0.5)
     }
 
     @Test

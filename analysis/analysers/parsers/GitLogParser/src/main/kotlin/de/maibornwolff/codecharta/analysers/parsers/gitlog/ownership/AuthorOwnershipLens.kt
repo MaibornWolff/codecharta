@@ -7,6 +7,10 @@ import de.maibornwolff.codecharta.model.Clustering
 import de.maibornwolff.codecharta.model.ClustersLens
 import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
+import java.math.BigInteger
+
+/** A commit's author and co-authors, the author first. */
+internal data class CommitPeople(val hash: String, val people: List<String>)
 
 /** Writes authors by number only: no name, email or per-author commit data may reach the map. */
 internal object AuthorOwnershipLens {
@@ -18,19 +22,21 @@ internal object AuthorOwnershipLens {
     private const val PATH_SEPARATOR = "/"
 
     // Rounding each share down keeps the sum of a file's shares at or below 1
-    private const val WEIGHT_STEPS_PER_UNIT = 10_000L
+    private val WEIGHT_STEPS_PER_UNIT = BigInteger.valueOf(10_000L)
 
-    fun of(firstCommitHash: String, authorsByFirstCommit: List<String>, blameByPath: Map<String, FileBlame>): ClustersLens {
-        val membersByAuthor = HashMap<String, MutableList<ClusterMember>>()
+    /** [commitsOldestFirst] holds at least the commits of the blamed lines; a line of any other commit stays unattributed. */
+    fun of(commitsOldestFirst: List<CommitPeople>, blameByPath: Map<String, FileBlame>): ClustersLens {
+        val firstCommitHash = commitsOldestFirst.firstOrNull()?.hash ?: return ClustersLens()
+        val peopleByCommit = commitsOldestFirst.associate { it.hash to it.people }
+        val membersByPerson = HashMap<String, MutableList<ClusterMember>>()
         blameByPath.forEach { (path, blame) ->
             val nodeId = NodeId.fromSegments(path.split(PATH_SEPARATOR), NodeType.File)
-            blame.linesByAuthor.forEach { (author, lines) ->
-                val weight = roundedDownWeight(lines, blame.totalLines)
-                if (weight > 0.0) membersByAuthor.getOrPut(author) { mutableListOf() }.add(ClusterMember(nodeId, weight))
+            weightsOf(blame, peopleByCommit).forEach { (person, weight) ->
+                membersByPerson.getOrPut(person) { mutableListOf() }.add(ClusterMember(nodeId, weight))
             }
         }
-        val clusters = numbered(authorsByFirstCommit, membersByAuthor.keys).mapNotNull { (author, number) ->
-            membersByAuthor[author]?.let { members -> clusterOf(firstCommitHash, number, members) }
+        val clusters = numbered(commitsOldestFirst).mapNotNull { (person, number) ->
+            membersByPerson[person]?.let { members -> clusterOf(firstCommitHash, number, members) }
         }
         if (clusters.isEmpty()) return ClustersLens()
         return ClustersLens(
@@ -38,15 +44,29 @@ internal object AuthorOwnershipLens {
         )
     }
 
-    private fun roundedDownWeight(lines: Int, totalLines: Int): Double =
-        (lines * WEIGHT_STEPS_PER_UNIT / totalLines) / WEIGHT_STEPS_PER_UNIT.toDouble()
-
-    // An author with no surviving line still takes up a number, so the numbers stay put as lines come and go. Blame
-    // and log share git's mailmap, so a blamed author missing from the log is not expected; it still gets a stable number.
-    private fun numbered(authorsByFirstCommit: List<String>, blamedAuthors: Set<String>): List<Pair<String, Int>> {
-        val authors = authorsByFirstCommit.distinct() + (blamedAuthors - authorsByFirstCommit.toSet()).sorted()
-        return authors.mapIndexed { index, author -> author to index + 1 }
+    // A commit's lines are split equally among its people. Counting in parts of a line every commit's split divides
+    // into evenly keeps the sums exact, so the result depends neither on the order of the commits nor on rounding.
+    private fun weightsOf(blame: FileBlame, peopleByCommit: Map<String, List<String>>): Map<String, Double> {
+        val blamedCommits = blame.linesByCommit.mapNotNull { (hash, lines) -> peopleByCommit[hash]?.let { it to lines } }
+        val partsPerLine = blamedCommits
+            .map { (people, _) -> BigInteger.valueOf(people.size.toLong()) }
+            .fold(BigInteger.ONE) { common, peopleCount -> common * peopleCount / common.gcd(peopleCount) }
+        val partsByPerson = HashMap<String, BigInteger>()
+        blamedCommits.forEach { (people, lines) ->
+            val partsOfEach = partsPerLine * BigInteger.valueOf(lines.toLong()) / BigInteger.valueOf(people.size.toLong())
+            people.forEach { person -> partsByPerson.merge(person, partsOfEach, BigInteger::add) }
+        }
+        val partsOfFile = partsPerLine * BigInteger.valueOf(blame.totalLines.toLong())
+        return partsByPerson
+            .mapValues { (_, parts) -> (parts * WEIGHT_STEPS_PER_UNIT / partsOfFile).toDouble() / WEIGHT_STEPS_PER_UNIT.toDouble() }
+            .filterValues { it > 0.0 }
     }
+
+    // Someone with no surviving line still takes up a number, so the numbers stay put as lines come and go
+    private fun numbered(commitsOldestFirst: List<CommitPeople>): List<Pair<String, Int>> = commitsOldestFirst
+        .flatMap { it.people }
+        .distinct()
+        .mapIndexed { index, person -> person to index + 1 }
 
     private fun clusterOf(firstCommitHash: String, number: Int, members: List<ClusterMember>): Cluster = Cluster(
         id = "${firstCommitHash.take(REPOSITORY_MARKER_LENGTH)}-author-$number",

@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- **Author ownership**: `--author-ownership` on `ccsh analyse` and `gitlogparser repo-scan` adds each author's share of
-  each file's lines to the map, by number instead of name.
+- **Author ownership**: `--author-ownership` on `ccsh analyse` and `gitlogparser repo-scan` adds each person's share of
+  each file's lines to the map, by number instead of name, with co-authors sharing a line equally.
 
 ## [2.3.0] - 2026-10-28
 
