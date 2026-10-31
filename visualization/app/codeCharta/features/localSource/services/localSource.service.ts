@@ -1,0 +1,211 @@
+import { Injectable, inject, signal } from "@angular/core"
+import { CodeMapNode } from "../../../model/codeCharta.model"
+import { isPartialState } from "../../../model/files/files.helper"
+import { FileStoreReadWindow } from "../../../stores/fileStore/fileStore.facade"
+import { getTopLevelMapName } from "../../../util/nodePathHelper"
+import { ToastService } from "../../shared/facade"
+import {
+    canOpenFoldersHere,
+    FolderAccessBlockedError,
+    findFile,
+    hasReadPermission,
+    LocalDirectoryHandle,
+    pickFolder
+} from "./fileSystemAccess"
+import { LocalSourceAvailability } from "./localSourceAvailability"
+import { LocalSourceFolder, LocalSourceFoldersRepository } from "./localSourceFolders.repository"
+import { relativePathOf, sampleFilePaths } from "./localSourcePaths"
+
+const FIT_CHECK_SAMPLE_SIZE = 20
+const MIN_SHARE_OF_FITTING_SAMPLES = 0.5
+
+type FolderRefusal = { status: "cancelled" } | { status: "blocked" } | { status: "doesNotFitMap" }
+
+export type FolderChoice = { status: "chosen"; folder: LocalSourceFolder } | FolderRefusal
+
+export type SourceLookup =
+    | { status: "found"; file: File; folder: LocalSourceFolder; relativePath: string }
+    | { status: "notFound"; relativePath: string }
+    /** Asking the browser for a folder needs a click of its own, so the caller explains first and then chooses. */
+    | { status: "folderNeeded"; mapFileName: string; relativePath: string; missingFrom: string | null }
+    | FolderRefusal
+
+export interface LocalFolderDescription {
+    folderName: string | null
+    editorRootPath: string | null
+}
+
+export interface EditorTarget {
+    mapFileName: string
+    relativePath: string
+    editorRootPath: string | null
+}
+
+const FORGETTING_FAILED_MESSAGE = "The local folder of a removed map could not be forgotten"
+
+interface MapLocation {
+    mapFileName: string
+    map: CodeMapNode
+    relativePath: string
+}
+
+@Injectable({ providedIn: "root" })
+export class LocalSourceService {
+    private readonly fileStoreReadWindow = inject(FileStoreReadWindow)
+    private readonly repository = inject(LocalSourceFoldersRepository)
+    private readonly availability = inject(LocalSourceAvailability)
+    private readonly toast = inject(ToastService)
+
+    private readonly changeCount = signal(0)
+
+    readonly isAvailable = this.availability.isAvailable
+    readonly folderChanges = this.changeCount.asReadonly()
+
+    isMapRoot(nodePath: string): boolean {
+        return this.locate(nodePath)?.relativePath === ""
+    }
+
+    async findSource(nodePath: string): Promise<SourceLookup> {
+        const location = this.locate(nodePath)
+        if (!location) {
+            return { status: "notFound", relativePath: nodePath }
+        }
+        const savedFolder = await this.readableSavedFolder(location.mapFileName)
+        const file = savedFolder && (await findFile(savedFolder.directory, location.relativePath))
+        if (file) {
+            return { status: "found", file, folder: savedFolder, relativePath: location.relativePath }
+        }
+        return {
+            status: "folderNeeded",
+            mapFileName: location.mapFileName,
+            relativePath: location.relativePath,
+            missingFrom: savedFolder?.directory.name ?? null
+        }
+    }
+
+    async chooseFolderAndFindSource(nodePath: string): Promise<SourceLookup> {
+        const location = this.locate(nodePath)
+        return location ? this.findSourceInChosenFolder(location) : { status: "notFound", relativePath: nodePath }
+    }
+
+    async chooseFolder(nodePath: string): Promise<FolderChoice> {
+        const location = this.locate(nodePath)
+        return location ? this.chooseFolderFor(location) : { status: "cancelled" }
+    }
+
+    async chooseFolderForMap(mapFileName: string): Promise<FolderChoice> {
+        const fileState = this.fileStoreReadWindow
+            .getFiles()
+            .find(loadedFileState => loadedFileState.file.fileMeta.fileName === mapFileName)
+        return fileState ? this.chooseFolderFor({ mapFileName, map: fileState.file.map, relativePath: "" }) : { status: "cancelled" }
+    }
+
+    async describeFolder(mapFileName: string): Promise<LocalFolderDescription | null> {
+        const folder = await this.repository.find(mapFileName)
+        return folder && { folderName: folder.directory?.name ?? null, editorRootPath: folder.editorRootPath }
+    }
+
+    /** Also while the feature is switched off: what a removed project left behind must not stay in the browser. */
+    async forgetFoldersOf(mapFileNames: string[]): Promise<void> {
+        if (mapFileNames.length > 0 && canOpenFoldersHere()) {
+            await this.forgettingFolders(() => Promise.all(mapFileNames.map(mapFileName => this.repository.delete(mapFileName))))
+        }
+    }
+
+    async forgetAllFolders(): Promise<void> {
+        if (canOpenFoldersHere()) {
+            await this.forgettingFolders(() => this.repository.deleteAll())
+        }
+    }
+
+    async editorTargetOf(nodePath: string): Promise<EditorTarget | null> {
+        const location = this.locate(nodePath)
+        if (!location) {
+            return null
+        }
+        const { mapFileName, relativePath } = location
+        const folder = await this.repository.find(mapFileName)
+        return { mapFileName, relativePath, editorRootPath: folder?.editorRootPath ?? null }
+    }
+
+    async saveEditorRootPath(mapFileName: string, editorRootPath: string): Promise<void> {
+        await this.repository.update(mapFileName, { editorRootPath })
+        this.markFoldersChanged()
+    }
+
+    private async findSourceInChosenFolder(location: MapLocation): Promise<SourceLookup> {
+        const choice = await this.chooseFolderFor(location)
+        if (choice.status !== "chosen") {
+            return choice
+        }
+        const { relativePath } = location
+        const file = await findFile(choice.folder.directory, relativePath)
+        return file ? { status: "found", file, folder: choice.folder, relativePath } : { status: "notFound", relativePath }
+    }
+
+    private async chooseFolderFor({ mapFileName, map }: MapLocation): Promise<FolderChoice> {
+        const directory = await this.pickFolderReportingBlocks()
+        if ("status" in directory) {
+            return directory
+        }
+        if (!(await fitsMap(directory, map))) {
+            return { status: "doesNotFitMap" }
+        }
+        const folder = await this.repository.update(mapFileName, { directory })
+        this.markFoldersChanged()
+        return { status: "chosen", folder }
+    }
+
+    /** Removing the project goes on regardless, so a failure here is reported instead of stopping it. */
+    private async forgettingFolders(forget: () => Promise<unknown>): Promise<void> {
+        try {
+            await forget()
+            this.markFoldersChanged()
+        } catch {
+            this.toast.show(FORGETTING_FAILED_MESSAGE, "warning")
+        }
+    }
+
+    private async pickFolderReportingBlocks(): Promise<LocalDirectoryHandle | FolderRefusal> {
+        try {
+            return (await pickFolder()) ?? { status: "cancelled" }
+        } catch (error) {
+            if (!(error instanceof FolderAccessBlockedError)) {
+                throw error
+            }
+            this.availability.reportBlocked()
+            return { status: "blocked" }
+        }
+    }
+
+    private markFoldersChanged() {
+        this.changeCount.update(count => count + 1)
+    }
+
+    private async readableSavedFolder(mapFileName: string): Promise<LocalSourceFolder | null> {
+        const folder = await this.repository.find(mapFileName)
+        return folder?.directory && (await hasReadPermission(folder.directory)) ? folder : null
+    }
+
+    private locate(nodePath: string): MapLocation | null {
+        const visibleFileStates = this.fileStoreReadWindow.getVisibleFileStates()
+        const areMultipleMapsVisible = visibleFileStates.length > 1 && isPartialState(visibleFileStates)
+        const mapFileName = areMultipleMapsVisible ? getTopLevelMapName(nodePath) : visibleFileStates[0]?.file.fileMeta.fileName
+        const fileState = visibleFileStates.find(visibleFileState => visibleFileState.file.fileMeta.fileName === mapFileName)
+        if (!fileState) {
+            return null
+        }
+        return {
+            mapFileName,
+            map: fileState.file.map,
+            relativePath: relativePathOf(nodePath, areMultipleMapsVisible ? mapFileName : null)
+        }
+    }
+}
+
+async function fitsMap(directory: LocalDirectoryHandle, map: CodeMapNode): Promise<boolean> {
+    const samples = sampleFilePaths(map, FIT_CHECK_SAMPLE_SIZE)
+    const foundFiles = await Promise.all(samples.map(samplePath => findFile(directory, samplePath)))
+    const fittingSamples = foundFiles.filter(file => file !== null).length
+    return fittingSamples >= Math.max(1, samples.length * MIN_SHARE_OF_FITTING_SAMPLES)
+}

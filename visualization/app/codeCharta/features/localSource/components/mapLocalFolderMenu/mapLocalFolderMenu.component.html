@@ -1,0 +1,20 @@
+@if (target(); as menu) {
+    <cc-floating-menu class="w-56" [anchor]="menu.anchor" (dismissed)="close()">
+        <cc-context-menu-item
+            icon="fa-regular fa-folder-open"
+            hoverHint="Choose the local folder this map was analysed from"
+            (itemClick)="chooseFolder(menu.mapFileName)"
+        >
+            Set Local Folder…
+        </cc-context-menu-item>
+        <cc-context-menu-item
+            icon="fa-solid fa-code"
+            hoverHint="Enter the folder's full path, which opens its files in VS Code"
+            (itemClick)="setEditorFolder(menu.mapFileName)"
+        >
+            Set VS Code Folder…
+        </cc-context-menu-item>
+    </cc-floating-menu>
+}
+
+<cc-editor-folder-dialog></cc-editor-folder-dialog>

@@ -1,0 +1,42 @@
+<dialog #dialog class="modal" aria-label="VS Code folder" data-testid="local-source-editor-dialog">
+    <div class="modal-box">
+        <h2 class="mb-2 text-lg font-bold">{{ request()?.fileToOpen ? "Open in VS Code" : "Set VS Code Folder" }}</h2>
+        @if (confirmsKnownPath()) {
+            <p class="py-2 text-sm" data-testid="local-source-editor-confirm">
+                Open <span class="font-mono font-semibold">{{ fileName() }}</span> in VS Code from this folder?
+            </p>
+        } @else {
+            <p class="py-2 text-sm" data-testid="local-source-editor-ask">
+                VS Code needs the full path of the project folder for
+                <span class="font-mono font-semibold">{{ mapName() }}</span>. Enter it once; it is saved only in this browser.
+            </p>
+        }
+        <label class="block">
+            <span class="mb-1 block text-sm font-medium">Full path of the folder</span>
+            <input
+                type="text"
+                class="input input-bordered w-full font-mono text-sm"
+                placeholder="e.g. /Users/you/dev/project or C:\dev\project"
+                [ngModel]="editorRootPath()"
+                (ngModelChange)="editorRootPath.set($event)"
+                (keydown.enter)="confirm()"
+            />
+        </label>
+        @if (showsPathProblem()) {
+            <p class="mt-2 text-sm text-error" data-testid="local-source-editor-path-problem">
+                Enter the full path, starting with / or a drive such as C:\
+            </p>
+        }
+        <div class="modal-action">
+            <form method="dialog">
+                <button class="btn">Cancel</button>
+            </form>
+            <button class="btn btn-primary" [disabled]="!isUsablePath()" (click)="confirm()">
+                {{ request()?.fileToOpen ? "Open in VS Code" : "Save" }}
+            </button>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>

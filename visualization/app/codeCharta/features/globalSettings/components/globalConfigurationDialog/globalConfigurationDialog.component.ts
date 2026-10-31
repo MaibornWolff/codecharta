@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, inject, viewChild } fro
 import { toSignal } from "@angular/core/rxjs-interop"
 import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { PreferencesReadWindow } from "../../../../stores/preferences/preferences.read.facade"
+import { canOpenFoldersHere } from "../../../localSource/facade"
 import { GlobalSettingsWriteStore } from "../../stores/globalSettings.write.store"
 import { ExternalLinksComponent } from "./externalLinks/externalLinks.component"
 import { ResetFiltersButtonComponent } from "./resetFiltersButton/resetFiltersButton.component"
@@ -31,6 +32,8 @@ export class GlobalConfigurationDialogComponent {
     screenshotToClipboardEnabled = toSignal(this.preferencesReadWindow.screenshotToClipboardEnabled$, {
         requireSync: true
     })
+    readonly canOpenLocalFolders = canOpenFoldersHere()
+    localSourceEnabled = toSignal(this.preferencesReadWindow.localSourceEnabled$, { requireSync: true })
     isWhiteBackground = toSignal(this.mapStateReadWindow.isWhiteBackground$, { requireSync: true })
     hideFlatBuildings = toSignal(this.mapStateReadWindow.hideFlatBuildings$, { requireSync: true })
     resetCameraIfNewFileIsLoaded = toSignal(this.preferencesReadWindow.resetCameraIfNewFileIsLoaded$, {
@@ -59,5 +62,9 @@ export class GlobalConfigurationDialogComponent {
 
     handleScreenshotToClipboardEnabledChanged(checked: boolean) {
         this.globalSettingsWriteStore.setScreenshotToClipboard(checked)
+    }
+
+    handleLocalSourceEnabledChanged(checked: boolean) {
+        this.globalSettingsWriteStore.setLocalSourceEnabled(checked)
     }
 }

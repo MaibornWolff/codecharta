@@ -1,0 +1,83 @@
+<dialog
+    #dialog
+    class="m-0 h-dvh max-h-none w-dvw max-w-none border-0 bg-base-100 p-0 text-base-content backdrop:bg-base-content/30"
+    aria-label="Source"
+    data-testid="local-source-dialog"
+    (close)="handleClosed()"
+    (keydown)="$event.stopPropagation()"
+>
+    @if (source(); as shown) {
+        <div class="flex h-full flex-col">
+            <header class="flex h-12 shrink-0 items-center gap-3 border-b border-base-300 px-3">
+                <button type="button" class="btn btn-ghost btn-sm" data-testid="source-viewer-back" (click)="close()">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Back
+                </button>
+                <div class="h-6 border-l border-base-300"></div>
+                <i class="fa-regular fa-file-code text-base-content/60"></i>
+                <h2 class="min-w-0 truncate font-mono text-sm" [title]="shown.relativePath">
+                    <span class="text-base-content/60">{{ shown.folderPath }}</span><span class="font-semibold">{{ shown.fileName }}</span>
+                </h2>
+                <span class="badge badge-ghost badge-sm shrink-0" data-testid="source-viewer-language">{{ shown.language.label }}</span>
+                <div class="ml-auto flex shrink-0 items-center gap-1">
+                    <button
+                        type="button"
+                        class="btn btn-ghost btn-sm"
+                        [class.btn-active]="wrapsLines()"
+                        [attr.aria-pressed]="wrapsLines()"
+                        title="Wrap long lines"
+                        data-testid="source-viewer-wrap"
+                        (click)="toggleWrapsLines()"
+                    >
+                        <i class="fa-solid fa-arrow-turn-down fa-rotate-90"></i>
+                        Wrap
+                    </button>
+                    <button type="button" class="btn btn-ghost btn-sm" title="Copy the file's path" (click)="copy('path', shown)">
+                        <i [class]="copiedPart() === 'path' ? 'fa-solid fa-check text-success' : 'fa-solid fa-link'"></i>
+                        {{ copiedPart() === "path" ? "Copied" : "Copy path" }}
+                    </button>
+                    <button type="button" class="btn btn-ghost btn-sm" title="Copy the file's content" (click)="copy('content', shown)">
+                        <i [class]="copiedPart() === 'content' ? 'fa-solid fa-check text-success' : 'fa-regular fa-copy'"></i>
+                        {{ copiedPart() === "content" ? "Copied" : "Copy" }}
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" title="Open the file in VS Code" (click)="requestEditor(shown)">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        Open in VS Code
+                    </button>
+                </div>
+            </header>
+
+            <div
+                #scroller
+                class="cc-source cc-syntax min-h-0 flex-1 overflow-auto focus:outline-none"
+                [attr.tabindex]="0"
+                aria-label="Source code"
+                [class.cc-source-wraps]="wrapsLines()"
+                [attr.data-testid]="isColoured() ? 'local-source-highlighted' : 'local-source-plain'"
+                [innerHTML]="rowsHtml()"
+                (click)="selectLineAt($event)"
+            ></div>
+
+            <footer class="flex h-7 shrink-0 items-center gap-4 border-t border-base-300 bg-base-200 px-3 text-xs text-base-content/70">
+                <span>{{ shown.language.label }}</span>
+                <span>{{ shown.lineCount }} {{ shown.lineCount === 1 ? "line" : "lines" }}</span>
+                <span>{{ shown.size }}</span>
+                <span data-testid="source-viewer-encoding">{{ shown.encoding }}</span>
+                @if (copyFailed()) {
+                    <span class="text-error" data-testid="source-viewer-copy-failed">
+                        <i class="fa-solid fa-triangle-exclamation"></i> The browser did not allow copying
+                    </span>
+                }
+                @if (isColouring()) {
+                    <span><span class="loading loading-spinner loading-xs align-middle"></span> Colouring…</span>
+                }
+                @if (shown.uncolouredReason; as reason) {
+                    <span data-testid="local-source-uncoloured-note"><i class="fa-solid fa-circle-info"></i> Shown without colours: {{ reason }}</span>
+                }
+                @if (selectedLine(); as line) {
+                    <span class="ml-auto" data-testid="source-viewer-line">Ln {{ line }}</span>
+                }
+            </footer>
+        </div>
+    }
+</dialog>

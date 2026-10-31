@@ -18,6 +18,7 @@ describe("GlobalConfigurationDialogComponent", () => {
     beforeEach(() => {
         mockGlobalSettingsWriteStore = {
             setScreenshotToClipboard: jest.fn(),
+            setLocalSourceEnabled: jest.fn(),
             setWhiteBackground: jest.fn(),
             setHideFlatBuildings: jest.fn(),
             setResetCameraIfNewFileIsLoaded: jest.fn()
@@ -223,6 +224,45 @@ describe("GlobalConfigurationDialogComponent", () => {
 
             // Assert
             expect(mockGlobalSettingsWriteStore.setScreenshotToClipboard).toHaveBeenCalledWith(false)
+        })
+
+        it.each([true, false])("should switch local source files to %s when the toggle changes", checked => {
+            // Act
+            component.handleLocalSourceEnabledChanged(checked)
+
+            // Assert
+            expect(mockGlobalSettingsWriteStore.setLocalSourceEnabled).toHaveBeenCalledWith(checked)
+        })
+
+        describe("switch for local source files", () => {
+            function toggleLabelsOfAFreshDialog(): string[] {
+                const freshFixture = TestBed.createComponent(GlobalConfigurationDialogComponent)
+                freshFixture.detectChanges()
+                return [...freshFixture.nativeElement.querySelectorAll("cc-setting-toggle")].map(toggle => toggle.textContent.trim())
+            }
+
+            afterEach(() => {
+                delete (window as unknown as { showDirectoryPicker?: unknown }).showDirectoryPicker
+            })
+
+            it("should offer the switch, marked as experimental, where the browser can open folders", () => {
+                // Arrange
+                ;(window as unknown as { showDirectoryPicker: jest.Mock }).showDirectoryPicker = jest.fn()
+
+                // Act
+                const labels = toggleLabelsOfAFreshDialog()
+
+                // Assert
+                expect(labels).toContain("Open local source files (experimental)")
+            })
+
+            it("should not offer the switch where the browser cannot open folders, as in Firefox and Safari", () => {
+                // Act
+                const labels = toggleLabelsOfAFreshDialog()
+
+                // Assert
+                expect(labels.some(label => label.startsWith("Open local source files"))).toBe(false)
+            })
         })
 
         it("should offer no switch for the dependency view, which a map with dependency data always shows", () => {

@@ -158,6 +158,24 @@ describe("DependencyMapComponent", () => {
         )
     })
 
+    it.each([
+        [true, "outline the box under the pointer"],
+        [false, "draw the box under the pointer like any other once the hover highlight is off"]
+    ])("should, with the hover highlight %s, %s", async (isHoverHighlighted, _behaviour) => {
+        // Arrange
+        const { store, fixture } = await setup()
+        await changeSettings(store, { isHoverHighlighted })
+        fixture.detectChanges()
+        const plainOutlineWidth = outlineWidthOf("/root/ui")
+
+        // Act
+        fireChartEvent("mouseover", boxEvent("/root/ui"))
+        fixture.detectChanges()
+
+        // Assert
+        expect(outlineWidthOf("/root/ui") !== plainOutlineWidth).toBe(isHoverHighlighted)
+    })
+
     it("should draw only the edges of the picked types", async () => {
         // Arrange
         const { store, fixture } = await setup()

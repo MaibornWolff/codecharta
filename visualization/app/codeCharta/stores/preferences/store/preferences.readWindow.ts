@@ -5,6 +5,7 @@ import { centerMapZoomSelector } from "./centerMapZoom/centerMapZoom.selector"
 import { screenshotToClipboardEnabledSelector } from "./enableClipboard/screenshotToClipboardEnabled.selector"
 import { isColorMetricLinkedToHeightMetricSelector } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
 import { isPresentationModeSelector } from "./isPresentationMode/isPresentationMode.selector"
+import { localSourceEnabledSelector } from "./localSourceEnabled/localSourceEnabled.selector"
 import { maxTreeMapFilesSelector } from "./maxTreeMapFiles/maxTreeMapFiles.selector"
 import { isRadialFolderNeutralSelector, radialFolderStyleSelector } from "./radialFolderStyle/radialFolderStyle.selector"
 import { radialFolderSwatchSelector, radialTintedFolderSwatchSelector } from "./radialFolderSwatch/radialFolderSwatch.selector"
@@ -26,6 +27,7 @@ export class PreferencesReadWindow {
     readonly isPresentationMode$ = this.store.select(isPresentationModeSelector)
     readonly isColorMetricLinkedToHeightMetric$ = this.store.select(isColorMetricLinkedToHeightMetricSelector)
     readonly screenshotToClipboardEnabled$ = this.store.select(screenshotToClipboardEnabledSelector)
+    readonly localSourceEnabled$ = this.store.select(localSourceEnabledSelector)
     readonly resetCameraIfNewFileIsLoaded$ = this.store.select(resetCameraIfNewFileIsLoadedSelector)
     readonly centerMapZoom$ = this.store.select(centerMapZoomSelector)
     readonly maxTreeMapFiles$ = this.store.select(maxTreeMapFilesSelector)

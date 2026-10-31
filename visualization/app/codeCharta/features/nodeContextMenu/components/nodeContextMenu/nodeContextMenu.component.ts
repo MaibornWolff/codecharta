@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, effect, inject, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { CodeMapNode } from "../../../../model/codeCharta.model"
+import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
 import { ActiveViewStore } from "../../../../routing/activeView.store"
 import { VIEW_IDS, ViewId } from "../../../../routing/routePaths"
 import { SharedViewReadWindow } from "../../../../stores/sharedView/sharedView.read.facade"
 import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
+import { LocalSourceActionsComponent } from "../../../localSource/facade"
+import { DependencyGraphScreenshotService } from "../../../screenshot/facade"
 import { ContextMenuItemComponent, FloatingMenuComponent } from "../../../shared/facade"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
 import { NODE_CONTEXT_MENU_CAPABILITIES } from "../../nodeContextMenuCapabilities"
@@ -26,7 +28,7 @@ const JUMP_TARGETS: Record<ViewId, { label: string; icon: string; hoverHint: str
     selector: "cc-node-context-menu",
     templateUrl: "./nodeContextMenu.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [ContextMenuItemComponent, FloatingMenuComponent, MarkFolderRowComponent],
+    imports: [ContextMenuItemComponent, FloatingMenuComponent, LocalSourceActionsComponent, MarkFolderRowComponent],
     providers: [CopyToClipboardService]
 })
 export class NodeContextMenuComponent {
@@ -35,8 +37,10 @@ export class NodeContextMenuComponent {
     private readonly writeStore = inject(NodeContextMenuWriteStore)
     private readonly explorerRevealService = inject(ExplorerRevealService)
     private readonly clipboard = inject(CopyToClipboardService)
+    private readonly dependencyGraphScreenshot = inject(DependencyGraphScreenshotService)
 
     private readonly capabilities = inject(NODE_CONTEXT_MENU_CAPABILITIES)
+    readonly localSourceActions = viewChild.required(LocalSourceActionsComponent)
     private readonly activeView = toSignal(inject(ActiveViewStore).activeView$, { requireSync: true })
 
     private readonly focusableNodes = this.capabilities.focusableNodes
@@ -81,6 +85,20 @@ export class NodeContextMenuComponent {
     })
 
     readonly isFolder = computed(() => (this.menuNode()?.children?.length ?? 0) > 0)
+    readonly isFolderScreenshotOffered = computed(() => {
+        const node = this.menuNode()
+        return (
+            node !== null &&
+            this.activeView() === "dependencies" &&
+            this.isFolder() &&
+            this.dependencyGraphScreenshot.canScreenshotBox(node.path)
+        )
+    })
+    readonly isFile = computed(() => this.menuNode()?.type === NodeType.FILE)
+    readonly isMapRoot = computed(() => {
+        const node = this.menuNode()
+        return node !== null && this.localSourceActions().isMapRoot(node.path)
+    })
     readonly isShowInExplorerVisible = computed(() => this.rightClickedNodeData()?.origin !== "explorer")
     readonly isFocusOffered = computed(() => this.focusableNodes !== "none" && !this.isNodeFocused() && this.isFolder())
     readonly isUnfocusOffered = computed(() => this.focusableNodes !== "none" && (this.isNodeFocused() || this.isParentFocused()))
@@ -116,6 +134,34 @@ export class NodeContextMenuComponent {
         const node = this.menuNode()
         if (node) {
             await this.clipboard.copy(this.pathWithoutRootSegment(node))
+        }
+    }
+
+    showSource() {
+        this.closeAndActOnNode(node => this.localSourceActions().showSource(node.path))
+    }
+
+    openInEditor() {
+        this.closeAndActOnNode(node => this.localSourceActions().openInEditor(node.path))
+    }
+
+    chooseLocalFolder() {
+        this.closeAndActOnNode(node => this.localSourceActions().chooseFolder(node.path))
+    }
+
+    screenshotFolder() {
+        this.closeAndActOnNode(node => this.dependencyGraphScreenshot.screenshotBox(node.path, node.name))
+    }
+
+    setEditorFolder() {
+        this.closeAndActOnNode(node => this.localSourceActions().setEditorFolder(node.path))
+    }
+
+    private closeAndActOnNode(action: (node: NonNullable<ReturnType<typeof this.menuNode>>) => Promise<void>) {
+        const node = this.menuNode()
+        this.close()
+        if (node) {
+            void action(node)
         }
     }
 

@@ -11,6 +11,7 @@ import { parentPathOf } from "./boxPaths"
 import { CycleMarks } from "./cycleMarks"
 import { GraphEdge } from "./edgeProjection"
 import { Point } from "./geometry"
+import { lookupsOf } from "./layoutLookups"
 import { DependencyGraphLayout, LayoutBox } from "./layoutModel"
 import { UpwardMarks } from "./upwardMarks"
 
@@ -49,6 +50,11 @@ export type ToPixels = (layoutPoint: Point) => number[]
  * children too, and the root holds every edge; showing those would light up the whole graph. */
 export function isEdgeOfHovered(edge: GraphEdge, hoveredPath: string | null, isInside: IsInside): boolean {
     return hoveredPath !== null && isInside(edge.fromPath, hoveredPath) !== isInside(edge.toPath, hoveredPath)
+}
+
+export function sceneWithEdgesWithin(scene: DependencyGraphScene, boxPath: string): DependencyGraphScene {
+    const { isInside } = lookupsOf(scene.layout)
+    return { ...scene, edges: scene.edges.filter(edge => isInside(edge.fromPath, boxPath) && isInside(edge.toPath, boxPath)) }
 }
 
 /** Drawn whatever its type, and never dimmed. */

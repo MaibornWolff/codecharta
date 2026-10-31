@@ -8,11 +8,13 @@ import { ChangelogFacade } from "app/codeCharta/features/changelog/facade"
 import { codeMapEffects } from "app/codeCharta/features/codeMap/effects/codeMap.effects"
 import { fileExtensionBarEffects } from "app/codeCharta/features/fileExtensionBar/effects/fileExtensionBar.effects"
 import { labelSettingsEffects } from "app/codeCharta/features/labelSettings/effects/labelSettings.effects"
+import { localSourceEffects } from "app/codeCharta/features/localSource/effects/localSource.effects"
 import { mapExplorerEffects } from "app/codeCharta/features/mapExplorer/effects/mapExplorer.effects"
 import { metricsBarEffects } from "app/codeCharta/features/metricsBar/effects/metricsBar.effects"
 import { navBarEffects } from "app/codeCharta/features/navBar/effects/navBar.effects"
 import { sharedEffects } from "app/codeCharta/features/shared/effects/shared.effects"
 import { loadEffects } from "app/codeCharta/load/effects/load.effects"
+import { CloseDialogsOfLeftViewEffect } from "app/codeCharta/routing/closeDialogsOfLeftView.effect"
 import { KeepAliveRouteReuseStrategy } from "app/codeCharta/routing/keepAliveRouteReuse.strategy"
 import { QueryPreservingHashLocationStrategy } from "app/codeCharta/routing/queryPreservingHashLocation.strategy"
 import { routePaths } from "app/codeCharta/routing/routePaths"
@@ -54,6 +56,8 @@ export const appConfig: ApplicationConfig = {
             ...codeMapEffects,
             ...metricsBarEffects,
             ...labelSettingsEffects,
+            ...localSourceEffects,
+            CloseDialogsOfLeftViewEffect,
             ...fileExtensionBarEffects,
             ...navBarEffects,
             ...sharedEffects,

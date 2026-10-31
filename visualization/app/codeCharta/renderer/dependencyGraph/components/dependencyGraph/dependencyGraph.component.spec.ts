@@ -1,6 +1,8 @@
+import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { DEPENDENCY_EDGE_TYPES } from "../../../../model/dependencyGraph.model"
+import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChart.registry"
 import {
     fireChartEvent,
     fireRenderSurfaceEvent,
@@ -14,7 +16,7 @@ import {
 import { AxisWindow, fitWindowOf } from "../../util/axisWindow"
 import { DependencyGraphScene } from "../../util/dependencyGraphScene"
 import { GRAPH_SERIES_ID } from "../../util/dependencyGraphSeries"
-import { aBox, DEFAULT_LOOKS } from "../../util/dependencyGraphTestData"
+import { aBox, anEdge, DEFAULT_LOOKS } from "../../util/dependencyGraphTestData"
 import { DependencyGraphComponent } from "./dependencyGraph.component"
 
 jest.mock("echarts/core", () => jest.requireActual("../../testing/dependencyGraph.stub").echartsCoreStub)
@@ -264,6 +266,99 @@ describe("DependencyGraphComponent", () => {
         expect(mark.getAttribute("stroke-dasharray")).toBe("6 4")
         expect(mark.classList.contains("animate-marching-ants")).toBe(true)
         expect(screen.queryByTestId("dependency-graph-pointed-at")).toBeNull()
+    })
+
+    describe("locating boxes for a screenshot", () => {
+        async function renderAndLocate(scene: DependencyGraphScene, path: string) {
+            const renderResult = await render(DependencyGraphComponent, { inputs: { scene, graphIdentity: GRAPH_IDENTITY } })
+            fireChartEvent("finished")
+            return {
+                ...renderResult,
+                registry: TestBed.inject(DependencyGraphChartRegistry),
+                rect: TestBed.inject(DependencyGraphChartRegistry).boxShots.pixelRectOf(path)
+            }
+        }
+
+        it("should tell where a drawn box lies on the chart", async () => {
+            // Arrange
+            const [folder] = CLOSED_FOLDER_SCENE.layout.boxes
+
+            // Act
+            const { rect } = await renderAndLocate(CLOSED_FOLDER_SCENE, FOLDER)
+
+            // Assert
+            expect(rect).toEqual({ x: folder.x, y: folder.y, width: folder.width, height: folder.height })
+        })
+
+        it("should tell only the part of a box in view", async () => {
+            // Act
+            const { rect } = await renderAndLocate(sceneWithOpenedFolder({ x: 700, y: 500, width: 300, height: 300 }), FOLDER)
+
+            // Assert
+            expect(rect).toEqual({ x: 700, y: 500, width: 100, height: 100 })
+        })
+
+        it("should tell nothing for a box out of view or not drawn", async () => {
+            // Act
+            const { rect: outOfView } = await renderAndLocate(sceneWithOpenedFolder({ x: 900, y: 700, width: 100, height: 100 }), FOLDER)
+            const notDrawn = TestBed.inject(DependencyGraphChartRegistry).boxShots.pixelRectOf("/root/elsewhere")
+
+            // Assert
+            expect(outOfView).toBeNull()
+            expect(notDrawn).toBeNull()
+        })
+
+        it("should draw the shown window off screen with only the edges inside the box, leaving the chart on screen alone", async () => {
+            // Arrange
+            const boxes = [
+                aBox(FOLDER, { kind: "folder", isExpanded: true, x: 0, y: 0, width: 400, height: 300 }),
+                aBox(`${FOLDER}/a.ts`, { x: 20, y: 40, width: 100, height: 40 }),
+                aBox(`${FOLDER}/b.ts`, { x: 20, y: 200, width: 100, height: 40 }),
+                aBox("/root/c.ts", { x: 500, y: 100, width: 100, height: 40 })
+            ]
+            const folderWithEdges: DependencyGraphScene = {
+                ...SCENE,
+                layout: { boxes, bands: [], width: 600, height: 300 },
+                edges: [anEdge(`${FOLDER}/a.ts`, `${FOLDER}/b.ts`), anEdge(`${FOLDER}/a.ts`, "/root/c.ts")]
+            }
+            const { registry } = await renderAndLocate(folderWithEdges, FOLDER)
+            const drawnOnScreen = lastDrawnOption()
+            stubbedChart.getRenderedCanvas.mockClear()
+            stubbedChart.convertFromPixel.mockImplementation(PANNED_AND_ZOOMED)
+
+            // Act
+            const canvas = registry.boxShots.renderWithEdgesWithin(FOLDER, 2)
+
+            // Assert
+            expect(canvas).toBeInstanceOf(HTMLCanvasElement)
+            expect(stubbedChart.getRenderedCanvas).toHaveBeenCalledWith({ pixelRatio: 2, backgroundColor: "transparent" })
+            expect(lastDrawnOption().series[0].data.length).toBe(drawnOnScreen.series[0].data.length - 1)
+            expect(shownWindowOf(lastDrawnOption())).toEqual(PANNED_AND_ZOOMED_WINDOW)
+            expect(stubbedChart.dispose).toHaveBeenCalledTimes(1)
+        })
+
+        it("should draw nothing off screen before the graph was drawn", async () => {
+            // Arrange
+            measuredSize = { width: 0, height: 0 }
+            await render(DependencyGraphComponent, { inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY } })
+
+            // Act
+            const canvas = TestBed.inject(DependencyGraphChartRegistry).boxShots.renderWithEdgesWithin("/root/a.ts", 2)
+
+            // Assert
+            expect(canvas).toBeNull()
+        })
+
+        it("should stop telling where boxes lie once the graph is gone", async () => {
+            // Arrange
+            const { fixture, registry } = await renderAndLocate(CLOSED_FOLDER_SCENE, FOLDER)
+
+            // Act
+            fixture.destroy()
+
+            // Assert
+            expect(registry.boxShots.pixelRectOf(FOLDER)).toBeNull()
+        })
     })
 
     it("should fit a new graph into view with its first drawing", async () => {

@@ -6,6 +6,7 @@ export {
     toggleIsColorMetricLinkedToHeightMetric
 } from "./store/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
 export { setPresentationMode } from "./store/isPresentationMode/isPresentationMode.actions"
+export { setLocalSourceEnabled } from "./store/localSourceEnabled/localSourceEnabled.actions"
 export { setMaxTreeMapFiles } from "./store/maxTreeMapFiles/maxTreeMapFiles.actions"
 export { preferencesActions } from "./store/preferences.actions"
 export { setRadialFolderStyle } from "./store/radialFolderStyle/radialFolderStyle.actions"

@@ -1980,6 +1980,7 @@ export const STATE: CcState = {
         isPresentationMode: false,
         resetCameraIfNewFileIsLoaded: true,
         screenshotToClipboardEnabled: false,
+        localSourceEnabled: false,
         centerMapZoom: 140,
         maxTreeMapFiles: 200,
         sorting: { option: SortingOption.NAME, orderAscending: false },
@@ -1990,6 +1991,7 @@ export const STATE: CcState = {
         dependencyGraph: {
             shownEdgeTypes: ["regular", "cyclic", "feedbackContainerLevel", "feedbackLeafLevel"],
             isHoverLimitedToShownEdgeTypes: false,
+            isHoverHighlighted: true,
             edgeColors: { regular: "#8c96a3", cyclic: "#2563eb", feedbackContainerLevel: "#dc2626", feedbackLeafLevel: "#7f1d1d" },
             lineStyleShows: "edgeType",
             edgeStyle: "combined",
@@ -2063,6 +2065,7 @@ export const DEFAULT_STATE: CcState = {
         isPresentationMode: false,
         resetCameraIfNewFileIsLoaded: true,
         screenshotToClipboardEnabled: false,
+        localSourceEnabled: false,
         centerMapZoom: 140,
         maxTreeMapFiles: 100,
         sorting: { option: SortingOption.NAME, orderAscending: true },
@@ -2073,6 +2076,7 @@ export const DEFAULT_STATE: CcState = {
         dependencyGraph: {
             shownEdgeTypes: ["regular", "cyclic", "feedbackContainerLevel", "feedbackLeafLevel"],
             isHoverLimitedToShownEdgeTypes: false,
+            isHoverHighlighted: true,
             edgeColors: { regular: "#8c96a3", cyclic: "#2563eb", feedbackContainerLevel: "#dc2626", feedbackLeafLevel: "#7f1d1d" },
             lineStyleShows: "edgeType",
             edgeStyle: "combined",

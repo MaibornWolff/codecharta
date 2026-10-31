@@ -71,3 +71,139 @@ cc-metrics-bar > cc-link-color-height-button {
     border-start-end-radius: 9999px;
     background-color: var(--color-primary);
 }
+
+// The colours of "Show Source": Prism marks each token with classes inside HTML it builds itself, which only a
+// global stylesheet reaches. The theme's status colours are too light for text, so they are mixed with it.
+.cc-syntax {
+    --cc-syntax-keyword: var(--color-primary);
+    --cc-syntax-string: color-mix(in oklab, var(--color-success) 45%, var(--color-base-content));
+    --cc-syntax-number: color-mix(in oklab, var(--color-error) 70%, var(--color-base-content));
+    --cc-syntax-name: color-mix(in oklab, var(--color-info) 60%, var(--color-base-content));
+    --cc-syntax-tag: color-mix(in oklab, var(--color-accent) 50%, var(--color-base-content));
+
+    .token.comment,
+    .token.prolog,
+    .token.doctype,
+    .token.cdata {
+        color: color-mix(in oklab, var(--color-base-content) 55%, transparent);
+        font-style: italic;
+    }
+
+    .token.keyword,
+    .token.atrule,
+    .token.important,
+    .token.selector {
+        color: var(--cc-syntax-keyword);
+    }
+
+    .token.string,
+    .token.char,
+    .token.template-string,
+    .token.attr-value,
+    .token.regex {
+        color: var(--cc-syntax-string);
+    }
+
+    .token.number,
+    .token.boolean,
+    .token.constant,
+    .token.symbol {
+        color: var(--cc-syntax-number);
+    }
+
+    .token.function,
+    .token.class-name,
+    .token.builtin,
+    .token.annotation,
+    .token.decorator {
+        color: var(--cc-syntax-name);
+    }
+
+    .token.tag,
+    .token.attr-name,
+    .token.property,
+    .token.namespace {
+        color: var(--cc-syntax-tag);
+    }
+
+    .token.operator,
+    .token.punctuation {
+        color: color-mix(in oklab, var(--color-base-content) 75%, transparent);
+    }
+}
+
+// The rows of the source viewer are HTML the viewer builds itself (see sourceRows.ts), which only a global
+// stylesheet reaches. Each row spans the whole width, so a selection dragged past a line's end stays on that line.
+.cc-source {
+    --cc-source-gutter-width: 4.5rem;
+    // Draws the gutter below the last line too; the numbers' own background covers it while rows scroll past.
+    background: linear-gradient(
+        to right,
+        var(--color-base-200) var(--cc-source-gutter-width),
+        var(--color-base-300) var(--cc-source-gutter-width) calc(var(--cc-source-gutter-width) + 1px),
+        var(--color-base-100) calc(var(--cc-source-gutter-width) + 1px)
+    );
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.8125rem;
+    line-height: 1.5rem;
+    tab-size: 4;
+
+    .cc-source-block {
+        content-visibility: auto;
+        contain-intrinsic-height: auto 12000px;
+        width: max-content;
+        min-width: 100%;
+
+        // The last block is shorter than the estimate above, which would leave empty space below the code.
+        &:last-child {
+            content-visibility: visible;
+        }
+    }
+
+    .cc-source-row {
+        display: flex;
+    }
+
+    .cc-source-row-selected {
+        background-color: color-mix(in oklab, var(--color-primary) 10%, transparent);
+    }
+
+    .cc-source-number {
+        position: sticky;
+        left: 0;
+        flex: none;
+        width: var(--cc-source-gutter-width);
+        padding-inline: 0 1rem;
+        border-inline-end: 1px solid var(--color-base-300);
+        background-color: var(--color-base-200);
+        color: color-mix(in oklab, var(--color-base-content) 45%, transparent);
+        text-align: right;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .cc-source-row-selected .cc-source-number {
+        color: var(--color-primary);
+        font-weight: 600;
+    }
+
+    .cc-source-code {
+        flex: 1;
+        padding-inline: 1rem;
+        white-space: pre;
+        cursor: text;
+    }
+
+    &.cc-source-wraps {
+        .cc-source-block {
+            width: auto;
+        }
+
+        .cc-source-code {
+            min-width: 0;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+    }
+}
+
