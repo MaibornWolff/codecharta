@@ -5,6 +5,7 @@ import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.InputValidator
+import de.maibornwolff.codecharta.dialogProvider.promptConfirm
 import de.maibornwolff.codecharta.dialogProvider.promptInput
 import java.nio.file.Paths
 
@@ -23,10 +24,16 @@ class RepoScanDialog {
             )
 
             val commitRef = commitQuestion(session)
+            val authorOwnership = session.promptConfirm(
+                message = "Add numbered author ownership? Anyone with the repository can match the numbers to people.",
+                initialChoice = false,
+                onInputReady = testCallback()
+            )
 
             return listOfNotNull(
                 "--repo-path=$repoPath",
-                if (commitRef.isNotEmpty()) "--commit=$commitRef" else null
+                if (commitRef.isNotEmpty()) "--commit=$commitRef" else null,
+                RepoScanCommand.AUTHOR_OWNERSHIP_FLAG.takeIf { authorOwnership }
             )
         }
 

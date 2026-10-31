@@ -50,6 +50,9 @@ class LogScanCommand : AnalyserInterface {
     @CommandLine.Option(names = ["--add-author"], description = ["add an array of authors to every file"])
     private var addAuthor = false
 
+    @CommandLine.Option(names = [RepoScanCommand.AUTHOR_OWNERSHIP_FLAG], hidden = true)
+    private var authorOwnership = false
+
     override val name = NAME
     override val description = DESCRIPTION
 
@@ -59,6 +62,10 @@ class LogScanCommand : AnalyserInterface {
     }
 
     override fun call(): Unit? {
+        require(!authorOwnership) {
+            "${RepoScanCommand.AUTHOR_OWNERSHIP_FLAG} needs the repository to run git blame, which a log file cannot provide. " +
+                "Use 'gitlogparser ${RepoScanCommand.NAME} ${RepoScanCommand.AUTHOR_OWNERSHIP_FLAG}' instead."
+        }
         require(InputHelper.isInputValidAndNotNull(arrayOf(gitLogFile), canInputContainFolders = false)) {
             "Input invalid file for GitLogScan, stopping execution..."
         }

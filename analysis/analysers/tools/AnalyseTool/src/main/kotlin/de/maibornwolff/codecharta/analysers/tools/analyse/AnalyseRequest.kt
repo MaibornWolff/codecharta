@@ -11,5 +11,6 @@ data class AnalyseRequest(
     val compress: Boolean = true,
     val analysedFolder: File = projectFolder,
     val commitHash: String? = null,
-    val localChanges: Boolean = false
+    val localChanges: Boolean = false,
+    val authorOwnership: Boolean = false
 )

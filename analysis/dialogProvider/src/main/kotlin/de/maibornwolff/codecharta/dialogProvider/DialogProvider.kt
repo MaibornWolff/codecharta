@@ -152,10 +152,11 @@ fun Session.promptInputNumber(
 fun Session.promptConfirm(
     message: String,
     hint: String = "arrow keys to change selection",
+    initialChoice: Boolean = true,
     onInputReady: suspend RunScope.() -> Unit
 ): Boolean {
-    var result = true
-    var choice by liveVarOf(true)
+    var result = initialChoice
+    var choice by liveVarOf(initialChoice)
     section {
         drawConfirm(message, hint, choice)
     }.runUntilSignal {

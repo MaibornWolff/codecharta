@@ -1,8 +1,10 @@
 package de.maibornwolff.codecharta.analysers.tools.analyse
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
 import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
+import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -47,6 +49,53 @@ class AnalyseToolTest {
 
         // Assert
         assertThat(filesOf(readMap(mapFile)).getValue("src/App.kt")).containsKeys("complexity", "number_of_commits")
+    }
+
+    @Test
+    fun `should add author ownership of the mapped files and print the personal data note last`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        writeSource("generated/Api.kt", APP_SOURCE)
+        commitAll()
+
+        // Act
+        analyse(projectFolder.path, "--output-file=${mapFile.path}", "--exclude=generated", "--author-ownership")
+
+        // Assert
+        val clusters = readMap(mapFile)
+            .lenses.clusters.clusterings
+            .getValue("author-ownership")
+            .clusters
+        assertThat(clusters.single().members.map { it.nodeId }).containsExactly(NodeId.fromSegments(listOf("src", "App.kt")))
+        assertThat(output.toString().trim().lines().last()).isEqualTo(AuthorOwnershipScan.PERSONAL_DATA_NOTE)
+    }
+
+    @Test
+    fun `should add no author ownership and no note without the flag`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        commitAll()
+
+        // Act
+        analyse(projectFolder.path, "--output-file=${mapFile.path}")
+
+        // Assert
+        assertThat(readMap(mapFile).lenses.clusters.carriesData).isFalse()
+        assertThat(output.toString()).doesNotContain(AuthorOwnershipScan.PERSONAL_DATA_NOTE)
+    }
+
+    @Test
+    fun `should refuse author ownership when the git history is left out`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        commitAll()
+
+        // Act
+        val exitCode = analyse(projectFolder.path, "--output-file=${mapFile.path}", "--author-ownership", "--without=git")
+
+        // Assert
+        assertThat(exitCode).isNotZero()
+        assertThat(output.toString()).contains("--author-ownership needs the git history")
     }
 
     @Test

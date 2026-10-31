@@ -4,7 +4,9 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInte
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.commit.CommitAnalysisContext
 import de.maibornwolff.codecharta.analysers.analyserinterface.commit.GitWorktreeManager
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.util.GitAdapter
+import de.maibornwolff.codecharta.model.ClustersLens
 import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
 import java.io.File
@@ -16,7 +18,7 @@ import java.nio.file.Paths
     description = [RepoScanCommand.DESCRIPTION],
     footer = ["Copyright(c) 2024, MaibornWolff GmbH"]
 )
-class RepoScanCommand : AnalyserInterface {
+class RepoScanCommand(private val printsOwnershipHints: Boolean = true) : AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
@@ -49,11 +51,18 @@ class RepoScanCommand : AnalyserInterface {
     )
     private var commit: String? = null
 
+    @CommandLine.Option(
+        names = [AUTHOR_OWNERSHIP_FLAG],
+        description = ["add the share of each file's lines last changed by each author, by number instead of name (blames every file)"]
+    )
+    private var authorOwnership = false
+
     override val name = NAME
     override val description = DESCRIPTION
 
     companion object {
         const val NAME = "repo-scan"
+        const val AUTHOR_OWNERSHIP_FLAG = "--author-ownership"
         const val DESCRIPTION =
             "git log parser repo-scan - generates cc.json from an automatically generated git-log file"
     }
@@ -76,13 +85,32 @@ class RepoScanCommand : AnalyserInterface {
             if (!silent) println("Creating git-ls file...")
             val gitLsFile = createGitLsFile(context.inputDir.toPath())
 
+            val ownershipScan = AuthorOwnershipScan(context.inputDir).takeIf { authorOwnership }
+            if (!silent && ownershipScan != null) println("Blaming files...")
+            val ownership = ownershipScan?.lens() ?: ClustersLens()
+
             if (!silent) println("Parsing files...")
-            GitLogParser().buildProject(gitLogFile, gitLsFile, context.resolveOutputFile(outputFilePath), addAuthor, silent, compress)
+            GitLogParser().buildProject(
+                gitLogFile,
+                gitLsFile,
+                context.resolveOutputFile(outputFilePath),
+                addAuthor,
+                silent,
+                compress,
+                ownership
+            )
+            if (ownershipScan != null) printOwnershipHints(ownershipScan)
         } finally {
             context.worktreeManager?.cleanup()
         }
 
         return null
+    }
+
+    private fun printOwnershipHints(ownershipScan: AuthorOwnershipScan) {
+        if (silent || !printsOwnershipHints) return
+        if (ownershipScan.isShallowClone()) System.err.println(AuthorOwnershipScan.SHALLOW_CLONE_WARNING)
+        System.err.println(AuthorOwnershipScan.PERSONAL_DATA_NOTE)
     }
 
     private fun resolveCommitContext(repoPath: Path): CommitAnalysisContext {

@@ -61,6 +61,24 @@ class DialogTest {
         assertThat(arguments).containsExactly(projectFolder.path, "--output-file=shop.cc.json", "--exclude=generated,vendor")
     }
 
+    @Test
+    fun `should add author ownership only when it is chosen`() {
+        // Arrange
+        mockkObject(Dialog.Companion)
+        var arguments: List<String> = emptyList()
+
+        // Act
+        testSession { terminal ->
+            val pressYes: suspend RunScope.() -> Unit = { terminal.press(Keys.LEFT, Keys.ENTER) }
+            every { Dialog.Companion.testCallback() } returnsMany
+                listOf(typeText(terminal, projectFolder.path), typeText(terminal, ""), typeText(terminal, ""), pressYes)
+            arguments = collectAnalyserArgs(this)
+        }
+
+        // Assert
+        assertThat(arguments).containsExactly(projectFolder.path, "--author-ownership")
+    }
+
     private fun typeText(terminal: InMemoryTerminal, text: String): suspend RunScope.() -> Unit = {
         terminal.type(text)
         terminal.press(Keys.ENTER)
