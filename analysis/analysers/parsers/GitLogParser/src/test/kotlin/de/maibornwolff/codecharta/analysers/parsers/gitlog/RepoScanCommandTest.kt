@@ -11,6 +11,8 @@ import org.junit.jupiter.api.TestInstance
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
+import java.io.PrintWriter
+import java.io.StringWriter
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RepoScanCommandTest {
@@ -20,6 +22,25 @@ class RepoScanCommandTest {
     @AfterEach
     fun afterTest() {
         unmockkAll()
+    }
+
+    @Test
+    fun `should refuse real names without author ownership`() {
+        // Arrange
+        val commandLine = CommandLine(RepoScanCommand())
+        val errors = StringWriter()
+        commandLine.err = PrintWriter(errors)
+        commandLine.setExecutionExceptionHandler { exception, _, _ ->
+            errors.write(exception.message.orEmpty())
+            1
+        }
+
+        // Act
+        val exitCode = commandLine.execute("--repo-path=.", "--with-author-names")
+
+        // Assert
+        Assertions.assertThat(exitCode).isNotZero()
+        Assertions.assertThat(errors.toString()).contains("--author-ownership")
     }
 
     @Test

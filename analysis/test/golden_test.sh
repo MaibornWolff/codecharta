@@ -112,6 +112,12 @@ check_gitlogparser_author_ownership() {
   if grep -q "Golden" "${ACTUAL_OWNERSHIP_FIRST}"; then
     exit_with_err "The author ownership wrote a name"
   fi
+  ACTUAL_OWNERSHIP_NAMES="${TEMP_DIR}/actual_author_ownership_names.cc.json"
+  "${CCSH}" gitlogparser repo-scan --repo-path "${OWNERSHIP_REPO}" --author-ownership --with-author-names -o "${ACTUAL_OWNERSHIP_NAMES}" --silent=true -nc
+  validate "${ACTUAL_OWNERSHIP_NAMES}"
+  if ! grep -q "Golden First" "${ACTUAL_OWNERSHIP_NAMES}"; then
+    exit_with_err "--with-author-names wrote no name"
+  fi
   for expected in \
     '"id":"154c603-author-1","name":"Author 1","members":[{"nodeId":"ed41804914e906d4","weight":0.75}]' \
     '"id":"154c603-author-2","name":"Author 2","members":[{"nodeId":"ed41804914e906d4","weight":0.25}]'; do

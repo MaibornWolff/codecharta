@@ -231,6 +231,37 @@ class AuthorOwnershipScanTest {
     }
 
     @Test
+    fun `should write no email when real names are asked for`() {
+        // Arrange
+        commitFile("a.kt", "1\n", message = "change\n\nCo-authored-by: Bob <bob@x.org>")
+
+        // Act
+        val lens = AuthorOwnershipScan(repository, withNames = true).lens()
+
+        // Assert
+        assertThat(AuthorOwnershipScan.carriesRealNames(lens)).isTrue()
+        assertThat(
+            lens.clusterings.values
+                .single()
+                .clusters
+                .map { it.name }
+        ).containsExactly("Ann", "Bob")
+        assertThat(lens.toString()).doesNotContain("@x.org")
+    }
+
+    @Test
+    fun `should not say a numbered lens carries real names`() {
+        // Arrange
+        commitFile("a.kt", "1\n")
+
+        // Act
+        val lens = AuthorOwnershipScan(repository).lens()
+
+        // Assert
+        assertThat(AuthorOwnershipScan.carriesRealNames(lens)).isFalse()
+    }
+
+    @Test
     fun `should give the same lens on two runs`() {
         // Arrange
         commitFile("a.kt", "1\n2\n")

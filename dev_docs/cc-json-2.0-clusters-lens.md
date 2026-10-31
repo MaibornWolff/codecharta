@@ -138,7 +138,10 @@ removed nodes; a cluster left without members goes too, unless a surviving clust
   `.mailmap` to both, and someone with no surviving line keeps theirs, so numbers hold as history grows.
   Changing `.mailmap` joins people and so moves the numbers after them. A shallow clone does not see the
   first commits, so its numbers are not stable, and the producer warns about it.
-- **Names never reach the file**: no name, email or per-author commit data, and no cluster `attributes`.
+- **Names stay out of the file by default**: no name, email or per-author commit data, and no cluster `attributes`.
+  `--with-author-names` opts out for names alone: the cluster `name` is then the person's name, under the clustering
+  `author-ownership-with-names` titled "Author ownership (real names)", so a merge never mixes it with numbered clusters.
+  The CLI warns last, even with `--silent`, and the Clusters tab warns whenever a loaded map holds that clustering.
   The numbers are pseudonymous, not anonymous: anyone with the repository can match them to people,
   so a map may still be personal data under GDPR.
 - **Not attributed** is what is left of a file: uncommitted lines, and all of a binary or empty file.
@@ -156,7 +159,8 @@ compare mode. It lists the clusters of one clustering, picked by `title`, flat: 
   It is labelled "share of files" for that reason, and does not read `weightBasis`, so a map without
   that metric works.
 - **"Not attributed"** is 1 minus the sum of those totals. An `overlay` has none, as its weights are never summed.
-- **Hover** lights every shown file with any share, **a click** pins it, through the kept highlight of the map.
+- **Hover** shows only that cluster's shown files, replacing whatever the kept highlight holds until it ends; **a click**
+  pins it into the kept highlight. Either greys the rest of the 3D map and limits its labels to those files.
 - **The inspector** lists the clusters a selected file belongs to, per clustering.
 - **The repository marker** is the commit prefix of the id, shown only when two repositories' clusters
   meet in one clustering.

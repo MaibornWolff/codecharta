@@ -44,6 +44,23 @@ class AuthorOwnershipLensTest {
     }
 
     @Test
+    fun `should write real names under a clustering of its own only when asked to`() {
+        // Arrange
+        val commits = listOf(commit(firstCommit, "Ann Real", "Bob Real"))
+        val blame = mapOf("a.kt" to FileBlame(mapOf(firstCommit to 1), 1))
+
+        // Act
+        val lens = AuthorOwnershipLens.of(commits, blame, withNames = true)
+
+        // Assert
+        val clustering = lens.clusterings.getValue("author-ownership-with-names")
+        assertThat(lens.clusterings.keys).containsExactly("author-ownership-with-names")
+        assertThat(clustering.title).isEqualTo("Author ownership (real names)")
+        assertThat(clustering.clusters.map { it.name }).containsExactly("Ann Real", "Bob Real")
+        assertThat(clustering.clusters.map { it.id }).containsExactly("abcdef0-author-1", "abcdef0-author-2")
+    }
+
+    @Test
     fun `should describe the clustering as weighted by lines from the git log parser`() {
         // Arrange
         val commits = listOf(commit(firstCommit, "Ann"))

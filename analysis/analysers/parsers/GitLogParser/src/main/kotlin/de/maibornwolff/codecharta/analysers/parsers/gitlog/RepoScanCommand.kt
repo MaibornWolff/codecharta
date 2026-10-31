@@ -57,6 +57,12 @@ class RepoScanCommand(private val printsOwnershipHints: Boolean = true) : Analys
     )
     private var authorOwnership = false
 
+    @CommandLine.Option(
+        names = [AuthorOwnershipScan.NAMES_FLAG],
+        description = ["write the real names of the authors into the map instead of numbers (personal data, needs --author-ownership)"]
+    )
+    private var withAuthorNames = false
+
     override val name = NAME
     override val description = DESCRIPTION
 
@@ -75,6 +81,8 @@ class RepoScanCommand(private val printsOwnershipHints: Boolean = true) : Analys
                 )
         ) { "Input invalid file for GitRepoScan, stopping execution..." }
 
+        require(authorOwnership || !withAuthorNames) { AuthorOwnershipScan.NEEDS_OWNERSHIP_HINT }
+
         val repoPath = Paths.get(repoPathName!!).normalize().toAbsolutePath()
         val context = resolveCommitContext(repoPath)
 
@@ -84,7 +92,7 @@ class RepoScanCommand(private val printsOwnershipHints: Boolean = true) : Analys
             if (!silent) println("Creating git-ls file...")
             val gitLsFile = createGitLsFile(context.inputDir.toPath())
 
-            val ownershipScan = AuthorOwnershipScan(context.inputDir).takeIf { authorOwnership }
+            val ownershipScan = AuthorOwnershipScan(context.inputDir, withAuthorNames).takeIf { authorOwnership }
             if (!silent && ownershipScan != null) println("Blaming files...")
             val ownership = ownershipScan?.lens() ?: ClustersLens()
 
@@ -107,9 +115,12 @@ class RepoScanCommand(private val printsOwnershipHints: Boolean = true) : Analys
     }
 
     private fun printOwnershipHints(ownershipScan: AuthorOwnershipScan) {
-        if (silent || !printsOwnershipHints) return
+        if (!printsOwnershipHints) return
+        // Not even --silent keeps this back: nobody may end up with names in a map without having been told
+        if (withAuthorNames) System.err.println(AuthorOwnershipScan.REAL_NAMES_WARNING)
+        if (silent) return
         if (ownershipScan.isShallowClone()) System.err.println(AuthorOwnershipScan.SHALLOW_CLONE_WARNING)
-        System.err.println(AuthorOwnershipScan.PERSONAL_DATA_NOTE)
+        if (!withAuthorNames) System.err.println(AuthorOwnershipScan.PERSONAL_DATA_NOTE)
     }
 
     private fun resolveCommitContext(repoPath: Path): CommitAnalysisContext {

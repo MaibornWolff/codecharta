@@ -12,10 +12,12 @@ import java.math.BigInteger
 /** A commit's author and co-authors, the author first. */
 internal data class CommitPeople(val hash: String, val people: List<String>)
 
-/** Writes authors by number only: no name, email or per-author commit data may reach the map. */
+/** Writes authors by number, unless real names were asked for; an email or per-author commit data never reaches the map. */
 internal object AuthorOwnershipLens {
     private const val CLUSTERING_KEY = "author-ownership"
     private const val CLUSTERING_TITLE = "Author ownership"
+    const val CLUSTERING_KEY_WITH_NAMES = "author-ownership-with-names"
+    private const val CLUSTERING_TITLE_WITH_NAMES = "Author ownership (real names)"
     private const val WEIGHT_BASIS = "loc"
     private const val ANALYZER = "gitlogparser"
     private const val REPOSITORY_MARKER_LENGTH = 7
@@ -25,7 +27,7 @@ internal object AuthorOwnershipLens {
     private val WEIGHT_STEPS_PER_UNIT = BigInteger.valueOf(10_000L)
 
     /** [commitsOldestFirst] holds at least the commits of the blamed lines; a line of any other commit stays unattributed. */
-    fun of(commitsOldestFirst: List<CommitPeople>, blameByPath: Map<String, FileBlame>): ClustersLens {
+    fun of(commitsOldestFirst: List<CommitPeople>, blameByPath: Map<String, FileBlame>, withNames: Boolean = false): ClustersLens {
         val firstCommitHash = commitsOldestFirst.firstOrNull()?.hash ?: return ClustersLens()
         val peopleByCommit = commitsOldestFirst.associate { it.hash to it.people }
         val membersByPerson = HashMap<String, MutableList<ClusterMember>>()
@@ -36,12 +38,15 @@ internal object AuthorOwnershipLens {
             }
         }
         val clusters = numbered(commitsOldestFirst).mapNotNull { (person, number) ->
-            membersByPerson[person]?.let { members -> clusterOf(firstCommitHash, number, members) }
+            membersByPerson[person]?.let { members ->
+                clusterOf(firstCommitHash, number, if (withNames) person else "Author $number", members)
+            }
         }
         if (clusters.isEmpty()) return ClustersLens()
-        return ClustersLens(
-            mapOf(CLUSTERING_KEY to Clustering(CLUSTERING_TITLE, ClusterMembership.WEIGHTED, listOf(ANALYZER), clusters, WEIGHT_BASIS))
-        )
+        // A key of its own, so that merging a named map with a numbered one never mixes the two in one list
+        val key = if (withNames) CLUSTERING_KEY_WITH_NAMES else CLUSTERING_KEY
+        val title = if (withNames) CLUSTERING_TITLE_WITH_NAMES else CLUSTERING_TITLE
+        return ClustersLens(mapOf(key to Clustering(title, ClusterMembership.WEIGHTED, listOf(ANALYZER), clusters, WEIGHT_BASIS)))
     }
 
     // A commit's lines are split equally among its people. Counting in parts of a line every commit's split divides
@@ -68,9 +73,9 @@ internal object AuthorOwnershipLens {
         .distinct()
         .mapIndexed { index, person -> person to index + 1 }
 
-    private fun clusterOf(firstCommitHash: String, number: Int, members: List<ClusterMember>): Cluster = Cluster(
+    private fun clusterOf(firstCommitHash: String, number: Int, name: String, members: List<ClusterMember>): Cluster = Cluster(
         id = "${firstCommitHash.take(REPOSITORY_MARKER_LENGTH)}-author-$number",
-        name = "Author $number",
+        name = name,
         members = members.sortedBy { it.nodeId }
     )
 }

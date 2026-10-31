@@ -43,7 +43,10 @@ class HistoryFinder(private val svnLogWriter: SvnLogWriter, private val homeFold
     private fun gitHistory(request: AnalyseRequest): ConfiguredAnalyser = ConfiguredAnalyser(
         RepoScanCommand(printsOwnershipHints = false),
         listOf("--repo-path", request.analysedFolder.path) +
-            listOfNotNull(AuthorOwnershipScan.FLAG.takeIf { request.authorOwnership }),
+            listOfNotNull(
+                AuthorOwnershipScan.FLAG.takeIf { request.authorOwnership },
+                AuthorOwnershipScan.NAMES_FLAG.takeIf { request.withAuthorNames }
+            ),
         readsProjectFolder = false
     )
 

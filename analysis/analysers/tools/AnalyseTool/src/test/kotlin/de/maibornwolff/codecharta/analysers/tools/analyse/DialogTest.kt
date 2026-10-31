@@ -71,12 +71,36 @@ class DialogTest {
         testSession { terminal ->
             val pressYes: suspend RunScope.() -> Unit = { terminal.press(Keys.LEFT, Keys.ENTER) }
             every { Dialog.Companion.testCallback() } returnsMany
-                listOf(typeText(terminal, projectFolder.path), typeText(terminal, ""), typeText(terminal, ""), pressYes)
+                listOf(
+                    typeText(terminal, projectFolder.path),
+                    typeText(terminal, ""),
+                    typeText(terminal, ""),
+                    pressYes,
+                    typeText(terminal, "")
+                )
             arguments = collectAnalyserArgs(this)
         }
 
         // Assert
         assertThat(arguments).containsExactly(projectFolder.path, "--author-ownership")
+    }
+
+    @Test
+    fun `should add real names only when they are chosen as well`() {
+        // Arrange
+        mockkObject(Dialog.Companion)
+        var arguments: List<String> = emptyList()
+
+        // Act
+        testSession { terminal ->
+            val pressYes: suspend RunScope.() -> Unit = { terminal.press(Keys.LEFT, Keys.ENTER) }
+            every { Dialog.Companion.testCallback() } returnsMany
+                listOf(typeText(terminal, projectFolder.path), typeText(terminal, ""), typeText(terminal, ""), pressYes, pressYes)
+            arguments = collectAnalyserArgs(this)
+        }
+
+        // Assert
+        assertThat(arguments).containsExactly(projectFolder.path, "--author-ownership", "--with-author-names")
     }
 
     private fun typeText(terminal: InMemoryTerminal, text: String): suspend RunScope.() -> Unit = {

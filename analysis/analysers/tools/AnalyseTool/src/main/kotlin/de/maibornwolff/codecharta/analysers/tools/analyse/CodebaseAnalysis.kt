@@ -32,7 +32,7 @@ class CodebaseAnalysis(
             console.printSeparated("Analysis done: ${countedFiles(mapped.project)} with $sources")
             console.println("Map: ${request.outputFile.path}")
             printSkipped(selection.skipped + inHistoryOrder(search.skipped + mapped.failedHistories))
-            if (mapped.project.lenses.clusters.carriesData) printOwnershipHints(request)
+            if (mapped.project.lenses.clusters.carriesData) printOwnershipHints(request, mapped.project)
         } finally {
             workFolder.deleteRecursively()
         }
@@ -99,9 +99,10 @@ class CodebaseAnalysis(
         skipped.forEach { console.println("  ${it.name}: ${it.reason}") }
     }
 
-    private fun printOwnershipHints(request: AnalyseRequest) {
+    private fun printOwnershipHints(request: AnalyseRequest, project: Project) {
         if (AuthorOwnershipScan(request.analysedFolder).isShallowClone()) console.println(AuthorOwnershipScan.SHALLOW_CLONE_WARNING)
-        console.println(AuthorOwnershipScan.PERSONAL_DATA_NOTE)
+        val carriesRealNames = AuthorOwnershipScan.carriesRealNames(project.lenses.clusters)
+        console.println(if (carriesRealNames) AuthorOwnershipScan.REAL_NAMES_WARNING else AuthorOwnershipScan.PERSONAL_DATA_NOTE)
     }
 
     private fun countedFiles(project: Project): String {
