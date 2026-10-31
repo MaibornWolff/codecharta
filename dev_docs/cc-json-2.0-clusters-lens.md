@@ -127,14 +127,17 @@ removed nodes; a cluster left without members goes too, unless a surviving clust
 } } }
 ```
 
-- **A weight** is the share of the lines in the file today that the author last changed, from
-  `git blame -w -M`, honouring `.git-blame-ignore-revs`. It is rounded down to 4 decimals, so a file's
-  weights sum to at most 1, and a share too small to show at that precision is left out.
+- **A weight** is the share of the lines in the file today that the person last changed, from
+  `git blame -w -M`, honouring `.git-blame-ignore-revs`. A line counts for everyone who made its commit:
+  it is split equally among the author and each `Co-authored-by`, bots and AI included. The weight is
+  rounded down to 4 decimals, so a file's weights sum to at most 1, and a share too small to show at
+  that precision is left out.
 - **The id** starts with the first 7 characters of the repository's first commit, then the author's
   number, so the clusters of two repositories stay apart when their maps are merged.
-- **The number** counts authors in the order of their first commit, after applying `.mailmap`, and
-  an author with no surviving line keeps theirs, so numbers hold as history grows. A shallow clone
-  does not see the first commits, so its numbers are not stable, and the producer warns about it.
+- **The number** counts people in the order of their first commit, as author or co-author, after applying
+  `.mailmap` to both, and someone with no surviving line keeps theirs, so numbers hold as history grows.
+  Changing `.mailmap` joins people and so moves the numbers after them. A shallow clone does not see the
+  first commits, so its numbers are not stable, and the producer warns about it.
 - **Names never reach the file**: no name, email or per-author commit data, and no cluster `attributes`.
   The numbers are pseudonymous, not anonymous: anyone with the repository can match them to people,
   so a map may still be personal data under GDPR.

@@ -85,9 +85,10 @@ The parser also writes one edge metric between files:
 With `--add-author`, every file also gets the list of its authors' names.
 
 With `--author-ownership`, `repo-scan` also records who owns each file, by number: the share of the lines in the file
-today that each author last changed, from `git blame`. The map holds no names or emails. Authors are numbered by their
-first commit after applying `.mailmap`, so numbers stay the same as history grows, except in a shallow clone, which the
-parser warns about. Uncommitted lines and binary files stay unattributed, and `.git-blame-ignore-revs` is honoured. The
+today that each person last changed, from `git blame`. A line is split equally among its commit's author and everyone in
+a `Co-authored-by` trailer, bots and AI included. The map holds no names or emails. People are numbered by their first
+commit after applying `.mailmap`, so numbers stay the same as history grows, except in a shallow clone, which the parser
+warns about. Adding to `.mailmap` joins spellings of one person and moves the numbers after them. Uncommitted lines and binary files stay unattributed, and `.git-blame-ignore-revs` is honoured. The
 scan blames every file, so it takes longer. `log-scan` has no repository to blame and rejects the flag.
 
 The numbers are pseudonymous, not anonymous: anyone with the repository can match them to people, so the map may

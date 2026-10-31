@@ -7,26 +7,41 @@ import java.io.InputStream
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
-/** Measures who last changed the lines each file holds today, and numbers the authors by their first commit. */
+/** Measures who made the commits that last changed the lines each file holds today, and numbers them by their first commit. */
 class AuthorOwnershipScan(private val repositoryFolder: File) {
-    fun lens(): ClustersLens {
-        val commits = commitsOldestFirst()
-        val firstCommitHash = commits.firstOrNull()?.hash ?: return ClustersLens()
-        return AuthorOwnershipLens.of(firstCommitHash, commits.map { it.author }.distinct(), blameByPath())
-    }
+    fun lens(): ClustersLens = AuthorOwnershipLens.of(commitsOldestFirst(), blameByPath())
 
     fun isShallowClone(): Boolean = gitOrNull("rev-parse", "--is-shallow-repository") { it.bufferedReader().readText().trim() } == "true"
 
-    private class CommitAuthor(val hash: String, val author: String)
-
-    private fun commitsOldestFirst(): List<CommitAuthor> {
-        val arguments = arrayOf("-c", "i18n.logOutputEncoding=UTF-8", "log", "--reverse", "--topo-order", "--format=%H%x00%aN")
-        return gitOrNull(*arguments) { output ->
-            output.bufferedReader(Charsets.UTF_8).useLines { lines ->
-                lines.map { it.split(NUL) }.map { (hash, author) -> CommitAuthor(hash, author) }.toList()
-            }
+    private fun commitsOldestFirst(): List<CommitPeople> {
+        val format = "--format=%H%x00%aN%x00%(trailers:key=Co-authored-by,valueonly,separator=%x01)"
+        val rows = gitOrNull("-c", "i18n.logOutputEncoding=UTF-8", "log", "--reverse", "--topo-order", format) { output ->
+            output.bufferedReader(Charsets.UTF_8).useLines { lines -> lines.map { it.split(NUL) }.toList() }
         }.orEmpty()
+        val nameByCoAuthor = mappedNames(rows.flatMap { coAuthorsIn(it) }.distinct())
+        return rows.map { row ->
+            CommitPeople(row[0], (listOf(row[1]) + coAuthorsIn(row).map { nameByCoAuthor.getValue(it) }).distinct())
+        }
     }
+
+    private fun coAuthorsIn(logRow: List<String>): List<String> =
+        logRow[2].split(TRAILER_SEPARATOR).map { it.trim() }.filter { it.isNotEmpty() }
+
+    // Git applies the mailmap to a commit's author but not to its trailers, so the co-authors are mapped separately
+    private fun mappedNames(coAuthors: List<String>): Map<String, String> {
+        val withEmail = coAuthors.filter { CONTACT_WITH_EMAIL.matches(it) }
+        val input = File.createTempFile("co-authors", ".txt")
+        try {
+            input.writeText(withEmail.joinToString("\n", postfix = "\n"), Charsets.UTF_8)
+            val mapped = gitOrNull("check-mailmap", "--stdin", input = input) { it.bufferedReader(Charsets.UTF_8).readLines() }
+            val contacts = if (mapped?.size == withEmail.size) withEmail.zip(mapped).toMap() else emptyMap()
+            return coAuthors.associateWith { nameOf(contacts[it] ?: it) }
+        } finally {
+            input.delete()
+        }
+    }
+
+    private fun nameOf(contact: String): String = contact.substringBefore(EMAIL_START).trim()
 
     private fun blameByPath(): Map<String, FileBlame> {
         val binaryPaths = binaryPaths()
@@ -68,16 +83,16 @@ class AuthorOwnershipScan(private val repositoryFolder: File) {
     private fun blame(path: String): FileBlame? {
         val ignoreRevisions =
             if (File(repositoryFolder, IGNORE_REVISIONS_FILE).isFile) arrayOf("--ignore-revs-file=$IGNORE_REVISIONS_FILE") else emptyArray()
-        val arguments = arrayOf("blame", "--line-porcelain", "-w", "-M", "--encoding=UTF-8") + ignoreRevisions + arrayOf("--", path)
+        val arguments = arrayOf("blame", "--line-porcelain", "-w", "-M") + ignoreRevisions + arrayOf("--", path)
         val blame = gitOrNull(*arguments, read = BlameOutput::parse)
         if (blame == null) Logger.warn { "Could not blame $path, so its lines stay without an author." }
         return blame?.takeIf { it.totalLines > 0 }
     }
 
-    private fun <T> gitOrNull(vararg arguments: String, read: (InputStream) -> T): T? {
+    private fun <T> gitOrNull(vararg arguments: String, input: File = EMPTY_INPUT, read: (InputStream) -> T): T? {
         val process = ProcessBuilder(listOf("git") + arguments)
             .directory(repositoryFolder)
-            .redirectInput(ProcessBuilder.Redirect.from(EMPTY_INPUT))
+            .redirectInput(ProcessBuilder.Redirect.from(input))
             .redirectError(ProcessBuilder.Redirect.DISCARD)
             .start()
         val result = process.inputStream.use(read)
@@ -96,6 +111,9 @@ class AuthorOwnershipScan(private val repositoryFolder: File) {
 
         private const val NUL = "\u0000"
         private const val TAB = "\t"
+        private const val TRAILER_SEPARATOR = "\u0001"
+        private const val EMAIL_START = "<"
+        private val CONTACT_WITH_EMAIL = Regex(".+<.+>")
         private const val BLOB_TYPE = "blob"
         private const val BINARY_NUMSTAT_PREFIX = "-\t-\t"
         private const val IGNORE_REVISIONS_FILE = ".git-blame-ignore-revs"
