@@ -122,6 +122,34 @@ describe("ClusterExplorerComponent", () => {
         highlight.pinnedClusterId = () => null
     })
 
+    it("should warn only when the clustering shows real names", async () => {
+        // Arrange
+        const withNames: ClusteringsData = { "author-ownership-with-names": AUTHORS["author-ownership"] }
+
+        // Act
+        await setup(withNames)
+
+        // Assert
+        expect(screen.getByTestId("cluster-explorer-real-names").textContent).toContain("real author names")
+    })
+
+    it("should warn while a numbered clustering is open if the map also holds real names", async () => {
+        // Arrange & Act
+        await setup({ ...AUTHORS, "author-ownership-with-names": { ...AUTHORS["author-ownership"], title: "Z real names" } })
+
+        // Assert
+        expect((screen.getByTestId("cluster-explorer-picker") as HTMLSelectElement).value).toBe("author-ownership")
+        expect(screen.getByTestId("cluster-explorer-real-names")).toBeTruthy()
+    })
+
+    it("should not warn about numbered authors", async () => {
+        // Arrange & Act
+        await setup(AUTHORS)
+
+        // Assert
+        expect(screen.queryByTestId("cluster-explorer-real-names")).toBeNull()
+    })
+
     it("should end a running hover when it goes away", async () => {
         // Arrange
         const { fixture } = await setup(AUTHORS)

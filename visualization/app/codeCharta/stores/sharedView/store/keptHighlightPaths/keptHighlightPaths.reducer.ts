@@ -1,6 +1,6 @@
 import { createReducer, on } from "@ngrx/store"
 import { CcState } from "../../../../model/codeCharta.model"
-import { clearKeptHighlight, keepHighlight, removeKeptHighlight } from "./keptHighlightPaths.actions"
+import { clearKeptHighlight, keepHighlight, removeKeptHighlight, replaceKeptHighlight } from "./keptHighlightPaths.actions"
 
 export const defaultKeptHighlightPaths: CcState["sharedView"]["keptHighlightPaths"] = []
 export const keptHighlightPaths = createReducer(
@@ -10,5 +10,6 @@ export const keptHighlightPaths = createReducer(
         const removedPaths = new Set(paths)
         return state.filter(path => !removedPaths.has(path))
     }),
+    on(replaceKeptHighlight, (_state, { paths }) => paths),
     on(clearKeptHighlight, () => defaultKeptHighlightPaths)
 )

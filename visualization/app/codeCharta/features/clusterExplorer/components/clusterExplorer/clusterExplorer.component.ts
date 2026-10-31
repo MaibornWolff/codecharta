@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { formatClusterShare } from "../../../../lenses/clusters/clusters.facade"
+import { formatClusterShare, showsRealNames } from "../../../../lenses/clusters/clusters.facade"
 import { ClusterShareRow, clusterSharesOf } from "../../selectors/clusterShares"
 import { ClusterHighlightService } from "../../services/clusterHighlight.service"
 import { ClusterExplorerReadStore } from "../../stores/clusterExplorer.read.store"
@@ -32,6 +32,8 @@ export class ClusterExplorerComponent implements OnDestroy {
         const clustering = this.clusterings()[this.activeKey()]
         return clustering ? clusterSharesOf(clustering, this.shownFilePaths()) : { rows: [], notAttributedShare: null }
     })
+    // Whichever clustering is open: the map holds the names either way.
+    readonly showsRealNames = computed(() => Object.keys(this.clusterings()).some(showsRealNames))
     readonly pinnedClusterId = this.highlight.pinnedClusterId
     readonly formatShare = formatClusterShare
 
