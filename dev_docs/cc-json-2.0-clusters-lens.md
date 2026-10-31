@@ -1,7 +1,7 @@
 # cc.json 2.0 — the `clusters` lens
 
-> Status: **designed, not implemented.** This document fixes the format definition so 2.0 can ship
-> with the correct `clusters` shape reserved, without any producer or visualization support yet.
+> Status: **implemented.** `gitlogparser` produces author ownership, and the visualization's metrics
+> view shows any clustering in a Clusters tab of the explorer and a section of the inspector.
 > Design discussion: [#4411](https://github.com/MaibornWolff/codecharta/issues/4411).
 > Format context: [cc-json-2.0-format.md](cc-json-2.0-format.md).
 
@@ -18,12 +18,8 @@ clusters become a **top-level lens** (`lenses.clusters`), sibling to `dependency
 - The move is free **only before release**: nothing produces `metrics.clusters` yet. After release
   it would be a breaking change under the additive-only versioning rules.
 
-Until typed support lands, the `clusters` lens rides the existing unknown-lens passthrough
-(`opaqueLenses`), so 2.0 readers already preserve it on round-trip. One caveat, general to every
-opaque lens rather than specific to this one: the writer does not emit explicit JSON nulls, so a
-`"parentId": null` written by a producer comes back out **absent**. Nothing is lost — the schema
-treats null and omitted alike — but omit optional nulls rather than writing them if you want a
-byte-identical round-trip.
+The analysis model reads the lens as `ClustersLens` and carries it through every filter. A lens that
+carries no cluster is left out on write, so its key on the wire always means data.
 
 ## Shape
 
@@ -35,7 +31,7 @@ byte-identical round-trip.
         "title": "Author ownership",
         "membership": "weighted",
         "weightBasis": "rloc",
-        "analyzers": ["gitlogparser"],
+        "analyzers": ["some-producer"],
         "clusters": [
           {
             "id": "author-a",
@@ -108,19 +104,59 @@ union of members by `nodeId` (conflicting weights: keep the reference side, warn
 attribute conflicts). `analyzers` merge by union. Unresolvable member ids are dropped with a
 warning.
 
-## Producers (future, out of scope for 2.0)
+A filter that re-paths the tree (`ccsh modify`, `merge --large`) re-keys the members and drops those of
+removed nodes; a cluster left without members goes too, unless a surviving cluster names it as its parent.
 
-- `gitlogparser`: author ownership (`weighted`, basis = surviving lines or commits — the
-  historical-vs-current question is just two clusterings with different `weightBasis`).
-- A cluster filter running community detection (Louvain/Leiden) over co-change data or the
-  `dependency` lens — clusters as a *derived* lens in the pipe chain.
-- Issue/ticket importer (`overlay`), coverage importer (one cluster per suite, `overlay`).
+`ccsh check` fails on a member with an unknown node id and warns when the weights of a node in a
+`weighted` clustering sum to more than 1.
 
-## Visualization (future, out of scope for 2.0)
+## Producer: author ownership
 
-- **Phase 1 — color/highlight dimension**: "color by cluster" with a categorical palette; hovering
-  a cluster highlights its member buildings (same mechanism as edge-metric hover). Overlaps render
-  as the dominant cluster with the per-node breakdown in the attribute sidebar. Aggregate views
-  (pie chart / ownership share) are pure derived views over `weight × weightBasis`.
-- **Phase 2 — alternate layout**: re-run the treemap grouped by the cluster forest instead of the
-  folder tree (the temporal-belonging payoff). Much larger change; gated on phase 1 learnings.
+`ccsh gitlogparser repo-scan --author-ownership` and `ccsh analyse --author-ownership` write:
+
+```json
+"clusters": { "clusterings": { "author-ownership": {
+  "title": "Author ownership",
+  "membership": "weighted",
+  "weightBasis": "loc",
+  "analyzers": ["gitlogparser"],
+  "clusters": [
+    { "id": "a1b2c3d-author-3", "name": "Author 3",
+      "members": [ { "nodeId": "<file node id>", "weight": 0.62 } ] }
+  ]
+} } }
+```
+
+- **A weight** is the share of the lines in the file today that the author last changed, from
+  `git blame -w -M`, honouring `.git-blame-ignore-revs`. It is rounded down to 4 decimals, so a file's
+  weights sum to at most 1, and a share too small to show at that precision is left out.
+- **The id** starts with the first 7 characters of the repository's first commit, then the author's
+  number, so the clusters of two repositories stay apart when their maps are merged.
+- **The number** counts authors in the order of their first commit, after applying `.mailmap`, and
+  an author with no surviving line keeps theirs, so numbers hold as history grows. A shallow clone
+  does not see the first commits, so its numbers are not stable, and the producer warns about it.
+- **Names never reach the file**: no name, email or per-author commit data, and no cluster `attributes`.
+  The numbers are pseudonymous, not anonymous: anyone with the repository can match them to people,
+  so a map may still be personal data under GDPR.
+- **Not attributed** is what is left of a file: uncommitted lines, and all of a binary or empty file.
+
+Further producers could be a cluster filter running community detection over co-change data, an
+issue importer or a coverage importer, the last two as `overlay`.
+
+## Visualization
+
+The metrics view offers a Clusters tab in the explorer while a loaded file carries clusters, outside
+compare mode. It lists the clusters of one clustering, picked by `title`, flat: `parentId` is not drawn yet.
+
+- **The total** of a cluster is the sum of its weights over the files shown, divided by the number of
+  files shown, so exclusions and folder focus apply and each file counts the same whatever its size.
+  It is labelled "share of files" for that reason, and does not read `weightBasis`, so a map without
+  that metric works.
+- **"Not attributed"** is 1 minus the sum of those totals. An `overlay` has none, as its weights are never summed.
+- **Hover** lights every shown file with any share, **a click** pins it, through the kept highlight of the map.
+- **The inspector** lists the clusters a selected file belongs to, per clustering.
+- **The repository marker** is the commit prefix of the id, shown only when two repositories' clusters
+  meet in one clustering.
+
+The lens stays on the loaded file; anything merged across files is derived in a selector, following
+[LENS_DATA_RULES.md](../visualization/LENS_DATA_RULES.md).
