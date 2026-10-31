@@ -45,9 +45,9 @@ backend and a frontend built separately, or a coverage report rooted by package)
   project root `/` as `/root` for compatibility with the legacy 1.x format: `/hello.ts` appears as
   `/root/hello.ts`. The JSON root node has `"name": "root"`, with project files and folders in its
   `children`; the project display name belongs in `meta.projectName`.
-- **`lenses`** are additive overlays joined to `files` by `id`. `metrics`, `dependency` and `domain`
-  are concrete; `clusters` is optional and fully defined by the schema but has no producer or
-  visualization support yet — see [the `clusters` lens](cc-json-2.0-clusters-lens.md) for its full
+- **`lenses`** are additive overlays joined to `files` by `id`. `metrics`, `dependency`, `domain` and
+  `clusters` are concrete; `clusters` is optional, produced by `gitlogparser` for author ownership and shown by
+  the metrics view — see [the `clusters` lens](cc-json-2.0-clusters-lens.md) for its full
   definition and merge semantics; `dependency` carries the graph in both projections — `edges` between node ids
   plus an optional `nodes` map giving each file and folder the `level` it sits on, and the logical layer
   (`namespaces`, `leaves`, `leafEdges`), whose declarations are grouped under the id of their file node (see

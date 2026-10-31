@@ -20,7 +20,23 @@ its ⋮ menu, the sort control and the tree. Each row shows its share of the are
 
 Every [view](/docs/visualization/user-controls/views) has its own Explorer with its own search, sort order and width.
 The Dependencies view has no **FLATTENED** counter, and the
-[Domain view](/docs/visualization/user-controls/domain-view) switches its Explorer between files and words.
+[Domain view](/docs/visualization/user-controls/domain-view) switches its Explorer between files and words. The
+Metric view adds a [Clusters](#clusters) tab when a loaded map carries clusters.
+
+## Clusters
+
+A map made with [`--author-ownership`](/docs/parser/git-log) or another producer of clusters has a **Clusters** tab, except while [comparing](/docs/visualization/user-controls/compare) two maps. It lists
+the clusters of one clustering; pick another by its title if the map has several.
+
+- Each row shows the cluster's **share of files**: every file shown on the map counts the same, whatever its size, and
+  excluding files or focusing a folder changes the shares. A 5-line file counts as much as a 5,000-line one.
+- **Not attributed** is the share nobody holds, such as binary files and uncommitted lines.
+- Hover a row to light every shown file with any share on the map. Click it to keep them lit; click again to let go.
+- Authors appear as numbers, such as **Author 3**. If the map joins two repositories, each row also shows a short
+  marker for its repository, because their numbers count separately.
+
+Author numbers are pseudonymous: anyone with the repository can match them to people, so such a map may still be
+personal data under GDPR.
 
 ## Searching
 

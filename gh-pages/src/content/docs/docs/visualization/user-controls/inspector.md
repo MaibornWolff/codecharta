@@ -49,6 +49,11 @@ The **map** / **range** toggle changes the small bar under each value:
 The values stay the same; only the bars change. Their color follows the direction of the metric: greener is better,
 redder is worse.
 
+## Clusters
+
+If the map carries [clusters](/docs/visualization/user-controls/explorer#clusters), a selected file also lists the
+clusters it belongs to with their share of the file, and what is not attributed.
+
 ## In Compare
 
 In [Compare](/docs/visualization/user-controls/compare) each value comes with its change, such as `Δ-162`, in the delta

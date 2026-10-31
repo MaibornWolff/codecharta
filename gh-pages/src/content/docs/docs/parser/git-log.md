@@ -31,6 +31,7 @@ and a file list you created.
 | `log-scan`                           | use log-scan mode - generates cc.json from a given git-log file                     |
 | `repo-scan`                          | use repo-scan mode - generates cc.json from an automatically generated git-log file |
 | `--add-author`                       | add an array of authors to every file                                               |
+| `--author-ownership`                 | add each author's share of each file by number, from `git blame` (repo-scan only)    |
 | `--commit=<ref>`                     | analyze the repository at a specific git commit, tag, branch, or date expression (creates a temporary worktree, repo-scan only). See [Commit-Based Analysis](/docs/analysis/commit-analysis) |
 | `--git-log=FILE`                     | git-log file to parse (log-scan only, required)                                     |
 | `-h, --help`                         | displays help and exits                                                             |
@@ -82,6 +83,15 @@ The parser also writes one edge metric between files:
 | `temporal_coupling` | The degree of temporal coupling between two files (>=35%) |
 
 With `--add-author`, every file also gets the list of its authors' names.
+
+With `--author-ownership`, `repo-scan` also records who owns each file, by number: the share of the lines in the file
+today that each author last changed, from `git blame`. The map holds no names or emails. Authors are numbered by their
+first commit after applying `.mailmap`, so numbers stay the same as history grows, except in a shallow clone, which the
+parser warns about. Uncommitted lines and binary files stay unattributed, and `.git-blame-ignore-revs` is honoured. The
+scan blames every file, so it takes longer. `log-scan` has no repository to blame and rejects the flag.
+
+The numbers are pseudonymous, not anonymous: anyone with the repository can match them to people, so the map may
+still be personal data under GDPR. Treat and share it accordingly.
 
 ## Scan a repository with repo-scan
 

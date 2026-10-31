@@ -38,6 +38,7 @@ back through it.
 | `-e, --exclude=<patterns>` | comma-separated regex patterns of files and folders that every code parser skips    |
 | `--without=NAME[,NAME...]` | parsers or histories to leave out, such as `--without=dependencyparser,svn`         |
 | `--local-changes`          | maps only the files that differ from the remote tracking branch                     |
+| `--author-ownership`       | adds each author's share of each file by number, from `git blame`                   |
 | `--commit=REF`             | maps the codebase at a git commit, tag, branch or date                              |
 | `-p, --parallel`           | runs the analysers at the same time                                                 |
 | `-nc, --not-compressed`    | writes the map uncompressed                                                         |
@@ -59,6 +60,15 @@ at that commit, the svn history is left out, and the map name starts with the sh
 `0907bc8.shop.cc.json.gz`.
 
 The two options cannot be combined.
+
+## Author ownership
+
+`--author-ownership` adds who owns each file to the map, as described in the
+[Git Log Parser](/docs/parser/git-log), and the [Explorer](/docs/visualization/user-controls/explorer#clusters) shows it.
+It needs the git history, so it cannot be combined with `--without=git`.
+
+The numbers are pseudonymous, not anonymous: anyone with the repository can match them to people, so the map may
+still be personal data under GDPR. Treat and share it accordingly.
 
 ## What is not in the map
 
