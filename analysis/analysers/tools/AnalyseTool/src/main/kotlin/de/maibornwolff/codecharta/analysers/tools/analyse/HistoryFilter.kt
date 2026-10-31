@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.nodeIdsOf
 
 /** Keeps only the history of the files the code parsers mapped, so excluded, ignored and binary files stay out. */
 object HistoryFilter {
@@ -12,7 +13,8 @@ object HistoryFilter {
         val root = keptNode(history.rootNode, emptyList(), codeFiles) ?: Node(history.rootNode.name, NodeType.Folder)
         val dependency = history.lenses.dependency
         val edges = dependency.edges.filter { isCodeFile(it.fromNodeName, codeFiles) && isCodeFile(it.toNodeName, codeFiles) }
-        val lenses = history.lenses.copy(dependency = dependency.copy(edges = edges))
+        val clusters = history.lenses.clusters.keepingMembersOf(nodeIdsOf(root))
+        val lenses = history.lenses.copy(dependency = dependency.copy(edges = edges), clusters = clusters)
         return Project(history.projectName, listOf(root), history.apiVersion, lenses, history.blacklist, history.commitHash)
     }
 

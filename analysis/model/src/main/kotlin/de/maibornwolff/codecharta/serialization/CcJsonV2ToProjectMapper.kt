@@ -1,5 +1,10 @@
 package de.maibornwolff.codecharta.serialization
 
+import de.maibornwolff.codecharta.model.Cluster
+import de.maibornwolff.codecharta.model.ClusterMember
+import de.maibornwolff.codecharta.model.ClusterMembership
+import de.maibornwolff.codecharta.model.Clustering
+import de.maibornwolff.codecharta.model.ClustersLens
 import de.maibornwolff.codecharta.model.DependencyLeaf
 import de.maibornwolff.codecharta.model.DependencyLens
 import de.maibornwolff.codecharta.model.DependencyNode
@@ -12,6 +17,8 @@ import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.dto.CcJsonV2
+import de.maibornwolff.codecharta.serialization.dto.ClusterDto
+import de.maibornwolff.codecharta.serialization.dto.ClusteringDto
 import de.maibornwolff.codecharta.serialization.dto.DependencyLeafDto
 import de.maibornwolff.codecharta.serialization.dto.FileDto
 import de.maibornwolff.codecharta.serialization.dto.LeafEdgeDto
@@ -62,6 +69,7 @@ object CcJsonV2ToProjectMapper {
                         leafEdges = resolveLeafEdges(dto, fileNodeIds, leaves)
                     ),
                 domain = dto.lenses.domain,
+                clusters = resolveClusters(dto, idToEndpoint.keys),
                 opaqueLenses = dto.lenses.opaqueLenses
             )
 
@@ -73,6 +81,40 @@ object CcJsonV2ToProjectMapper {
             commitHash = dto.meta.commitHash
         )
     }
+
+    private fun resolveClusters(dto: CcJsonV2, knownNodeIds: Set<String>): ClustersLens {
+        val declared = dto.lenses.clusters?.clusterings ?: return ClustersLens()
+        return ClustersLens(
+            declared.entries
+                .mapNotNull { (key, clustering) -> clustering.toModel(key)?.let { key to it } }
+                .toMap()
+        ).droppingUnresolvedMembers(knownNodeIds)
+    }
+
+    private fun ClusteringDto.toModel(key: String): Clustering? {
+        val knownMembership = ClusterMembership.fromWireName(membership)
+        if (knownMembership == null) {
+            Logger.warn { "Dropping clustering '$key' with unknown membership: $membership" }
+            return null
+        }
+        return Clustering(
+            title = title ?: key,
+            membership = knownMembership,
+            analyzers = analyzers.orEmpty(),
+            clusters = clusters.orEmpty().map { it.toModel() },
+            weightBasis = weightBasis,
+            attributeTypes = attributeTypes.orEmpty(),
+            attributeDescriptors = attributeDescriptors.orEmpty()
+        )
+    }
+
+    private fun ClusterDto.toModel(): Cluster = Cluster(
+        id = id,
+        name = name ?: id,
+        members = members.orEmpty().map { ClusterMember(it.nodeId, it.weight) },
+        parentId = parentId,
+        attributes = attributes.orEmpty()
+    )
 
     // Keys are node ids and stay node ids in the model; an entry whose node the file does not declare
     // would reference nothing, so it is dropped with a warning like an unresolved edge endpoint.

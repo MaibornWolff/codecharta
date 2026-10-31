@@ -1,9 +1,11 @@
 package de.maibornwolff.codecharta.analysers.tools.validation
 
+import de.maibornwolff.codecharta.model.ClusterMembership
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.serialization.ApiVersion
 import de.maibornwolff.codecharta.serialization.CompressedStreamHandler
 import de.maibornwolff.codecharta.serialization.LegacyFileException
+import de.maibornwolff.codecharta.util.Logger
 import org.everit.json.schema.Schema
 import org.everit.json.schema.loader.SchemaLoader
 import org.json.JSONArray
@@ -60,7 +62,8 @@ class EveritValidator(private var schemaPath: String) : Validator {
             collectDanglingDependencyNodes(dependency, nodeIds) +
             collectDanglingLeafReferences(dependency, fileNodeIds) +
             collectDanglingNamespaceParents(dependency) +
-            collectDanglingLeafEdgeEndpoints(dependency, fileNodeIds)
+            collectDanglingLeafEdgeEndpoints(dependency, fileNodeIds) +
+            collectDanglingClusterMembers(lenses, nodeIds)
 
         if (danglingReferences.isNotEmpty()) {
             throw ReferentialIntegrityException(
@@ -68,6 +71,44 @@ class EveritValidator(private var schemaPath: String) : Validator {
                     danglingReferences.joinToString("; ") + "."
             )
         }
+        warnAboutOverweightClusterMembers(lenses)
+    }
+
+    private fun clusteringsOf(lenses: JSONObject): Map<String, JSONObject> {
+        val clusterings = lenses.optJSONObject("clusters")?.optJSONObject("clusterings") ?: return emptyMap()
+        return clusterings.keySet().associateWith { clusterings.getJSONObject(it) }
+    }
+
+    private fun membersOf(clustering: JSONObject): List<JSONObject> {
+        val clusters = clustering.optJSONArray("clusters") ?: return emptyList()
+        return (0 until clusters.length()).flatMap { clusterIndex ->
+            val members = clusters.getJSONObject(clusterIndex).optJSONArray("members") ?: return@flatMap emptyList()
+            (0 until members.length()).map { members.getJSONObject(it) }
+        }
+    }
+
+    private fun collectDanglingClusterMembers(lenses: JSONObject, nodeIds: Set<String>): List<String> = clusteringsOf(lenses)
+        .flatMap { (key, clustering) ->
+            membersOf(clustering)
+                .map { it.optString(NODE_ID_KEY) }
+                .filter { it !in nodeIds }
+                .map { "member of clustering '$key' with unknown node id '$it'" }
+        }
+
+    // A warning rather than a failure: JSON Schema cannot express this invariant and a reader still renders such a
+    // file, merely with a share above 100%.
+    private fun warnAboutOverweightClusterMembers(lenses: JSONObject) {
+        clusteringsOf(lenses)
+            .filterValues { it.optString("membership") == ClusterMembership.WEIGHTED.wireName }
+            .forEach { (key, clustering) ->
+                val weightByNode = membersOf(clustering)
+                    .groupBy({ it.optString(NODE_ID_KEY) }, { it.optDouble("weight", 1.0) })
+                    .mapValues { (_, weights) -> weights.sum() }
+                val overweightCount = weightByNode.values.count { it > 1 + WEIGHT_SUM_TOLERANCE }
+                if (overweightCount > 0) {
+                    Logger.warn { "Clustering '$key' is weighted, but the weights of $overweightCount node(s) sum to more than 1." }
+                }
+            }
     }
 
     private fun collectDanglingMetricsAttributes(lenses: JSONObject, nodeIds: Set<String>): List<String> = lenses
@@ -196,5 +237,9 @@ class EveritValidator(private var schemaPath: String) : Validator {
         private const val NAMESPACES_KEY = "namespaces"
         private const val NAMESPACE_KEY = "namespace"
         private const val PARENT_KEY = "parent"
+        private const val NODE_ID_KEY = "nodeId"
+
+        // Weights are decimal fractions, so an exact sum of 1 can land just above it in floating point.
+        private const val WEIGHT_SUM_TOLERANCE = 1e-6
     }
 }

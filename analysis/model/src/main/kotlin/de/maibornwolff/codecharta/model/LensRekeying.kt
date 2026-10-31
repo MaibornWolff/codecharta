@@ -20,12 +20,18 @@ typealias SegmentRemapping = (List<String>) -> List<String>?
 fun nodeIdRemapping(treeBeforeRestructuring: Node, treeAfterRestructuring: Node, remapSegments: SegmentRemapping): Map<String, String> {
     val remappedNodes = mutableListOf<RemappedNode>()
     collectRemappedNodes(treeBeforeRestructuring, emptyList(), remapSegments, remappedNodes)
-    val survivingIds = HashSet<String>()
-    collectIds(treeAfterRestructuring, emptyList(), survivingIds)
+    val survivingIds = nodeIdsOf(treeAfterRestructuring)
     val idsLeftInPlace = remappedNodes.filterNot { it.isMoved }.mapTo(HashSet()) { it.newId }
     return remappedNodes
         .filter { it.newId in survivingIds && !(it.isFile && it.isMoved && it.newId in idsLeftInPlace) }
         .associate { it.oldId to it.newId }
+}
+
+/** The id of every node in the tree below and including [root]; the root carries no segment of its own. */
+fun nodeIdsOf(root: Node): Set<String> {
+    val ids = HashSet<String>()
+    collectIds(root, emptyList(), ids)
+    return ids
 }
 
 private class RemappedNode(val oldId: String, val newId: String, val isFile: Boolean) {

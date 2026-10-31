@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.tools.validation
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.ClusterMember
 import de.maibornwolff.codecharta.model.DependencyLeaf
 import de.maibornwolff.codecharta.model.DependencyNamespace
 import de.maibornwolff.codecharta.model.DependencyNode
@@ -624,6 +625,45 @@ class EveritValidatorTest {
         assertFailsWith(ValidationException::class) {
             validator.validate(ByteArrayInputStream(wordWithoutFrequency.toByteArray()))
         }
+    }
+
+    @Test
+    fun `should reject a file with a cluster member whose node id it does not declare`() {
+        // Arrange
+        val document = documentWithClusters(ClusterMember("unknownNodeId", 0.5))
+
+        // Act
+        val thrown =
+            assertFailsWith(ReferentialIntegrityException::class) {
+                validator.validate(document.byteInputStream())
+            }
+
+        // Assert
+        Assertions.assertThat(thrown.message).contains("unknownNodeId")
+    }
+
+    @Test
+    fun `should accept a weighted clustering whose weights sum to exactly one in decimal`() {
+        // Arrange
+        val rootId = NodeId.fromSegments(emptyList(), NodeType.Folder)
+        val document = documentWithClusters(ClusterMember(rootId, 0.1), ClusterMember(rootId, 0.2), ClusterMember(rootId, 0.7))
+
+        // Act & Assert
+        validator.validate(document.byteInputStream())
+    }
+
+    private fun documentWithClusters(vararg members: ClusterMember): String {
+        val document = JsonParser.parseString(ProjectSerializer.serializeToString(Project("p"))).asJsonObject
+        val clusters = members.withIndex().joinToString(",") { (index, member) ->
+            """{"id":"c$index","name":"C$index","members":[{"nodeId":"${member.nodeId}","weight":${member.weight}}]}"""
+        }
+        document.getAsJsonObject("lenses").add(
+            "clusters",
+            JsonParser.parseString(
+                """{"clusterings":{"o":{"title":"O","membership":"weighted","analyzers":["x"],"clusters":[$clusters]}}}"""
+            )
+        )
+        return document.toString()
     }
 
     @Test

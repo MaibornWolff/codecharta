@@ -145,12 +145,13 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
         return null
     }
 
-    // Both node-keyed lenses re-key onto the restructured tree. Dependency edges are addressed by path
+    // The node-keyed lenses re-key onto the restructured tree. Dependency edges are addressed by path
     // and are re-pathed by the restructuring actions themselves; only the lens's per-node entries need this.
     private fun withRekeyedLenses(project: Project, remapping: SegmentRemapping, treeBeforeRestructuring: Node): Project {
         val domain = project.lenses.domain
         val dependency = project.lenses.dependency
-        if (domain == null && !dependency.carriesNodeData) return project
+        val clusters = project.lenses.clusters
+        if (domain == null && !dependency.carriesNodeData && !clusters.carriesData) return project
         return Project(
             projectName = project.projectName,
             nodes = listOf(project.rootNode),
@@ -158,7 +159,8 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
             lenses =
                 project.lenses.copy(
                     dependency = dependency.rekeyed(treeBeforeRestructuring, project.rootNode, remapping),
-                    domain = domain?.rekeyed(treeBeforeRestructuring, project.rootNode, remapping)
+                    domain = domain?.rekeyed(treeBeforeRestructuring, project.rootNode, remapping),
+                    clusters = clusters.rekeyed(treeBeforeRestructuring, project.rootNode, remapping)
                 ),
             blacklist = project.blacklist,
             commitHash = project.commitHash
@@ -167,7 +169,7 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
 
     private fun isRestructuringAction(): Boolean = setRoot != null || remove.isNotEmpty() || moveFrom != null
 
-    // The typed `domain` and `dependency` lenses are re-keyed onto the new paths, so they survive a
+    // The typed `domain`, `dependency` and `clusters` lenses are re-keyed onto the new paths, so they survive a
     // restructure. An opaque lens
     // has an unknown shape whose node ids cannot be rewritten safely, so those still refuse rather than emit
     // a lens referencing nodes the output no longer has — the guard `--large` merging also applies.

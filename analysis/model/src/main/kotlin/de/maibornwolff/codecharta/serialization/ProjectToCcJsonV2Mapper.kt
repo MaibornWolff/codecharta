@@ -1,6 +1,9 @@
 package de.maibornwolff.codecharta.serialization
 
 import com.google.gson.reflect.TypeToken
+import de.maibornwolff.codecharta.model.Cluster
+import de.maibornwolff.codecharta.model.Clustering
+import de.maibornwolff.codecharta.model.ClustersLens
 import de.maibornwolff.codecharta.model.DependencyLeaf
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.MutableNode
@@ -10,6 +13,10 @@ import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.dto.CcJsonV2
+import de.maibornwolff.codecharta.serialization.dto.ClusterDto
+import de.maibornwolff.codecharta.serialization.dto.ClusterMemberDto
+import de.maibornwolff.codecharta.serialization.dto.ClusteringDto
+import de.maibornwolff.codecharta.serialization.dto.ClustersLensDto
 import de.maibornwolff.codecharta.serialization.dto.DependencyLeafDto
 import de.maibornwolff.codecharta.serialization.dto.DependencyLensDto
 import de.maibornwolff.codecharta.serialization.dto.EdgeDto
@@ -105,11 +112,32 @@ object ProjectToCcJsonV2Mapper {
                 metrics = metricsLens,
                 dependency = dependencyLens,
                 domain = project.lenses.domain,
+                clusters = project.lenses.clusters.takeIf { it.carriesData }?.toDto(),
                 opaqueLenses = project.lenses.opaqueLenses
             )
     }
 
     private fun Boolean.orNullWhenFalse(): Boolean? = takeIf { it }
+
+    private fun ClustersLens.toDto(): ClustersLensDto = ClustersLensDto(clusterings.mapValues { (_, clustering) -> clustering.toDto() })
+
+    private fun Clustering.toDto(): ClusteringDto = ClusteringDto(
+        title = title,
+        membership = membership.wireName,
+        weightBasis = weightBasis,
+        analyzers = analyzers,
+        clusters = clusters.map { it.toDto() },
+        attributeDescriptors = attributeDescriptors.takeIf { it.isNotEmpty() },
+        attributeTypes = attributeTypes.takeIf { it.isNotEmpty() }
+    )
+
+    private fun Cluster.toDto(): ClusterDto = ClusterDto(
+        id = id,
+        name = name,
+        parentId = parentId,
+        attributes = attributes.takeIf { it.isNotEmpty() },
+        members = members.map { ClusterMemberDto(it.nodeId, it.weight) }
+    )
 
     private fun DependencyLeaf.toDto(): DependencyLeafDto = DependencyLeafDto(
         name = name,

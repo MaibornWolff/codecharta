@@ -7,11 +7,12 @@ data class LensSet(
     val dependency: DependencyLens = DependencyLens(),
     // Null means the file carries no domain lens at all; an empty one is the reserved-but-unused slot.
     val domain: DomainLens? = null,
+    val clusters: ClustersLens = ClustersLens(),
     val opaqueLenses: Map<String, JsonElement> = emptyMap()
 ) {
     val security: JsonElement? get() = opaqueLenses[SECURITY_KEY]
 
-    // Only `metrics`, `dependency` and `domain` are typed, so every other lens arrives as an opaque
+    // Only `metrics`, `dependency`, `domain` and `clusters` are typed, so every other lens arrives as an opaque
     // payload whose node ids a filter can invalidate. Filters that re-path or drop nodes ask for these
     // names to refuse rather than emit a lens that references nodes the output no longer has.
     val dataBearingOpaqueLensNames: Set<String> get() = opaqueLenses.filterValues { it.carriesData() }.keys

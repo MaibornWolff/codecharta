@@ -1,6 +1,11 @@
 package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import com.google.gson.JsonParser
+import de.maibornwolff.codecharta.model.Cluster
+import de.maibornwolff.codecharta.model.ClusterMember
+import de.maibornwolff.codecharta.model.ClusterMembership
+import de.maibornwolff.codecharta.model.Clustering
+import de.maibornwolff.codecharta.model.ClustersLens
 import de.maibornwolff.codecharta.model.DependencyLeaf
 import de.maibornwolff.codecharta.model.DependencyLens
 import de.maibornwolff.codecharta.model.DependencyNamespace
@@ -146,14 +151,38 @@ class LargeMergeTest {
     }
 
     @Test
-    fun `should fail loudly and name the lens when a data-bearing clusters lens cannot be re-pathed`() {
-        // Arrange: the top-level clusters lens is untyped, so it rides the opaque-lens passthrough and its
-        // member node ids must be protected from re-pathing by the same guard as any other opaque lens.
-        val clustersLens =
-            JsonParser.parseString(
-                """{"clusterings":{"author-ownership":{"clusters":[{"id":"author-a","members":[{"nodeId":"a1b2c3d4e5f60718"}]}]}}}"""
+    fun `should re-key the cluster members onto the wrapped file`() {
+        // Arrange
+        val clusters = ClustersLens(
+            mapOf(
+                "author-ownership" to Clustering(
+                    "Author ownership",
+                    ClusterMembership.WEIGHTED,
+                    listOf("gitlogparser"),
+                    listOf(Cluster("abc-author-1", "Author 1", listOf(ClusterMember(NodeId.fromSegments(listOf("file.kt")), 0.5))))
+                )
             )
-        val project = rootProject(lenses = LensSet(opaqueLenses = mapOf("clusters" to clustersLens)))
+        )
+        val project = rootProject(lenses = LensSet(clusters = clusters))
+
+        // Act
+        val wrapped = LargeMerge.wrapProjectInFolder(project, "alpha")
+
+        // Assert
+        val member = wrapped.lenses.clusters.clusterings
+            .getValue("author-ownership")
+            .clusters
+            .single()
+            .members
+            .single()
+        assertEquals(ClusterMember(NodeId.fromSegments(listOf("alpha", "file.kt")), 0.5), member)
+    }
+
+    @Test
+    fun `should fail loudly and name the lens when a data-bearing opaque lens cannot be re-pathed`() {
+        // Arrange
+        val customLens = JsonParser.parseString("""{"members":[{"nodeId":"a1b2c3d4e5f60718"}]}""")
+        val project = rootProject(lenses = LensSet(opaqueLenses = mapOf("custom" to customLens)))
 
         // Act
         val thrown =
@@ -162,6 +191,6 @@ class LargeMergeTest {
             }
 
         // Assert
-        assertTrue(thrown.message!!.contains("clusters"))
+        assertTrue(thrown.message!!.contains("custom"))
     }
 }

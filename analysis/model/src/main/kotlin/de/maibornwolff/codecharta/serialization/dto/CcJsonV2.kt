@@ -26,8 +26,32 @@ class LensesDto(
     // The domain lens is keyed by node id on the wire exactly as it is in the model, so it needs no
     // DTO of its own; CcJsonV2Gson keeps an empty one as the reserved `{}` slot.
     val domain: DomainLens? = null,
+    // Null rather than empty, so a lens that carries nothing leaves no key on the wire.
+    val clusters: ClustersLensDto? = null,
     val opaqueLenses: Map<String, JsonElement> = emptyMap()
 )
+
+class ClustersLensDto(val clusterings: Map<String, ClusteringDto>? = null)
+
+class ClusteringDto(
+    val title: String? = null,
+    val membership: String? = null,
+    val weightBasis: String? = null,
+    val analyzers: List<String>? = null,
+    val clusters: List<ClusterDto>? = null,
+    val attributeDescriptors: Map<String, AttributeDescriptor>? = null,
+    val attributeTypes: Map<String, AttributeType>? = null
+)
+
+class ClusterDto(
+    val id: String,
+    val name: String? = null,
+    val parentId: String? = null,
+    val attributes: Map<String, Any>? = null,
+    val members: List<ClusterMemberDto>? = null
+)
+
+class ClusterMemberDto(val nodeId: String, val weight: Double? = null)
 
 class MetricsLensDto(
     val attributes: Map<String, Map<String, Any>> = emptyMap(),
