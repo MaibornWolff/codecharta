@@ -7,7 +7,8 @@ export async function reportingFailure<T>(toast: ToastService, whatFailed: strin
     try {
         return await work()
     } catch (error) {
-        toast.show(`${whatFailed}: ${(error as Error).message}`, "error")
+        const reason = error instanceof Error ? error.message : "unknown error"
+        toast.show(`${whatFailed}: ${reason}`, "error")
         return null
     }
 }
