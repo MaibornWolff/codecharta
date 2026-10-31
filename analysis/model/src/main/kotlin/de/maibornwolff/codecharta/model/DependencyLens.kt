@@ -61,18 +61,6 @@ data class DependencyLens(
             }
         }
 
-    private fun <T> mergeByKey(own: Map<String, T>, other: Map<String, T>, reconcile: (String, T, T) -> T): Map<String, T> {
-        if (own.isEmpty()) return other
-        if (other.isEmpty()) return own
-
-        val merged = LinkedHashMap(own)
-        other.forEach { (key, entry) ->
-            val existing = merged[key]
-            merged[key] = if (existing == null) entry else reconcile(key, existing, entry)
-        }
-        return merged
-    }
-
     private fun mergeLeafEdges(allLeafEdges: List<LeafEdge>): List<LeafEdge> = allLeafEdges
         .groupBy { listOf(it.fromId, it.fromLeaf, it.toId, it.toLeaf) }
         .map { (_, edgesForEndpoints) -> edgesForEndpoints.reduce(LeafEdge::merge) }
