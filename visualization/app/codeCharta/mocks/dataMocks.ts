@@ -85,7 +85,8 @@ export const DEFAULT_SETTINGS = {
         markedPackages: [],
         domainWords: {},
         dependencyLevels: {},
-        dependencyDeclarations: {}
+        dependencyDeclarations: {},
+        clusterings: {}
     }
 }
 export const DEFAULT_CC_FILE_MOCK: CCFile = {
@@ -1083,7 +1084,8 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
             markedPackages: [],
             domainWords: {},
             dependencyLevels: {},
-            dependencyDeclarations: {}
+            dependencyDeclarations: {},
+            clusterings: {}
         }
     }
 }
@@ -1188,7 +1190,8 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE: CCFile = {
             markedPackages: [],
             domainWords: {},
             dependencyLevels: {},
-            dependencyDeclarations: {}
+            dependencyDeclarations: {},
+            clusterings: {}
         }
     }
 }

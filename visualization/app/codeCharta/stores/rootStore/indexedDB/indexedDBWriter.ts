@@ -94,7 +94,7 @@ export async function readCcState(): Promise<CcState | null> {
         return null
     }
     const filesRecord = await database.get(CCSTATE_STORE_NAME, CCSTATE_FILES_ID)
-    const files = withSeededDependencyLens(filesRecord?.files ?? settingsRecord.state.files ?? [])
+    const files = withSeededLensSettings(filesRecord?.files ?? settingsRecord.state.files ?? [])
     persistedFiles = files
     return { ...toPersistedSettings(settingsRecord.state), files }
 }
@@ -108,14 +108,13 @@ export async function deleteCcState() {
     persistedFiles = null
 }
 
-const DEPENDENCY_LENS_FILE_SETTINGS = ["dependencyLevels", "dependencyDeclarations"]
+const LENS_FILE_SETTINGS = ["dependencyLevels", "dependencyDeclarations", "clusterings"]
 
-/** Files persisted before the dependency lens grew levels or declarations carry neither. They are seeded as they
- * are read, not by an upgrade transform, because the upgrade leaves the files record unread. */
-function withSeededDependencyLens(files: FileState[]): FileState[] {
+/** Files persisted before a lens landed on them carry nothing for it. They are seeded as they are read, not by an
+ * upgrade transform, because the upgrade leaves the files record unread. */
+function withSeededLensSettings(files: FileState[]): FileState[] {
     return files.map(
-        fileState =>
-            DEPENDENCY_LENS_FILE_SETTINGS.reduce<unknown>((seeded, key) => withSeededFileSetting(seeded, key), fileState) as FileState
+        fileState => LENS_FILE_SETTINGS.reduce<unknown>((seeded, key) => withSeededFileSetting(seeded, key), fileState) as FileState
     )
 }
 

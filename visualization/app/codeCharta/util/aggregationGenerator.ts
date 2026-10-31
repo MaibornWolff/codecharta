@@ -54,7 +54,8 @@ export class AggregationGenerator {
                     markedPackages: [],
                     domainWords: {},
                     dependencyLevels: {},
-                    dependencyDeclarations: {}
+                    dependencyDeclarations: {},
+                    clusterings: {}
                 }
             }
         }

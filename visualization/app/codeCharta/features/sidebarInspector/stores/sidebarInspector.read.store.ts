@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
 import { selectedNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
+import { inspectorClusterSectionsSelector } from "../selectors/inspectorClusterSections.selector"
 import { inspectorMappingBlocksSelector } from "../selectors/inspectorMappingBlocks.selector"
 import { inspectorMetricRowsSelector } from "../selectors/inspectorMetricRows.selector"
 
@@ -14,4 +15,5 @@ export class SidebarInspectorReadStore {
     readonly selectedNode$ = this.store.select(selectedNodeSelector)
     readonly mappingBlocks$ = this.store.select(inspectorMappingBlocksSelector)
     readonly metricRows$ = this.store.select(inspectorMetricRowsSelector)
+    readonly clusterSections$ = this.store.select(inspectorClusterSectionsSelector)
 }

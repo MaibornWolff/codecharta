@@ -1,0 +1,24 @@
+@for (section of sections(); track section.key) {
+    <section class="border-t border-base-300 px-3 py-2" data-testid="inspector-clusters">
+        <span class="text-xs uppercase tracking-widest opacity-60">{{ section.title }}</span>
+        <div class="mt-2 flex flex-col gap-1">
+            @for (owner of section.owners; track owner.id) {
+                <div class="flex items-baseline justify-between gap-2 text-sm" data-testid="inspector-cluster-owner">
+                    <span class="min-w-0 truncate">
+                        {{ owner.name }}
+                        @if (owner.repositoryMarker) {
+                            <span class="text-xs opacity-60">{{ owner.repositoryMarker }}</span>
+                        }
+                    </span>
+                    <span class="shrink-0 tabular-nums">{{ formatShare(owner.share) }}</span>
+                </div>
+            }
+            @if (section.notAttributedShare !== null && section.notAttributedShare > 0) {
+                <div class="flex items-baseline justify-between gap-2 text-sm opacity-70" data-testid="inspector-cluster-not-attributed">
+                    <span>Not attributed</span>
+                    <span class="shrink-0 tabular-nums">{{ formatShare(section.notAttributedShare) }}</span>
+                </div>
+            }
+        </div>
+    </section>
+}

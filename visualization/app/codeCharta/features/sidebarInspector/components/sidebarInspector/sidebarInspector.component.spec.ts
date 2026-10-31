@@ -8,6 +8,7 @@ import { selectedNodeSelector } from "../../../../renderer/renderModel/selectedN
 import { ThreeRendererService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/store/isDeltaState.selector"
 import { defaultMapColors, mapColorsSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { inspectorClusterSectionsSelector } from "../../selectors/inspectorClusterSections.selector"
 import { inspectorMappingBlocksSelector, MappingBlock } from "../../selectors/inspectorMappingBlocks.selector"
 import { inspectorMetricRowsSelector, MetricRow } from "../../selectors/inspectorMetricRows.selector"
 import { SidebarInspectorComponent } from "./sidebarInspector.component"
@@ -35,7 +36,8 @@ describe("SidebarInspectorComponent", () => {
                         { selector: isDeltaStateSelector, value: false },
                         { selector: mapColorsSelector, value: defaultMapColors },
                         { selector: inspectorMappingBlocksSelector, value: mappingBlocks },
-                        { selector: inspectorMetricRowsSelector, value: metricRows }
+                        { selector: inspectorMetricRowsSelector, value: metricRows },
+                        { selector: inspectorClusterSectionsSelector, value: [] }
                     ]
                 }),
                 { provide: ThreeSceneService, useValue: { clearSelection } },
