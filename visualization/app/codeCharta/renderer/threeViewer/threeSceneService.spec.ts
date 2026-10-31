@@ -37,15 +37,15 @@ describe("ThreeSceneService", () => {
         Object.defineProperty(threeSceneService, "constantHighlight", { value: CONSTANT_HIGHLIGHT, writable: true, configurable: true })
     })
 
-    describe("setGreysOutsideKeptHighlight", () => {
-        it("should repaint a kept highlight at once when switched", () => {
+    describe("setKeptHighlightFocus", () => {
+        it("should repaint a kept highlight at once with the rest grey", () => {
             // Arrange
             const building = threeSceneService["mapMesh"].getMeshDescription().buildings[0]
             threeSceneService.showKeptHighlight([building.node.path])
             const setGreys = jest.spyOn(threeSceneService["mapMesh"], "setGreysOutsideHighlight")
 
             // Act
-            threeSceneService.setGreysOutsideKeptHighlight(true)
+            threeSceneService.setKeptHighlightFocus(new Set([building.node.path]))
 
             // Assert
             expect(setGreys).toHaveBeenLastCalledWith(true)
@@ -53,7 +53,7 @@ describe("ThreeSceneService", () => {
 
         it("should leave a hover without a kept highlight darkening", () => {
             // Arrange
-            threeSceneService.setGreysOutsideKeptHighlight(true)
+            threeSceneService.setKeptHighlightFocus(new Set(["/a"]))
             Object.defineProperty(threeSceneService, "constantHighlight", { value: new Map(), writable: true, configurable: true })
             const setGreys = jest.spyOn(threeSceneService["mapMesh"], "setGreysOutsideHighlight")
 
@@ -62,6 +62,19 @@ describe("ThreeSceneService", () => {
 
             // Assert
             expect(setGreys).toHaveBeenLastCalledWith(false)
+        })
+
+        it("should tell its subscribers about the focus", () => {
+            // Arrange
+            const listener = jest.fn()
+            threeSceneService.subscribe("onKeptHighlightFocusChanged", listener)
+            const focus = new Set(["/a"])
+
+            // Act
+            threeSceneService.setKeptHighlightFocus(focus)
+
+            // Assert
+            expect(listener).toHaveBeenCalledWith(focus)
         })
     })
 

@@ -49,6 +49,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
         this.subscription = this.fileStoreReadWindow.isLoadingFile$
             .pipe(tap(isLoadingFile => (isLoadingFile ? this.onFileLoadingStarted() : this.onFileLoadingFinished())))
             .subscribe()
+        this.threeSceneService.subscribe("onKeptHighlightFocusChanged", filePaths => this.showLabelsOnlyFor(filePaths))
     }
 
     ngOnDestroy(): void {
