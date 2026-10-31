@@ -3,7 +3,7 @@ export { ExplorerRowComponent } from "./components/explorerRow/explorerRow.compo
 export { ExplorerSearchBarComponent } from "./components/explorerSearchBar/explorerSearchBar.component"
 export { ExplorerTreeItemIconComponent } from "./components/explorerTreeItemIcon/explorerTreeItemIcon.component"
 export { SidebarExplorerComponent } from "./components/sidebarExplorer/sidebarExplorer.component"
-export { DEFAULT_EXPLORER_CAPABILITIES, EXPLORER_CAPABILITIES } from "./explorerCapabilities"
+export { DEFAULT_EXPLORER_CAPABILITIES, EXPLORER_CAPABILITIES, EXPLORER_CONDITIONAL_MODES } from "./explorerCapabilities"
 export type { ExplorerContextMenu } from "./explorerContextMenu"
 export { EXPLORER_CONTEXT_MENU } from "./explorerContextMenu"
 export type { ExplorerCounts, ExplorerCountsSource } from "./explorerCounts.port"

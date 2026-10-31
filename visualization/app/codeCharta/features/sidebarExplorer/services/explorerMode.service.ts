@@ -1,20 +1,24 @@
 import { computed, Injectable, inject, signal } from "@angular/core"
-import { EXPLORER_CAPABILITIES } from "../explorerCapabilities"
+import { EXPLORER_CAPABILITIES, EXPLORER_CONDITIONAL_MODES } from "../explorerCapabilities"
 import { FILES_EXPLORER_MODE } from "../explorerModes"
 
 @Injectable()
 export class ExplorerModeService {
-    readonly modes = inject(EXPLORER_CAPABILITIES).modes
+    private readonly permanentModes = inject(EXPLORER_CAPABILITIES).modes
+    private readonly conditionalModes = inject(EXPLORER_CONDITIONAL_MODES, { optional: true })
 
-    private readonly active = signal(this.modes[0])
+    readonly modes = computed(() => [...this.permanentModes, ...(this.conditionalModes?.() ?? [])])
 
-    readonly activeMode = this.active.asReadonly()
+    private readonly activeModeId = signal(this.permanentModes[0].id)
+
+    // A conditional mode that goes away while it is open hands over to the mode the explorer opens in.
+    readonly activeMode = computed(() => this.modes().find(mode => mode.id === this.activeModeId()) ?? this.permanentModes[0])
     readonly isFilesMode = computed(() => this.activeMode().id === FILES_EXPLORER_MODE.id)
+    readonly showsListTools = computed(() => !this.activeMode().hidesListTools)
 
     activate(modeId: string) {
-        const mode = this.modes.find(candidate => candidate.id === modeId)
-        if (mode) {
-            this.active.set(mode)
+        if (this.modes().some(mode => mode.id === modeId)) {
+            this.activeModeId.set(modeId)
         }
     }
 }

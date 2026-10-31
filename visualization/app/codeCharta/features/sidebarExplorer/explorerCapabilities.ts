@@ -1,4 +1,4 @@
-import { InjectionToken } from "@angular/core"
+import { InjectionToken, Signal } from "@angular/core"
 import { ExplorerMode, FILES_EXPLORER_MODE } from "./explorerModes"
 
 export interface ExplorerCapabilities {
@@ -12,6 +12,9 @@ export interface ExplorerCapabilities {
 }
 
 export const EXPLORER_CAPABILITIES = new InjectionToken<ExplorerCapabilities>("EXPLORER_CAPABILITIES")
+
+/** Modes a view offers only while their data is there, after the permanent ones. */
+export const EXPLORER_CONDITIONAL_MODES = new InjectionToken<Signal<ExplorerMode[]>>("EXPLORER_CONDITIONAL_MODES")
 
 export const DEFAULT_EXPLORER_CAPABILITIES: ExplorerCapabilities = {
     showRules: true,

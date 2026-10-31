@@ -55,6 +55,7 @@ export class SidebarExplorerComponent {
 
     readonly isCollapsed = this.collapseService.isCollapsed
     readonly isFilesMode = this.modeService.isFilesMode
+    readonly showsListTools = this.modeService.showsListTools
     readonly width = this.widthService.width
     readonly displayWidth = computed(() => (this.isCollapsed() ? COLLAPSED_STRIP_WIDTH_PX : this.width()))
 
