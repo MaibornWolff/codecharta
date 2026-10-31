@@ -1,0 +1,56 @@
+@if (clusteringOptions().length > 1) {
+    <select
+        class="select select-sm w-full"
+        aria-label="Clustering"
+        data-testid="cluster-explorer-picker"
+        [value]="activeKey()"
+        (change)="chooseClustering($event)"
+    >
+        @for (option of clusteringOptions(); track option.key) {
+            <option [value]="option.key" [selected]="option.key === activeKey()">{{ option.title }}</option>
+        }
+    </select>
+} @else {
+    <span class="text-sm font-semibold" data-testid="cluster-explorer-title">{{ clusteringOptions()[0]?.title }}</span>
+}
+<div class="mt-2 text-right text-xs opacity-60">share of files</div>
+<ul class="mt-1 flex flex-col gap-1" data-testid="cluster-explorer-list">
+    @for (row of shares().rows; track row.id) {
+        <li>
+            <button
+                type="button"
+                class="w-full cursor-pointer rounded px-1 py-1 text-left hover:bg-base-200"
+                [class.bg-base-300]="row.id === pinnedClusterId()"
+                [attr.aria-pressed]="row.id === pinnedClusterId()"
+                [attr.title]="row.filePaths.length + (row.filePaths.length === 1 ? ' file' : ' files')"
+                data-testid="cluster-explorer-row"
+                (mouseenter)="hover(row)"
+                (mouseleave)="endHover()"
+                (focus)="hover(row)"
+                (blur)="endHover()"
+                (click)="togglePin(row)"
+            >
+                <span class="flex items-baseline justify-between gap-2 text-sm">
+                    <span class="min-w-0 truncate">
+                        {{ row.name }}
+                        @if (row.repositoryMarker) {
+                            <span class="text-xs opacity-60" data-testid="cluster-explorer-marker">{{ row.repositoryMarker }}</span>
+                        }
+                    </span>
+                    <span class="shrink-0 tabular-nums">{{ formatShare(row.share) }}</span>
+                </span>
+                <span class="mt-0.5 block h-1 overflow-hidden rounded bg-base-300">
+                    <span class="block h-full bg-primary" [style.width.%]="row.share * 100"></span>
+                </span>
+            </button>
+        </li>
+    }
+    @if (shares().notAttributedShare) {
+        <li class="px-1 py-1 opacity-70" data-testid="cluster-explorer-not-attributed">
+            <span class="flex items-baseline justify-between gap-2 text-sm">
+                <span>Not attributed</span>
+                <span class="tabular-nums">{{ formatShare(shares().notAttributedShare!) }}</span>
+            </span>
+        </li>
+    }
+</ul>

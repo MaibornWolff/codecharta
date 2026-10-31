@@ -15,6 +15,23 @@ export enum LayoutAlgorithm {
     RadialTreeMap = "Radial TreeMap"
 }
 
+export type ClusterMembership = "partition" | "weighted" | "overlay"
+
+export interface ClusterData {
+    id: string
+    name: string
+    /** Weight by file path, re-keyed from node id when the file loads, like the other lenses' per-node data. */
+    members: Record<string, number>
+}
+
+export interface ClusteringData {
+    title: string
+    membership: ClusterMembership
+    clusters: ClusterData[]
+}
+
+export type ClusteringsData = Record<string, ClusteringData>
+
 export interface CCFile {
     map: CodeMapNode
     settings: {
@@ -26,6 +43,7 @@ export interface CCFile {
             domainWords: DomainLensData
             dependencyLevels: DependencyLevelData
             dependencyDeclarations: DependencyDeclarationData
+            clusterings: ClusteringsData
         }
     }
     fileMeta: FileMeta

@@ -1,6 +1,7 @@
 import {
     AttributeDescriptors,
     AttributeTypeValue,
+    ClusterMembership,
     DomainWord,
     FixedPosition,
     ImportedNodeRule,
@@ -34,11 +35,32 @@ interface Lenses {
     metrics?: MetricsLensData
     dependency?: DependencyLensData
     domain?: DomainLens
-    /*
-     * Opaque passthrough — the schema defines the clusters lens, but the viz neither reads nor
-     * renders it yet. The typed model lands with the first producer.
-     */
-    clusters?: unknown
+    clusters?: ClustersLensWire
+}
+
+interface ClustersLensWire {
+    clusterings?: Record<string, ClusteringWire>
+}
+
+interface ClusteringWire {
+    title: string
+    membership: ClusterMembership
+    weightBasis?: string
+    analyzers: string[]
+    clusters: ClusterWire[]
+}
+
+interface ClusterWire {
+    id: string
+    name: string
+    parentId?: string | null
+    members: ClusterMemberWire[]
+}
+
+interface ClusterMemberWire {
+    nodeId: string
+    /** Omitted means the whole node belongs to the cluster. */
+    weight?: number
 }
 
 interface DomainLens {

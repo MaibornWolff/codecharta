@@ -96,6 +96,49 @@ describe("mapCcJson2ToCCFile", () => {
         expect(result.settings.fileSettings.edges[0].isPointingUpwards).toBe(true)
     })
 
+    it("should re-key cluster members from node id to node path and read an omitted weight as a full share", () => {
+        // Arrange
+        ;(file.lenses as Record<string, unknown>).clusters = {
+            clusterings: {
+                "author-ownership": {
+                    title: "Author ownership",
+                    membership: "weighted",
+                    analyzers: ["gitlogparser"],
+                    clusters: [
+                        {
+                            id: "abc-author-1",
+                            name: "Author 1",
+                            members: [{ nodeId: "/root/big.ts", weight: 0.5 }, { nodeId: "/root" }, { nodeId: "unknown", weight: 0.5 }]
+                        }
+                    ]
+                }
+            }
+        }
+        const warn = jest.spyOn(console, "warn").mockImplementation()
+
+        // Act
+        const result = mapCcJson2ToCCFile(file, nameDataPair(file))
+
+        // Assert
+        expect(result.settings.fileSettings.clusterings).toEqual({
+            "author-ownership": {
+                title: "Author ownership",
+                membership: "weighted",
+                clusters: [{ id: "abc-author-1", name: "Author 1", members: { "/root/big.ts": 0.5, "/root": 1 } }]
+            }
+        })
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining("unknown"))
+        warn.mockRestore()
+    })
+
+    it("should map a file without a clusters lens to no clusterings", () => {
+        // Arrange & Act
+        const result = mapCcJson2ToCCFile(file, nameDataPair(file))
+
+        // Assert
+        expect(result.settings.fileSettings.clusterings).toEqual({})
+    })
+
     it("should re-key dependency levels from node id to node path", () => {
         // Arrange
         ;(file.lenses as Record<string, unknown>).dependency = {

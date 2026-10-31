@@ -523,7 +523,8 @@ describe("IndexedDBWriter", () => {
             expect(restored.files[0].file.settings.fileSettings).toEqual({
                 ...fileSettings,
                 dependencyLevels: {},
-                dependencyDeclarations: {}
+                dependencyDeclarations: {},
+                clusterings: {}
             })
             expect(restored.files[0].selectedAs).toBe("Partial")
         })

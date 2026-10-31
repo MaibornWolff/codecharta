@@ -27,19 +27,19 @@ export const _getUndecoratedAccumulatedData = (fileStates: FileState[]): CCFile 
     return getDeltaFile(clone(fileStates))
 }
 
-// Dropped before the deep clone, not after: nothing downstream reads the bank, and it can hold millions
+// Dropped before the deep clone, not after: nothing downstream reads these, and they can hold millions
 // of entries that every clone in the chain would otherwise copy.
-const withoutDomainWords = (fileState: FileState): FileState => ({
+const withoutLensDataTheTreeNeverReads = (fileState: FileState): FileState => ({
     ...fileState,
     file: {
         ...fileState.file,
         settings: {
             ...fileState.file.settings,
-            fileSettings: { ...fileState.file.settings.fileSettings, domainWords: {} }
+            fileSettings: { ...fileState.file.settings.fileSettings, domainWords: {}, clusterings: {} }
         }
     }
 })
 
 export const structureTreeSelector = createSelector(visibleFileStatesSelector, fileStates =>
-    _getUndecoratedAccumulatedData(fileStates.map(withoutDomainWords))
+    _getUndecoratedAccumulatedData(fileStates.map(withoutLensDataTheTreeNeverReads))
 )

@@ -11,6 +11,7 @@ import {
     AttributeDescriptors,
     AttributeTypes,
     CCFile,
+    ClusteringsData,
     CodeMapNode,
     DependencyDeclarationData,
     DependencyLeaf,
@@ -43,6 +44,7 @@ export function mapCcJson2ToCCFile(file: CcJson2WithCarryover, nameDataPair: Nam
                 domainWords: mapDomainWords(file, idToPath),
                 dependencyLevels: mapDependencyLevels(file, idToPath),
                 dependencyDeclarations: mapDependencyDeclarations(file, idToPath),
+                clusterings: mapClusterings(file, idToPath),
                 // 2.0 files carry neither; both are populated only when a 1.x file is normalized.
                 blacklist: file.blacklist ?? [],
                 markedPackages: file.markedPackages ?? []
@@ -108,6 +110,35 @@ function mapEdges(file: CcJson2, idToPath: Record<string, string>): Edge[] {
         })
     }
     return edges
+}
+
+function mapClusterings(file: CcJson2, idToPath: Record<string, string>): ClusteringsData {
+    const clusterings: ClusteringsData = {}
+    for (const [key, clustering] of Object.entries(file.lenses.clusters?.clusterings ?? {})) {
+        clusterings[key] = {
+            title: clustering.title,
+            membership: clustering.membership,
+            clusters: clustering.clusters.map(cluster => ({
+                id: cluster.id,
+                name: cluster.name,
+                members: mapClusterMembers(cluster.members, idToPath)
+            }))
+        }
+    }
+    return clusterings
+}
+
+function mapClusterMembers(members: { nodeId: string; weight?: number }[], idToPath: Record<string, string>): Record<string, number> {
+    const weightByPath: Record<string, number> = {}
+    for (const { nodeId, weight } of members) {
+        const path = idToPath[nodeId]
+        if (path === undefined) {
+            console.warn(`Dropping cluster member with unresolved node id: ${nodeId}`)
+            continue
+        }
+        weightByPath[path] = weight ?? 1
+    }
+    return weightByPath
 }
 
 function mapDependencyLevels(file: CcJson2, idToPath: Record<string, string>): DependencyLevelData {

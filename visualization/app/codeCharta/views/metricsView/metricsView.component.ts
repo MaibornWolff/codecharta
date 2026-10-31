@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { BottomBarComponent } from "../../features/bottomBar/facade"
+import { ClusterExplorerComponent, provideClustersExplorerMode } from "../../features/clusterExplorer/facade"
 import { CodeMapComponent } from "../../features/codeMap/facade"
 import { FileExtensionBarComponent } from "../../features/fileExtensionBar/facade"
 import { LegendPanelComponent } from "../../features/legend/facade"
@@ -61,6 +62,7 @@ import { RevealsSelectedNodeAfterLoadDirective } from "./explorer/revealsSelecte
         NodeContextMenuComponent,
         SidebarExplorerComponent,
         ExplorerSearchBarComponent,
+        ClusterExplorerComponent,
         SidebarInspectorComponent,
         CodeMapComponent,
         LegendPanelComponent,
@@ -92,6 +94,7 @@ import { RevealsSelectedNodeAfterLoadDirective } from "./explorer/revealsSelecte
         LeavesFocusForNodeOutsideIt,
         { provide: HANDED_OVER_MAP_NODE_ARRIVAL, useExisting: LeavesFocusForNodeOutsideIt },
         { provide: EXPLORER_CAPABILITIES, useValue: DEFAULT_EXPLORER_CAPABILITIES },
+        provideClustersExplorerMode(),
         { provide: NODE_CONTEXT_MENU_CAPABILITIES, useValue: DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES },
         provideViewScopedExplorerState("metrics"),
         provideViewScopedCssVariables()

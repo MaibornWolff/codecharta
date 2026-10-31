@@ -153,7 +153,8 @@ export class DeltaGenerator {
                     markedPackages: [],
                     domainWords: {},
                     dependencyLevels: {},
-                    dependencyDeclarations: {}
+                    dependencyDeclarations: {},
+                    clusterings: {}
                 }
             }
         }
