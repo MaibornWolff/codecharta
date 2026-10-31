@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import com.google.gson.JsonElement
 import de.maibornwolff.codecharta.model.BlacklistItem
+import de.maibornwolff.codecharta.model.ClustersLens
 import de.maibornwolff.codecharta.model.DomainLens
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.MutableNode
@@ -19,6 +20,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
                         metrics = mergedMetricsLens,
                         dependency = mergedDependencyLens,
                         domain = mergedDomainLens,
+                        clusters = mergedClustersLens,
                         opaqueLenses = mergedOpaqueLenses
                     )
                 )
@@ -48,6 +50,14 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
 
     private val mergedDomainLens: DomainLens? by lazy {
         projects.mapNotNull { it.lenses.domain }.reduceOrNull { merged, lens -> merged.merge(lens) }
+    }
+
+    private val mergedClustersLens: ClustersLens by lazy {
+        projects.map { it.lenses.clusters }.reduce { merged, lens ->
+            merged.merge(
+                lens
+            )
+        }
     }
 
     private val mergedCommitHash: String? by lazy { projects.firstNotNullOfOrNull { it.commitHash } }

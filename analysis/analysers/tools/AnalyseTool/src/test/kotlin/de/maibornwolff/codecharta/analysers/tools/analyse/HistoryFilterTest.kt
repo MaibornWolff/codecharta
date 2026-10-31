@@ -1,9 +1,15 @@
 package de.maibornwolff.codecharta.analysers.tools.analyse
 
+import de.maibornwolff.codecharta.model.Cluster
+import de.maibornwolff.codecharta.model.ClusterMember
+import de.maibornwolff.codecharta.model.ClusterMembership
+import de.maibornwolff.codecharta.model.Clustering
+import de.maibornwolff.codecharta.model.ClustersLens
 import de.maibornwolff.codecharta.model.DependencyLens
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import org.assertj.core.api.Assertions.assertThat
@@ -36,6 +42,38 @@ class HistoryFilterTest {
 
         // Assert
         assertThat(filtered.lenses.dependency.edges).containsExactly(kept)
+    }
+
+    @Test
+    fun `should drop the cluster members of files the code map does not have`() {
+        // Arrange
+        val code = projectOf(folder("src", file("App.kt")))
+        val keptMember = ClusterMember(NodeId.fromSegments(listOf("src", "App.kt")), 0.5)
+        val droppedMember = ClusterMember(NodeId.fromSegments(listOf("src", "Deleted.kt")), 0.5)
+        val clusters = ClustersLens(
+            mapOf(
+                "author-ownership" to Clustering(
+                    "Author ownership",
+                    ClusterMembership.WEIGHTED,
+                    listOf("gitlogparser"),
+                    listOf(Cluster("abc-author-1", "Author 1", listOf(keptMember, droppedMember)))
+                )
+            )
+        )
+        val tree = listOf(Node("root", NodeType.Folder, children = setOf(folder("src", file("App.kt"), file("Deleted.kt")))))
+        val history = Project("history", tree, lenses = LensSet(clusters = clusters))
+
+        // Act
+        val filtered = HistoryFilter.keepFilesOf(code, history)
+
+        // Assert
+        assertThat(
+            filtered.lenses.clusters.clusterings
+                .getValue("author-ownership")
+                .clusters
+                .single()
+                .members
+        ).containsExactly(keptMember)
     }
 
     @Test

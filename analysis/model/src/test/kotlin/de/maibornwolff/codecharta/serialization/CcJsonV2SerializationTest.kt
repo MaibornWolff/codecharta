@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.BlacklistType
+import de.maibornwolff.codecharta.model.ClusterMembership
 import de.maibornwolff.codecharta.model.DependencyLeaf
 import de.maibornwolff.codecharta.model.DependencyLens
 import de.maibornwolff.codecharta.model.DependencyNamespace
@@ -211,51 +212,88 @@ class CcJsonV2SerializationTest {
     }
 
     @Test
-    fun `should preserve a populated top-level clusters lens verbatim through a 2_0 round-trip`() {
-        // Arrange: a 2.0 document carrying a fully-populated clusters lens. It has no typed model yet, so
-        // it must survive on the opaque-lens passthrough — the reader keeps every unknown lens key as raw JSON.
-        val clustersLens =
-            JsonParser.parseString(
-                """
-                {
-                  "clusterings": {
-                    "author-ownership": {
-                      "title": "Author ownership",
-                      "membership": "weighted",
-                      "weightBasis": "rloc",
-                      "analyzers": ["gitlogparser"],
-                      "clusters": [
-                        {
-                          "id": "team-core",
-                          "name": "Team Core",
-                          "attributes": {"commits": 214},
-                          "members": [{"nodeId": "a1b2c3d4e5f60718", "weight": 0.62}]
-                        },
-                        {
-                          "id": "author-a",
-                          "name": "Author A",
-                          "parentId": "team-core",
-                          "members": [{"nodeId": "a1b2c3d4e5f60718", "weight": 0.38}]
-                        }
-                      ],
-                      "attributeDescriptors": {},
-                      "attributeTypes": {}
-                    }
-                  }
-                }
-                """.trimIndent()
-            )
-        val with20 = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject())).asJsonObject
-        with20.getAsJsonObject("lenses").add("clusters", clustersLens)
+    fun `should keep a populated clusters lens unchanged through a 2_0 round-trip`() {
+        // Arrange
+        val appId = NodeId.fromSegments(listOf("src", "App.kt"))
+        val clustersLens = JsonParser.parseString(populatedClustersLens(appId))
+        val document = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject())).asJsonObject
+        document.getAsJsonObject("lenses").add("clusters", clustersLens)
 
         // Act
-        val project = ProjectDeserializer.deserializeProject(with20.toString())
+        val project = ProjectDeserializer.deserializeProject(document.toString())
         val reSerialized = JsonParser.parseString(ProjectSerializer.serializeToString(project)).asJsonObject
 
-        // Assert: the whole nested payload survives verbatim, both on the domain object and back on the wire.
-        assertEquals(clustersLens, project.lenses.opaqueLenses["clusters"])
+        // Assert
+        val clustering = project.lenses.clusters.clusterings.getValue("author-ownership")
+        assertEquals(ClusterMembership.WEIGHTED, clustering.membership)
+        assertEquals(
+            0.62,
+            clustering.clusters
+                .first()
+                .members
+                .single()
+                .weight
+        )
+        assertEquals(false, project.lenses.opaqueLenses.containsKey("clusters"))
         assertEquals(clustersLens, reSerialized.getAsJsonObject("lenses").get("clusters"))
     }
+
+    @Test
+    fun `should drop a cluster member with an unresolved node id on read`() {
+        // Arrange
+        val document = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject())).asJsonObject
+        document.getAsJsonObject("lenses").add("clusters", JsonParser.parseString(populatedClustersLens("a1b2c3d4e5f60718")))
+
+        // Act
+        val project = ProjectDeserializer.deserializeProject(document.toString())
+
+        // Assert
+        assertEquals(false, project.lenses.clusters.carriesData)
+    }
+
+    @Test
+    fun `should omit a clusters lens that carries nothing from the written document`() {
+        // Arrange
+        val document = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject())).asJsonObject
+        document.getAsJsonObject("lenses").add("clusters", JsonParser.parseString("""{"clusterings":{}}"""))
+
+        // Act
+        val project = ProjectDeserializer.deserializeProject(document.toString())
+        val reSerialized = JsonParser.parseString(ProjectSerializer.serializeToString(project)).asJsonObject
+
+        // Assert
+        assertEquals(false, reSerialized.getAsJsonObject("lenses").has("clusters"))
+    }
+
+    private fun populatedClustersLens(memberId: String): String =
+        """
+        {
+          "clusterings": {
+            "author-ownership": {
+              "title": "Author ownership",
+              "membership": "weighted",
+              "weightBasis": "rloc",
+              "analyzers": ["gitlogparser"],
+              "clusters": [
+                {
+                  "id": "team-core",
+                  "name": "Team Core",
+                  "attributes": {"commits": 214},
+                  "members": [{"nodeId": "$memberId", "weight": 0.62}]
+                },
+                {
+                  "id": "author-a",
+                  "name": "Author A",
+                  "parentId": "team-core",
+                  "members": [{"nodeId": "$memberId", "weight": 0.38}]
+                }
+              ],
+              "attributeDescriptors": {"commits": {"title": "Commits", "description": "", "hintLowValue": "", "hintHighValue": "", "link": "", "direction": -1, "analyzers": ["gitlogparser"]}},
+              "attributeTypes": {"commits": "absolute"}
+            }
+          }
+        }
+        """.trimIndent()
 
     @Test
     fun `should be semantically unchanged after a 2_0 round-trip`() {

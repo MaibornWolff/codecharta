@@ -42,6 +42,9 @@ open class ProjectBuilder(
 
     private var domainLens: DomainLens? = null
 
+    // Assembling drops every member whose node the built tree no longer has, whatever filtered it out.
+    private var clustersLens: ClustersLens = ClustersLens()
+
     // Only the tables the builder itself fills; edges, attribute types and descriptors come from the
     // legacy fields above and are joined onto this in build().
     private var dependencyTables: DependencyLens = DependencyLens()
@@ -55,6 +58,11 @@ open class ProjectBuilder(
 
     fun withDomainLens(domainLens: DomainLens): ProjectBuilder {
         this.domainLens = domainLens
+        return this
+    }
+
+    fun withClustersLens(clustersLens: ClustersLens): ProjectBuilder {
+        this.clustersLens = clustersLens
         return this
     }
 
@@ -105,6 +113,7 @@ open class ProjectBuilder(
                         leafEdges = dependencyTables.leafEdges
                     ),
                 domain = domainLens,
+                clusters = clustersLens,
                 opaqueLenses = opaqueLenses
             )
         )
@@ -133,11 +142,14 @@ open class ProjectBuilder(
     }
 
     private fun assembleProject(lenses: LensSet): Project {
+        val builtNodes = nodes.map { it.toNode() }.toList()
+        val resolvedClusters =
+            if (lenses.clusters.carriesData) lenses.clusters.droppingUnresolvedMembers(nodeIdsOf(builtNodes.single())) else lenses.clusters
         val project =
             Project(
                 projectName = DUMMY_PROJECT_NAME,
-                nodes = nodes.map { it.toNode() }.toList(),
-                lenses = lenses,
+                nodes = builtNodes,
+                lenses = lenses.copy(clusters = resolvedClusters),
                 blacklist = blacklist.toList(),
                 commitHash = commitHash
             )
@@ -348,6 +360,7 @@ open class ProjectBuilder(
                     lenses.allAttributeDescriptors().toMutableMap(),
                     blacklist
                 ).withOpaqueLenses(lenses.opaqueLenses)
+                    .withClustersLens(lenses.clusters)
                     .withCommitHash(commitHash)
                     .withDependencyLens(
                         lenses.dependency.nodes,

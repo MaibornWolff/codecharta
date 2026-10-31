@@ -2,6 +2,11 @@ package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.Cluster
+import de.maibornwolff.codecharta.model.ClusterMember
+import de.maibornwolff.codecharta.model.ClusterMembership
+import de.maibornwolff.codecharta.model.Clustering
+import de.maibornwolff.codecharta.model.ClustersLens
 import de.maibornwolff.codecharta.model.DependencyLeaf
 import de.maibornwolff.codecharta.model.DependencyLens
 import de.maibornwolff.codecharta.model.DependencyNamespace
@@ -12,6 +17,7 @@ import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.LeafEdge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -230,18 +236,48 @@ class ProjectMergerTest {
 
     @Test
     fun `should union opaque lenses across inputs and keep the first non-null commit hash`() {
-        val clusters = JsonParser.parseString("""{"layer":"backend"}""")
+        val custom = JsonParser.parseString("""{"layer":"backend"}""")
         val security = JsonParser.parseString("""{"cves":2}""")
         val projectA =
-            Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("clusters" to clusters)), commitHash = "aaa111")
+            Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("custom" to custom)), commitHash = "aaa111")
         val projectB =
             Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("security" to security)), commitHash = "bbb222")
 
         val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
 
-        assertTrue(merged.lenses.opaqueLenses.containsKey("clusters"))
+        assertTrue(merged.lenses.opaqueLenses.containsKey("custom"))
         assertTrue(merged.lenses.opaqueLenses.containsKey("security"))
         assertEquals("aaa111", merged.commitHash)
+    }
+
+    @Test
+    fun `should merge the clusters lenses and drop the members whose node left the merged tree`() {
+        // Arrange
+        val tree = listOf(Node("root", NodeType.Folder, children = setOf(Node("kept.kt", NodeType.File))))
+        val keptId = NodeId.fromSegments(listOf("kept.kt"))
+
+        fun lensWith(clusterId: String, vararg memberIds: String) = ClustersLens(
+            mapOf(
+                "author-ownership" to Clustering(
+                    "Author ownership",
+                    ClusterMembership.WEIGHTED,
+                    listOf("gitlogparser"),
+                    listOf(Cluster(clusterId, clusterId, memberIds.map { ClusterMember(it, 0.5) }))
+                )
+            )
+        )
+        val projectA = Project("a", tree, "2.0", LensSet(clusters = lensWith("a-author-1", keptId, "goneNodeId")))
+        val projectB = Project("b", tree, "2.0", LensSet(clusters = lensWith("b-author-1", keptId)))
+
+        // Act
+        val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
+
+        // Assert
+        val clusters = merged.lenses.clusters.clusterings
+            .getValue("author-ownership")
+            .clusters
+        assertEquals(listOf("a-author-1", "b-author-1"), clusters.map { it.id })
+        assertEquals(listOf(ClusterMember(keptId, 0.5)), clusters.first().members)
     }
 
     @Test
