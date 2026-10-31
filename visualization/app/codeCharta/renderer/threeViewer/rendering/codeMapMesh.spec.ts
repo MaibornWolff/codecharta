@@ -96,6 +96,22 @@ describe("codeMapMesh", () => {
             expect(updateAllSpy).not.toHaveBeenCalled()
         })
 
+        it("should paint everything anew in grey once a highlight greys the buildings outside it", () => {
+            // Arrange
+            const mesh = new CodeMapMesh([TEST_NODE_ROOT], STATE, false)
+            const buildings = mesh.getMeshDescription().buildings
+            const ids = new Set([buildings[0].id])
+            mesh.highlightBuilding(ids, buildings[0], null, STATE, new Map())
+            const updateAllSpy = jest.spyOn(mesh as any, "updateAllBuildings")
+
+            // Act
+            mesh.setGreysOutsideHighlight(true)
+            mesh.highlightBuilding(ids, buildings[0], null, STATE, new Map())
+
+            // Assert
+            expect(updateAllSpy).toHaveBeenCalledTimes(1)
+        })
+
         it("should reset _prevHighlightedIds when clearing unselected buildings", () => {
             // Arrange
             const mesh = new CodeMapMesh([TEST_NODE_ROOT], STATE, false)

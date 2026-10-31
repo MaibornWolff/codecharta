@@ -30,6 +30,8 @@ CodeMapBuilding {
     "y": 0.10196078431372549,
     "z": 0.10196078431372549,
   },
+  "_greyedColorVector": undefined,
+  "_greyedDeltaColorVector": undefined,
   "_highlightedColorVector": Vector3 {
     "x": 1,
     "y": 0.9215686274509803,
@@ -117,6 +119,8 @@ CodeMapBuilding {
     "y": 0.10196078431372549,
     "z": 0.10196078431372549,
   },
+  "_greyedColorVector": undefined,
+  "_greyedDeltaColorVector": undefined,
   "_highlightedColorVector": Vector3 {
     "x": 1,
     "y": 0.9215686274509803,
@@ -204,6 +208,8 @@ CodeMapBuilding {
     "y": 0.10196078431372549,
     "z": 0.10196078431372549,
   },
+  "_greyedColorVector": undefined,
+  "_greyedDeltaColorVector": undefined,
   "_highlightedColorVector": Vector3 {
     "x": 0.788235294117647,
     "y": 0.8313725490196079,

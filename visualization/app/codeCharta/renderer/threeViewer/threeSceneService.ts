@@ -44,6 +44,7 @@ export class ThreeSceneService implements OnDestroy {
     private readonly highlightedNodeIds: Set<number> = new Set()
     private primaryHighlightedBuilding: CodeMapBuilding = null
     private readonly constantHighlight: Map<number, CodeMapBuilding> = new Map()
+    private greysOutsideKeptHighlight = false
 
     private readonly folderLabelMaterials = new FolderLabelMaterials(() => this.mapGeometry)
     private folderLabelColorSelected: string
@@ -122,6 +123,7 @@ export class ThreeSceneService implements OnDestroy {
 
     applyHighlights() {
         const state = this.threeSceneStore.getState()
+        this.getMapMesh().setGreysOutsideHighlight(this.greysOutsideKeptHighlight && this.constantHighlight.size > 0)
         this.getMapMesh().highlightBuilding(
             this.highlightedBuildingIds,
             this.primaryHighlightedBuilding,
@@ -232,6 +234,17 @@ export class ThreeSceneService implements OnDestroy {
 
         this.eventEmitter.emit("onBuildingSelected", { building: this.selected })
         this.folderLabelMaterials.select(this.selected)
+    }
+
+    /** While on, the kept highlight greys the buildings outside it instead of darkening them. */
+    setGreysOutsideKeptHighlight(greysOutsideKeptHighlight: boolean) {
+        if (this.greysOutsideKeptHighlight === greysOutsideKeptHighlight) {
+            return
+        }
+        this.greysOutsideKeptHighlight = greysOutsideKeptHighlight
+        if (this.mapMesh && this.constantHighlight.size > 0) {
+            this.paintKeptHighlight()
+        }
     }
 
     /** Shows the highlight the store keeps, which another view can change while this mesh is not drawn. */

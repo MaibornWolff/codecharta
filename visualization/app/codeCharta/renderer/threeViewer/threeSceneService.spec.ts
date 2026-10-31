@@ -37,6 +37,34 @@ describe("ThreeSceneService", () => {
         Object.defineProperty(threeSceneService, "constantHighlight", { value: CONSTANT_HIGHLIGHT, writable: true, configurable: true })
     })
 
+    describe("setGreysOutsideKeptHighlight", () => {
+        it("should repaint a kept highlight at once when switched", () => {
+            // Arrange
+            const building = threeSceneService["mapMesh"].getMeshDescription().buildings[0]
+            threeSceneService.showKeptHighlight([building.node.path])
+            const setGreys = jest.spyOn(threeSceneService["mapMesh"], "setGreysOutsideHighlight")
+
+            // Act
+            threeSceneService.setGreysOutsideKeptHighlight(true)
+
+            // Assert
+            expect(setGreys).toHaveBeenLastCalledWith(true)
+        })
+
+        it("should leave a hover without a kept highlight darkening", () => {
+            // Arrange
+            threeSceneService.setGreysOutsideKeptHighlight(true)
+            Object.defineProperty(threeSceneService, "constantHighlight", { value: new Map(), writable: true, configurable: true })
+            const setGreys = jest.spyOn(threeSceneService["mapMesh"], "setGreysOutsideHighlight")
+
+            // Act
+            threeSceneService.applyHighlights()
+
+            // Assert
+            expect(setGreys).toHaveBeenLastCalledWith(false)
+        })
+    })
+
     describe("highlightBuildings", () => {
         it("should call highlightBuilding", () => {
             threeSceneService["mapMesh"].highlightBuilding = jest.fn()

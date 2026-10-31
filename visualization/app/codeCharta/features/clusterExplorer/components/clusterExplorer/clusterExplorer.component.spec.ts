@@ -109,6 +109,19 @@ describe("ClusterExplorerComponent", () => {
         highlight.pinnedClusterId = () => null
     })
 
+    it("should give only the pinned cluster a primary border", async () => {
+        // Arrange
+        highlight.pinnedClusterId = () => "r-author-1"
+
+        // Act
+        await setup(AUTHORS)
+
+        // Assert
+        expect(screen.getByText(/Author 1/).closest("button")?.classList).toContain("border-primary")
+        expect(screen.getByText(/Author 2/).closest("button")?.classList).not.toContain("border-primary")
+        highlight.pinnedClusterId = () => null
+    })
+
     it("should end a running hover when it goes away", async () => {
         // Arrange
         const { fixture } = await setup(AUTHORS)

@@ -11,6 +11,10 @@ export class HSL {
         return `#${convert.hsl.hex([this.h, this.s, this.l])}`
     }
 
+    withoutSaturation() {
+        return new HSL(this.h, 0, this.l)
+    }
+
     decreaseLightness(value: number) {
         this.l -= value
     }

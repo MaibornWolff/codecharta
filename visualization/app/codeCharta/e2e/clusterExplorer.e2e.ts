@@ -2,6 +2,7 @@ import { expect, type Page, test } from "@playwright/test"
 import { goto } from "../../playwright.helper"
 import { NavBarFolderButtonPageObject } from "../features/navBar/components/navBarFolderButton/navBarFolderButton.po"
 
+const TRANSPARENT = "rgba(0, 0, 0, 0)"
 const FILE_WITH_CLUSTERS = "./app/codeCharta/resources/sample_with_clusters.cc.json"
 
 async function openClustersTab(page: Page) {
@@ -80,6 +81,45 @@ test.describe("Cluster explorer", () => {
 
         // Assert
         await expect(row(page, "Author 1")).toHaveAttribute("aria-pressed", "false")
+    })
+
+    test("should label only the files of the cluster while it is hovered or pinned", async ({ page }) => {
+        // Arrange
+        await openClustersTab(page)
+        const labelOutsideCluster = page.locator("cc-code-map").getByText("sample1OnlyLeaf.scss")
+        await expect(labelOutsideCluster).toBeVisible()
+
+        // Act
+        await row(page, "Author 3").hover()
+
+        // Assert
+        await expect(labelOutsideCluster).toHaveCount(0)
+        await expect(page.locator("cc-code-map").getByText("smallLeaf.html")).toBeVisible()
+
+        // Act
+        await page.getByText("share of files").hover()
+
+        // Assert
+        await expect(labelOutsideCluster).toBeVisible()
+
+        // Act
+        await row(page, "Author 3").click()
+        await page.getByText("share of files").hover()
+
+        // Assert
+        await expect(labelOutsideCluster).toHaveCount(0)
+    })
+
+    test("should mark only the pinned row with a primary border", async ({ page }) => {
+        // Arrange
+        await openClustersTab(page)
+
+        // Act
+        await row(page, "Author 1").click()
+
+        // Assert
+        await expect(row(page, "Author 1")).not.toHaveCSS("border-top-color", TRANSPARENT)
+        await expect(row(page, "Author 3")).toHaveCSS("border-top-color", TRANSPARENT)
     })
 
     test("should show the owners of the selected file in the inspector", async ({ page }) => {
