@@ -1,3 +1,4 @@
+import { signal } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
@@ -22,10 +23,18 @@ const TEAMS: ClusteringsData = {
 }
 
 describe("ClusterExplorerComponent", () => {
-    const highlight = { pinnedClusterId: () => null as string | null, hover: jest.fn(), endHover: jest.fn(), togglePin: jest.fn() }
+    const isOnMap = signal<(path: string) => boolean>(() => true)
+    const highlight = {
+        pinnedClusterId: () => null as string | null,
+        isOnMap,
+        hover: jest.fn(),
+        endHover: jest.fn(),
+        togglePin: jest.fn()
+    }
 
     async function setup(clusterings: ClusteringsData) {
         jest.clearAllMocks()
+        isOnMap.set(() => true)
         TestBed.configureTestingModule({
             providers: [
                 {
@@ -47,6 +56,38 @@ describe("ClusterExplorerComponent", () => {
         expect(rows).toEqual(["Author 2 75%", "Author 1 13%"])
         expect(screen.getByTestId("cluster-explorer-not-attributed").textContent).toContain("13%")
         expect(screen.getByText("share of files")).toBeTruthy()
+    })
+
+    it("should mark a cluster none of whose shown files is on the map, and only that one", async () => {
+        // Arrange
+        const { detectChanges } = await setup(AUTHORS)
+
+        // Act
+        isOnMap.set(path => path === "/root/b")
+        detectChanges()
+
+        // Assert
+        const [authorWithBuilding, authorWithout] = screen.getAllByTestId("cluster-explorer-row")
+        expect(authorWithBuilding.textContent).not.toContain("not on the map")
+        expect(authorWithBuilding.getAttribute("title")).toBe("2 files")
+        expect(authorWithout.textContent).toContain("not on the map")
+        expect(authorWithout.getAttribute("title")).toBe("1 file, none of them on the map")
+    })
+
+    it("should drop the mark once a file of the cluster is back on the map", async () => {
+        // Arrange
+        const { detectChanges } = await setup(AUTHORS)
+        isOnMap.set(() => false)
+        detectChanges()
+        const markedWhileOff = screen.getAllByTestId("cluster-explorer-row")[1].textContent
+
+        // Act
+        isOnMap.set(() => true)
+        detectChanges()
+
+        // Assert
+        expect(markedWhileOff).toContain("not on the map")
+        expect(screen.getAllByTestId("cluster-explorer-row")[1].textContent).not.toContain("not on the map")
     })
 
     it("should show the title and no picker with a single clustering", async () => {

@@ -29,7 +29,7 @@
                 [class.border-primary]="row.id === pinnedClusterId()"
                 [class.border-transparent]="row.id !== pinnedClusterId()"
                 [attr.aria-pressed]="row.id === pinnedClusterId()"
-                [attr.title]="row.filePaths.length + (row.filePaths.length === 1 ? ' file' : ' files')"
+                [attr.title]="titleOf(row)"
                 data-testid="cluster-explorer-row"
                 (mouseenter)="hover(row)"
                 (mouseleave)="endHover()"
@@ -49,6 +49,12 @@
                 <span class="mt-0.5 block h-1 overflow-hidden rounded bg-base-300">
                     <span class="block h-full bg-primary" [style.width.%]="row.share * 100"></span>
                 </span>
+                @if (clusterIdsOffTheMap().has(row.id)) {
+                    <span class="mt-0.5 block text-xs opacity-60" data-testid="cluster-explorer-off-map">
+                        <i class="fa-solid fa-eye-slash"></i>
+                        not on the map
+                    </span>
+                }
             </button>
         </li>
     }

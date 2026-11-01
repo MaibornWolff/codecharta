@@ -5,6 +5,7 @@ import { NavBarFolderButtonPageObject } from "../features/navBar/components/navB
 const TRANSPARENT = "rgba(0, 0, 0, 0)"
 const FILE_WITH_REAL_NAMES = "./app/codeCharta/resources/sample_with_real_author_names.cc.json"
 const FILE_WITH_CLUSTERS = "./app/codeCharta/resources/sample_with_clusters.cc.json"
+const FILE_WITH_CLUSTER_OFF_THE_MAP = "./app/codeCharta/resources/sample_with_cluster_off_the_map.cc.json"
 
 async function openClustersTab(page: Page) {
     await new NavBarFolderButtonPageObject(page).openFiles([FILE_WITH_CLUSTERS])
@@ -131,6 +132,17 @@ test.describe("Cluster explorer", () => {
 
         // Assert
         await expect(labelOfPinnedOnly).toBeVisible()
+    })
+
+    test("should mark only the cluster whose files have no building on the map", async ({ page }) => {
+        // Arrange & Act
+        await new NavBarFolderButtonPageObject(page).openFiles([FILE_WITH_CLUSTER_OFF_THE_MAP])
+        await page.getByTestId("explorer-mode-clusters").click()
+
+        // Assert
+        await expect(row(page, "Author 5").getByTestId("cluster-explorer-off-map")).toBeVisible()
+        await expect(row(page, "Author 5")).toHaveAttribute("title", "1 file, none of them on the map")
+        await expect(row(page, "Author 1").getByTestId("cluster-explorer-off-map")).toHaveCount(0)
     })
 
     test("should warn when a map shows real author names, and only then", async ({ page }) => {

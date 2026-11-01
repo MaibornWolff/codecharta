@@ -161,6 +161,8 @@ compare mode. It lists the clusters of one clustering, picked by `title`, flat: 
 - **"Not attributed"** is 1 minus the sum of those totals. An `overlay` has none, as its weights are never summed.
 - **Hover** shows only that cluster's shown files, replacing whatever the kept highlight holds until it ends; **a click**
   pins it into the kept highlight. Either greys the rest of the 3D map and limits its labels to those files.
+- **A cluster with no building** among its shown files, say because they have no area in the current metric,
+  is marked "not on the map"; its share still counts them.
 - **The inspector** lists the clusters a selected file belongs to, per clustering.
 - **The repository marker** is the commit prefix of the id, shown only when two repositories' clusters
   meet in one clustering.

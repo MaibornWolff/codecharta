@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { BehaviorSubject } from "rxjs"
+import { BehaviorSubject, Subject } from "rxjs"
 import { ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
 import { NodeInteraction } from "../../../stores/sharedView/sharedView.write.facade"
@@ -9,9 +9,12 @@ describe("ClusterHighlightService", () => {
     let kept$: BehaviorSubject<string[]>
     let service: ClusterHighlightService
     const setKeptHighlightFocus = jest.fn()
+    const mapMeshChanged$ = new Subject<void>()
+    const getMapMesh = jest.fn()
 
     beforeEach(() => {
         setKeptHighlightFocus.mockClear()
+        getMapMesh.mockReset()
         kept$ = new BehaviorSubject<string[]>([])
         const nodeInteraction: Partial<NodeInteraction> = {
             replaceKeptHighlight: (paths: string[]) => kept$.next(paths)
@@ -19,11 +22,52 @@ describe("ClusterHighlightService", () => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: NodeInteraction, useValue: nodeInteraction },
-                { provide: ThreeSceneService, useValue: { setKeptHighlightFocus } },
+                { provide: ThreeSceneService, useValue: { setKeptHighlightFocus, mapMeshChanged$, getMapMesh } },
                 { provide: SharedViewReadWindow, useValue: { keptHighlightPaths$: kept$ } }
             ]
         })
         service = TestBed.inject(ClusterHighlightService)
+    })
+
+    const meshWithBuildingsAt = (...paths: string[]) => ({
+        getBuildingByPath: (path: string) => (paths.includes(path) ? {} : undefined)
+    })
+
+    it("should count a file as on the map while no map is drawn yet", () => {
+        // Arrange
+        getMapMesh.mockReturnValue(undefined)
+
+        // Act
+        const isOnMap = service.isOnMap()
+
+        // Assert
+        expect(isOnMap("/a")).toBe(true)
+    })
+
+    it("should tell a file with a building from one without", () => {
+        // Arrange
+        getMapMesh.mockReturnValue(meshWithBuildingsAt("/a"))
+
+        // Act
+        const isOnMap = service.isOnMap()
+
+        // Assert
+        expect(isOnMap("/a")).toBe(true)
+        expect(isOnMap("/b")).toBe(false)
+    })
+
+    it("should follow the map when its mesh changes", () => {
+        // Arrange
+        getMapMesh.mockReturnValue(meshWithBuildingsAt("/a"))
+        const wasOnMap = service.isOnMap()("/b")
+
+        // Act
+        getMapMesh.mockReturnValue(meshWithBuildingsAt("/a", "/b"))
+        mapMeshChanged$.next()
+
+        // Assert
+        expect(wasOnMap).toBe(false)
+        expect(service.isOnMap()("/b")).toBe(true)
     })
 
     it("should light the files while hovering and put them out afterwards", () => {
