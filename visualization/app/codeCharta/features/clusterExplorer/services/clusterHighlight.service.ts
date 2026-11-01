@@ -1,5 +1,6 @@
 import { computed, effect, Injectable, inject, signal, untracked } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
+import { scan } from "rxjs"
 import { ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
 import { NodeInteraction } from "../../../stores/sharedView/sharedView.write.facade"
@@ -22,6 +23,17 @@ export class ClusterHighlightService {
     private readonly hoveredPaths = signal<string[] | null>(null)
     /** A hover shows its cluster alone, so what is kept waits here until the hover ends. */
     private keptBeforeHover: string[] = []
+
+    private readonly mapMeshChangeCount = toSignal(this.threeSceneService.mapMeshChanged$.pipe(scan(count => count + 1, 0)), {
+        initialValue: 0
+    })
+
+    // Only the drawn mesh knows: area, hidden flat buildings and the layout all decide who gets a building.
+    readonly isOnMap = computed(() => {
+        this.mapMeshChangeCount()
+        const mapMesh = this.threeSceneService.getMapMesh()
+        return (path: string) => !mapMesh || mapMesh.getBuildingByPath(path) !== undefined
+    })
 
     // Anything that clears the kept highlight, such as selecting a building, also ends the pin. A hover replaces
     // the kept highlight for its own sake, which says nothing about the pin.

@@ -36,6 +36,19 @@ export class ClusterExplorerComponent implements OnDestroy {
     readonly showsRealNames = computed(() => Object.keys(this.clusterings()).some(showsRealNames))
     readonly pinnedClusterId = this.highlight.pinnedClusterId
     readonly formatShare = formatClusterShare
+    readonly clusterIdsOffTheMap = computed(() => {
+        const isOnMap = this.highlight.isOnMap()
+        return new Set(
+            this.shares()
+                .rows.filter(row => !row.filePaths.some(path => isOnMap(path)))
+                .map(row => row.id)
+        )
+    })
+
+    titleOf(row: ClusterShareRow): string {
+        const fileCount = row.filePaths.length === 1 ? "1 file" : `${row.filePaths.length} files`
+        return this.clusterIdsOffTheMap().has(row.id) ? `${fileCount}, none of them on the map` : fileCount
+    }
 
     ngOnDestroy(): void {
         this.highlight.endHover()
