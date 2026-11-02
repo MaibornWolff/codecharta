@@ -12,7 +12,7 @@ import java.math.BigInteger
 /** A commit's author and co-authors, the author first. */
 internal data class CommitPeople(val hash: String, val people: List<String>)
 
-/** Writes authors by number, unless real names were asked for; an email or per-author commit data never reaches the map. */
+/** Writes authors by pseudonym, unless real names were asked for; an email or per-author commit data never reaches the map. */
 internal object AuthorOwnershipLens {
     private const val CLUSTERING_KEY = "author-ownership"
     private const val CLUSTERING_TITLE = "Author ownership"
@@ -37,13 +37,17 @@ internal object AuthorOwnershipLens {
                 membersByPerson.getOrPut(person) { mutableListOf() }.add(ClusterMember(nodeId, weight))
             }
         }
-        val clusters = numbered(commitsOldestFirst).mapNotNull { (person, number) ->
-            membersByPerson[person]?.let { members ->
-                clusterOf(firstCommitHash, number, if (withNames) person else "Author $number", members)
-            }
-        }
+        val pseudonyms = AuthorPseudonyms(firstCommitHash)
+        // Sorted by id, as the order of first commits would otherwise show through the pseudonyms
+        val clusters = peopleInOrderOfFirstCommit(commitsOldestFirst)
+            .mapIndexedNotNull { position, person ->
+                membersByPerson[person]?.let { members ->
+                    val pseudonym = pseudonyms.nameOf(position)
+                    clusterOf(firstCommitHash, pseudonym, if (withNames) person else pseudonym, members)
+                }
+            }.sortedBy { it.id }
         if (clusters.isEmpty()) return ClustersLens()
-        // A key of its own, so that merging a named map with a numbered one never mixes the two in one list
+        // A key of its own, so that merging a named map with a pseudonymous one never mixes the two in one list
         val key = if (withNames) CLUSTERING_KEY_WITH_NAMES else CLUSTERING_KEY
         val title = if (withNames) CLUSTERING_TITLE_WITH_NAMES else CLUSTERING_TITLE
         return ClustersLens(mapOf(key to Clustering(title, ClusterMembership.WEIGHTED, listOf(ANALYZER), clusters, WEIGHT_BASIS)))
@@ -67,14 +71,12 @@ internal object AuthorOwnershipLens {
             .filterValues { it > 0.0 }
     }
 
-    // Someone with no surviving line still takes up a number, so the numbers stay put as lines come and go
-    private fun numbered(commitsOldestFirst: List<CommitPeople>): List<Pair<String, Int>> = commitsOldestFirst
-        .flatMap { it.people }
-        .distinct()
-        .mapIndexed { index, person -> person to index + 1 }
+    // Someone with no surviving line still takes up a position, so the pseudonyms stay put as lines come and go
+    private fun peopleInOrderOfFirstCommit(commitsOldestFirst: List<CommitPeople>): List<String> =
+        commitsOldestFirst.flatMap { it.people }.distinct()
 
-    private fun clusterOf(firstCommitHash: String, number: Int, name: String, members: List<ClusterMember>): Cluster = Cluster(
-        id = "${firstCommitHash.take(REPOSITORY_MARKER_LENGTH)}-author-$number",
+    private fun clusterOf(firstCommitHash: String, pseudonym: String, name: String, members: List<ClusterMember>): Cluster = Cluster(
+        id = "${firstCommitHash.take(REPOSITORY_MARKER_LENGTH)}-author-${pseudonym.lowercase().replace(' ', '-')}",
         name = name,
         members = members.sortedBy { it.nodeId }
     )

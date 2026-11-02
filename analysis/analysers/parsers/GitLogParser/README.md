@@ -30,14 +30,16 @@ Additionally, the following Edge Metrics are calculated:
 
 The names of authors are saved when the `--add-author` flag is set.
 
-With `--author-ownership`, `repo-scan` also records who owns each file, by number: the share of the lines in the file
+With `--author-ownership`, `repo-scan` also records who owns each file, under an invented name: the share of the lines in the file
 today that each person last changed, from `git blame`. A line is split equally among its commit's author and everyone in
-a `Co-authored-by` trailer, bots and AI included. The map holds no names or emails. People are numbered by their first
-commit after applying `.mailmap`, so numbers stay the same as history grows, except in a shallow clone, which the parser
-warns about. Adding to `.mailmap` joins spellings of one person and moves the numbers after them. Uncommitted lines and binary files stay unattributed, and `.git-blame-ignore-revs` is honoured. The
+a `Co-authored-by` trailer, bots and AI included. The map holds no real names or emails. Each person gets a colour and an animal, such as **Teal Falcon**, from their
+place in the order of first commits after applying `.mailmap`, over word lists shuffled by the repository's first commit.
+No colour or animal repeats until one list runs out, at 71 people. The names stay the same as history grows, except in a
+shallow clone, which the parser warns about, and they differ between repositories. Adding to `.mailmap` joins spellings
+of one person and renames the people after them. Uncommitted lines and binary files stay unattributed, and `.git-blame-ignore-revs` is honoured. The
 scan blames every file, so it takes longer. `log-scan` has no repository to blame and rejects the flag.
 
-The numbers are pseudonymous, not anonymous: anyone with the repository can match them to people, so the map may
+The names are pseudonymous, not anonymous: anyone with the repository can match them to people by comparing `git blame`, so the map may
 still be personal data under GDPR. Treat and share it accordingly.
 
 `--with-author-names`, next to `--author-ownership`, opts out of this: the map then holds real names as git has them, under
@@ -69,7 +71,7 @@ As this parser can generate metrics based on a given git-log file or given a git
 | `log-scan`                          | use log-scan mode - generates cc.json from a given git-log file                     |
 | `repo-scan`                         | use repo-scan mode - generates cc.json from an automatically generated git-log file |
 | `--add-author`                      | add an array of authors to every file                                               |
-| `--author-ownership`                | add each author's share of each file by number, from `git blame` (repo-scan only)   |
+| `--author-ownership`                | add each author's share of each file under an invented name, from `git blame` (repo-scan only)   |
 | `--with-author-names`               | write real author names instead of numbers (needs `--author-ownership`)             |
 | `--commit-changes-since YYYY-MM-DD` | add what each commit since this day changed in each file (repo-scan only)           |
 | `--git-log=FILE`                    | git-log file to parse (only available for log-scan mode!)                           |

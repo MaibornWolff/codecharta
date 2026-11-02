@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test
 
 class AuthorOwnershipLensTest {
     private val firstCommit = "abcdef0123456789"
+    private val pseudonyms = AuthorPseudonyms(firstCommit)
+
+    private fun idOf(position: Int) = "abcdef0-author-${pseudonyms.nameOf(position).lowercase().replace(' ', '-')}"
 
     private fun commit(hash: String, vararg people: String) = CommitPeople(hash, people.toList())
 
@@ -15,7 +18,7 @@ class AuthorOwnershipLensTest {
         AuthorOwnershipLens.of(commits, blame).clusterings.getValue("author-ownership")
 
     @Test
-    fun `should number people by first commit and keep the number of one with no surviving line`() {
+    fun `should name people by first commit and keep the name of one with no surviving line`() {
         // Arrange
         val commits = listOf(commit(firstCommit, "Ann"), commit("c2", "Bob"), commit("c3", "Cid"))
         val blame = mapOf("a.kt" to FileBlame(mapOf(firstCommit to 1, "c3" to 1), 2))
@@ -24,8 +27,8 @@ class AuthorOwnershipLensTest {
         val clustering = clusteringOf(commits, blame)
 
         // Assert
-        assertThat(clustering.clusters.map { it.id }).containsExactly("abcdef0-author-1", "abcdef0-author-3")
-        assertThat(clustering.clusters.map { it.name }).containsExactly("Author 1", "Author 3")
+        assertThat(clustering.clusters.map { it.name }).containsExactlyInAnyOrder(pseudonyms.nameOf(0), pseudonyms.nameOf(2))
+        assertThat(clustering.clusters.map { it.id }).containsExactlyInAnyOrder(idOf(0), idOf(2))
     }
 
     @Test
@@ -56,8 +59,8 @@ class AuthorOwnershipLensTest {
         val clustering = lens.clusterings.getValue("author-ownership-with-names")
         assertThat(lens.clusterings.keys).containsExactly("author-ownership-with-names")
         assertThat(clustering.title).isEqualTo("Author ownership (real names)")
-        assertThat(clustering.clusters.map { it.name }).containsExactly("Ann Real", "Bob Real")
-        assertThat(clustering.clusters.map { it.id }).containsExactly("abcdef0-author-1", "abcdef0-author-2")
+        assertThat(clustering.clusters.map { it.name }).containsExactlyInAnyOrder("Ann Real", "Bob Real")
+        assertThat(clustering.clusters.map { it.id }).containsExactlyInAnyOrder(idOf(0), idOf(1))
     }
 
     @Test
@@ -86,7 +89,7 @@ class AuthorOwnershipLensTest {
         val clustering = clusteringOf(commits, blame)
 
         // Assert
-        assertThat(clustering.clusters.map { it.members.single().weight }).containsExactly(0.25, 0.75)
+        assertThat(clustering.clusters.map { it.members.single().weight }).containsExactlyInAnyOrder(0.25, 0.75)
     }
 
     @Test
@@ -99,7 +102,7 @@ class AuthorOwnershipLensTest {
         val clustering = clusteringOf(commits, blame)
 
         // Assert
-        assertThat(clustering.clusters.map { it.members.single().weight }).containsExactly(0.5, 0.3333, 0.1666)
+        assertThat(clustering.clusters.map { it.members.single().weight }).containsExactlyInAnyOrder(0.5, 0.3333, 0.1666)
     }
 
     @Test
@@ -125,7 +128,7 @@ class AuthorOwnershipLensTest {
         val clustering = clusteringOf(commits, blame)
 
         // Assert
-        assertThat(clustering.clusters.map { it.name }).containsExactly("Author 1")
+        assertThat(clustering.clusters.map { it.name }).containsExactly(pseudonyms.nameOf(0))
     }
 
     @Test

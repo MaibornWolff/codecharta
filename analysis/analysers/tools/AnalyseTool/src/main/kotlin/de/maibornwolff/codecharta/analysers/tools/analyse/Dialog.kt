@@ -31,13 +31,13 @@ class Dialog {
                 onInputReady = testCallback()
             )
             val authorOwnership = session.promptConfirm(
-                message = "Add numbered author ownership? Anyone with the repository can match the numbers to people.",
+                message = "Add author ownership under invented names? Anyone with the repository can match the invented names to people.",
                 initialChoice = false,
                 onInputReady = testCallback()
             )
             val withAuthorNames = authorOwnership &&
                 session.promptConfirm(
-                    message = "Write REAL author names into the map instead of numbers? Anyone who gets the map can read them.",
+                    message = "Write REAL author names into the map instead of invented ones? Anyone who gets the map can read them.",
                     initialChoice = false,
                     onInputReady = testCallback()
                 )
