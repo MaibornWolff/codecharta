@@ -1,23 +1,26 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership
 
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.util.GitCommand
 import de.maibornwolff.codecharta.model.ClustersLens
 import de.maibornwolff.codecharta.util.Logger
 import java.io.File
-import java.io.InputStream
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
 /** Measures who made the commits that last changed the lines each file holds today, and numbers them by their first commit. */
 class AuthorOwnershipScan(private val repositoryFolder: File, private val withNames: Boolean = false) {
+    private val git = GitCommand(repositoryFolder)
+
     fun lens(): ClustersLens = AuthorOwnershipLens.of(commitsOldestFirst(), blameByPath(), withNames)
 
-    fun isShallowClone(): Boolean = gitOrNull("rev-parse", "--is-shallow-repository") { it.bufferedReader().readText().trim() } == "true"
+    fun isShallowClone(): Boolean = git.isShallowClone()
 
     private fun commitsOldestFirst(): List<CommitPeople> {
         val format = "--format=%H%x00%aN%x00%(trailers:key=Co-authored-by,valueonly,separator=%x01)"
-        val rows = gitOrNull("-c", "i18n.logOutputEncoding=UTF-8", "log", "--reverse", "--topo-order", format) { output ->
-            output.bufferedReader(Charsets.UTF_8).useLines { lines -> lines.map { it.split(NUL) }.toList() }
-        }.orEmpty()
+        val rows = git
+            .outputOrNull("-c", "i18n.logOutputEncoding=UTF-8", "log", "--reverse", "--topo-order", format) { output ->
+                output.bufferedReader(Charsets.UTF_8).useLines { lines -> lines.map { it.split(NUL) }.toList() }
+            }.orEmpty()
         val nameByCoAuthor = mappedNames(rows.flatMap { coAuthorsIn(it) }.distinct())
         return rows.map { row ->
             CommitPeople(row[0], (listOf(row[1]) + coAuthorsIn(row).map { nameByCoAuthor.getValue(it) }).distinct())
@@ -33,7 +36,7 @@ class AuthorOwnershipScan(private val repositoryFolder: File, private val withNa
         val input = File.createTempFile("co-authors", ".txt")
         try {
             input.writeText(withEmail.joinToString("\n", postfix = "\n"), Charsets.UTF_8)
-            val mapped = gitOrNull("check-mailmap", "--stdin", input = input) { it.bufferedReader(Charsets.UTF_8).readLines() }
+            val mapped = git.outputOrNull("check-mailmap", "--stdin", input = input) { it.bufferedReader(Charsets.UTF_8).readLines() }
             val contacts = if (mapped?.size == withEmail.size) withEmail.zip(mapped).toMap() else emptyMap()
             return coAuthors.associateWith { nameOf(contacts[it] ?: it) }
         } finally {
@@ -58,25 +61,20 @@ class AuthorOwnershipScan(private val repositoryFolder: File, private val withNa
         }
     }
 
-    private fun trackedPaths(): List<String> = gitOrNull("ls-tree", "-r", "-z", "HEAD") { output ->
-        nulSeparated(output)
-            .map { it.split(TAB, limit = 2) }
-            .filter { (modeTypeAndHash, _) -> modeTypeAndHash.split(" ")[1] == BLOB_TYPE }
-            .map { (_, path) -> path }
-    }.orEmpty()
-
-    private fun binaryPaths(): Set<String> {
-        val emptyTree = gitOrNull("hash-object", "-t", "tree", "--stdin") { it.bufferedReader().readText().trim() } ?: return emptySet()
-        return gitOrNull("diff", "--numstat", "-z", "--no-renames", "--relative", emptyTree, "HEAD") { output ->
-            nulSeparated(output)
-                .filter { it.startsWith(BINARY_NUMSTAT_PREFIX) }
-                .map { it.removePrefix(BINARY_NUMSTAT_PREFIX) }
-                .toSet()
+    private fun trackedPaths(): List<String> = git
+        .outputOrNull("ls-tree", "-r", "-z", "HEAD") { output ->
+            git
+                .nulSeparated(output)
+                .map { it.split(TAB, limit = 2) }
+                .filter { (modeTypeAndHash, _) -> modeTypeAndHash.split(" ")[1] == BLOB_TYPE }
+                .map { (_, path) -> path }
         }.orEmpty()
-    }
 
-    private fun nulSeparated(output: InputStream): List<String> =
-        output.readBytes().toString(Charsets.UTF_8).split(NUL).filter { it.isNotEmpty() }
+    private fun binaryPaths(): Set<String> = git
+        .numstatOfHead()
+        .filter { it.startsWith(BINARY_NUMSTAT_PREFIX) }
+        .map { it.removePrefix(BINARY_NUMSTAT_PREFIX) }
+        .toSet()
 
     // Without a revision blame reads the working tree, so a file deleted there fails on its own and lines not yet
     // committed count towards the file's total without belonging to anyone.
@@ -84,19 +82,9 @@ class AuthorOwnershipScan(private val repositoryFolder: File, private val withNa
         val ignoreRevisions =
             if (File(repositoryFolder, IGNORE_REVISIONS_FILE).isFile) arrayOf("--ignore-revs-file=$IGNORE_REVISIONS_FILE") else emptyArray()
         val arguments = arrayOf("blame", "--line-porcelain", "-w", "-M") + ignoreRevisions + arrayOf("--", path)
-        val blame = gitOrNull(*arguments, read = BlameOutput::parse)
+        val blame = git.outputOrNull(*arguments, read = BlameOutput::parse)
         if (blame == null) Logger.warn { "Could not blame $path, so its lines stay without an author." }
         return blame?.takeIf { it.totalLines > 0 }
-    }
-
-    private fun <T> gitOrNull(vararg arguments: String, input: File = EMPTY_INPUT, read: (InputStream) -> T): T? {
-        val process = ProcessBuilder(listOf("git") + arguments)
-            .directory(repositoryFolder)
-            .redirectInput(ProcessBuilder.Redirect.from(input))
-            .redirectError(ProcessBuilder.Redirect.DISCARD)
-            .start()
-        val result = process.inputStream.use(read)
-        return result.takeIf { process.waitFor() == 0 }
     }
 
     companion object {
@@ -125,6 +113,5 @@ class AuthorOwnershipScan(private val repositoryFolder: File, private val withNa
         private const val BLOB_TYPE = "blob"
         private const val BINARY_NUMSTAT_PREFIX = "-\t-\t"
         private const val IGNORE_REVISIONS_FILE = ".git-blame-ignore-revs"
-        private val EMPTY_INPUT = File(if (System.getProperty("os.name").startsWith("Windows")) "NUL" else "/dev/null")
     }
 }
