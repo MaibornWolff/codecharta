@@ -1,14 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, inject, input, OnDestroy, output } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { DomainWord } from "../../../../model/codeCharta.model"
-import { ExplorerScrollHostService } from "../../../sidebarExplorer/facade"
+import { ExplorerScrollHostService, ListViewport, listWindow } from "../../../sidebarExplorer/facade"
 import { DomainWordOccurrencesReadStore } from "../../stores/domainWordOccurrences.read.store"
 import { matchingWords } from "../../util/matchingWords"
 import { sortWords, WordSorting, WordSortingOption } from "../../util/sortWords"
-import { wordListWindow } from "../../util/wordListWindow"
 import { DomainWordOccurrenceTreeComponent } from "../domainWordOccurrenceTree/domainWordOccurrenceTree.component"
 import { DomainWordRowComponent } from "../domainWordRow/domainWordRow.component"
-import { WordListViewport } from "./wordListViewport"
 
 @Component({
     selector: "cc-domain-word-list",
@@ -21,7 +19,7 @@ export class DomainWordListComponent implements OnDestroy {
     private readonly readStore = inject(DomainWordOccurrencesReadStore)
     private readonly hostElement = inject<ElementRef<HTMLElement>>(ElementRef)
     private readonly scrollHostService = inject(ExplorerScrollHostService)
-    private readonly viewport = new WordListViewport()
+    private readonly viewport = new ListViewport("cc-domain-word-row")
 
     readonly query = input("")
     readonly sorting = input<WordSorting>({ option: WordSortingOption.OCCURRENCES, ascending: false })
@@ -60,7 +58,7 @@ export class DomainWordListComponent implements OnDestroy {
     }))
 
     /** A project can carry thousands of words, so only the slice on screen is rendered. */
-    protected readonly window = computed(() => wordListWindow(this.geometry()))
+    protected readonly window = computed(() => listWindow(this.geometry()))
 
     protected readonly renderedWords = computed(() => {
         const { firstIndex, lastIndex } = this.window()

@@ -1,4 +1,4 @@
-export interface WordListGeometry {
+export interface ListGeometry {
     rowCount: number
     rowHeight: number
     /** How far the list's top has scrolled past the top of the scroll container. */
@@ -6,7 +6,7 @@ export interface WordListGeometry {
     viewportHeight: number
 }
 
-export interface WordListWindow {
+export interface ListWindow {
     firstIndex: number
     /** Inclusive. */
     lastIndex: number
@@ -20,11 +20,10 @@ const OVERSCAN_ROWS = 6
 const UNMEASURED_ROWS = 50
 
 /**
- * Which slice of the word list is worth rendering, and how tall the spacers above and below it have to
- * be so the scrollbar still measures the whole list. Every row is the same height: the word that is
- * open is not among them, it sits in the pin above the list.
+ * Which slice of a long list is worth rendering, and how tall the spacers above and below it have to
+ * be so the scrollbar still measures the whole list. Every row has to be the same height.
  */
-export function wordListWindow(geometry: WordListGeometry): WordListWindow {
+export function listWindow(geometry: ListGeometry): ListWindow {
     const { rowCount, rowHeight, scrolledPast, viewportHeight } = geometry
     if (rowCount === 0) {
         return everyRow(geometry)
@@ -43,11 +42,11 @@ export function wordListWindow(geometry: WordListGeometry): WordListWindow {
     }
 }
 
-function everyRow({ rowCount }: WordListGeometry): WordListWindow {
+function everyRow({ rowCount }: ListGeometry): ListWindow {
     return { firstIndex: 0, lastIndex: rowCount - 1, topSpacerHeight: 0, bottomSpacerHeight: 0 }
 }
 
-function firstRows({ rowCount, rowHeight }: WordListGeometry): WordListWindow {
+function firstRows({ rowCount, rowHeight }: ListGeometry): ListWindow {
     const lastIndex = Math.min(UNMEASURED_ROWS, rowCount) - 1
     return {
         firstIndex: 0,
