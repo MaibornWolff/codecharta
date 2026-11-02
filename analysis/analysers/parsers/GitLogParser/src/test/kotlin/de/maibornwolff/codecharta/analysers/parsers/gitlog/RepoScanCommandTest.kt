@@ -44,6 +44,21 @@ class RepoScanCommandTest {
     }
 
     @Test
+    fun `should refuse a commit changes day that is no date`() {
+        // Arrange
+        val commandLine = CommandLine(RepoScanCommand())
+        val errors = StringWriter()
+        commandLine.err = PrintWriter(errors)
+
+        // Act
+        val exitCode = commandLine.execute("--repo-path=.", "--commit-changes-since=6 months ago")
+
+        // Assert
+        Assertions.assertThat(exitCode).isNotZero()
+        Assertions.assertThat(errors.toString()).contains("--commit-changes-since")
+    }
+
+    @Test
     fun `should stop execution if input files are invalid`() {
         mockkObject(InputHelper)
         every {

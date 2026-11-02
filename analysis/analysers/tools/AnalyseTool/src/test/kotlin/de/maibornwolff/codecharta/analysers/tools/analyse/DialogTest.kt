@@ -53,7 +53,12 @@ class DialogTest {
         // Act
         testSession { terminal ->
             every { Dialog.Companion.testCallback() } returnsMany
-                listOf(typeText(terminal, projectFolder.path), typeText(terminal, "shop.cc.json"), typeText(terminal, "generated,vendor"))
+                listOf(
+                    typeText(terminal, projectFolder.path),
+                    typeText(terminal, "shop.cc.json"),
+                    typeText(terminal, "generated,vendor"),
+                    typeText(terminal, "")
+                )
             arguments = collectAnalyserArgs(this)
         }
 
@@ -76,6 +81,7 @@ class DialogTest {
                     typeText(terminal, ""),
                     typeText(terminal, ""),
                     pressYes,
+                    typeText(terminal, ""),
                     typeText(terminal, "")
                 )
             arguments = collectAnalyserArgs(this)
@@ -83,6 +89,29 @@ class DialogTest {
 
         // Assert
         assertThat(arguments).containsExactly(projectFolder.path, "--author-ownership")
+    }
+
+    @Test
+    fun `should add commit changes only when a day is entered`() {
+        // Arrange
+        mockkObject(Dialog.Companion)
+        var arguments: List<String> = emptyList()
+
+        // Act
+        testSession { terminal ->
+            every { Dialog.Companion.testCallback() } returnsMany
+                listOf(
+                    typeText(terminal, projectFolder.path),
+                    typeText(terminal, ""),
+                    typeText(terminal, ""),
+                    { terminal.press(Keys.ENTER) },
+                    typeText(terminal, "2026-01-31")
+                )
+            arguments = collectAnalyserArgs(this)
+        }
+
+        // Assert
+        assertThat(arguments).containsExactly(projectFolder.path, "--commit-changes-since=2026-01-31")
     }
 
     @Test
@@ -95,7 +124,14 @@ class DialogTest {
         testSession { terminal ->
             val pressYes: suspend RunScope.() -> Unit = { terminal.press(Keys.LEFT, Keys.ENTER) }
             every { Dialog.Companion.testCallback() } returnsMany
-                listOf(typeText(terminal, projectFolder.path), typeText(terminal, ""), typeText(terminal, ""), pressYes, pressYes)
+                listOf(
+                    typeText(terminal, projectFolder.path),
+                    typeText(terminal, ""),
+                    typeText(terminal, ""),
+                    pressYes,
+                    pressYes,
+                    typeText(terminal, "")
+                )
             arguments = collectAnalyserArgs(this)
         }
 

@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.gitlog
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.commitchanges.CommitChangesScan
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
@@ -54,6 +55,9 @@ class LogScanCommand : AnalyserInterface {
     @CommandLine.Option(names = [AuthorOwnershipScan.FLAG], hidden = true)
     private var authorOwnership = false
 
+    @CommandLine.Option(names = [CommitChangesScan.FLAG], hidden = true)
+    private var commitChangesSince: String? = null
+
     override val name = NAME
     override val description = DESCRIPTION
 
@@ -64,6 +68,7 @@ class LogScanCommand : AnalyserInterface {
 
     override fun call(): Unit? {
         require(!authorOwnership) { AuthorOwnershipScan.NEEDS_REPOSITORY_HINT }
+        require(commitChangesSince == null) { CommitChangesScan.NEEDS_REPOSITORY_HINT }
         require(InputHelper.isInputValidAndNotNull(arrayOf(gitLogFile), canInputContainFolders = false)) {
             "Input invalid file for GitLogScan, stopping execution..."
         }

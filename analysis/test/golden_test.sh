@@ -127,6 +127,37 @@ check_gitlogparser_author_ownership() {
   done
 }
 
+check_gitlogparser_commit_changes() {
+  echo " -- expect GitLogParser repo-scan to write the same commit changes on every run, and modify to keep them"
+  COMMIT_CHANGES_REPO="$(mktemp -d "${TEMP_DIR}/commit_changes_repo.XXXXXX")"
+  ACTUAL_COMMIT_CHANGES_FIRST="${TEMP_DIR}/actual_commit_changes_first.cc.json"
+  ACTUAL_COMMIT_CHANGES_SECOND="${TEMP_DIR}/actual_commit_changes_second.cc.json"
+  ACTUAL_COMMIT_CHANGES_MOVED="${TEMP_DIR}/actual_commit_changes_moved.cc.json"
+  git -C "${COMMIT_CHANGES_REPO}" init -q
+  OWNERSHIP_REPO="${COMMIT_CHANGES_REPO}"
+  commit_ownership_fixture_file "Golden First" "1\n2\n3\n4\n"
+  mkdir "${COMMIT_CHANGES_REPO}/src"
+  printf "1\n" >"${COMMIT_CHANGES_REPO}/src/util.kt"
+  commit_ownership_fixture_file "Golden Second" "1\n2\n3\nfour\n"
+
+  "${CCSH}" gitlogparser repo-scan --repo-path "${COMMIT_CHANGES_REPO}" --commit-changes-since=2000-01-01 -o "${ACTUAL_COMMIT_CHANGES_FIRST}" --silent=true -nc
+  "${CCSH}" gitlogparser repo-scan --repo-path "${COMMIT_CHANGES_REPO}" --commit-changes-since=2000-01-01 -o "${ACTUAL_COMMIT_CHANGES_SECOND}" --silent=true -nc
+  validate "${ACTUAL_COMMIT_CHANGES_FIRST}"
+  if ! diff -q -- "${ACTUAL_COMMIT_CHANGES_FIRST}" "${ACTUAL_COMMIT_CHANGES_SECOND}"; then
+    exit_with_err "Two runs of the commit changes differ"
+  fi
+  if grep -q "Golden" "${ACTUAL_COMMIT_CHANGES_FIRST}"; then
+    exit_with_err "The commit changes wrote a name"
+  fi
+  "${CCSH}" modify "${ACTUAL_COMMIT_CHANGES_FIRST}" --move-from=root/src --move-to=root/moved -o "${ACTUAL_COMMIT_CHANGES_MOVED}"
+  validate "${ACTUAL_COMMIT_CHANGES_MOVED}"
+  for actual in "${ACTUAL_COMMIT_CHANGES_FIRST}" "${ACTUAL_COMMIT_CHANGES_MOVED}"; do
+    if ! grep -qF -- '"changed_files":2,"changed_lines":3' "${actual}"; then
+      exit_with_err "${actual} lost the attributes of a commit"
+    fi
+  done
+}
+
 check_csvexporter() {
   echo " -- expect CSVexporter to produce correct csv table"
   ACTUAL_CSVEXPORT="${TEMP_DIR}/actual_csvexport.csv"
@@ -385,6 +416,7 @@ run_tests() {
   check_gitlogparser_log_scan
   check_gitlogparser_repo_scan
   check_gitlogparser_author_ownership
+  check_gitlogparser_commit_changes
   check_csvexporter
   check_edgefilter
   check_mergefilter

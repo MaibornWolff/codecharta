@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.tools.analyse
 
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.RepoScanCommand
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.commitchanges.CommitChangesScan
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.SVNLogParser
 import java.io.File
@@ -39,13 +40,14 @@ class HistoryFinder(private val svnLogWriter: SvnLogWriter, private val homeFold
         VersionControl.SVN -> svnHistory(request.analysedFolder, workFolder)
     }
 
-    // The analyse run prints the ownership hints itself, after the map line, so the scan keeps them back.
+    // The analyse run prints the cluster hints itself, after the map line, so the scan keeps them back.
     private fun gitHistory(request: AnalyseRequest): ConfiguredAnalyser = ConfiguredAnalyser(
-        RepoScanCommand(printsOwnershipHints = false),
+        RepoScanCommand(printsClusterHints = false),
         listOf("--repo-path", request.analysedFolder.path) +
             listOfNotNull(
                 AuthorOwnershipScan.FLAG.takeIf { request.authorOwnership },
-                AuthorOwnershipScan.NAMES_FLAG.takeIf { request.withAuthorNames }
+                AuthorOwnershipScan.NAMES_FLAG.takeIf { request.withAuthorNames },
+                request.commitChangesSince?.let { "${CommitChangesScan.FLAG}=$it" }
             ),
         readsProjectFolder = false
     )

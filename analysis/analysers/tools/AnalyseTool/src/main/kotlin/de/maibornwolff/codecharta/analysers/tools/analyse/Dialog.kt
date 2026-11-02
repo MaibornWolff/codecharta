@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.tools.analyse
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.commitchanges.CommitChangesScan
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.promptConfirm
@@ -40,12 +41,22 @@ class Dialog {
                     initialChoice = false,
                     onInputReady = testCallback()
                 )
+            val commitChangesSince = session
+                .promptInput(
+                    message = CommitChangesScan.DIALOG_QUESTION,
+                    hint = CommitChangesScan.DIALOG_HINT,
+                    allowEmptyInput = true,
+                    invalidInputMessage = CommitChangesScan.DIALOG_INVALID_DATE,
+                    inputValidator = CommitChangesScan::isDate,
+                    onInputReady = testCallback()
+                ).trim()
             return listOfNotNull(
                 projectFolder,
                 outputFile.ifBlank { null }?.let { "--output-file=$it" },
                 exclude.ifBlank { null }?.let { "--exclude=$it" },
                 AuthorOwnershipScan.FLAG.takeIf { authorOwnership },
-                AuthorOwnershipScan.NAMES_FLAG.takeIf { withAuthorNames }
+                AuthorOwnershipScan.NAMES_FLAG.takeIf { withAuthorNames },
+                commitChangesSince.ifEmpty { null }?.let { "${CommitChangesScan.FLAG}=$it" }
             )
         }
 

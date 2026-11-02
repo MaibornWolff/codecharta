@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.commit.CommitAnalysisContext
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.commitchanges.CommitChangesScan
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.util.CodeChartaConstants
@@ -12,6 +13,7 @@ import de.maibornwolff.codecharta.util.FileExtension
 import picocli.CommandLine
 import java.io.File
 import java.io.PrintStream
+import java.time.LocalDate
 
 @CommandLine.Command(
     name = AnalyseTool.NAME,
@@ -79,6 +81,13 @@ class AnalyseTool(
     )
     private var withAuthorNames = false
 
+    @CommandLine.Option(
+        names = [CommitChangesScan.FLAG],
+        paramLabel = CommitChangesScan.DATE_LABEL,
+        description = [CommitChangesScan.OPTION_DESCRIPTION]
+    )
+    private var commitChangesSince: LocalDate? = null
+
     @CommandLine.Option(names = ["-p", "--parallel"], description = ["runs the analysers at the same time"])
     private var parallel = false
 
@@ -106,6 +115,9 @@ class AnalyseTool(
         if (authorOwnership && VersionControl.GIT.label in leftOutSources) {
             throw AnalysisException("${AuthorOwnershipScan.FLAG} needs the git history, which --without leaves out.")
         }
+        if (commitChangesSince != null && VersionControl.GIT.label in leftOutSources) {
+            throw AnalysisException("${CommitChangesScan.FLAG} needs the git history, which --without leaves out.")
+        }
         val console = AnalysisConsole(output, quiet)
         val commitRef = commitRef()
         val checkout = console.whileAnalysing { CommitAnalysisContext.at(folder, commitRef) }
@@ -128,7 +140,8 @@ class AnalyseTool(
         commitHash = checkout.shortHash,
         localChanges = localChanges,
         authorOwnership = authorOwnership,
-        withAuthorNames = withAuthorNames
+        withAuthorNames = withAuthorNames,
+        commitChangesSince = commitChangesSince
     )
 
     private fun commitRef(): String? {
