@@ -123,7 +123,7 @@ removed nodes; a cluster left without members goes too, unless a surviving clust
   "weightBasis": "loc",
   "analyzers": ["gitlogparser"],
   "clusters": [
-    { "id": "a1b2c3d-author-3", "name": "Author 3",
+    { "id": "a1b2c3d-author-teal-falcon", "name": "Teal Falcon",
       "members": [ { "nodeId": "<file node id>", "weight": 0.62 } ] }
   ]
 } } }
@@ -135,16 +135,22 @@ removed nodes; a cluster left without members goes too, unless a surviving clust
   rounded down to 4 decimals, so a file's weights sum to at most 1, and a share too small to show at
   that precision is left out.
 - **The id** starts with the first 7 characters of the repository's first commit, then the author's
-  number, so the clusters of two repositories stay apart when their maps are merged.
-- **The number** counts people in the order of their first commit, as author or co-author, after applying
-  `.mailmap` to both, and someone with no surviving line keeps theirs, so numbers hold as history grows.
-  Changing `.mailmap` joins people and so moves the numbers after them. A shallow clone does not see the
-  first commits, so its numbers are not stable, and the producer warns about it.
-- **Names stay out of the file by default**: no name, email or per-author commit data, and no cluster `attributes`.
+  pseudonym, so the clusters of two repositories stay apart when their maps are merged. Clusters are sorted by id,
+  so their order does not give away who came first.
+- **The pseudonym** is a colour and an animal, picked by the person's place in the order of first commits, as author or
+  co-author, after applying `.mailmap` to both, from word lists shuffled by the repository's first commit. Someone with no
+  surviving line keeps theirs, so names hold as history grows. The lists walk in step and have coprime sizes, 71 and 73:
+  no word repeats before a list runs out, no pair before 5,183 people, and then a suffix keeps names unique. The lists hold
+  no word with a rude or insulting reading and are frozen, because changing one renames everyone.
+  Changing `.mailmap` joins people and so renames the people after them. A shallow clone does not see the
+  first commits, so its names are not stable, and the producer warns about it.
+- **No hashing**: a plain hash of a name can be recomputed from a list of employees, a keyed one needs a key kept safe,
+  and a hash picking from a word list collides.
+- **Real names stay out of the file by default**: no name, email or per-author commit data, and no cluster `attributes`.
   `--with-author-names` opts out for names alone: the cluster `name` is then the person's name, under the clustering
-  `author-ownership-with-names` titled "Author ownership (real names)", so a merge never mixes it with numbered clusters.
+  `author-ownership-with-names` titled "Author ownership (real names)", so a merge never mixes it with pseudonymous clusters.
   The CLI warns last, even with `--silent`, and the Clusters tab warns whenever a loaded map holds that clustering.
-  The numbers are pseudonymous, not anonymous: anyone with the repository can match them to people,
+  The pseudonyms are not anonymous: anyone with the repository can match them to people by comparing `git blame`,
   so a map may still be personal data under GDPR.
 - **Not attributed** is what is left of a file: uncommitted lines, and all of a binary or empty file.
 
@@ -188,10 +194,10 @@ issue importer or a coverage importer, the last two as `overlay`.
 The metrics view offers a Clusters tab in the explorer while a loaded file carries clusters, outside
 compare mode. It lists the clusters of one clustering, picked by `title`, flat: `parentId` is not drawn yet.
 
-- **The total** of a cluster is the sum of its weights over the files shown, divided by the number of
-  files shown, so exclusions and folder focus apply and each file counts the same whatever its size.
-  It is labelled "share of files" for that reason, and does not read `weightBasis`, so a map without
-  that metric works.
+- **The total** of a cluster is `Σ weight × basis ÷ Σ basis` over the files shown, where basis is the clustering's
+  `weightBasis`, so exclusions and folder focus apply and a file counts by its size. It is labelled "share of lines"
+  for `loc` and names any other metric. Where no shown file holds that metric, every file counts the same instead,
+  labelled "share of files", so a map from the git log alone still works.
 - **"Not attributed"** is 1 minus the sum of those totals. An `overlay` has none, as its weights are never summed.
 - **Hover** shows only that cluster's shown files, replacing whatever the kept highlight holds until it ends; **a click**
   pins it into the kept highlight. Either greys the rest of the 3D map and limits its labels to those files.

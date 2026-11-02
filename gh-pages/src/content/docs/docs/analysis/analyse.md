@@ -38,7 +38,7 @@ back through it.
 | `-e, --exclude=<patterns>` | comma-separated regex patterns of files and folders that every code parser skips    |
 | `--without=NAME[,NAME...]` | parsers or histories to leave out, such as `--without=dependencyparser,svn`         |
 | `--local-changes`          | maps only the files that differ from the remote tracking branch                     |
-| `--author-ownership`       | adds each author's share of each file by number, from `git blame`                   |
+| `--author-ownership`       | adds each author's share of each file under an invented name, from `git blame`                   |
 | `--with-author-names`      | writes real author names instead of numbers (needs `--author-ownership`)            |
 | `--commit-changes-since YYYY-MM-DD` | adds what each commit since this day changed in each file                  |
 | `--commit=REF`             | maps the codebase at a git commit, tag, branch or date                              |
@@ -69,7 +69,7 @@ The two options cannot be combined.
 [Git Log Parser](/docs/parser/git-log), and the [Explorer](/docs/visualization/user-controls/explorer#clusters) shows it.
 It needs the git history, so it cannot be combined with `--without=git`.
 
-The numbers are pseudonymous, not anonymous: anyone with the repository can match them to people, so the map may
+The names are pseudonymous, not anonymous: anyone with the repository can match them to people by comparing `git blame`, so the map may
 still be personal data under GDPR. Treat and share it accordingly.
 
 `--with-author-names`, next to `--author-ownership`, opts out of this: the map then holds real names as git has them, under
