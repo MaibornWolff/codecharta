@@ -28,9 +28,12 @@ Metric view adds a [Clusters](#clusters) tab when a loaded map carries clusters.
 A map made with [`--author-ownership` or `--commit-changes-since`](/docs/parser/git-log) or another producer of clusters has a **Clusters** tab, except while [comparing](/docs/visualization/user-controls/compare) two maps. It lists
 the clusters of one clustering; pick another by its title if the map has several.
 
-- Each row shows the cluster's **share of files**: every file shown on the map counts the same, whatever its size, and
-  excluding files or focusing a folder changes the shares. A 5-line file counts as much as a 5,000-line one.
-- **Not attributed** is the share nobody holds, such as binary files and uncommitted lines.
+- Each row shows the cluster's **share of lines**: how many of the lines in the files shown on the map it holds.
+  Excluding files or focusing a folder changes the shares. A map without line counts, such as one from the git log alone,
+  shows a **share of files** instead, where every file counts the same whatever its size. Another clustering may measure
+  something else, which the label above the list names.
+- **Not attributed** is the share nobody holds, such as uncommitted lines. For commits, shares overlap, so they can add up
+  to more than 100% and this row does not appear.
 - Hover a row to show only its files on the map, whatever else is kept lit: they stay in colour with labels, and the
   rest turns grey. Click it to keep them lit,
   which marks the row with a border; click again to let go.
@@ -38,10 +41,11 @@ the clusters of one clustering; pick another by its title if the map has several
   one of those values above the list to sort by it, highest or newest first. A list of more than ten clusters can be
   filtered by name.
 - **Not on the map** marks a cluster none of whose shown files has a building.
-- Authors appear as numbers, such as **Author 3**. If the map joins two repositories, each row also shows a short
-  marker for its repository, because their numbers count separately.
+- Authors appear under invented names, such as **Teal Falcon**. If the map joins two repositories, each row also shows a
+  short marker for its repository, because the same name can stand for different people there.
 
-Author numbers are pseudonymous: anyone with the repository can match them to people, so such a map may still be
+Invented names are pseudonymous, not anonymous: anyone with the repository can match them to people by comparing
+`git blame`, so such a map may still be
 personal data under GDPR. A map made with `--with-author-names` lists real names instead, and the tab warns about it.
 
 ## Searching
