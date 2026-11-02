@@ -16,20 +16,22 @@ class CommitChangesScan(repositoryFolder: File, private val since: LocalDate) {
     fun isShallowClone(): Boolean = git.isShallowClone()
 
     private fun commitsNewestFirst(): List<LoggedCommit> {
+        val sinceEpochSecond = since.atStartOfDay(ZoneOffset.UTC).toEpochSecond()
         val output = git.outputOrNull(
             "-c",
             "i18n.logOutputEncoding=UTF-8",
             "log",
             "--no-merges",
             "--topo-order",
-            "--since=${since.atStartOfDay(ZoneOffset.UTC).toEpochSecond()}",
+            "--since=$sinceEpochSecond",
             "--relative",
             "-M",
             "--numstat",
             "-z",
             CommitLogOutput.FORMAT
         ) { it.readBytes().toString(Charsets.UTF_8) }
-        return CommitLogOutput.parse(output.orEmpty())
+        // Git reads a far-future --since as the current time, which lets a commit of this very second through
+        return CommitLogOutput.parse(output.orEmpty()).filter { it.committedAtEpochSecond >= sinceEpochSecond }
     }
 
     private fun linesByPathToday(): Map<String, Int?> = git.numstatOfHead().associate { row ->
