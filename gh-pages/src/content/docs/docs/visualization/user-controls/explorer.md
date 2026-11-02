@@ -32,6 +32,7 @@ the clusters of one clustering; pick another by its title if the map has several
   Excluding files or focusing a folder changes the shares. A map without line counts, such as one from the git log alone,
   shows a **share of files** instead, where every file counts the same whatever its size. Another clustering may measure
   something else, which the label above the list names.
+- An author also shows **Lines owned**, counted over the files shown like the share, and the list can sort by it.
 - **Not attributed** is the share nobody holds, such as uncommitted lines. For commits, shares overlap, so they can add up
   to more than 100% and this row does not appear.
 - Hover a row to show only its files on the map, whatever else is kept lit: they stay in colour with labels, and the

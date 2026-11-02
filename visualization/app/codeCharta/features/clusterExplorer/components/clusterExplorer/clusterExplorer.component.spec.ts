@@ -1,6 +1,6 @@
 import { signal } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
-import { render, screen } from "@testing-library/angular"
+import { render, screen, within } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { BehaviorSubject, of } from "rxjs"
 import { ClusteringsData } from "../../../../model/codeCharta.model"
@@ -96,6 +96,19 @@ describe("ClusterExplorerComponent", () => {
 
         // Assert
         expect(screen.getByTestId("cluster-explorer-share-label").textContent).toBe("share of lines")
+    })
+
+    it("should show and sort by the lines an author owns, with the share named after what it measures", async () => {
+        // Arrange & Act
+        await setup({ authors: { ...AUTHORS["author-ownership"], weightBasis: "loc" } })
+
+        // Assert
+        expect(screen.getAllByTestId("cluster-explorer-attributes").map(line => line.textContent)).toEqual([
+            "Lines owned: 25",
+            "Lines owned: 8"
+        ])
+        const options = within(screen.getByTestId("cluster-explorer-sort")).getAllByRole("option")
+        expect(options.map(option => option.textContent)).toEqual(["Share of lines", "Lines owned"])
     })
 
     const rowTexts = () => screen.getAllByTestId("cluster-explorer-row").map(row => row.textContent?.replace(/\s+/g, " ").trim())

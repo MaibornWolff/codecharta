@@ -198,6 +198,8 @@ compare mode. It lists the clusters of one clustering, picked by `title`, flat: 
   `weightBasis`, so exclusions and folder focus apply and a file counts by its size. It is labelled "share of lines"
   for `loc` and names any other metric. Where no shown file holds that metric, every file counts the same instead,
   labelled "share of files", so a map from the git log alone still works.
+- **Lines owned** is `Σ weight × loc` over the files shown, rounded, derived in a `weighted` clustering based on `loc`. No
+  wire field holds it, so it follows exclusions and focus, and an overlay has none, as its weights do not mean ownership.
 - **"Not attributed"** is 1 minus the sum of those totals. An `overlay` has none, as its weights are never summed.
 - **Hover** shows only that cluster's shown files, replacing whatever the kept highlight holds until it ends; **a click**
   pins it into the kept highlight. Either greys the rest of the 3D map and limits its labels to those files.

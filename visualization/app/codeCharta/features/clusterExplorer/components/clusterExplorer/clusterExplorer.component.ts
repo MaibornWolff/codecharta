@@ -43,9 +43,9 @@ export class ClusterExplorerComponent implements OnDestroy {
         const clustering = this.activeClustering()
         return clustering
             ? clusterSharesOf(clustering, this.shownFiles())
-            : { rows: [], notAttributedShare: null, shareLabel: SHARE_OF_FILES }
+            : { rows: [], notAttributedShare: null, shareLabel: SHARE_OF_FILES, attributeTitles: {} }
     })
-    readonly sortOptions = computed(() => sortOptionsOf(this.activeClustering()))
+    readonly sortOptions = computed(() => sortOptionsOf(this.shares().shareLabel, this.shares().attributeTitles))
     readonly activeSort = computed(() => this.sortOptions().find(option => option.key === this.chosenSort())?.key ?? BY_SHARE)
     readonly showsFilter = computed(() => this.shares().rows.length > MOST_ROWS_WITHOUT_FILTER || this.filterText() !== "")
     readonly rows = computed(() => matchingRowsInOrder(this.shares().rows, this.filterText(), this.activeSort()))
@@ -72,7 +72,7 @@ export class ClusterExplorerComponent implements OnDestroy {
     }
 
     summaryOf(row: ClusterShareRow): string {
-        return attributeSummaryOf(row, this.activeClustering()?.attributeTitles, this.activeSort())
+        return attributeSummaryOf(row, this.shares().attributeTitles, this.activeSort())
     }
 
     titleOf(row: ClusterShareRow): string {
