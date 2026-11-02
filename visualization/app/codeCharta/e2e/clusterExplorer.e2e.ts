@@ -50,7 +50,8 @@ test.describe("Cluster explorer", () => {
         await page.getByTestId("cluster-explorer-picker").selectOption({ label: "Teams" })
 
         // Assert
-        await expect(row(page, "Web")).toContainText("50%")
+        await expect(row(page, "Web")).toContainText("22%")
+        await expect(page.getByTestId("cluster-explorer-share-label")).toHaveText("share of rloc")
         await expect(page.getByTestId("cluster-explorer-not-attributed")).toHaveCount(0)
     })
 

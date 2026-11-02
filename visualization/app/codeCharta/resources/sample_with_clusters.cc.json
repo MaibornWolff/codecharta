@@ -295,6 +295,7 @@
                 },
                 "teams": {
                     "title": "Teams",
+                    "weightBasis": "rloc",
                     "membership": "overlay",
                     "analyzers": [
                         "manual"

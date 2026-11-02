@@ -3,7 +3,7 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { formatClusterShare, showsRealNames } from "../../../../lenses/clusters/clusters.facade"
 import { ExplorerScrollHostService, ListViewport, listWindow } from "../../../sidebarExplorer/facade"
 import { attributeSummaryOf, BY_SHARE, matchingRowsInOrder, sortOptionsOf } from "../../selectors/clusterRowOrder"
-import { ClusterShareRow, clusterSharesOf } from "../../selectors/clusterShares"
+import { ClusterShareRow, ClusterShares, clusterSharesOf, SHARE_OF_FILES } from "../../selectors/clusterShares"
 import { ClusterHighlightService } from "../../services/clusterHighlight.service"
 import { ClusterExplorerReadStore } from "../../stores/clusterExplorer.read.store"
 
@@ -24,7 +24,7 @@ export class ClusterExplorerComponent implements OnDestroy {
     private readonly list = viewChild.required<ElementRef<HTMLElement>>("list")
 
     private readonly clusterings = toSignal(this.readStore.clusterings$, { requireSync: true })
-    private readonly shownFilePaths = toSignal(this.readStore.shownFilePaths$, { requireSync: true })
+    private readonly shownFiles = toSignal(this.readStore.shownFiles$, { requireSync: true })
     private readonly chosenKey = signal<string | null>(null)
     private readonly chosenSort = signal(BY_SHARE)
     readonly filterText = signal("")
@@ -39,9 +39,11 @@ export class ClusterExplorerComponent implements OnDestroy {
         return options.find(option => option.key === this.chosenKey())?.key ?? options[0]?.key
     })
     private readonly activeClustering = computed(() => this.clusterings()[this.activeKey()])
-    readonly shares = computed(() => {
+    readonly shares = computed((): ClusterShares => {
         const clustering = this.activeClustering()
-        return clustering ? clusterSharesOf(clustering, this.shownFilePaths()) : { rows: [], notAttributedShare: null }
+        return clustering
+            ? clusterSharesOf(clustering, this.shownFiles())
+            : { rows: [], notAttributedShare: null, shareLabel: SHARE_OF_FILES }
     })
     readonly sortOptions = computed(() => sortOptionsOf(this.activeClustering()))
     readonly activeSort = computed(() => this.sortOptions().find(option => option.key === this.chosenSort())?.key ?? BY_SHARE)

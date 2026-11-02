@@ -1,4 +1,4 @@
-import { ClusteringData, ClusterMembership } from "../../../model/codeCharta.model"
+import { ClusteringData, ClusterMembership, KeyValuePair } from "../../../model/codeCharta.model"
 import { clusterSharesOf } from "./clusterShares"
 
 const clustering = (membership: ClusterMembership = "weighted"): ClusteringData => ({
@@ -11,10 +11,12 @@ const clustering = (membership: ClusterMembership = "weighted"): ClusteringData 
     ]
 })
 
+const filesWithoutMetrics = (...paths: string[]): ReadonlyMap<string, KeyValuePair> => new Map(paths.map(path => [path, {}]))
+
 describe("clusterSharesOf", () => {
     it("should sum a cluster's weights over the number of shown files, biggest share first", () => {
         // Arrange
-        const shown = new Set(["/root/a", "/root/b", "/root/c", "/root/d"])
+        const shown = filesWithoutMetrics("/root/a", "/root/b", "/root/c", "/root/d")
 
         // Act
         const { rows } = clusterSharesOf(clustering(), shown)
@@ -28,7 +30,7 @@ describe("clusterSharesOf", () => {
 
     it("should only count and light shown files and leave out a cluster with none", () => {
         // Arrange
-        const shown = new Set(["/root/a"])
+        const shown = filesWithoutMetrics("/root/a")
 
         // Act
         const { rows } = clusterSharesOf(clustering(), shown)
@@ -40,7 +42,7 @@ describe("clusterSharesOf", () => {
 
     it("should report the rest of the shown files as not attributed", () => {
         // Arrange
-        const shown = new Set(["/root/a", "/root/d"])
+        const shown = filesWithoutMetrics("/root/a", "/root/d")
 
         // Act
         const { notAttributedShare } = clusterSharesOf(clustering(), shown)
@@ -51,7 +53,7 @@ describe("clusterSharesOf", () => {
 
     it("should report no remainder for an overlay, whose weights are never summed", () => {
         // Arrange
-        const shown = new Set(["/root/a"])
+        const shown = filesWithoutMetrics("/root/a")
 
         // Act
         const { notAttributedShare } = clusterSharesOf(clustering("overlay"), shown)
@@ -62,18 +64,18 @@ describe("clusterSharesOf", () => {
 
     it("should report nothing when no file is shown", () => {
         // Arrange
-        const shown = new Set<string>()
+        const shown = filesWithoutMetrics()
 
         // Act
         const shares = clusterSharesOf(clustering(), shown)
 
         // Assert
-        expect(shares).toEqual({ rows: [], notAttributedShare: null })
+        expect(shares).toEqual({ rows: [], notAttributedShare: null, shareLabel: "share of files" })
     })
 
     it("should mark the rows only when two repositories meet", () => {
         // Arrange
-        const shown = new Set(["/root/a"])
+        const shown = filesWithoutMetrics("/root/a")
         const twoRepositories: ClusteringData = {
             title: "Author ownership",
             membership: "weighted",
@@ -88,5 +90,95 @@ describe("clusterSharesOf", () => {
 
         // Assert
         expect(rows.map(row => row.repositoryMarker)).toEqual(["a1b2c3d", "f00ba42"])
+    })
+
+    describe("with the metric of the weight basis in the map", () => {
+        const byLines: ClusteringData = {
+            title: "Author ownership",
+            membership: "weighted",
+            weightBasis: "loc",
+            clusters: [
+                { id: "r1-author-small", name: "Small", members: { "/root/small": 1 } },
+                { id: "r1-author-big", name: "Big", members: { "/root/big": 0.5 } }
+            ]
+        }
+        const files = new Map([
+            ["/root/small", { loc: 10 }],
+            ["/root/big", { loc: 90 }]
+        ])
+
+        it("should weigh a cluster's files by their lines and say so", () => {
+            // Arrange & Act
+            const { rows, shareLabel } = clusterSharesOf(byLines, files)
+
+            // Assert
+            expect(rows.map(row => [row.name, row.share])).toEqual([
+                ["Big", 0.45],
+                ["Small", 0.1]
+            ])
+            expect(shareLabel).toBe("share of lines")
+        })
+
+        it("should report the lines nobody owns as not attributed", () => {
+            // Arrange & Act
+            const { notAttributedShare } = clusterSharesOf(byLines, files)
+
+            // Assert
+            expect(notAttributedShare).toBeCloseTo(0.45)
+        })
+
+        it("should count only the lines of shown files", () => {
+            // Arrange
+            const onlySmall = new Map([["/root/small", { loc: 10 }]])
+
+            // Act
+            const { rows } = clusterSharesOf(byLines, onlySmall)
+
+            // Assert
+            expect(rows.map(row => [row.name, row.share])).toEqual([["Small", 1]])
+        })
+
+        it("should keep a cluster whose files have no lines, at a share of nothing", () => {
+            // Arrange
+            const withBinary = new Map([
+                ["/root/small", { loc: 10 }],
+                ["/root/big", {}]
+            ])
+
+            // Act
+            const { rows } = clusterSharesOf(byLines, withBinary)
+
+            // Assert
+            expect(rows.map(row => [row.name, row.share])).toEqual([
+                ["Small", 1],
+                ["Big", 0]
+            ])
+        })
+
+        it("should name any other metric in the label", () => {
+            // Arrange
+            const byCommits = { ...byLines, weightBasis: "commits" }
+
+            // Act
+            const { shareLabel } = clusterSharesOf(byCommits, new Map([["/root/small", { commits: 3 }]]))
+
+            // Assert
+            expect(shareLabel).toBe("share of commits")
+        })
+
+        it("should fall back to files when no shown file holds the metric", () => {
+            // Arrange
+            const noLines = filesWithoutMetrics("/root/small", "/root/big")
+
+            // Act
+            const { rows, shareLabel } = clusterSharesOf(byLines, noLines)
+
+            // Assert
+            expect(rows.map(row => [row.name, row.share])).toEqual([
+                ["Small", 0.5],
+                ["Big", 0.25]
+            ])
+            expect(shareLabel).toBe("share of files")
+        })
     })
 })

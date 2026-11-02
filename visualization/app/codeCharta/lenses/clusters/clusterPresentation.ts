@@ -6,7 +6,7 @@ export function showsRealNames(clusteringKey: string | undefined): boolean {
     return clusteringKey === CLUSTERING_KEY_WITH_REAL_NAMES
 }
 
-const REPOSITORY_MARKER_OF_CLUSTER_ID = /^([0-9a-f]+)-author-\d+$/
+const REPOSITORY_MARKER_OF_CLUSTER_ID = /^([0-9a-f]+)-author-[a-z0-9-]+$/
 
 /** The marker of each cluster's repository, by cluster id, and empty unless two repositories meet in this clustering. */
 export function repositoryMarkersOf(clustering: ClusteringData): ReadonlyMap<string, string> {
