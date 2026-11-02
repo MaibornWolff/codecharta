@@ -21,10 +21,35 @@
         <span>This map shows real author names, which are personal data. Take care where you share it.</span>
     </div>
 }
+@if (showsFilter()) {
+    <input
+        type="search"
+        class="input input-sm mt-2 w-full"
+        placeholder="Filter by name"
+        aria-label="Filter clusters by name"
+        data-testid="cluster-explorer-filter"
+        [value]="filterText()"
+        (input)="filter($event)"
+    />
+}
+@if (sortOptions().length > 1) {
+    <select
+        class="select select-sm mt-2 w-full"
+        aria-label="Sort clusters by"
+        data-testid="cluster-explorer-sort"
+        [value]="activeSort()"
+        (change)="chooseSort($event)"
+    >
+        @for (option of sortOptions(); track option.key) {
+            <option [value]="option.key" [selected]="option.key === activeSort()">{{ option.title }}</option>
+        }
+    </select>
+}
 <div class="mt-2 text-right text-xs opacity-60">share of files</div>
-<ul class="mt-1 flex flex-col gap-1" data-testid="cluster-explorer-list">
-    @for (row of shares().rows; track row.id) {
-        <li>
+<ul #list class="mt-1" data-testid="cluster-explorer-list">
+    <li aria-hidden="true" [style.height.px]="window().topSpacerHeight"></li>
+    @for (row of renderedRows(); track row.id) {
+        <li class="pb-1" data-cluster-row>
             <button
                 type="button"
                 class="w-full cursor-pointer rounded-lg border-2 px-1 py-1 text-left hover:bg-base-200"
@@ -51,14 +76,23 @@
                 <span class="mt-0.5 block h-1 overflow-hidden rounded bg-base-300">
                     <span class="block h-full bg-primary" [style.width.%]="row.share * 100"></span>
                 </span>
-                @if (clusterIdsOffTheMap().has(row.id)) {
-                    <span class="mt-0.5 block text-xs opacity-60" data-testid="cluster-explorer-off-map">
-                        <i class="fa-solid fa-eye-slash"></i>
-                        not on the map
+                @if (reservesDetailLine()) {
+                    <span class="mt-0.5 block h-4 truncate text-xs opacity-60">
+                        @if (clusterIdsOffTheMap().has(row.id)) {
+                            <span data-testid="cluster-explorer-off-map">
+                                <i class="fa-solid fa-eye-slash"></i>
+                                not on the map
+                            </span>
+                        }
+                        <span data-testid="cluster-explorer-attributes">{{ summaryOf(row) }}</span>
                     </span>
                 }
             </button>
         </li>
+    }
+    <li aria-hidden="true" [style.height.px]="window().bottomSpacerHeight"></li>
+    @if (rows().length === 0 && filterText() !== "") {
+        <li class="px-1 py-1 text-sm opacity-70" data-testid="cluster-explorer-no-match">No cluster's name contains "{{ filterText() }}".</li>
     }
     @if (shares().notAttributedShare) {
         <li class="px-1 py-1 opacity-70" data-testid="cluster-explorer-not-attributed">

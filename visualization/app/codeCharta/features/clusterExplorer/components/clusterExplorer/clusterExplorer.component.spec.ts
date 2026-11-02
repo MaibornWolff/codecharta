@@ -4,6 +4,7 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { BehaviorSubject, of } from "rxjs"
 import { ClusteringsData } from "../../../../model/codeCharta.model"
+import { ExplorerScrollHostService } from "../../../sidebarExplorer/facade"
 import { ClusterHighlightService } from "../../services/clusterHighlight.service"
 import { ClusterExplorerReadStore } from "../../stores/clusterExplorer.read.store"
 import { ClusterExplorerComponent } from "./clusterExplorer.component"
@@ -18,6 +19,28 @@ const AUTHORS: ClusteringsData = {
         ]
     }
 }
+const COMMITS: ClusteringsData = {
+    "commit-changes": {
+        title: "Commit changes",
+        membership: "overlay",
+        attributeTitles: { date: "Date", changed_lines: "Lines changed" },
+        clusters: [
+            { id: "old", name: "aaa1111 Old and big", members: { "/root/a": 1 }, attributes: { date: "2025-01-01", changed_lines: 900 } },
+            { id: "new", name: "bbb2222 New and small", members: { "/root/a": 0.5 }, attributes: { date: "2026-01-01", changed_lines: 2 } }
+        ]
+    }
+}
+const clusteringOfSize = (clusterCount: number): ClusteringsData => ({
+    many: {
+        title: "Many",
+        membership: "overlay",
+        clusters: Array.from({ length: clusterCount }, (_, index) => ({
+            id: `c${index}`,
+            name: `Cluster ${index}`,
+            members: { "/root/a": 1 }
+        }))
+    }
+})
 const TEAMS: ClusteringsData = {
     teams: { title: "Teams", membership: "overlay", clusters: [{ id: "web", name: "Web", members: { "/root/a": 1 } }] }
 }
@@ -41,7 +64,8 @@ describe("ClusterExplorerComponent", () => {
                     provide: ClusterExplorerReadStore,
                     useValue: { clusterings$: new BehaviorSubject(clusterings), shownFilePaths$: of(new Set(["/root/a", "/root/b"])) }
                 },
-                { provide: ClusterHighlightService, useValue: highlight }
+                { provide: ClusterHighlightService, useValue: highlight },
+                ExplorerScrollHostService
             ]
         })
         return render(ClusterExplorerComponent)
@@ -58,6 +82,89 @@ describe("ClusterExplorerComponent", () => {
         expect(screen.getByText("share of files")).toBeTruthy()
     })
 
+    const rowTexts = () => screen.getAllByTestId("cluster-explorer-row").map(row => row.textContent?.replace(/\s+/g, " ").trim())
+
+    it("should show each cluster's attributes by their titles", async () => {
+        // Arrange & Act
+        await setup(COMMITS)
+
+        // Assert
+        expect(rowTexts()[0]).toContain("Date: 2025-01-01 · Lines changed: 900")
+        expect(screen.getAllByTestId("cluster-explorer-row")[0].getAttribute("title")).toContain("Lines changed: 900")
+    })
+
+    it("should sort by a picked attribute", async () => {
+        // Arrange
+        await setup(COMMITS)
+
+        // Act
+        await userEvent.selectOptions(screen.getByTestId("cluster-explorer-sort"), "Date")
+
+        // Assert
+        expect(rowTexts()[0]).toContain("New and small")
+    })
+
+    it("should offer no sorting and no filter for a short list without attributes", async () => {
+        // Arrange & Act
+        await setup(AUTHORS)
+
+        // Assert
+        expect(screen.queryByTestId("cluster-explorer-sort")).toBeNull()
+        expect(screen.queryByTestId("cluster-explorer-filter")).toBeNull()
+        expect(screen.queryByTestId("cluster-explorer-attributes")).toBeNull()
+    })
+
+    it("should filter a long list by name and say when nothing matches", async () => {
+        // Arrange
+        await setup(clusteringOfSize(11))
+
+        // Act
+        await userEvent.type(screen.getByTestId("cluster-explorer-filter"), "cluster 10")
+
+        // Assert
+        expect(rowTexts()).toEqual(["Cluster 10 50%"])
+
+        // Act
+        await userEvent.type(screen.getByTestId("cluster-explorer-filter"), "x")
+
+        // Assert
+        expect(screen.queryByTestId("cluster-explorer-row")).toBeNull()
+        expect(screen.getByTestId("cluster-explorer-no-match").textContent).toContain("cluster 10x")
+        expect(screen.getByTestId("cluster-explorer-filter")).toBeTruthy()
+    })
+
+    it("should end a running hover when the filter changes, as the row may go away", async () => {
+        // Arrange
+        await setup(clusteringOfSize(11))
+
+        // Act
+        await userEvent.type(screen.getByTestId("cluster-explorer-filter"), "1")
+
+        // Assert
+        expect(highlight.endHover).toHaveBeenCalled()
+    })
+
+    it("should clear the filter when another clustering is picked", async () => {
+        // Arrange
+        await setup({ ...clusteringOfSize(11), ...TEAMS })
+        await userEvent.selectOptions(screen.getByTestId("cluster-explorer-picker"), "Many")
+        await userEvent.type(screen.getByTestId("cluster-explorer-filter"), "nothing like it")
+
+        // Act
+        await userEvent.selectOptions(screen.getByTestId("cluster-explorer-picker"), "Teams")
+
+        // Assert
+        expect(rowTexts()).toEqual(["Web 50%"])
+    })
+
+    it("should render only a slice of a very long list", async () => {
+        // Arrange & Act
+        await setup(clusteringOfSize(5000))
+
+        // Assert
+        expect(screen.getAllByTestId("cluster-explorer-row").length).toBeLessThan(100)
+    })
+
     it("should mark a cluster none of whose shown files is on the map, and only that one", async () => {
         // Arrange
         const { detectChanges } = await setup(AUTHORS)
@@ -69,9 +176,9 @@ describe("ClusterExplorerComponent", () => {
         // Assert
         const [authorWithBuilding, authorWithout] = screen.getAllByTestId("cluster-explorer-row")
         expect(authorWithBuilding.textContent).not.toContain("not on the map")
-        expect(authorWithBuilding.getAttribute("title")).toBe("2 files")
+        expect(authorWithBuilding.getAttribute("title")).toBe("Author 2\n2 files")
         expect(authorWithout.textContent).toContain("not on the map")
-        expect(authorWithout.getAttribute("title")).toBe("1 file, none of them on the map")
+        expect(authorWithout.getAttribute("title")).toBe("Author 1\n1 file, none of them on the map")
     })
 
     it("should drop the mark once a file of the cluster is back on the map", async () => {

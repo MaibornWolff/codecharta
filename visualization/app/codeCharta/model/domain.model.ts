@@ -17,17 +17,22 @@ export enum LayoutAlgorithm {
 
 export type ClusterMembership = "partition" | "weighted" | "overlay"
 
+export type ClusterAttributes = Record<string, string | number>
+
 export interface ClusterData {
     id: string
     name: string
     /** Weight by file path, re-keyed from node id when the file loads, like the other lenses' per-node data. */
     members: Record<string, number>
+    attributes?: ClusterAttributes
 }
 
 export interface ClusteringData {
     title: string
     membership: ClusterMembership
     clusters: ClusterData[]
+    /** Absent for a clustering with no attributes; a file from before attributes reads the same. */
+    attributeTitles?: Record<string, string>
 }
 
 export type ClusteringsData = Record<string, ClusteringData>

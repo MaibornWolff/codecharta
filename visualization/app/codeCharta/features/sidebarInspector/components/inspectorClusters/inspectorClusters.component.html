@@ -13,6 +13,9 @@
                     <span class="shrink-0 tabular-nums">{{ formatShare(owner.share) }}</span>
                 </div>
             }
+            @if (section.hiddenOwnerCount > 0) {
+                <div class="text-sm opacity-70" data-testid="inspector-cluster-hidden-owners">and {{ section.hiddenOwnerCount }} more</div>
+            }
             @if (section.notAttributedShare !== null && section.notAttributedShare > 0) {
                 <div class="flex items-baseline justify-between gap-2 text-sm opacity-70" data-testid="inspector-cluster-not-attributed">
                     <span>Not attributed</span>

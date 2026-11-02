@@ -1,9 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, signal } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, inject, OnDestroy, signal, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { formatClusterShare, showsRealNames } from "../../../../lenses/clusters/clusters.facade"
+import { ExplorerScrollHostService, ListViewport, listWindow } from "../../../sidebarExplorer/facade"
+import { attributeSummaryOf, BY_SHARE, matchingRowsInOrder, sortOptionsOf } from "../../selectors/clusterRowOrder"
 import { ClusterShareRow, clusterSharesOf } from "../../selectors/clusterShares"
 import { ClusterHighlightService } from "../../services/clusterHighlight.service"
 import { ClusterExplorerReadStore } from "../../stores/clusterExplorer.read.store"
+
+const ROW_SELECTOR = "[data-cluster-row]"
+const MOST_ROWS_WITHOUT_FILTER = 10
 
 @Component({
     selector: "cc-cluster-explorer",
@@ -14,10 +19,15 @@ import { ClusterExplorerReadStore } from "../../stores/clusterExplorer.read.stor
 export class ClusterExplorerComponent implements OnDestroy {
     private readonly readStore = inject(ClusterExplorerReadStore)
     private readonly highlight = inject(ClusterHighlightService)
+    private readonly scrollHostService = inject(ExplorerScrollHostService)
+    private readonly viewport = new ListViewport(ROW_SELECTOR)
+    private readonly list = viewChild.required<ElementRef<HTMLElement>>("list")
 
     private readonly clusterings = toSignal(this.readStore.clusterings$, { requireSync: true })
     private readonly shownFilePaths = toSignal(this.readStore.shownFilePaths$, { requireSync: true })
     private readonly chosenKey = signal<string | null>(null)
+    private readonly chosenSort = signal(BY_SHARE)
+    readonly filterText = signal("")
 
     readonly clusteringOptions = computed(() =>
         Object.entries(this.clusterings())
@@ -28,10 +38,17 @@ export class ClusterExplorerComponent implements OnDestroy {
         const options = this.clusteringOptions()
         return options.find(option => option.key === this.chosenKey())?.key ?? options[0]?.key
     })
+    private readonly activeClustering = computed(() => this.clusterings()[this.activeKey()])
     readonly shares = computed(() => {
-        const clustering = this.clusterings()[this.activeKey()]
+        const clustering = this.activeClustering()
         return clustering ? clusterSharesOf(clustering, this.shownFilePaths()) : { rows: [], notAttributedShare: null }
     })
+    readonly sortOptions = computed(() => sortOptionsOf(this.activeClustering()))
+    readonly activeSort = computed(() => this.sortOptions().find(option => option.key === this.chosenSort())?.key ?? BY_SHARE)
+    readonly showsFilter = computed(() => this.shares().rows.length > MOST_ROWS_WITHOUT_FILTER || this.filterText() !== "")
+    readonly rows = computed(() => matchingRowsInOrder(this.shares().rows, this.filterText(), this.activeSort()))
+    readonly window = computed(() => listWindow({ ...this.viewport.geometry(), rowCount: this.rows().length }))
+    readonly renderedRows = computed(() => this.rows().slice(this.window().firstIndex, this.window().lastIndex + 1))
     // Whichever clustering is open: the map holds the names either way.
     readonly showsRealNames = computed(() => Object.keys(this.clusterings()).some(showsRealNames))
     readonly pinnedClusterId = this.highlight.pinnedClusterId
@@ -45,18 +62,41 @@ export class ClusterExplorerComponent implements OnDestroy {
         )
     })
 
+    // Every row keeps the same height, which the list's windowing relies on, so one row needing this line gives it to all
+    readonly reservesDetailLine = computed(() => this.sortOptions().length > 1 || this.clusterIdsOffTheMap().size > 0)
+
+    constructor() {
+        effect(() => this.viewport.attachTo(this.list().nativeElement, this.scrollHostService.element()))
+    }
+
+    summaryOf(row: ClusterShareRow): string {
+        return attributeSummaryOf(row, this.activeClustering()?.attributeTitles, this.activeSort())
+    }
+
     titleOf(row: ClusterShareRow): string {
         const fileCount = row.filePaths.length === 1 ? "1 file" : `${row.filePaths.length} files`
-        return this.clusterIdsOffTheMap().has(row.id) ? `${fileCount}, none of them on the map` : fileCount
+        const placement = this.clusterIdsOffTheMap().has(row.id) ? `${fileCount}, none of them on the map` : fileCount
+        return [row.name, placement, this.summaryOf(row)].filter(Boolean).join("\n")
     }
 
     ngOnDestroy(): void {
         this.highlight.endHover()
+        this.viewport.dispose()
     }
 
     chooseClustering(event: Event): void {
         this.highlight.endHover()
         this.chosenKey.set((event.target as HTMLSelectElement).value)
+        this.filterText.set("")
+    }
+
+    chooseSort(event: Event): void {
+        this.chosenSort.set((event.target as HTMLSelectElement).value)
+    }
+
+    filter(event: Event): void {
+        this.highlight.endHover()
+        this.filterText.set((event.target as HTMLInputElement).value)
     }
 
     hover(row: ClusterShareRow): void {

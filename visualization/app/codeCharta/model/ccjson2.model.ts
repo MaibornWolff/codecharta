@@ -48,12 +48,14 @@ interface ClusteringWire {
     weightBasis?: string
     analyzers: string[]
     clusters: ClusterWire[]
+    attributeDescriptors?: Record<string, { title?: string }>
 }
 
 interface ClusterWire {
     id: string
     name: string
     parentId?: string | null
+    attributes?: Record<string, unknown>
     members: ClusterMemberWire[]
 }
 

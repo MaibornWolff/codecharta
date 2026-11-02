@@ -9,6 +9,7 @@ const SECTION: InspectorClusterSection = {
     key: "author-ownership",
     title: "Author ownership",
     owners: [{ id: "r-author-3", name: "Author 3", repositoryMarker: "a1b2c3d", share: 0.625 }],
+    hiddenOwnerCount: 0,
     notAttributedShare: 0.375
 }
 
@@ -19,6 +20,14 @@ describe("InspectorClustersComponent", () => {
         })
         await render(InspectorClustersComponent)
     }
+
+    it("should say how many owners it leaves out, and only then", async () => {
+        // Arrange & Act
+        await setup([SECTION, { ...SECTION, key: "commit-changes", hiddenOwnerCount: 5 }])
+
+        // Assert
+        expect(screen.getAllByTestId("inspector-cluster-hidden-owners").map(element => element.textContent?.trim())).toEqual(["and 5 more"])
+    })
 
     it("should show the owners of the file and what is not attributed", async () => {
         // Arrange & Act
