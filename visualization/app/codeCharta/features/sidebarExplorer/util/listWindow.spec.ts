@@ -1,9 +1,9 @@
-import { WordListGeometry, wordListWindow } from "./wordListWindow"
+import { ListGeometry, listWindow } from "./listWindow"
 
 const ROW_HEIGHT = 28
 const OVERSCAN_ROWS = 6
 
-function geometry(overrides: Partial<WordListGeometry> = {}): WordListGeometry {
+function geometry(overrides: Partial<ListGeometry> = {}): ListGeometry {
     return {
         rowCount: 1000,
         rowHeight: ROW_HEIGHT,
@@ -13,10 +13,10 @@ function geometry(overrides: Partial<WordListGeometry> = {}): WordListGeometry {
     }
 }
 
-describe("wordListWindow", () => {
+describe("listWindow", () => {
     it("should render a slice of the rows plus an overscan, not the whole list", () => {
         // Arrange & Act
-        const window = wordListWindow(geometry())
+        const window = listWindow(geometry())
 
         // Assert: ten rows fit, so only those and the overscan below them are rendered.
         expect(window.firstIndex).toBe(0)
@@ -25,7 +25,7 @@ describe("wordListWindow", () => {
 
     it("should hold the whole list's height in the spacers, so the scrollbar stays honest", () => {
         // Arrange & Act
-        const window = wordListWindow(geometry({ scrolledPast: 28 * 100 }))
+        const window = listWindow(geometry({ scrolledPast: 28 * 100 }))
 
         // Assert
         const renderedHeight = (window.lastIndex - window.firstIndex + 1) * ROW_HEIGHT
@@ -34,7 +34,7 @@ describe("wordListWindow", () => {
 
     it("should move the window down as the list is scrolled", () => {
         // Arrange & Act
-        const window = wordListWindow(geometry({ scrolledPast: ROW_HEIGHT * 100 }))
+        const window = listWindow(geometry({ scrolledPast: ROW_HEIGHT * 100 }))
 
         // Assert
         expect(window.firstIndex).toBe(100 - OVERSCAN_ROWS)
@@ -43,7 +43,7 @@ describe("wordListWindow", () => {
 
     it("should render only a first slice while the list has not been measured yet", () => {
         // Arrange & Act — rendering the whole list would build one row per word in the project
-        const window = wordListWindow(geometry({ rowCount: 5000, viewportHeight: 0 }))
+        const window = listWindow(geometry({ rowCount: 5000, viewportHeight: 0 }))
 
         // Assert
         expect(window.firstIndex).toBe(0)
@@ -53,7 +53,7 @@ describe("wordListWindow", () => {
 
     it("should keep an unmeasured list's whole height in the bottom spacer", () => {
         // Arrange & Act
-        const window = wordListWindow(geometry({ rowCount: 5000, viewportHeight: 0 }))
+        const window = listWindow(geometry({ rowCount: 5000, viewportHeight: 0 }))
 
         // Assert
         const renderedHeight = (window.lastIndex - window.firstIndex + 1) * ROW_HEIGHT
@@ -62,7 +62,7 @@ describe("wordListWindow", () => {
 
     it("should render a short unmeasured list completely", () => {
         // Arrange & Act
-        const window = wordListWindow(geometry({ rowCount: 40, viewportHeight: 0 }))
+        const window = listWindow(geometry({ rowCount: 40, viewportHeight: 0 }))
 
         // Assert
         expect(window.lastIndex).toBe(39)
@@ -71,7 +71,7 @@ describe("wordListWindow", () => {
 
     it("should render nothing but empty spacers for an empty list", () => {
         // Arrange & Act
-        const window = wordListWindow(geometry({ rowCount: 0 }))
+        const window = listWindow(geometry({ rowCount: 0 }))
 
         // Assert
         expect(window.lastIndex).toBeLessThan(window.firstIndex)
@@ -80,7 +80,7 @@ describe("wordListWindow", () => {
 
     it("should stop the window at the last row", () => {
         // Arrange & Act
-        const window = wordListWindow(geometry({ rowCount: 12, scrolledPast: 0 }))
+        const window = listWindow(geometry({ rowCount: 12, scrolledPast: 0 }))
 
         // Assert
         expect(window.lastIndex).toBe(11)

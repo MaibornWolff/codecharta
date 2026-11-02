@@ -1,7 +1,6 @@
 import { signal } from "@angular/core"
 
 const DEFAULT_ROW_HEIGHT = 28
-const WORD_ROW_SELECTOR = "cc-domain-word-row"
 
 export interface MeasuredViewport {
     scrolledPast: number
@@ -12,11 +11,10 @@ export interface MeasuredViewport {
 const UNMEASURED: MeasuredViewport = { scrolledPast: 0, viewportHeight: 0, rowHeight: DEFAULT_ROW_HEIGHT }
 
 /**
- * Reads how much of the word list is actually on screen. The list can be far taller than its panel, so
- * only the measured slice is rendered; everything here is DOM measurement, kept out of the component so
- * the component stays about words.
+ * Reads how much of a list is actually on screen. The list can be far taller than its panel, so only the
+ * measured slice is rendered; everything here is DOM measurement, kept out of the component showing the list.
  */
-export class WordListViewport {
+export class ListViewport {
     private host?: HTMLElement
     private scrollHost: HTMLElement | null = null
     private resizeObserver?: ResizeObserver
@@ -29,6 +27,8 @@ export class WordListViewport {
     readonly geometry = this.measured.asReadonly()
 
     private readonly remeasure = () => this.measure()
+
+    constructor(private readonly rowSelector: string) {}
 
     /**
      * The panel is handed in rather than searched for: the explorer destroys and re-creates it as the mode
@@ -47,7 +47,7 @@ export class WordListViewport {
             return
         }
         scrollHost.addEventListener("scroll", this.remeasure, { passive: true })
-        // The list's own height changes as words come and go; the panel's when the window is resized.
+        // The list's own height changes as rows come and go; the panel's when the window is resized.
         if (typeof ResizeObserver !== "undefined") {
             this.resizeObserver = new ResizeObserver(this.remeasure)
             this.resizeObserver.observe(host)
@@ -70,7 +70,7 @@ export class WordListViewport {
         this.measured.set({
             scrolledPast: Math.max(0, scrollHost.getBoundingClientRect().top - host.getBoundingClientRect().top),
             viewportHeight: scrollHost.clientHeight,
-            rowHeight: host.querySelector<HTMLElement>(WORD_ROW_SELECTOR)?.offsetHeight || DEFAULT_ROW_HEIGHT
+            rowHeight: host.querySelector<HTMLElement>(this.rowSelector)?.offsetHeight || DEFAULT_ROW_HEIGHT
         })
     }
 
