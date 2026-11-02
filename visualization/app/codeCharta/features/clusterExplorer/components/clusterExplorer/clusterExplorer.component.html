@@ -45,7 +45,7 @@
         }
     </select>
 }
-<div class="mt-2 text-right text-xs opacity-60">share of files</div>
+<div class="mt-2 text-right text-xs opacity-60" data-testid="cluster-explorer-share-label">{{ shares().shareLabel }}</div>
 <ul #list class="mt-1" data-testid="cluster-explorer-list">
     <li aria-hidden="true" [style.height.px]="window().topSpacerHeight"></li>
     @for (row of renderedRows(); track row.id) {

@@ -31,6 +31,8 @@ export interface ClusteringData {
     title: string
     membership: ClusterMembership
     clusters: ClusterData[]
+    /** The metric a weight is a fraction of. */
+    weightBasis?: string
     /** Absent for a clustering with no attributes; a file from before attributes reads the same. */
     attributeTitles?: Record<string, string>
 }

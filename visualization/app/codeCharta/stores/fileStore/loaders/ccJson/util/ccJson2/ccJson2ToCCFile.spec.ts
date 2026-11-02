@@ -157,6 +157,19 @@ describe("mapCcJson2ToCCFile", () => {
         expect(clustering.clusters[1]).not.toHaveProperty("attributes")
     })
 
+    it("should keep the metric a clustering's weights are a fraction of", () => {
+        // Arrange
+        ;(file.lenses as Record<string, unknown>).clusters = {
+            clusterings: { authors: { title: "Authors", membership: "weighted", analyzers: [], weightBasis: "loc", clusters: [] } }
+        }
+
+        // Act
+        const clustering = mapCcJson2ToCCFile(file, nameDataPair(file)).settings.fileSettings.clusterings.authors
+
+        // Assert
+        expect(clustering.weightBasis).toBe("loc")
+    })
+
     it("should map a file without a clusters lens to no clusterings", () => {
         // Arrange & Act
         const result = mapCcJson2ToCCFile(file, nameDataPair(file))

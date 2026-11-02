@@ -126,6 +126,7 @@ function mapClusterings(file: CcJson2, idToPath: Record<string, string>): Cluste
             title: clustering.title,
             membership: clustering.membership,
             clusters,
+            ...(clustering.weightBasis ? { weightBasis: clustering.weightBasis } : {}),
             ...attributeTitlesOf(clusters, clustering.attributeDescriptors)
         }
     }

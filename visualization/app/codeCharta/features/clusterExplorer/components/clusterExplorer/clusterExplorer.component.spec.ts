@@ -62,7 +62,15 @@ describe("ClusterExplorerComponent", () => {
             providers: [
                 {
                     provide: ClusterExplorerReadStore,
-                    useValue: { clusterings$: new BehaviorSubject(clusterings), shownFilePaths$: of(new Set(["/root/a", "/root/b"])) }
+                    useValue: {
+                        clusterings$: new BehaviorSubject(clusterings),
+                        shownFiles$: of(
+                            new Map([
+                                ["/root/a", { loc: 30 }],
+                                ["/root/b", { loc: 10 }]
+                            ])
+                        )
+                    }
                 },
                 { provide: ClusterHighlightService, useValue: highlight },
                 ExplorerScrollHostService
@@ -80,6 +88,14 @@ describe("ClusterExplorerComponent", () => {
         expect(rows).toEqual(["Author 2 75%", "Author 1 13%"])
         expect(screen.getByTestId("cluster-explorer-not-attributed").textContent).toContain("13%")
         expect(screen.getByText("share of files")).toBeTruthy()
+    })
+
+    it("should label the shares as share of lines where the clustering is weighted by lines", async () => {
+        // Arrange & Act
+        await setup({ authors: { ...AUTHORS["author-ownership"], weightBasis: "loc" } })
+
+        // Assert
+        expect(screen.getByTestId("cluster-explorer-share-label").textContent).toBe("share of lines")
     })
 
     const rowTexts = () => screen.getAllByTestId("cluster-explorer-row").map(row => row.textContent?.replace(/\s+/g, " ").trim())

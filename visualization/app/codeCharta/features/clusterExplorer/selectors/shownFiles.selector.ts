@@ -1,18 +1,20 @@
 import { createSelector } from "@ngrx/store"
-import { CodeMapNode } from "../../../model/codeCharta.model"
+import { CodeMapNode, KeyValuePair } from "../../../model/codeCharta.model"
 import { codeMapNodesSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { currentFocusedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { isLeaf } from "../../../util/codeMapHelper"
 
-export const _shownFilePaths = (nodes: CodeMapNode[], focusedNodePath: string | undefined): ReadonlySet<string> => {
-    const paths = new Set<string>()
+export type ShownFiles = ReadonlyMap<string, KeyValuePair>
+
+export const _shownFiles = (nodes: CodeMapNode[], focusedNodePath: string | undefined): ShownFiles => {
+    const attributesByPath = new Map<string, KeyValuePair>()
     for (const node of nodes) {
         const isInFocus = !focusedNodePath || node.path === focusedNodePath || node.path.startsWith(`${focusedNodePath}/`)
         if (isLeaf(node) && !node.isExcluded && isInFocus) {
-            paths.add(node.path)
+            attributesByPath.set(node.path, node.attributes)
         }
     }
-    return paths
+    return attributesByPath
 }
 
-export const shownFilePathsSelector = createSelector(codeMapNodesSelector, currentFocusedNodePathSelector, _shownFilePaths)
+export const shownFilesSelector = createSelector(codeMapNodesSelector, currentFocusedNodePathSelector, _shownFiles)

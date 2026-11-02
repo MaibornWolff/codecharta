@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Local source files (experimental)**: once switched on in the settings, a file's context menu shows its source, coloured by its language, from the project folder on your computer, up to 5 MB, or opens it in VS Code, without uploading anything, in Chrome, Edge and the desktop app.
 - **Folder screenshot in the dependency view**: a folder's context menu takes a screenshot of just that folder as the graph shows it, without the edges leading out of it.
 - **Hover highlight in the dependency view**: the highlight of the box under the pointer can be switched off in the edge settings.
-- **Clusters in the explorer**: a map with clusters, such as author ownership, gets a Clusters tab listing each cluster's share of the shown files, whose files alone stay in colour and keep labels on hover, overriding any other highlight, and stay that way on a click, marking a cluster with no building on the map, and the inspector lists the clusters of the selected file.
+- **Clusters in the explorer**: a map with clusters, such as author ownership, gets a Clusters tab listing each cluster's share of the shown lines, whose files alone stay in colour and keep labels on hover, overriding any other highlight, and stay that way on a click, marking a cluster with no building on the map, and the inspector lists the clusters of the selected file.
 - **Real names warning**: the Clusters tab warns while it lists real author names.
 - **Longer cluster lists**: the Clusters tab shows what a map says about each cluster, such as a commit's date and size, sorts by it, filters long lists by name and stays fast with thousands of clusters.
 

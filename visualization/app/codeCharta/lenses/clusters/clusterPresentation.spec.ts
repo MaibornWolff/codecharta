@@ -32,6 +32,18 @@ describe("clusterPresentation", () => {
             expect(markers.get("f00ba42-author-1")).toBe("f00ba42")
         })
 
+        it("should read the marker of a cluster named by a pseudonym", () => {
+            // Arrange
+            const clustering = clusteringWithIds("a1b2c3d-author-teal-falcon", "f00ba42-author-teal-falcon-2")
+
+            // Act
+            const markers = repositoryMarkersOf(clustering)
+
+            // Assert
+            expect(markers.get("a1b2c3d-author-teal-falcon")).toBe("a1b2c3d")
+            expect(markers.get("f00ba42-author-teal-falcon-2")).toBe("f00ba42")
+        })
+
         it("should give no marker to the clusters of another producer", () => {
             // Arrange
             const clustering = clusteringWithIds("team-core", "team-web")
