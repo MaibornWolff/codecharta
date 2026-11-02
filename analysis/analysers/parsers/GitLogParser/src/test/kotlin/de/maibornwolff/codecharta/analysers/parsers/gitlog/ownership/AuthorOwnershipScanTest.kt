@@ -44,6 +44,8 @@ class AuthorOwnershipScanTest {
 
     private fun membersOf(clusterName: String) = clusters().single { it.name == clusterName }.members
 
+    private fun author(number: Int) = AuthorPseudonyms(git("rev-list", "--max-parents=0", "HEAD")).nameOf(number - 1)
+
     private fun idOf(vararg segments: String) = NodeId.fromSegments(segments.toList())
 
     @Test
@@ -53,8 +55,8 @@ class AuthorOwnershipScanTest {
         commitFile("src/a.kt", "1\n2\n3\nfour\n", author = "Bob <bob@x.org>")
 
         // Act
-        val annMembers = membersOf("Author 1")
-        val bobMembers = membersOf("Author 2")
+        val annMembers = membersOf(author(1))
+        val bobMembers = membersOf(author(2))
 
         // Assert
         assertThat(annMembers).containsExactly(ClusterMember(idOf("src", "a.kt"), 0.75))
@@ -72,11 +74,14 @@ class AuthorOwnershipScanTest {
         val ids = clusters().map { it.id }
 
         // Assert
-        assertThat(ids).containsExactly("${firstCommit.take(7)}-author-1", "${firstCommit.take(7)}-author-2")
+        assertThat(ids).containsExactlyInAnyOrder(
+            "${firstCommit.take(7)}-author-${author(1).lowercase().replace(' ', '-')}",
+            "${firstCommit.take(7)}-author-${author(2).lowercase().replace(' ', '-')}"
+        )
     }
 
     @Test
-    fun `should keep the number of an author none of whose lines survived`() {
+    fun `should keep the pseudonym of an author none of whose lines survived`() {
         // Arrange
         commitFile("a.kt", "ann\n")
         commitFile("a.kt", "bob\n", author = "Bob <bob@x.org>")
@@ -85,7 +90,7 @@ class AuthorOwnershipScanTest {
         val names = clusters().map { it.name }
 
         // Assert
-        assertThat(names).containsExactly("Author 2")
+        assertThat(names).containsExactly(author(2))
     }
 
     @Test
@@ -98,7 +103,7 @@ class AuthorOwnershipScanTest {
         val names = clusters().map { it.name }
 
         // Assert
-        assertThat(names).containsExactly("Author 1")
+        assertThat(names).containsExactly(author(1))
     }
 
     @Test
@@ -114,7 +119,7 @@ class AuthorOwnershipScanTest {
         val weights = clusters().map { it.name to it.members.single().weight }
 
         // Assert
-        assertThat(weights).containsExactly("Author 1" to 0.3333, "Author 2" to 0.3333, "Author 3" to 0.3333)
+        assertThat(weights).containsExactlyInAnyOrder(author(1) to 0.3333, author(2) to 0.3333, author(3) to 0.3333)
     }
 
     @Test
@@ -126,7 +131,7 @@ class AuthorOwnershipScanTest {
         val weights = clusters().map { it.name to it.members.single().weight }
 
         // Assert
-        assertThat(weights).containsExactly("Author 1" to 1.0)
+        assertThat(weights).containsExactly(author(1) to 1.0)
     }
 
     @Test
@@ -146,13 +151,13 @@ class AuthorOwnershipScanTest {
     }
 
     @Test
-    fun `should number a co-author by the first commit they appear in`() {
+    fun `should name a co-author by the first commit they appear in`() {
         // Arrange
         commitFile("a.kt", "1\n", message = "change\n\nCo-authored-by: Zed <zed@x.org>")
         commitFile("b.kt", "1\n", author = "Bob <bob@x.org>")
 
         // Act
-        val membersOfBob = membersOf("Author 3")
+        val membersOfBob = membersOf(author(3))
 
         // Assert
         assertThat(membersOfBob).containsExactly(ClusterMember(idOf("b.kt"), 1.0))
@@ -183,7 +188,7 @@ class AuthorOwnershipScanTest {
         val names = clusters().map { it.name }
 
         // Assert
-        assertThat(names).containsExactly("Author 1")
+        assertThat(names).containsExactly(author(1))
     }
 
     @Test
@@ -245,12 +250,12 @@ class AuthorOwnershipScanTest {
                 .single()
                 .clusters
                 .map { it.name }
-        ).containsExactly("Ann", "Bob")
+        ).containsExactlyInAnyOrder("Ann", "Bob")
         assertThat(lens.toString()).doesNotContain("@x.org")
     }
 
     @Test
-    fun `should not say a numbered lens carries real names`() {
+    fun `should not say a pseudonymous lens carries real names`() {
         // Arrange
         commitFile("a.kt", "1\n")
 

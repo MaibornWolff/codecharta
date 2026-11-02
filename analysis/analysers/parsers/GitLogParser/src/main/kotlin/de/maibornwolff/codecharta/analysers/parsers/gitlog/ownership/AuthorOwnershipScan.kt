@@ -7,7 +7,7 @@ import java.io.File
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
-/** Measures who made the commits that last changed the lines each file holds today, and numbers them by their first commit. */
+/** Measures who made the commits that last changed the lines each file holds today, and gives them pseudonyms by their first commit. */
 class AuthorOwnershipScan(private val repositoryFolder: File, private val withNames: Boolean = false) {
     private val git = GitCommand(repositoryFolder)
 
@@ -93,17 +93,18 @@ class AuthorOwnershipScan(private val repositoryFolder: File, private val withNa
         const val NEEDS_OWNERSHIP_HINT = "$NAMES_FLAG only adds to author ownership, so it needs $FLAG as well."
         const val REAL_NAMES_WARNING =
             "WARNING: this map contains the REAL NAMES of authors, because of $NAMES_FLAG. They are personal data under GDPR: " +
-                "anyone who gets the map can read them. Leave the flag out to get numbers instead."
+                "anyone who gets the map can read them. Leave the flag out to get invented names instead."
 
         fun carriesRealNames(clusters: ClustersLens): Boolean = AuthorOwnershipLens.CLUSTERING_KEY_WITH_NAMES in clusters.clusterings
 
         const val NEEDS_REPOSITORY_HINT =
             "$FLAG needs the repository to run git blame, which a log file cannot provide. Use 'gitlogparser repo-scan $FLAG' instead."
         const val PERSONAL_DATA_NOTE =
-            "Note: the author numbers in this map are pseudonymous. Anyone with the repository can match them to people, " +
+            "Note: the author names in this map are invented, which makes them pseudonymous, not anonymous. " +
+                "Anyone with the repository can match them to people, " +
                 "so the map may still be personal data under GDPR."
         const val SHALLOW_CLONE_WARNING =
-            "Warning: this repository is a shallow clone, so its author numbers are not stable. Fetch the full history to keep them stable."
+            "Warning: this repository is a shallow clone, so its author names are not stable. Fetch the full history to keep them stable."
 
         private const val NUL = "\u0000"
         private const val TAB = "\t"

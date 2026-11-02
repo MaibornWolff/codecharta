@@ -71,13 +71,13 @@ class AnalyseTool(
 
     @CommandLine.Option(
         names = [AuthorOwnershipScan.FLAG],
-        description = ["adds the share of each file's lines last changed by each author, by number instead of name (needs the git history)"]
+        description = ["adds the share of each file's lines last changed by each author, under an invented name (needs the git history)"]
     )
     private var authorOwnership = false
 
     @CommandLine.Option(
         names = [AuthorOwnershipScan.NAMES_FLAG],
-        description = ["writes the real names of the authors into the map instead of numbers (personal data, needs --author-ownership)"]
+        description = ["writes the real names of the authors into the map instead (personal data, needs --author-ownership)"]
     )
     private var withAuthorNames = false
 

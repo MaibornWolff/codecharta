@@ -119,8 +119,8 @@ check_gitlogparser_author_ownership() {
     exit_with_err "--with-author-names wrote no name"
   fi
   for expected in \
-    '"id":"154c603-author-1","name":"Author 1","members":[{"nodeId":"ed41804914e906d4","weight":0.75}]' \
-    '"id":"154c603-author-2","name":"Author 2","members":[{"nodeId":"ed41804914e906d4","weight":0.25}]'; do
+    '"id":"154c603-author-magenta-rabbit","name":"Magenta Rabbit","members":[{"nodeId":"ed41804914e906d4","weight":0.75}]' \
+    '"id":"154c603-author-ochre-elk","name":"Ochre Elk","members":[{"nodeId":"ed41804914e906d4","weight":0.25}]'; do
     if ! grep -qF -- "$expected" "${ACTUAL_OWNERSHIP_FIRST}"; then
       exit_with_err "The author ownership is missing $expected"
     fi

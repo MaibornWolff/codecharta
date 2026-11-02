@@ -55,13 +55,13 @@ class RepoScanCommand(private val printsClusterHints: Boolean = true) : Analyser
 
     @CommandLine.Option(
         names = [AuthorOwnershipScan.FLAG],
-        description = ["add the share of each file's lines last changed by each author, by number instead of name (blames every file)"]
+        description = ["add the share of each file's lines last changed by each author, under an invented name (blames every file)"]
     )
     private var authorOwnership = false
 
     @CommandLine.Option(
         names = [AuthorOwnershipScan.NAMES_FLAG],
-        description = ["write the real names of the authors into the map instead of numbers (personal data, needs --author-ownership)"]
+        description = ["write the real names of the authors into the map instead (personal data, needs --author-ownership)"]
     )
     private var withAuthorNames = false
 
