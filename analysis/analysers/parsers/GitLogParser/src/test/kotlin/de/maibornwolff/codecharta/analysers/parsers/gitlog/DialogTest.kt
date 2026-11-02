@@ -157,7 +157,7 @@ class DialogTest {
             val pressEnter: suspend RunScope.() -> Unit = { terminal.press(Keys.ENTER) }
             val pressYes: suspend RunScope.() -> Unit = { terminal.press(Keys.LEFT, Keys.ENTER) }
             every { RepoScanDialog.Companion.testCallback() } returnsMany
-                listOf(typeRepo, pressEnter, pressEnter, typeRepo, pressEnter, pressYes)
+                listOf(typeRepo, pressEnter, pressEnter, pressEnter, typeRepo, pressEnter, pressYes, pressEnter, pressEnter)
             declined = RepoScanDialog.collectAnalyserArgs(this)
             chosen = RepoScanDialog.collectAnalyserArgs(this)
         }
@@ -165,6 +165,36 @@ class DialogTest {
         // Assert
         assertThat(declined).doesNotContain("--author-ownership")
         assertThat(chosen).contains("--author-ownership")
+    }
+
+    @Test
+    fun `should add commit changes only when a day is entered in the repo-scan dialog`() {
+        // Arrange
+        val repoFolderName = "src/test/resources/my/"
+        mockkObject(RepoScanDialog.Companion)
+        var declined: List<String> = listOf()
+        var chosen: List<String> = listOf()
+
+        // Act
+        testSession { terminal ->
+            val typeRepo: suspend RunScope.() -> Unit = {
+                terminal.type(repoFolderName)
+                terminal.press(Keys.ENTER)
+            }
+            val pressEnter: suspend RunScope.() -> Unit = { terminal.press(Keys.ENTER) }
+            val typeDay: suspend RunScope.() -> Unit = {
+                terminal.type("2026-01-31")
+                terminal.press(Keys.ENTER)
+            }
+            every { RepoScanDialog.Companion.testCallback() } returnsMany
+                listOf(typeRepo, pressEnter, pressEnter, pressEnter, typeRepo, pressEnter, pressEnter, typeDay)
+            declined = RepoScanDialog.collectAnalyserArgs(this)
+            chosen = RepoScanDialog.collectAnalyserArgs(this)
+        }
+
+        // Assert
+        assertThat(declined.joinToString()).doesNotContain("--commit-changes-since")
+        assertThat(chosen).contains("--commit-changes-since=2026-01-31")
     }
 
     @Test
@@ -184,7 +214,7 @@ class DialogTest {
             val pressEnter: suspend RunScope.() -> Unit = { terminal.press(Keys.ENTER) }
             val pressYes: suspend RunScope.() -> Unit = { terminal.press(Keys.LEFT, Keys.ENTER) }
             every { RepoScanDialog.Companion.testCallback() } returnsMany
-                listOf(typeRepo, pressEnter, pressYes, pressEnter, typeRepo, pressEnter, pressYes, pressYes)
+                listOf(typeRepo, pressEnter, pressYes, pressEnter, pressEnter, typeRepo, pressEnter, pressYes, pressYes, pressEnter)
             defaulted = RepoScanDialog.collectAnalyserArgs(this)
             chosen = RepoScanDialog.collectAnalyserArgs(this)
         }

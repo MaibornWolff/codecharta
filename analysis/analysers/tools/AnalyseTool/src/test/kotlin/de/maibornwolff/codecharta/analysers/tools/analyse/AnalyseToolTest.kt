@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.tools.analyse
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.commitchanges.CommitChangesScan
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
 import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
@@ -15,6 +16,7 @@ import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
+import java.time.LocalDate
 
 class AnalyseToolTest {
     @TempDir
@@ -68,6 +70,52 @@ class AnalyseToolTest {
             .clusters
         assertThat(clusters.single().members.map { it.nodeId }).containsExactly(NodeId.fromSegments(listOf("src", "App.kt")))
         assertThat(output.toString().trim().lines().last()).isEqualTo(AuthorOwnershipScan.PERSONAL_DATA_NOTE)
+    }
+
+    @Test
+    fun `should add commit changes of the mapped files and print their note last, without the author note`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        writeSource("generated/Api.kt", APP_SOURCE)
+        commitAll()
+
+        // Act
+        analyse(projectFolder.path, "--output-file=${mapFile.path}", "--exclude=generated", "--commit-changes-since=2000-01-01")
+
+        // Assert
+        val clusters = readMap(mapFile)
+            .lenses.clusters.clusterings
+            .getValue("commit-changes")
+            .clusters
+        assertThat(clusters.single().members.map { it.nodeId }).containsExactly(NodeId.fromSegments(listOf("src", "App.kt")))
+        assertThat(output.toString().trim().lines().last()).isEqualTo(CommitChangesScan.PERSONAL_DATA_NOTE)
+        assertThat(output.toString()).doesNotContain(AuthorOwnershipScan.PERSONAL_DATA_NOTE)
+    }
+
+    @Test
+    fun `should say so last when no commit since the day changed a file`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        commitAll()
+
+        // Act
+        analyse(projectFolder.path, "--output-file=${mapFile.path}", "--commit-changes-since=2999-01-01")
+
+        // Assert
+        assertThat(output.toString().trim().lines().last()).isEqualTo(CommitChangesScan.noCommitHint(LocalDate.parse("2999-01-01")))
+    }
+
+    @Test
+    fun `should refuse commit changes when the git history is left out`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+
+        // Act
+        val exitCode = analyse(projectFolder.path, "--output-file=${mapFile.path}", "--commit-changes-since=2000-01-01", "--without=git")
+
+        // Assert
+        assertThat(exitCode).isNotZero()
+        assertThat(output.toString()).contains("--commit-changes-since needs the git history")
     }
 
     @Test

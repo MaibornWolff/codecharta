@@ -158,7 +158,7 @@ class GitLogParser(
         addAuthor: Boolean,
         silent: Boolean,
         compress: Boolean,
-        authorOwnership: ClustersLens = ClustersLens()
+        clusters: ClustersLens = ClustersLens()
     ) {
         var project =
             createProjectFromLog(
@@ -168,7 +168,7 @@ class GitLogParser(
                 metricsFactory,
                 addAuthor,
                 silent
-            ).withClusters(authorOwnership)
+            ).withClusters(clusters)
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         if (pipedProject != null) {

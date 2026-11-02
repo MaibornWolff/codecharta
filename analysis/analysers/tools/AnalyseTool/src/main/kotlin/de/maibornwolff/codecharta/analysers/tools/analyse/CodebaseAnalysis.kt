@@ -3,11 +3,13 @@ package de.maibornwolff.codecharta.analysers.tools.analyse
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeResolverStrategy
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.ProjectMerger
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.commitchanges.CommitChangesScan
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import java.io.File
+import java.time.LocalDate
 import kotlin.io.path.createTempDirectory
 
 private data class ParserSelection(val parsers: List<ConfiguredAnalyser>, val skipped: List<SkippedSource>)
@@ -32,7 +34,8 @@ class CodebaseAnalysis(
             console.printSeparated("Analysis done: ${countedFiles(mapped.project)} with $sources")
             console.println("Map: ${request.outputFile.path}")
             printSkipped(selection.skipped + inHistoryOrder(search.skipped + mapped.failedHistories))
-            if (mapped.project.lenses.clusters.carriesData) printOwnershipHints(request, mapped.project)
+            if (request.authorOwnership && mapped.project.lenses.clusters.carriesData) printOwnershipHints(request, mapped.project)
+            request.commitChangesSince?.let { printCommitChangesHints(request, it, mapped.project) }
         } finally {
             workFolder.deleteRecursively()
         }
@@ -103,6 +106,12 @@ class CodebaseAnalysis(
         if (AuthorOwnershipScan(request.analysedFolder).isShallowClone()) console.println(AuthorOwnershipScan.SHALLOW_CLONE_WARNING)
         val carriesRealNames = AuthorOwnershipScan.carriesRealNames(project.lenses.clusters)
         console.println(if (carriesRealNames) AuthorOwnershipScan.REAL_NAMES_WARNING else AuthorOwnershipScan.PERSONAL_DATA_NOTE)
+    }
+
+    private fun printCommitChangesHints(request: AnalyseRequest, since: LocalDate, project: Project) {
+        if (CommitChangesScan(request.analysedFolder, since).isShallowClone()) console.println(CommitChangesScan.SHALLOW_CLONE_WARNING)
+        val carriesCommitChanges = CommitChangesScan.carriesCommitChanges(project.lenses.clusters)
+        console.println(if (carriesCommitChanges) CommitChangesScan.PERSONAL_DATA_NOTE else CommitChangesScan.noCommitHint(since))
     }
 
     private fun countedFiles(project: Project): String {

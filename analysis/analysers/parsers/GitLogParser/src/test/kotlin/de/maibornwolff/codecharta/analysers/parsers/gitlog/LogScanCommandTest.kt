@@ -25,6 +25,25 @@ class LogScanCommandTest {
     }
 
     @Test
+    fun `should reject commit changes with a hint to repo-scan`() {
+        // Arrange
+        val commandLine = CommandLine(LogScanCommand())
+        val errors = StringWriter()
+        commandLine.err = PrintWriter(errors)
+        commandLine.setExecutionExceptionHandler { exception, _, _ ->
+            errors.write(exception.message.orEmpty())
+            1
+        }
+
+        // Act
+        val exitCode = commandLine.execute("--git-log=any.log", "--repo-files=any.txt", "--commit-changes-since=2026-01-01")
+
+        // Assert
+        Assertions.assertThat(exitCode).isNotZero()
+        Assertions.assertThat(errors.toString()).contains("repo-scan --commit-changes-since")
+    }
+
+    @Test
     fun `should reject author ownership with a hint to repo-scan`() {
         // Arrange
         val commandLine = CommandLine(LogScanCommand())
