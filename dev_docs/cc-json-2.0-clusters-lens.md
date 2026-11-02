@@ -1,6 +1,6 @@
 # cc.json 2.0 — the `clusters` lens
 
-> Status: **implemented.** `gitlogparser` produces author ownership, and the visualization's metrics
+> Status: **implemented.** `gitlogparser` produces author ownership and commit changes, and the visualization's metrics
 > view shows any clustering in a Clusters tab of the explorer and a section of the inspector.
 > Design discussion: [#4411](https://github.com/MaibornWolff/codecharta/issues/4411).
 > Format context: [cc-json-2.0-format.md](cc-json-2.0-format.md).
@@ -95,7 +95,9 @@ clustering. Clusters are deliberately **not** a second `files`-style tree — id
 place.
 
 **Clusters carry their own `attributes`** (commit count on an author, ticket count on a feature),
-with `attributeDescriptors`/`attributeTypes` at the clustering level mirroring the other lenses.
+with `attributeDescriptors`/`attributeTypes` at the clustering level mirroring the other lenses. A value is a
+number or a string: `attributeTypes` describes numbers only, so a string has no entry there, and an ISO date sorts
+correctly as text. A descriptor's `title` names the value in a view, which falls back to its key.
 
 ## Merge
 
@@ -146,6 +148,38 @@ removed nodes; a cluster left without members goes too, unless a surviving clust
   so a map may still be personal data under GDPR.
 - **Not attributed** is what is left of a file: uncommitted lines, and all of a binary or empty file.
 
+## Producer: commit changes
+
+`ccsh gitlogparser repo-scan --commit-changes-since YYYY-MM-DD` and the same option of `ccsh analyse` write:
+
+```json
+"clusters": { "clusterings": { "commit-changes": {
+  "title": "Commit changes",
+  "membership": "overlay",
+  "weightBasis": "loc",
+  "analyzers": ["gitlogparser"],
+  "clusters": [
+    { "id": "<full commit hash>", "name": "a1b2c3d Fix login",
+      "attributes": { "date": "2026-10-31", "changed_files": 2, "changed_lines": 14 },
+      "members": [ { "nodeId": "<file node id>", "weight": 0.25 } ] }
+  ],
+  "attributeDescriptors": { "date": { "title": "Date" }, "changed_files": { "title": "Files changed" }, "changed_lines": { "title": "Lines changed" } },
+  "attributeTypes": { "changed_files": "absolute", "changed_lines": "absolute" }
+} } }
+```
+
+- **The window is required**, as an absolute day in UTC: a repository's whole history can reach tens of thousands of
+  clusters, and "6 months ago" would give another map on every run.
+- **A weight** is the lines the commit added and removed over the lines in the file today, capped at 1 because the
+  schema caps weights there, so it reads "at least this share of today's size", and floored at 0.0001 so that a real
+  change stays a member. A file with no line count (binary, or empty today) omits the weight, the wire's "whole file".
+  A pure rename is no member. This is why the clustering is an `overlay`: a file's commits can sum far above 1.
+- **The id** is the full hash, unique across repositories, so no marker is needed when maps merge.
+- **Files** follow renames to their path today (`git log -M`), walking from the newest commit; a commit with no member
+  left is not written, and merge commits never are.
+- **The attributes** describe the whole commit, including files gone today, so they survive filters unchanged.
+- **Personal data**: subjects are free text and a hash leads to its author, so the map may still be personal data.
+
 Further producers could be a cluster filter running community detection over co-change data, an
 issue importer or a coverage importer, the last two as `overlay`.
 
@@ -163,7 +197,10 @@ compare mode. It lists the clusters of one clustering, picked by `title`, flat: 
   pins it into the kept highlight. Either greys the rest of the 3D map and limits its labels to those files.
 - **A cluster with no building** among its shown files, say because they have no area in the current metric,
   is marked "not on the map"; its share still counts them.
-- **The inspector** lists the clusters a selected file belongs to, per clustering.
+- **Attributes** of a cluster show below its name by their `title`, the sorted one first. The list sorts by share or by
+  any attribute, highest first, whatever the descriptor's `direction`: which end matters is the reader's question.
+- **A long list** renders only the rows on screen, and above ten clusters it can be filtered by name.
+- **The inspector** lists the clusters a selected file belongs to, per clustering, the 20 biggest and a count of the rest.
 - **The repository marker** is the commit prefix of the id, shown only when two repositories' clusters
   meet in one clustering.
 

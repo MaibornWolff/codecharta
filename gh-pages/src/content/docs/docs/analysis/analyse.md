@@ -40,6 +40,7 @@ back through it.
 | `--local-changes`          | maps only the files that differ from the remote tracking branch                     |
 | `--author-ownership`       | adds each author's share of each file by number, from `git blame`                   |
 | `--with-author-names`      | writes real author names instead of numbers (needs `--author-ownership`)            |
+| `--commit-changes-since YYYY-MM-DD` | adds what each commit since this day changed in each file                  |
 | `--commit=REF`             | maps the codebase at a git commit, tag, branch or date                              |
 | `-p, --parallel`           | runs the analysers at the same time                                                 |
 | `-nc, --not-compressed`    | writes the map uncompressed                                                         |
@@ -75,6 +76,12 @@ still be personal data under GDPR. Treat and share it accordingly.
 a clustering titled **Author ownership (real names)**, and still no emails. The command warns about it last, even with
 `--silent`, and the Explorer's Clusters tab shows a warning for such a map.
 
+
+## Commit changes
+
+`--commit-changes-since YYYY-MM-DD` adds what each commit since that day changed to the map, as described in the
+[Git Log parser](/docs/parser/git-log). Commit subjects enter the map, and anyone with the repository can match a hash to
+its author, so a map may still be personal data under GDPR. The note is the last thing the command prints.
 ## What is not in the map
 
 The last lines of the output, after the `Map:` line, name every parser and history that is not in the map, and why:

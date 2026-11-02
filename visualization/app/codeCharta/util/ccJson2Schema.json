@@ -239,7 +239,7 @@
       }
     },
     "ClustersLens": {
-      "description": "Named clusterings of nodes, joined to `files` by id. Structurally a cross-cutting relation like edges, not a per-node metric. Produced by `gitlogparser` for author ownership and shown by the visualization; see dev_docs/cc-json-2.0-clusters-lens.md.",
+      "description": "Named clusterings of nodes, joined to `files` by id. Structurally a cross-cutting relation like edges, not a per-node metric. Produced by `gitlogparser` for author ownership and commit changes and shown by the visualization; see dev_docs/cc-json-2.0-clusters-lens.md.",
       "type": "object",
       "additionalProperties": false,
       "required": ["clusterings"],

@@ -25,7 +25,7 @@ Metric view adds a [Clusters](#clusters) tab when a loaded map carries clusters.
 
 ## Clusters
 
-A map made with [`--author-ownership`](/docs/parser/git-log) or another producer of clusters has a **Clusters** tab, except while [comparing](/docs/visualization/user-controls/compare) two maps. It lists
+A map made with [`--author-ownership` or `--commit-changes-since`](/docs/parser/git-log) or another producer of clusters has a **Clusters** tab, except while [comparing](/docs/visualization/user-controls/compare) two maps. It lists
 the clusters of one clustering; pick another by its title if the map has several.
 
 - Each row shows the cluster's **share of files**: every file shown on the map counts the same, whatever its size, and
@@ -34,6 +34,10 @@ the clusters of one clustering; pick another by its title if the map has several
 - Hover a row to show only its files on the map, whatever else is kept lit: they stay in colour with labels, and the
   rest turns grey. Click it to keep them lit,
   which marks the row with a border; click again to let go.
+- A cluster the map says more about, such as a commit's date and size, shows that below its name and in its tooltip. Pick
+  one of those values above the list to sort by it, highest or newest first. A list of more than ten clusters can be
+  filtered by name.
+- **Not on the map** marks a cluster none of whose shown files has a building.
 - Authors appear as numbers, such as **Author 3**. If the map joins two repositories, each row also shows a short
   marker for its repository, because their numbers count separately.
 
