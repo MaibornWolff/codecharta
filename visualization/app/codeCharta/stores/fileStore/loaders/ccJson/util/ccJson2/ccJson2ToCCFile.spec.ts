@@ -131,6 +131,32 @@ describe("mapCcJson2ToCCFile", () => {
         warn.mockRestore()
     })
 
+    it("should keep the text and number attributes of a cluster, titled by the clustering's descriptors", () => {
+        // Arrange
+        ;(file.lenses as Record<string, unknown>).clusters = {
+            clusterings: {
+                "commit-changes": {
+                    title: "Commit changes",
+                    membership: "overlay",
+                    analyzers: [],
+                    attributeDescriptors: { date: { title: "Date" }, undescribed_title: { title: "" } },
+                    clusters: [
+                        { id: "a", name: "a", members: [], attributes: { date: "2026-10-31", size: 3, nested: { dropped: true } } },
+                        { id: "b", name: "b", members: [] }
+                    ]
+                }
+            }
+        }
+
+        // Act
+        const clustering = mapCcJson2ToCCFile(file, nameDataPair(file)).settings.fileSettings.clusterings["commit-changes"]
+
+        // Assert
+        expect(clustering.attributeTitles).toEqual({ date: "Date", undescribed_title: "undescribed_title", size: "size" })
+        expect(clustering.clusters[0].attributes).toEqual({ date: "2026-10-31", size: 3 })
+        expect(clustering.clusters[1]).not.toHaveProperty("attributes")
+    })
+
     it("should map a file without a clusters lens to no clusterings", () => {
         // Arrange & Act
         const result = mapCcJson2ToCCFile(file, nameDataPair(file))

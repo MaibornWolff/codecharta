@@ -1,5 +1,5 @@
 import { notAttributedShareOf, repositoryMarkersOf } from "../../../lenses/clusters/clusters.facade"
-import { ClusterData, ClusteringData } from "../../../model/codeCharta.model"
+import { ClusterAttributes, ClusterData, ClusteringData } from "../../../model/codeCharta.model"
 
 export interface ClusterShareRow {
     id: string
@@ -7,6 +7,7 @@ export interface ClusterShareRow {
     repositoryMarker: string | null
     share: number
     filePaths: string[]
+    attributes: ClusterAttributes
 }
 
 export interface ClusterShares {
@@ -34,7 +35,14 @@ function rowOf(cluster: ClusterData, shownFilePaths: ReadonlySet<string>, reposi
             weightSum += weight
         }
     }
-    return { id: cluster.id, name: cluster.name, repositoryMarker, share: weightSum / Math.max(shownFilePaths.size, 1), filePaths }
+    return {
+        id: cluster.id,
+        name: cluster.name,
+        repositoryMarker,
+        share: weightSum / Math.max(shownFilePaths.size, 1),
+        filePaths,
+        attributes: cluster.attributes ?? {}
+    }
 }
 
 function remainderOf(clustering: ClusteringData, rows: ClusterShareRow[], shownFilePaths: ReadonlySet<string>): number | null {

@@ -15,6 +15,24 @@ const CLUSTERINGS: ClusteringsData = {
 const fileAt = (path: string) => ({ name: path, path, type: NodeType.FILE }) as unknown as CodeMapNode
 
 describe("inspectorClusterSections", () => {
+    it("should show the biggest owners of a file with very many and count the others", () => {
+        // Arrange
+        const clusters = Array.from({ length: 25 }, (_, index) => ({
+            id: `c${index}`,
+            name: `Commit ${index}`,
+            members: { "/root/many": (index + 1) / 100 }
+        }))
+        const clusterings: ClusteringsData = { commits: { title: "Commits", membership: "overlay", clusters } }
+
+        // Act
+        const [section] = _inspectorClusterSections(fileAt("/root/many"), clusterings)
+
+        // Assert
+        expect(section.owners).toHaveLength(20)
+        expect(section.owners[0].name).toBe("Commit 24")
+        expect(section.hiddenOwnerCount).toBe(5)
+    })
+
     it("should list the owners of the selected file, biggest first, and what is not attributed", () => {
         // Arrange & Act
         const [section] = _inspectorClusterSections(fileAt("/root/a"), CLUSTERINGS)

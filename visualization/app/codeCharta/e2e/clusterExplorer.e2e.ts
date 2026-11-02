@@ -5,6 +5,7 @@ import { NavBarFolderButtonPageObject } from "../features/navBar/components/navB
 const TRANSPARENT = "rgba(0, 0, 0, 0)"
 const FILE_WITH_REAL_NAMES = "./app/codeCharta/resources/sample_with_real_author_names.cc.json"
 const FILE_WITH_CLUSTERS = "./app/codeCharta/resources/sample_with_clusters.cc.json"
+const FILE_WITH_COMMIT_CHANGES = "./app/codeCharta/resources/sample_with_commit_changes.cc.json"
 const FILE_WITH_CLUSTER_OFF_THE_MAP = "./app/codeCharta/resources/sample_with_cluster_off_the_map.cc.json"
 
 async function openClustersTab(page: Page) {
@@ -141,7 +142,7 @@ test.describe("Cluster explorer", () => {
 
         // Assert
         await expect(row(page, "Author 5").getByTestId("cluster-explorer-off-map")).toBeVisible()
-        await expect(row(page, "Author 5")).toHaveAttribute("title", "1 file, none of them on the map")
+        await expect(row(page, "Author 5")).toHaveAttribute("title", "Author 5\n1 file, none of them on the map")
         await expect(row(page, "Author 1").getByTestId("cluster-explorer-off-map")).toHaveCount(0)
     })
 
@@ -159,6 +160,85 @@ test.describe("Cluster explorer", () => {
         // Assert
         await expect(page.getByTestId("cluster-explorer-real-names")).toContainText("real author names")
         await expect(row(page, "Ann Example")).toBeVisible()
+    })
+
+    test.describe("with one cluster per commit", () => {
+        test.beforeEach(async ({ page }) => {
+            await new NavBarFolderButtonPageObject(page).openFiles([FILE_WITH_COMMIT_CHANGES])
+            await page.getByTestId("explorer-mode-clusters").click()
+        })
+
+        test("should render only the rows on screen and bring others in on scrolling", async ({ page }) => {
+            // Arrange
+            const rows = page.getByTestId("cluster-explorer-row")
+            await expect(rows.first()).toBeVisible()
+            const firstRowBefore = await rows.first().textContent()
+
+            // Act
+            const renderedRows = await rows.count()
+            await page.getByTestId("cluster-explorer-list").evaluate(list => {
+                list.closest(".overflow-auto")?.scrollBy(0, 5000)
+            })
+
+            // Assert
+            expect(renderedRows).toBeLessThan(100)
+            await expect.poll(() => rows.first().textContent()).not.toBe(firstRowBefore)
+        })
+
+        test("should keep every rendered row the same height, which the rendering of a slice relies on", async ({ page }) => {
+            // Arrange
+            const rows = page.locator("[data-cluster-row]")
+            await expect(rows.first()).toBeVisible()
+
+            // Act
+            const heights = await rows.evaluateAll(elements => elements.map(element => (element as HTMLElement).offsetHeight))
+
+            // Assert
+            expect(new Set(heights).size).toBe(1)
+        })
+
+        test("should show a commit's attributes and sort by them", async ({ page }) => {
+            // Arrange
+            const rows = page.getByTestId("cluster-explorer-row")
+
+            // Act
+            await page.getByTestId("cluster-explorer-sort").selectOption({ label: "Lines changed" })
+
+            // Assert
+            await expect(rows.first().getByTestId("cluster-explorer-attributes")).toContainText("Lines changed: 500")
+            await expect(rows.first().getByTestId("cluster-explorer-attributes")).toContainText("Date: 2026-")
+        })
+
+        test("should filter the commits by name", async ({ page }) => {
+            // Arrange
+            const rows = page.getByTestId("cluster-explorer-row")
+
+            // Act
+            await page.getByTestId("cluster-explorer-filter").fill("number 499")
+
+            // Assert
+            await expect(rows).toHaveCount(1)
+            await expect(rows).toContainText("Change number 499")
+
+            // Act
+            await page.getByTestId("cluster-explorer-filter").fill("no such commit")
+
+            // Assert
+            await expect(page.getByTestId("cluster-explorer-no-match")).toBeVisible()
+        })
+
+        test("should cap the commits listed for a file in the inspector", async ({ page }) => {
+            // Arrange
+            await page.getByTestId("explorer-mode-files").click()
+
+            // Act
+            await page.locator("[id$='/root/bigLeaf.ts']").click()
+
+            // Assert
+            const section = page.getByTestId("inspector-clusters").filter({ hasText: "Commit changes" })
+            await expect(section.getByTestId("inspector-cluster-owner")).toHaveCount(20)
+            await expect(section.getByTestId("inspector-cluster-hidden-owners")).toContainText("and 105 more")
+        })
     })
 
     test("should mark only the pinned row with a primary border", async ({ page }) => {

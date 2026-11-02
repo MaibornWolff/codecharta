@@ -15,10 +15,12 @@ export interface InspectorClusterSection {
     key: string
     title: string
     owners: InspectorClusterOwner[]
+    hiddenOwnerCount: number
     notAttributedShare: number | null
 }
 
 const NO_SECTIONS: InspectorClusterSection[] = []
+const MOST_OWNERS_SHOWN = 20
 
 export const _inspectorClusterSections = (node: CodeMapNode | undefined, clusterings: ClusteringsData): InspectorClusterSection[] => {
     if (!node || !isLeaf(node)) {
@@ -40,7 +42,8 @@ export const _inspectorClusterSections = (node: CodeMapNode | undefined, cluster
             return {
                 key,
                 title: clustering.title,
-                owners,
+                owners: owners.slice(0, MOST_OWNERS_SHOWN),
+                hiddenOwnerCount: Math.max(owners.length - MOST_OWNERS_SHOWN, 0),
                 notAttributedShare: clustering.membership === "overlay" ? null : notAttributedShareOf(attributedShare)
             }
         })

@@ -11,6 +11,7 @@ import {
     AttributeDescriptors,
     AttributeTypes,
     CCFile,
+    ClusterAttributes,
     ClusteringsData,
     CodeMapNode,
     DependencyDeclarationData,
@@ -115,17 +116,41 @@ function mapEdges(file: CcJson2, idToPath: Record<string, string>): Edge[] {
 function mapClusterings(file: CcJson2, idToPath: Record<string, string>): ClusteringsData {
     const clusterings: ClusteringsData = {}
     for (const [key, clustering] of Object.entries(file.lenses.clusters?.clusterings ?? {})) {
+        const clusters = clustering.clusters.map(cluster => ({
+            id: cluster.id,
+            name: cluster.name,
+            members: mapClusterMembers(cluster.members, idToPath),
+            ...shownAttributesOf(cluster.attributes)
+        }))
         clusterings[key] = {
             title: clustering.title,
             membership: clustering.membership,
-            clusters: clustering.clusters.map(cluster => ({
-                id: cluster.id,
-                name: cluster.name,
-                members: mapClusterMembers(cluster.members, idToPath)
-            }))
+            clusters,
+            ...attributeTitlesOf(clusters, clustering.attributeDescriptors)
         }
     }
     return clusterings
+}
+
+function shownAttributesOf(attributes: Record<string, unknown> = {}): { attributes?: ClusterAttributes } {
+    const shown = Object.entries(attributes).filter(([, value]) => typeof value === "string" || typeof value === "number")
+    return shown.length > 0 ? { attributes: Object.fromEntries(shown) as ClusterAttributes } : {}
+}
+
+function attributeTitlesOf(
+    clusters: { attributes?: ClusterAttributes }[],
+    descriptors: Record<string, { title?: string }> = {}
+): { attributeTitles?: Record<string, string> } {
+    const titles: Record<string, string> = {}
+    for (const [key, descriptor] of Object.entries(descriptors)) {
+        titles[key] = descriptor.title || key
+    }
+    for (const { attributes } of clusters) {
+        for (const key of Object.keys(attributes ?? {})) {
+            titles[key] ??= key
+        }
+    }
+    return Object.keys(titles).length > 0 ? { attributeTitles: titles } : {}
 }
 
 function mapClusterMembers(members: { nodeId: string; weight?: number }[], idToPath: Record<string, string>): Record<string, number> {
