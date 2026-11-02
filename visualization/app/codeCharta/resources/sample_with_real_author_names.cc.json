@@ -46,6 +46,7 @@
         "metrics": {
             "attributes": {
                 "ea70504d5daa3547": {
+                    "loc": 100,
                     "rloc": 70,
                     "functions": 1000,
                     "sonar_complexity": 10,
@@ -53,6 +54,7 @@
                     "avgCommits": 22
                 },
                 "120a1569e3556450": {
+                    "loc": 40,
                     "rloc": 30,
                     "functions": 100,
                     "sonar_complexity": 100,
@@ -60,6 +62,7 @@
                     "avgCommits": 51
                 },
                 "7de6343f370ff7cf": {
+                    "loc": 200,
                     "rloc": 100,
                     "functions": 10,
                     "sonar_complexity": 1,
@@ -67,6 +70,7 @@
                     "avgCommits": 56
                 },
                 "3d6521b0884ce9f4": {
+                    "loc": 60,
                     "rloc": 400,
                     "functions": 10,
                     "sonar_complexity": 100,

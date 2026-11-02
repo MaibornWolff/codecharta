@@ -163,6 +163,19 @@ test.describe("Cluster explorer", () => {
         await expect(row(page, "Ann Example")).toBeVisible()
     })
 
+    test("should show the lines each author owns and offer sorting by them", async ({ page }) => {
+        // Arrange & Act
+        await new NavBarFolderButtonPageObject(page).openFiles([FILE_WITH_REAL_NAMES])
+        await page.getByTestId("explorer-mode-clusters").click()
+
+        // Assert
+        await expect(page.getByTestId("cluster-explorer-share-label")).toHaveText("share of lines")
+        await expect(row(page, "Ann Example")).toContainText("69%")
+        await expect(row(page, "Ann Example")).toContainText("Lines owned: 275")
+        await expect(row(page, "Bob Example")).toContainText("Lines owned: 45")
+        await expect(page.getByTestId("cluster-explorer-sort").locator("option")).toHaveText(["Share of lines", "Lines owned"])
+    })
+
     test.describe("with one cluster per commit", () => {
         test.beforeEach(async ({ page }) => {
             await new NavBarFolderButtonPageObject(page).openFiles([FILE_WITH_COMMIT_CHANGES])

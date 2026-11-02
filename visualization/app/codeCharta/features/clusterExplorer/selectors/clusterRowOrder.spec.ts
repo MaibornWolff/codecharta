@@ -1,4 +1,3 @@
-import { ClusteringData } from "../../../model/codeCharta.model"
 import { attributeSummaryOf, BY_SHARE, matchingRowsInOrder, sortOptionsOf } from "./clusterRowOrder"
 import { ClusterShareRow } from "./clusterShares"
 
@@ -12,27 +11,22 @@ describe("clusterRowOrder", () => {
     describe("sortOptionsOf", () => {
         it("should offer the share first, then each attribute by its title", () => {
             // Arrange
-            const clustering: ClusteringData = {
-                title: "Commits",
-                membership: "overlay",
-                clusters: [],
-                attributeTitles: { date: "Date", changed_lines: "Lines changed" }
-            }
+            const attributeTitles = { date: "Date", changed_lines: "Lines changed" }
 
             // Act
-            const options = sortOptionsOf(clustering)
+            const options = sortOptionsOf("share of lines", attributeTitles)
 
             // Assert
             expect(options).toEqual([
-                { key: BY_SHARE, title: "Share of files" },
+                { key: BY_SHARE, title: "Share of lines" },
                 { key: "date", title: "Date" },
                 { key: "changed_lines", title: "Lines changed" }
             ])
         })
 
-        it("should offer only the share without a clustering or attributes", () => {
+        it("should offer only the share without attributes", () => {
             // Arrange & Act
-            const options = sortOptionsOf(undefined)
+            const options = sortOptionsOf("share of files", {})
 
             // Assert
             expect(options.map(({ key }) => key)).toEqual([BY_SHARE])

@@ -70,7 +70,7 @@ describe("clusterSharesOf", () => {
         const shares = clusterSharesOf(clustering(), shown)
 
         // Assert
-        expect(shares).toEqual({ rows: [], notAttributedShare: null, shareLabel: "share of files" })
+        expect(shares).toEqual({ rows: [], notAttributedShare: null, shareLabel: "share of files", attributeTitles: {} })
     })
 
     it("should mark the rows only when two repositories meet", () => {
@@ -153,6 +153,67 @@ describe("clusterSharesOf", () => {
                 ["Small", 1],
                 ["Big", 0]
             ])
+        })
+
+        it("should count the lines each cluster owns, rounded, and offer them first", () => {
+            // Arrange
+            const withAttribute = { ...byLines, attributeTitles: { commits: "Commits" } }
+            const halfALine = new Map([
+                ["/root/small", { loc: 10 }],
+                ["/root/big", { loc: 91 }]
+            ])
+
+            // Act
+            const { rows, attributeTitles } = clusterSharesOf(withAttribute, halfALine)
+
+            // Assert
+            expect(rows.map(row => [row.name, row.attributes.lines_owned])).toEqual([
+                ["Big", 46],
+                ["Small", 10]
+            ])
+            expect(Object.entries(attributeTitles)).toEqual([
+                ["lines_owned", "Lines owned"],
+                ["commits", "Commits"]
+            ])
+        })
+
+        it("should count owned lines only over the shown files", () => {
+            // Arrange
+            const clusterOverTwoFiles = {
+                ...byLines,
+                clusters: [{ id: "both", name: "Both", members: { "/root/small": 1, "/root/big": 1 } }]
+            }
+            const onlySmall = new Map([["/root/small", { loc: 10 }]])
+
+            // Act
+            const { rows } = clusterSharesOf(clusterOverTwoFiles, onlySmall)
+
+            // Assert
+            expect(rows[0].attributes.lines_owned).toBe(10)
+        })
+
+        it("should own no lines in an overlay, whose weights say what touched a file", () => {
+            // Arrange
+            const commits = { ...byLines, membership: "overlay" as const }
+
+            // Act
+            const { rows, attributeTitles } = clusterSharesOf(commits, files)
+
+            // Assert
+            expect(rows[0].attributes).not.toHaveProperty("lines_owned")
+            expect(attributeTitles).toEqual({})
+        })
+
+        it("should own no lines where the map has no line counts", () => {
+            // Arrange
+            const noLines = filesWithoutMetrics("/root/small")
+
+            // Act
+            const { rows, attributeTitles } = clusterSharesOf(byLines, noLines)
+
+            // Assert
+            expect(rows[0].attributes).not.toHaveProperty("lines_owned")
+            expect(attributeTitles).toEqual({})
         })
 
         it("should name any other metric in the label", () => {

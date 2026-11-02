@@ -1,4 +1,3 @@
-import { ClusteringData } from "../../../model/codeCharta.model"
 import { ClusterShareRow } from "./clusterShares"
 
 export const BY_SHARE = ""
@@ -8,11 +7,9 @@ export interface ClusterSortOption {
     title: string
 }
 
-const SHARE_OPTION: ClusterSortOption = { key: BY_SHARE, title: "Share of files" }
-
-export function sortOptionsOf(clustering: ClusteringData | undefined): ClusterSortOption[] {
-    const attributeOptions = Object.entries(clustering?.attributeTitles ?? {}).map(([key, title]) => ({ key, title }))
-    return [SHARE_OPTION, ...attributeOptions]
+export function sortOptionsOf(shareLabel: string, attributeTitles: Record<string, string>): ClusterSortOption[] {
+    const shareOption = { key: BY_SHARE, title: shareLabel.charAt(0).toUpperCase() + shareLabel.slice(1) }
+    return [shareOption, ...Object.entries(attributeTitles).map(([key, title]) => ({ key, title }))]
 }
 
 /** [rows] arrive by share, so sorting by share has nothing to do; a sort that ties keeps that order. */
