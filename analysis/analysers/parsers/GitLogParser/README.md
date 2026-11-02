@@ -44,6 +44,22 @@ still be personal data under GDPR. Treat and share it accordingly.
 a clustering titled **Author ownership (real names)**, and still no emails. The command warns about it last, even with
 `--silent`, and the Explorer's Clusters tab shows a warning for such a map.
 
+
+## Commit changes
+
+With `--commit-changes-since YYYY-MM-DD`, `repo-scan` also records what each commit since that day, in UTC, changed: one
+cluster per commit, in a clustering titled **Commit changes**, so you can see which commits reached furthest.
+
+- A file's share is the lines the commit added and removed, divided by the lines in the file today, up to the whole file.
+  A commit may have rewritten a file several times over, so these shares are never added up across commits. A binary or
+  empty file counts as wholly changed.
+- Merge commits are left out, as their commits are listed themselves. Changes follow a renamed file to its path today,
+  and a pure rename changes nothing. A commit with no file left today is not listed.
+- Each commit also carries its date and how many files and lines it changed in all, including files gone today.
+
+Commit subjects enter the map, and anyone with the repository can match a hash to its author, so a map may still be
+personal data under GDPR. The command says so last. On a shallow clone the oldest commit counts every file as changed,
+and the command warns about it.
 ## Usage and Parameters
 
 As this parser can generate metrics based on a given git-log file or given a git repository (where the git-log is then generated on the fly), some parameters are only available in the log-scan mode or the repo-scan mode.
@@ -55,6 +71,7 @@ As this parser can generate metrics based on a given git-log file or given a git
 | `--add-author`                      | add an array of authors to every file                                               |
 | `--author-ownership`                | add each author's share of each file by number, from `git blame` (repo-scan only)   |
 | `--with-author-names`               | write real author names instead of numbers (needs `--author-ownership`)             |
+| `--commit-changes-since YYYY-MM-DD` | add what each commit since this day changed in each file (repo-scan only)           |
 | `--git-log=FILE`                    | git-log file to parse (only available for log-scan mode!)                           |
 | `-h, --help`                        | displays help and exits                                                             |
 | `-nc, --not-compressed`             | save uncompressed output File                                                       |
@@ -73,7 +90,7 @@ ccsh gitlogparser log-scan [-h] [--add-author] [-nc] [--silent]
                                 --repo-files=FILE
 
 Usage for repo-scan mode:
-ccsh gitlogparser repo-scan [-h] [--add-author] [--author-ownership] [-nc] [--silent]
+ccsh gitlogparser repo-scan [-h] [--add-author] [--author-ownership] [--commit-changes-since=YYYY-MM-DD] [-nc] [--silent]
                             [-o=<outputFilePath>] [--repo-path=DIRECTORY]
 
 ```
