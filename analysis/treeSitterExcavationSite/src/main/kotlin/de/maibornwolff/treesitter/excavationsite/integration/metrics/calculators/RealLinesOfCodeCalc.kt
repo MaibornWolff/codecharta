@@ -26,7 +26,7 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) :
         val node = nodeContext.node
         val nodeType = nodeContext.nodeType
         val startRow = nodeContext.startRow
-        val endRow = nodeContext.endRow
+        val endRow = lastOccupiedRow(nodeContext.node, nodeContext.startRow, nodeContext.endRow)
 
         val functionBeforeNode = currentFunction
         updateInFunctionStatusForRloc(nodeContext, nodeTypeProvider)
@@ -35,7 +35,8 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) :
         }
 
         if (nodeContext.shouldIgnoreNode(node, nodeType) ||
-            NodeTypeMatcher.isNodeTypeAllowed(node, nodeType, nodeTypeProvider.commentLineNodeTypes)
+            NodeTypeMatcher.isNodeTypeAllowed(node, nodeType, nodeTypeProvider.commentLineNodeTypes) ||
+            isLineBreakToken(node)
         ) {
             return 0
         }
@@ -60,6 +61,8 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) :
 
         return rlocForNode
     }
+
+    private fun isLineBreakToken(node: SyntaxNode): Boolean = node.childCount == 0 && node.type.isBlank()
 
     private fun addToRlocPerFunction(node: SyntaxNode, rlocForNode: Int, rlocForFunctionAdder: Int) {
         var additionalRlocForFunction = 0
