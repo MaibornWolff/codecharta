@@ -36,6 +36,7 @@ type CopiedPart = "path" | "content"
 
 const WRAP_STORAGE_KEY = "codecharta.sourceViewer.wrapsLines"
 const SELECTED_ROW_CLASS = "cc-source-row-selected"
+const SCROLL_KEYS = new Set(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "PageUp", "PageDown", "Home", "End"])
 
 @Component({
     selector: "cc-source-viewer",
@@ -110,6 +111,15 @@ export class SourceViewerComponent {
         if (this.holdsHistoryEntry) {
             this.holdsHistoryEntry = false
             history.back()
+        }
+    }
+
+    /** The code is not in the Tab order, so a scroll key pressed anywhere in the viewer brings the focus back to it. */
+    keepKeysInViewer(event: KeyboardEvent) {
+        event.stopPropagation()
+        const code = this.scroller()?.nativeElement
+        if (code && SCROLL_KEYS.has(event.key) && !code.contains(document.activeElement)) {
+            code.focus()
         }
     }
 

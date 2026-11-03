@@ -237,6 +237,25 @@ test.describe("Local source", () => {
         expect(size).toEqual({ hasHorizontalScrollbar: false, height: 600 * 24 })
     })
 
+    test("should scroll the code with the arrow keys after the focus moved to a button", async ({ page }) => {
+        // Arrange
+        const localSource = new LocalSourcePageObject(page)
+        await localSource.standInForThePicker("sampleFolderWithLongFile")
+        await goto(page)
+        await localSource.switchOn()
+        await (await openMenuOf(page, BIG_LEAF)).getByText("Show Source").click()
+        await localSource.selectFolderInTheDialog()
+        const code = localSource.sourceDialog().getByLabel("Source code")
+        await expect(code).toContainText("export const line = 1")
+        await page.getByTestId("source-viewer-back").focus()
+
+        // Act
+        await page.keyboard.press("ArrowDown")
+
+        // Assert
+        await expect.poll(() => code.evaluate(element => element.scrollTop)).toBeGreaterThan(0)
+    })
+
     test("should refuse a folder that holds none of the map's files", async ({ page }) => {
         // Arrange
         const localSource = new LocalSourcePageObject(page)
