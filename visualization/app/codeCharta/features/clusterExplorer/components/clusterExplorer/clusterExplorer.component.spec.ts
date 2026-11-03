@@ -55,7 +55,7 @@ describe("ClusterExplorerComponent", () => {
         togglePin: jest.fn()
     }
 
-    async function setup(clusterings: ClusteringsData) {
+    async function setup(clusterings: ClusteringsData, areaMetric = "rloc") {
         jest.clearAllMocks()
         isOnMap.set(() => true)
         TestBed.configureTestingModule({
@@ -69,7 +69,8 @@ describe("ClusterExplorerComponent", () => {
                                 ["/root/a", { loc: 30 }],
                                 ["/root/b", { loc: 10 }]
                             ])
-                        )
+                        ),
+                        areaMetric$: of(areaMetric)
                     }
                 },
                 { provide: ClusterHighlightService, useValue: highlight },
@@ -93,6 +94,14 @@ describe("ClusterExplorerComponent", () => {
     it("should label the shares as share of lines where the clustering is weighted by lines", async () => {
         // Arrange & Act
         await setup({ authors: { ...AUTHORS["author-ownership"], weightBasis: "loc" } })
+
+        // Assert
+        expect(screen.getByTestId("cluster-explorer-share-label").textContent).toBe("share of lines")
+    })
+
+    it("should measure the shares by the area metric where the shown files hold it", async () => {
+        // Arrange & Act
+        await setup(AUTHORS, "loc")
 
         // Assert
         expect(screen.getByTestId("cluster-explorer-share-label").textContent).toBe("share of lines")

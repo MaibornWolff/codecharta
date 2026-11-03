@@ -26,6 +26,7 @@ export class ClusterExplorerComponent implements OnDestroy {
 
     private readonly clusterings = toSignal(this.readStore.clusterings$, { requireSync: true })
     private readonly shownFiles = toSignal(this.readStore.shownFiles$, { requireSync: true })
+    private readonly areaMetric = toSignal(this.readStore.areaMetric$, { requireSync: true })
     private readonly chosenKey = signal<string | null>(null)
     private readonly chosenSort = signal(BY_SHARE)
     private readonly isOffMapGroupOpen = signal(false)
@@ -44,7 +45,7 @@ export class ClusterExplorerComponent implements OnDestroy {
     readonly shares = computed((): ClusterShares => {
         const clustering = this.activeClustering()
         return clustering
-            ? clusterSharesOf(clustering, this.shownFiles())
+            ? clusterSharesOf(clustering, this.shownFiles(), this.areaMetric())
             : { rows: [], notAttributedShare: null, shareLabel: SHARE_OF_FILES, attributeTitles: {} }
     })
     readonly sortOptions = computed(() => sortOptionsOf(this.shares().shareLabel, this.shares().attributeTitles))
