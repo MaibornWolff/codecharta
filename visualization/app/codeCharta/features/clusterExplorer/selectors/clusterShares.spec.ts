@@ -155,65 +155,20 @@ describe("clusterSharesOf", () => {
             ])
         })
 
-        it("should count the lines each cluster owns, rounded, and offer them first", () => {
+        it("should keep a cluster's attributes as the map holds them, without deriving any", () => {
             // Arrange
-            const withAttribute = { ...byLines, attributeTitles: { commits: "Commits" } }
-            const halfALine = new Map([
-                ["/root/small", { loc: 10 }],
-                ["/root/big", { loc: 91 }]
-            ])
-
-            // Act
-            const { rows, attributeTitles } = clusterSharesOf(withAttribute, halfALine)
-
-            // Assert
-            expect(rows.map(row => [row.name, row.attributes.lines_owned])).toEqual([
-                ["Big", 46],
-                ["Small", 10]
-            ])
-            expect(Object.entries(attributeTitles)).toEqual([
-                ["lines_owned", "Lines owned"],
-                ["commits", "Commits"]
-            ])
-        })
-
-        it("should count owned lines only over the shown files", () => {
-            // Arrange
-            const clusterOverTwoFiles = {
+            const withAttribute = {
                 ...byLines,
-                clusters: [{ id: "both", name: "Both", members: { "/root/small": 1, "/root/big": 1 } }]
+                attributeTitles: { commits: "Commits" },
+                clusters: [{ id: "small", name: "Small", members: { "/root/small": 1 }, attributes: { commits: 3 } }]
             }
-            const onlySmall = new Map([["/root/small", { loc: 10 }]])
 
             // Act
-            const { rows } = clusterSharesOf(clusterOverTwoFiles, onlySmall)
+            const { rows, attributeTitles } = clusterSharesOf(withAttribute, files)
 
             // Assert
-            expect(rows[0].attributes.lines_owned).toBe(10)
-        })
-
-        it("should own no lines in an overlay, whose weights say what touched a file", () => {
-            // Arrange
-            const commits = { ...byLines, membership: "overlay" as const }
-
-            // Act
-            const { rows, attributeTitles } = clusterSharesOf(commits, files)
-
-            // Assert
-            expect(rows[0].attributes).not.toHaveProperty("lines_owned")
-            expect(attributeTitles).toEqual({})
-        })
-
-        it("should own no lines where the map has no line counts", () => {
-            // Arrange
-            const noLines = filesWithoutMetrics("/root/small")
-
-            // Act
-            const { rows, attributeTitles } = clusterSharesOf(byLines, noLines)
-
-            // Assert
-            expect(rows[0].attributes).not.toHaveProperty("lines_owned")
-            expect(attributeTitles).toEqual({})
+            expect(rows[0].attributes).toEqual({ commits: 3 })
+            expect(attributeTitles).toEqual({ commits: "Commits" })
         })
 
         it("should name any other metric in the label", () => {

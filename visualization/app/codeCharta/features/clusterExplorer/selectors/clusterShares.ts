@@ -23,11 +23,9 @@ interface ShareMeasure {
     label: string
     total: number
     sizeOf: (path: string) => number
-    countsOwnedLines: boolean
 }
 
 const LINES_METRIC = "loc"
-const LINES_OWNED = "lines_owned"
 export const SHARE_OF_FILES = "share of files"
 
 /** A cluster's share is its weights times the size of their files, over the size of all shown files. */
@@ -42,7 +40,7 @@ export function clusterSharesOf(clustering: ClusteringData, shownFiles: ShownFil
         rows,
         notAttributedShare: remainderOf(clustering, rows, shownFiles),
         shareLabel: measure.label,
-        attributeTitles: { ...(measure.countsOwnedLines ? { [LINES_OWNED]: "Lines owned" } : {}), ...clustering.attributeTitles }
+        attributeTitles: clustering.attributeTitles ?? {}
     }
 }
 
@@ -51,14 +49,12 @@ function shareMeasureOf(clustering: ClusteringData, shownFiles: ShownFiles): Sha
     const metric = clustering.weightBasis
     const metricTotal = metric ? [...shownFiles.values()].reduce((sum, attributes) => sum + (attributes[metric] ?? 0), 0) : 0
     if (!metric || metricTotal <= 0) {
-        return { label: SHARE_OF_FILES, total: shownFiles.size, sizeOf: () => 1, countsOwnedLines: false }
+        return { label: SHARE_OF_FILES, total: shownFiles.size, sizeOf: () => 1 }
     }
     return {
         label: metric === LINES_METRIC ? "share of lines" : `share of ${metric}`,
         total: metricTotal,
-        sizeOf: path => shownFiles.get(path)?.[metric] ?? 0,
-        // An overlay's weights say what touched a file, not who holds its lines
-        countsOwnedLines: metric === LINES_METRIC && clustering.membership === "weighted"
+        sizeOf: path => shownFiles.get(path)?.[metric] ?? 0
     }
 }
 
@@ -77,9 +73,7 @@ function rowOf(cluster: ClusterData, shownFiles: ShownFiles, measure: ShareMeasu
         repositoryMarker,
         share: measure.total > 0 ? weightedSize / measure.total : 0,
         filePaths,
-        attributes: measure.countsOwnedLines
-            ? { ...cluster.attributes, [LINES_OWNED]: Math.round(weightedSize) }
-            : (cluster.attributes ?? {})
+        attributes: cluster.attributes ?? {}
     }
 }
 
