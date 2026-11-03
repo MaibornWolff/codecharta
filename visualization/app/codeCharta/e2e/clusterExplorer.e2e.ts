@@ -56,6 +56,7 @@ test.describe("Cluster explorer", () => {
 
         // Assert
         await expect(row(page, "Web")).toContainText("22%")
+        await expect(shareLabel(page)).toHaveText("share of the map")
         await expect(page.getByTestId("cluster-explorer-not-attributed")).toHaveCount(0)
     })
 
@@ -217,6 +218,16 @@ test.describe("Cluster explorer", () => {
 
             // Assert
             expect(new Set(heights).size).toBe(1)
+        })
+
+        test("should measure a commit by the part of the map it touched, not by its churn", async ({ page }) => {
+            // Arrange & Act
+            const sortOptions = page.getByTestId("cluster-explorer-sort").getByRole("option")
+
+            // Assert
+            await expect(shareLabel(page)).toHaveText("share of the map")
+            await expect(sortOptions.first()).toHaveText("Share of the map")
+            await expect(page.getByTestId("cluster-explorer-map-share-bar")).toHaveCount(0)
         })
 
         test("should show a commit's attributes and sort by them", async ({ page }) => {

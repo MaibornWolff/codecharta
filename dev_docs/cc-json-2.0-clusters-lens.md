@@ -200,10 +200,12 @@ compare mode. It lists the clusters of one clustering, picked by `title`, flat: 
   the producer to classify each blamed line. Where no shown file holds the area metric, the basis is the clustering's
   `weightBasis`, and where none holds that either, every file counts the same, labelled "share of files", so a map from
   the git log alone still works. The label names the metric, "share of lines" for `loc`.
+- **An `overlay`** shows only the part of the map instead, labelled "share of the map", or of the files counted where
+  no file holds the area metric: its weights mean something of their own, such as a commit's churn, which is no share.
 - **The part of the map** is `Σ area ÷ Σ area` over the cluster's shown files, ignoring weights, because the highlight
   lights whole buildings. It shows below the share, after the sorted attribute, and as a lighter bar behind it, so
-  the gap between owning and touching is visible. It is left out without an area metric and for a cluster covering
-  none of the map.
+  the gap between owning and touching is visible. It is left out without an area metric, for a cluster covering
+  none of the map and for an `overlay`, whose share it already is.
 - **"Not attributed"** is 1 minus the sum of those totals. An `overlay` has none, as its weights are never summed.
 - **Hover** shows only that cluster's shown files, replacing whatever the kept highlight holds until it ends; **a click**
   pins it into the kept highlight. Either greys the rest of the 3D map and limits its labels to those files.
