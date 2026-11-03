@@ -48,47 +48,71 @@
 <div class="mt-2 text-right text-xs opacity-60" data-testid="cluster-explorer-share-label">{{ shares().shareLabel }}</div>
 <ul #list class="mt-1" data-testid="cluster-explorer-list">
     <li aria-hidden="true" [style.height.px]="window().topSpacerHeight"></li>
-    @for (row of renderedRows(); track row.id) {
-        <li class="pb-1" data-cluster-row>
-            <button
-                type="button"
-                class="w-full cursor-pointer rounded-lg border-2 px-1 py-1 text-left hover:bg-base-200"
-                [class.border-primary]="row.id === pinnedClusterId()"
-                [class.border-transparent]="row.id !== pinnedClusterId()"
-                [attr.aria-pressed]="row.id === pinnedClusterId()"
-                [attr.title]="titleOf(row)"
-                data-testid="cluster-explorer-row"
-                (mouseenter)="hover(row)"
-                (mouseleave)="endHover()"
-                (focus)="hover(row)"
-                (blur)="endHover()"
-                (click)="togglePin(row)"
-            >
-                <span class="flex items-baseline justify-between gap-2 text-sm">
-                    <span class="min-w-0 truncate">
-                        {{ row.name }}
-                        @if (row.repositoryMarker) {
-                            <span class="text-xs opacity-60" data-testid="cluster-explorer-marker">{{ row.repositoryMarker }}</span>
+    @for (entry of renderedEntries(); track entry.id) {
+        @if (entry.kind === "cluster") {
+            <li class="pb-1" [class.pl-3]="entry.isInGroup" data-cluster-row>
+                <button
+                    type="button"
+                    class="w-full cursor-pointer rounded-lg border-2 px-1 py-1 text-left hover:bg-base-200"
+                    [class.border-primary]="entry.row.id === pinnedClusterId()"
+                    [class.border-transparent]="entry.row.id !== pinnedClusterId()"
+                    [attr.aria-pressed]="entry.row.id === pinnedClusterId()"
+                    [attr.title]="titleOf(entry.row)"
+                    data-testid="cluster-explorer-row"
+                    (mouseenter)="hover(entry.row)"
+                    (mouseleave)="endHover()"
+                    (focus)="hover(entry.row)"
+                    (blur)="endHover()"
+                    (click)="togglePin(entry.row)"
+                >
+                    <span class="flex items-baseline justify-between gap-2 text-sm">
+                        <span class="min-w-0 truncate">
+                            {{ entry.row.name }}
+                            @if (entry.row.repositoryMarker) {
+                                <span class="text-xs opacity-60" data-testid="cluster-explorer-marker">{{ entry.row.repositoryMarker }}</span>
+                            }
+                        </span>
+                        <span class="shrink-0 tabular-nums">{{ formatShare(entry.row.share) }}</span>
+                    </span>
+                    <span class="mt-0.5 block h-1 overflow-hidden rounded bg-base-300">
+                        <span class="block h-full bg-primary" [style.width.%]="entry.row.share * 100"></span>
+                    </span>
+                    @if (reservesDetailLine()) {
+                        <span class="mt-0.5 block h-4 truncate text-xs opacity-60" data-testid="cluster-explorer-attributes">{{
+                            summaryOf(entry.row)
+                        }}</span>
+                    }
+                </button>
+            </li>
+        } @else {
+            <li class="pb-1" data-cluster-row>
+                <button
+                    type="button"
+                    class="w-full cursor-pointer rounded-lg border-2 border-transparent px-1 py-1 text-left opacity-70 hover:bg-base-200"
+                    title="Clusters none of whose shown files has a building on the map"
+                    [attr.aria-expanded]="entry.isOpen"
+                    data-testid="cluster-explorer-off-map-group"
+                    (click)="toggleOffMapGroup()"
+                >
+                    <span class="flex items-baseline justify-between gap-2 text-sm">
+                        <span class="min-w-0 truncate">
+                            <i class="fa-solid" [class.fa-chevron-right]="!entry.isOpen" [class.fa-chevron-down]="entry.isOpen"></i>
+                            <i class="fa-solid fa-eye-slash"></i>
+                            Not on the map ({{ entry.clusterCount }})
+                        </span>
+                        @if (entry.share !== null) {
+                            <span class="shrink-0 tabular-nums">{{ formatShare(entry.share) }}</span>
                         }
                     </span>
-                    <span class="shrink-0 tabular-nums">{{ formatShare(row.share) }}</span>
-                </span>
-                <span class="mt-0.5 block h-1 overflow-hidden rounded bg-base-300">
-                    <span class="block h-full bg-primary" [style.width.%]="row.share * 100"></span>
-                </span>
-                @if (reservesDetailLine()) {
-                    <span class="mt-0.5 block h-4 truncate text-xs opacity-60">
-                        @if (clusterIdsOffTheMap().has(row.id)) {
-                            <span data-testid="cluster-explorer-off-map">
-                                <i class="fa-solid fa-eye-slash"></i>
-                                not on the map
-                            </span>
-                        }
-                        <span data-testid="cluster-explorer-attributes">{{ summaryOf(row) }}</span>
+                    <span class="mt-0.5 block h-1 overflow-hidden rounded bg-base-300">
+                        <span class="block h-full bg-primary" [style.width.%]="(entry.share ?? 0) * 100"></span>
                     </span>
-                }
-            </button>
-        </li>
+                    @if (reservesDetailLine()) {
+                        <span class="mt-0.5 block h-4"></span>
+                    }
+                </button>
+            </li>
+        }
     }
     <li aria-hidden="true" [style.height.px]="window().bottomSpacerHeight"></li>
     @if (rows().length === 0 && filterText() !== "") {

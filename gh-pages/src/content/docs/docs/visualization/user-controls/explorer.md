@@ -40,7 +40,8 @@ the clusters of one clustering; pick another by its title if the map has several
 - A cluster the map says more about, such as a commit's date and size, shows that below its name and in its tooltip. Pick
   one of those values above the list to sort by it, highest or newest first. A list of more than ten clusters can be
   filtered by name.
-- **Not on the map** marks a cluster none of whose shown files has a building.
+- **Not on the map** gathers the clusters none of whose shown files has a building, with their share where shares add
+  up. Click it to list them.
 - Authors appear under invented names, such as **Teal Falcon**. If the map joins two repositories, each row also shows a
   short marker for its repository, because the same name can stand for different people there.
 
