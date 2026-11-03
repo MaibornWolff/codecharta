@@ -7,11 +7,15 @@ This parser analyzes code, regardless of the programming language, to generate t
 ## Supported Languages
 
 - any (only considers the raw text)
+- code and comment lines: about 300 languages, read from the language table of
+  [tokei](https://github.com/XAMPPRocky/tokei) (`src/main/resources/tokei`, MIT licence)
 
 ## Supported Metrics
 
 - Indentation Level: The number of lines of code of a file, with a certain indentation level or higher.
 - Lines of Code: The total number of lines in a file, including blank lines.
+- Real Lines of Code (`rloc`) and Comment Lines (`comment_lines`), counted like in the UnifiedParser, for a file whose
+  language tokei knows.
 
 ## Usage and Parameters
 
@@ -51,7 +55,7 @@ ccsh rawtextparser foo/bar/project
 ```
 
 ```
-ccsh rawtextparser foo.txt --max-indentation-level=6 tab-width=4 --metrics=IndentationLevel, LinesOfCode
+ccsh rawtextparser foo.txt --max-indentation-level=6 tab-width=4 --metrics=IndentationLevel,LinesOfCode,CodeAndCommentLines
 ```
 
 ```

@@ -154,7 +154,7 @@ There is no analytics, tracking or telemetry.
 | **Dependencies** | [Dependency parser](https://codecharta.com/docs/parser/dependency): imports between files, cycles and upward dependencies |
 | **Domain language** | [Domain language parser](https://codecharta.com/docs/parser/domain-language): words and phrases with frequency and TF-IDF |
 | **Version control** | [Git log](https://codecharta.com/docs/parser/git-log), [SVN log](https://codecharta.com/docs/parser/svn-log) |
-| **Any text** | [Raw text](https://codecharta.com/docs/parser/raw-text): indentation levels for any language |
+| **Any text** | [Raw text](https://codecharta.com/docs/parser/raw-text): indentation levels for any language, code and comment lines for about 300 |
 | **Your other tools** | [SonarQube](https://codecharta.com/docs/importer/sonar), [Coverage](https://codecharta.com/docs/importer/coverage), [Tokei](https://codecharta.com/docs/importer/tokei), [Code Maat](https://codecharta.com/docs/importer/code-maat), [SourceMonitor](https://codecharta.com/docs/importer/sourcemonitor), [CSV](https://codecharta.com/docs/importer/csv) |
 
 [Merge](https://codecharta.com/docs/filter/merge-filter) any combination into one map,

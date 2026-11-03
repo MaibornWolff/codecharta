@@ -6,9 +6,12 @@
 # output: .codecharta-gate-output
 parallel: on
 
-exclude:  ## .gitignore patterns of files no rule checks; these are sample projects of other languages, not ours
+exclude:  ## .gitignore patterns of files no rule checks; sample projects of other languages, data files and this
+           ## commented config are not our code
   - "**/src/test/resources/**"
   - "test/data/**"
+  - "**/*.json"
+  - ".codecharta.yml"
 
 analysers:  ## on, off, or the analyser's own options instead of on (its exclude takes regular expressions)
   rawtextparser: on

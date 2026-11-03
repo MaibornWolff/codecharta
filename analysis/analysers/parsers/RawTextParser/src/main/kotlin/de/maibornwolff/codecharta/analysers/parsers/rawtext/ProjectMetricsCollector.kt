@@ -1,10 +1,12 @@
 package de.maibornwolff.codecharta.analysers.parsers.rawtext
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.gitignore.GitignoreHandler
+import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.CodeAndCommentLinesMetric
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.FileMetrics
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.IndentationMetric
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.LinesOfCodeMetric
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.Metric
+import de.maibornwolff.codecharta.analysers.parsers.rawtext.tokei.TokeiLanguageTable
 import de.maibornwolff.codecharta.model.ChecksumCalculator
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
@@ -76,9 +78,12 @@ class ProjectMetricsCollector(
 
     private fun createExcludePatterns(): Regex = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
-    private fun createSelectedMetrics(): List<Metric> = buildList {
+    private fun createSelectedMetrics(fileName: String): List<Metric> = buildList {
         if (isSelected(IndentationMetric.NAME)) add(IndentationMetric(maxIndentLvl, verbose, tabWidth))
         if (isSelected(LinesOfCodeMetric.NAME)) add(LinesOfCodeMetric())
+        if (isSelected(CodeAndCommentLinesMetric.NAME)) {
+            TokeiLanguageTable.syntaxFor(fileName)?.let { add(CodeAndCommentLinesMetric(it)) }
+        }
     }
 
     private fun isSelected(metricName: String): Boolean = metricNames.isEmpty() || metricName in metricNames
@@ -122,7 +127,7 @@ class ProjectMetricsCollector(
     private fun calculateMetricsForFile(file: File, checksum: String?): FileMetrics {
         filesAnalyzed.incrementAndGet()
 
-        val metrics = createSelectedMetrics()
+        val metrics = createSelectedMetrics(file.name)
         file.bufferedReader().useLines { lines -> lines.forEach { line -> metrics.forEach { it.parseLine(line) } } }
 
         if (metrics.isEmpty()) return FileMetrics()

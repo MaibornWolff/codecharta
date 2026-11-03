@@ -442,4 +442,50 @@ class ProjectMetricsCollectorTest {
         // Assert
         Assertions.assertThat(projectMetrics.metricsMap.size).isEqualTo(5)
     }
+
+    @Test
+    fun `should write real lines of code and comment lines for a file of a known language`() {
+        // Arrange
+        val collector = createCollector("${testResourceBaseFolder}languageproject", defaultMetricNames)
+
+        // Act
+        val metrics = collector.parseProject().metricsMap["/Main.kt"]?.metricsMap
+
+        // Assert
+        Assertions.assertThat(metrics).containsEntry("rloc", 3.0).containsEntry("comment_lines", 4.0).containsEntry("loc", 7.0)
+    }
+
+    @Test
+    fun `should not write real lines of code and comment lines for a file of an unknown language`() {
+        // Arrange
+        val collector = createCollector("${testResourceBaseFolder}languageproject", defaultMetricNames)
+
+        // Act
+        val metrics = collector.parseProject().metricsMap["/notes.xyz"]?.metricsMap
+
+        // Assert
+        Assertions.assertThat(metrics).containsKey("loc").doesNotContainKeys("rloc", "comment_lines")
+    }
+
+    @Test
+    fun `should write only real lines of code and comment lines when only that metric is selected`() {
+        // Arrange
+        val collector = createCollector("${testResourceBaseFolder}languageproject", listOf("CodeAndCommentLines"))
+
+        // Act
+        val metrics = collector.parseProject().metricsMap["/Main.kt"]?.metricsMap
+
+        // Assert
+        Assertions.assertThat(metrics).containsOnlyKeys("rloc", "comment_lines")
+    }
+
+    private fun createCollector(inputPath: String, metricNames: List<String>) = ProjectMetricsCollector(
+        File(inputPath).absoluteFile,
+        defaultExclude,
+        defaultFileExtensions,
+        metricNames,
+        defaultVerbose,
+        defaultMaxIndentLvl,
+        defaultTabWidth
+    )
 }
