@@ -7,6 +7,8 @@ export interface ClusterShareRow {
     name: string
     repositoryMarker: string | null
     share: number
+    /** The part of the map's area its files cover, which a highlight lights; null where the map has no area to compare with. */
+    mapShare: number | null
     filePaths: string[]
     attributes: ClusterAttributes
 }
@@ -25,15 +27,21 @@ interface ShareMeasure {
     sizeOf: (path: string) => number
 }
 
+interface RowMeasures {
+    share: ShareMeasure
+    mapArea: ShareMeasure | null
+}
+
 const LINES_METRIC = "loc"
 export const SHARE_OF_FILES = "share of files"
 
 /** A cluster's share is its weights times the size of their files, over the size of all shown files. */
 export function clusterSharesOf(clustering: ClusteringData, shownFiles: ShownFiles, areaMetric: string | undefined): ClusterShares {
     const markers = repositoryMarkersOf(clustering)
-    const measure = shareMeasureOf(clustering, shownFiles, areaMetric)
+    const mapArea = metricMeasureOf(areaMetric, shownFiles)
+    const measure = mapArea ?? fallbackMeasureOf(clustering, shownFiles)
     const rows = clustering.clusters
-        .map(cluster => rowOf(cluster, shownFiles, measure, markers.get(cluster.id) ?? null))
+        .map(cluster => rowOf(cluster, shownFiles, { share: measure, mapArea }, markers.get(cluster.id) ?? null))
         .filter(row => row.filePaths.length > 0)
         .sort((first, second) => second.share - first.share)
     return {
@@ -44,13 +52,10 @@ export function clusterSharesOf(clustering: ClusteringData, shownFiles: ShownFil
     }
 }
 
-// The area metric sizes the buildings, so its share is what the map shows. A map may hold neither it nor the metric its
-// clustering names, such as one from the git log alone; then every file counts the same.
-function shareMeasureOf(clustering: ClusteringData, shownFiles: ShownFiles, areaMetric: string | undefined): ShareMeasure {
-    return (
-        metricMeasureOf(areaMetric, shownFiles) ??
-        metricMeasureOf(clustering.weightBasis, shownFiles) ?? { label: SHARE_OF_FILES, total: shownFiles.size, sizeOf: () => 1 }
-    )
+// Where no shown file holds the area metric that sizes the buildings. A map may not hold the metric its clustering
+// names either, such as one from the git log alone; then every file counts the same.
+function fallbackMeasureOf(clustering: ClusteringData, shownFiles: ShownFiles): ShareMeasure {
+    return metricMeasureOf(clustering.weightBasis, shownFiles) ?? { label: SHARE_OF_FILES, total: shownFiles.size, sizeOf: () => 1 }
 }
 
 function metricMeasureOf(metric: string | undefined, shownFiles: ShownFiles): ShareMeasure | null {
@@ -65,23 +70,28 @@ function metricMeasureOf(metric: string | undefined, shownFiles: ShownFiles): Sh
     }
 }
 
-function rowOf(cluster: ClusterData, shownFiles: ShownFiles, measure: ShareMeasure, repositoryMarker: string | null): ClusterShareRow {
+function rowOf(cluster: ClusterData, shownFiles: ShownFiles, measures: RowMeasures, repositoryMarker: string | null): ClusterShareRow {
     const filePaths: string[] = []
     let weightedSize = 0
     for (const [path, weight] of Object.entries(cluster.members)) {
         if (shownFiles.has(path)) {
             filePaths.push(path)
-            weightedSize += weight * measure.sizeOf(path)
+            weightedSize += weight * measures.share.sizeOf(path)
         }
     }
     return {
         id: cluster.id,
         name: cluster.name,
         repositoryMarker,
-        share: measure.total > 0 ? weightedSize / measure.total : 0,
+        share: measures.share.total > 0 ? weightedSize / measures.share.total : 0,
+        mapShare: measures.mapArea && mapShareOf(filePaths, measures.mapArea),
         filePaths,
         attributes: cluster.attributes ?? {}
     }
+}
+
+function mapShareOf(filePaths: string[], mapArea: ShareMeasure): number {
+    return filePaths.reduce((sum, path) => sum + mapArea.sizeOf(path), 0) / mapArea.total
 }
 
 function remainderOf(clustering: ClusteringData, rows: ClusterShareRow[], shownFiles: ShownFiles): number | null {

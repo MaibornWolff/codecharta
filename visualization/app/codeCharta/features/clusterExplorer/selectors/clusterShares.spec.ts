@@ -121,6 +121,28 @@ describe("clusterSharesOf", () => {
             expect(shareLabel).toBe("share of rloc")
         })
 
+        it("should say how much of the map's area each cluster's files cover, whatever their weights", () => {
+            // Arrange & Act
+            const { rows } = clusterSharesOf(byLines, files, "rloc")
+
+            // Assert
+            expect(rows.map(row => [row.name, row.mapShare])).toEqual([
+                ["Big", 0.9],
+                ["Small", 0.1]
+            ])
+        })
+
+        it("should not compare with the map's area where no shown file holds the area metric", () => {
+            // Arrange
+            const onlyLines = new Map([["/root/small", { loc: 10 }]])
+
+            // Act
+            const { rows } = clusterSharesOf(byLines, onlyLines, "rloc")
+
+            // Assert
+            expect(rows.map(row => row.mapShare)).toEqual([null])
+        })
+
         it("should call an area of lines of code a share of lines", () => {
             // Arrange & Act
             const { shareLabel } = clusterSharesOf(byLines, files, "loc")

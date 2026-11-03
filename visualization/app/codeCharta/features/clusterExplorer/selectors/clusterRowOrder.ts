@@ -1,3 +1,4 @@
+import { formatClusterShare } from "../../../lenses/clusters/clusters.facade"
 import { ClusterShareRow } from "./clusterShares"
 
 export const BY_SHARE = ""
@@ -31,11 +32,18 @@ function compareHighestFirst(first: ClusterShareRow, second: ClusterShareRow, at
     return String(secondValue).localeCompare(String(firstValue))
 }
 
-/** The sorted value leads, as the line is cut off in a narrow panel. */
-export function attributeSummaryOf(row: ClusterShareRow, attributeTitles: Record<string, string> = {}, sortKey = BY_SHARE): string {
+/** The sorted value leads, as the line is cut off in a narrow panel, followed by the part of the map the row lights. */
+export function detailLineOf(row: ClusterShareRow, attributeTitles: Record<string, string> = {}, sortKey = BY_SHARE): string {
+    const attributes = attributePartsOf(row, attributeTitles, sortKey)
+    const sortedValueCount = sortKey in attributeTitles && row.attributes[sortKey] !== undefined ? 1 : 0
+    // A cluster covering none of the map sits in the group of clusters not on the map, which says so already
+    const mapPart = row.mapShare ? [`in ${formatClusterShare(row.mapShare)} of the map`] : []
+    return [...attributes.slice(0, sortedValueCount), ...mapPart, ...attributes.slice(sortedValueCount)].join(" · ")
+}
+
+function attributePartsOf(row: ClusterShareRow, attributeTitles: Record<string, string>, sortKey: string): string[] {
     return Object.entries(attributeTitles)
         .filter(([key]) => row.attributes[key] !== undefined)
         .sort(([first], [second]) => Number(second === sortKey) - Number(first === sortKey))
         .map(([key, title]) => `${title}: ${row.attributes[key]}`)
-        .join(" · ")
 }

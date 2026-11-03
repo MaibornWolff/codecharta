@@ -3,7 +3,7 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { formatClusterShare, showsRealNames } from "../../../../lenses/clusters/clusters.facade"
 import { ExplorerScrollHostService, ListViewport, listWindow } from "../../../sidebarExplorer/facade"
 import { clusterListEntriesOf } from "../../selectors/clusterListEntries"
-import { attributeSummaryOf, BY_SHARE, matchingRowsInOrder, sortOptionsOf } from "../../selectors/clusterRowOrder"
+import { BY_SHARE, detailLineOf, matchingRowsInOrder, sortOptionsOf } from "../../selectors/clusterRowOrder"
 import { ClusterShareRow, ClusterShares, clusterSharesOf, SHARE_OF_FILES } from "../../selectors/clusterShares"
 import { ClusterHighlightService } from "../../services/clusterHighlight.service"
 import { ClusterExplorerReadStore } from "../../stores/clusterExplorer.read.store"
@@ -76,14 +76,14 @@ export class ClusterExplorerComponent implements OnDestroy {
     })
 
     // Every row keeps the same height, which the list's windowing relies on, so one row needing this line gives it to all
-    readonly reservesDetailLine = computed(() => this.sortOptions().length > 1)
+    readonly reservesDetailLine = computed(() => this.sortOptions().length > 1 || this.shares().rows.some(row => row.mapShare !== null))
 
     constructor() {
         effect(() => this.viewport.attachTo(this.list().nativeElement, this.scrollHostService.element()))
     }
 
     summaryOf(row: ClusterShareRow): string {
-        return attributeSummaryOf(row, this.shares().attributeTitles, this.activeSort())
+        return detailLineOf(row, this.shares().attributeTitles, this.activeSort())
     }
 
     titleOf(row: ClusterShareRow): string {

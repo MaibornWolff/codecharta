@@ -107,6 +107,17 @@ describe("ClusterExplorerComponent", () => {
         expect(screen.getByTestId("cluster-explorer-share-label").textContent).toBe("share of lines")
     })
 
+    it("should show below each cluster and in its bar how much of the map its files cover", async () => {
+        // Arrange & Act
+        await setup(AUTHORS, "loc")
+
+        // Assert
+        const details = screen.getAllByTestId("cluster-explorer-attributes").map(detail => detail.textContent?.trim())
+        const bars = screen.getAllByTestId("cluster-explorer-map-share-bar").map(bar => bar.style.width)
+        expect(details).toEqual(["in 100% of the map", "in 75% of the map"])
+        expect(bars).toEqual(["100%", "75%"])
+    })
+
     it("should name the share's sort option after what it measures", async () => {
         // Arrange & Act
         await setup({ commits: { ...COMMITS["commit-changes"], weightBasis: "loc" } })

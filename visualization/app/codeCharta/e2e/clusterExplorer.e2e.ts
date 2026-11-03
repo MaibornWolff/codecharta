@@ -48,6 +48,8 @@ test.describe("Cluster explorer", () => {
         await expect(row(page, "Author 1")).toContainText("25%")
         await expect(row(page, "Author 3")).toContainText("5%")
         await expect(page.getByTestId("cluster-explorer-not-attributed")).toContainText("69%")
+        await expect(row(page, "Author 1").getByTestId("cluster-explorer-attributes")).toHaveText("in 28% of the map")
+        await expect(row(page, "Author 3").getByTestId("cluster-explorer-attributes")).toHaveText("in 17% of the map")
 
         // Act
         await page.getByTestId("cluster-explorer-picker").selectOption({ label: "Teams" })
