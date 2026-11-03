@@ -431,4 +431,16 @@ class RubyMetricsTest {
         assertThat(result.linesOfCode).isEqualTo(3.0)
         assertThat(result.realLinesOfCode).isEqualTo(3.0)
     }
+
+    @Test
+    fun `should count every line of the data section as code but no line past the end of the file`() {
+        // Arrange
+        val code = "x = 1\n__END__\ndef phantom\n\n# data\n"
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.RUBY)
+
+        // Assert
+        assertThat(result.realLinesOfCode).isEqualTo(5.0)
+    }
 }

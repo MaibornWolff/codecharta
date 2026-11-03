@@ -462,4 +462,16 @@ class ObjectiveCMetricsTest {
         assertThat(result.linesOfCode).isEqualTo(3.0)
         assertThat(result.realLinesOfCode).isEqualTo(3.0)
     }
+
+    @Test
+    fun `should not count the blank line after an include for rloc`() {
+        // Arrange
+        val code = "#include \"Limits.h\"\n\n@implementation ArmorClass\n@end\n"
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.OBJECTIVE_C)
+
+        // Assert
+        assertThat(result.realLinesOfCode).isEqualTo(3.0)
+    }
 }

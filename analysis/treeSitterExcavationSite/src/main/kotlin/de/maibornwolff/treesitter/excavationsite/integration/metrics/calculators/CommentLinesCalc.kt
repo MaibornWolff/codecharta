@@ -17,12 +17,7 @@ class CommentLinesCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFileCal
 
         if (startRow > lastCountedLine && NodeTypeMatcher.isNodeTypeAllowed(node, nodeType, nodeTypeProvider.commentLineNodeTypes)) {
             lastCountedLine = startRow
-            // Some grammars (e.g. tree-sitter-rust doc comments) include the trailing newline in the
-            // comment node, so its exclusive end point lands at column 0 of the next row. That row is
-            // not part of the comment, so it must not be counted.
-            val endsAtNextLineStart = node.endColumn == 0 && endRow > startRow
-            val effectiveEndRow = if (endsAtNextLineStart) endRow - 1 else endRow
-            return effectiveEndRow - startRow + 1
+            return lastOccupiedRow(node, startRow, endRow) - startRow + 1
         }
         return 0
     }

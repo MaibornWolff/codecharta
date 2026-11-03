@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Commit changes**: `--commit-changes-since` on `ccsh analyse` and `gitlogparser repo-scan` adds what each commit since
   that day changed in each file to the map, with the commit's date and size.
 
+### Fixed 🐞
+
+- **Lines of code in Objective-C, PHP and Ruby**: `unifiedparser` no longer counts a blank line after an `#include`, or a
+  line past the end of the file, as code.
+
 ## [2.3.0] - 2026-10-28
 
 ### Added 🚀
