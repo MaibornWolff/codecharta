@@ -76,28 +76,12 @@ class ProjectMetricsCollector(
 
     private fun createExcludePatterns(): Regex = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
-    private fun createMetricsFromMetricNames(): List<Metric> {
-        if (metricNames.isEmpty()) {
-            return getAllMetrics()
-        }
-
-        val metrics = mutableListOf<Metric>()
-        if (IndentationMetric.NAME in metricNames) {
-            metrics.add(IndentationMetric(maxIndentLvl, verbose, tabWidth))
-        }
-        if (LinesOfCodeMetric.NAME in metricNames) {
-            metrics.add(LinesOfCodeMetric())
-        }
-
-        return metrics
+    private fun createSelectedMetrics(): List<Metric> = buildList {
+        if (isSelected(IndentationMetric.NAME)) add(IndentationMetric(maxIndentLvl, verbose, tabWidth))
+        if (isSelected(LinesOfCodeMetric.NAME)) add(LinesOfCodeMetric())
     }
 
-    private fun getAllMetrics(): List<Metric> {
-        val metrics = mutableListOf<Metric>()
-        metrics.add(IndentationMetric(maxIndentLvl, verbose, tabWidth))
-        metrics.add(LinesOfCodeMetric())
-        return metrics.toList()
-    }
+    private fun isSelected(metricName: String): Boolean = metricNames.isEmpty() || metricName in metricNames
 
     private fun isParsableFileExtension(path: String): Boolean = fileExtensions.isEmpty() ||
         fileExtensions.contains(path.substringAfterLast("."))
@@ -138,7 +122,7 @@ class ProjectMetricsCollector(
     private fun calculateMetricsForFile(file: File, checksum: String?): FileMetrics {
         filesAnalyzed.incrementAndGet()
 
-        val metrics = createMetricsFromMetricNames()
+        val metrics = createSelectedMetrics()
         file.bufferedReader().useLines { lines -> lines.forEach { line -> metrics.forEach { it.parseLine(line) } } }
 
         if (metrics.isEmpty()) return FileMetrics()
