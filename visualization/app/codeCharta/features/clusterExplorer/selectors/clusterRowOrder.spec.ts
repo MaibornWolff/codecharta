@@ -1,8 +1,8 @@
-import { attributeSummaryOf, BY_SHARE, matchingRowsInOrder, sortOptionsOf } from "./clusterRowOrder"
+import { BY_SHARE, detailLineOf, matchingRowsInOrder, sortOptionsOf } from "./clusterRowOrder"
 import { ClusterShareRow } from "./clusterShares"
 
-function row(name: string, attributes: ClusterShareRow["attributes"] = {}): ClusterShareRow {
-    return { id: name, name, repositoryMarker: null, share: 0, filePaths: [], attributes }
+function row(name: string, attributes: ClusterShareRow["attributes"] = {}, mapShare: number | null = null): ClusterShareRow {
+    return { id: name, name, repositoryMarker: null, share: 0, mapShare, filePaths: [], attributes }
 }
 
 const namesOf = (rows: ClusterShareRow[]) => rows.map(({ name }) => name)
@@ -91,13 +91,13 @@ describe("clusterRowOrder", () => {
         })
     })
 
-    describe("attributeSummaryOf", () => {
+    describe("detailLineOf", () => {
         it("should list the values by their titles in the titles' order, leaving out what a row lacks", () => {
             // Arrange
             const titles = { date: "Date", changed_files: "Files changed", changed_lines: "Lines changed" }
 
             // Act
-            const summary = attributeSummaryOf(row("a", { changed_lines: 3, date: "2026-01-01" }), titles)
+            const summary = detailLineOf(row("a", { changed_lines: 3, date: "2026-01-01" }), titles)
 
             // Assert
             expect(summary).toBe("Date: 2026-01-01 · Lines changed: 3")
@@ -108,15 +108,56 @@ describe("clusterRowOrder", () => {
             const titles = { date: "Date", changed_lines: "Lines changed" }
 
             // Act
-            const summary = attributeSummaryOf(row("a", { changed_lines: 3, date: "2026-01-01" }), titles, "changed_lines")
+            const summary = detailLineOf(row("a", { changed_lines: 3, date: "2026-01-01" }), titles, "changed_lines")
 
             // Assert
             expect(summary).toBe("Lines changed: 3 · Date: 2026-01-01")
         })
 
+        it("should lead with the part of the map the cluster's files cover", () => {
+            // Arrange
+            const titles = { date: "Date" }
+
+            // Act
+            const summary = detailLineOf(row("a", { date: "2026-01-01" }, 0.4), titles)
+
+            // Assert
+            expect(summary).toBe("in 40% of the map · Date: 2026-01-01")
+        })
+
+        it("should put the part of the map right after the value the list is sorted by", () => {
+            // Arrange
+            const titles = { date: "Date", changed_lines: "Lines changed" }
+
+            // Act
+            const summary = detailLineOf(row("a", { changed_lines: 3, date: "2026-01-01" }, 0.4), titles, "changed_lines")
+
+            // Assert
+            expect(summary).toBe("Lines changed: 3 · in 40% of the map · Date: 2026-01-01")
+        })
+
+        it("should lead with the part of the map when the row lacks the value the list is sorted by", () => {
+            // Arrange
+            const titles = { date: "Date", changed_lines: "Lines changed" }
+
+            // Act
+            const summary = detailLineOf(row("a", { date: "2026-01-01" }, 0.4), titles, "changed_lines")
+
+            // Assert
+            expect(summary).toBe("in 40% of the map · Date: 2026-01-01")
+        })
+
+        it("should leave out the part of the map for a cluster that covers none of it", () => {
+            // Arrange & Act
+            const summary = detailLineOf(row("a", {}, 0))
+
+            // Assert
+            expect(summary).toBe("")
+        })
+
         it("should be empty without titles", () => {
             // Arrange & Act
-            const summary = attributeSummaryOf(row("a", { date: "2026-01-01" }))
+            const summary = detailLineOf(row("a", { date: "2026-01-01" }))
 
             // Assert
             expect(summary).toBe("")

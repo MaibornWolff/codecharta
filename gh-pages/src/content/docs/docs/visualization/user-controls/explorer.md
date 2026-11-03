@@ -33,6 +33,9 @@ the clusters of one clustering; pick another by its title if the map has several
   holds half of its area. Excluding files or focusing a folder changes the shares. A map whose files have no area
   metric value uses the measure its clustering names, or else a **share of files**, where every file counts the same
   whatever its size. The label above the list names the measure.
+- Below the share, **in 40% of the map** says how much of the map's area the cluster's files cover, which is what lights
+  up when you hover the row: a building lights up whole, even if the cluster holds only part of it. The bar shows both,
+  the share in full colour over the covered part in a lighter one.
 - **Not attributed** is the share nobody holds, such as uncommitted lines. For commits, shares overlap, so they can add up
   to more than 100% and this row does not appear.
 - Hover a row to show only its files on the map, whatever else is kept lit: they stay in colour with labels, and the
