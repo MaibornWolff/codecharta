@@ -1,15 +1,17 @@
 @if (clusteringOptions().length > 1) {
-    <select
-        class="select select-sm w-full"
-        aria-label="Clustering"
-        data-testid="cluster-explorer-picker"
-        [value]="activeKey()"
-        (change)="chooseClustering($event)"
-    >
-        @for (option of clusteringOptions(); track option.key) {
-            <option [value]="option.key" [selected]="option.key === activeKey()">{{ option.title }}</option>
-        }
-    </select>
+    <label class="form-control w-full gap-1">
+        <span class="text-xs opacity-60">Clustering</span>
+        <select
+            class="select select-sm w-full"
+            data-testid="cluster-explorer-picker"
+            [value]="activeKey()"
+            (change)="chooseClustering($event)"
+        >
+            @for (option of clusteringOptions(); track option.key) {
+                <option [value]="option.key" [selected]="option.key === activeKey()">{{ option.title }}</option>
+            }
+        </select>
+    </label>
 } @else {
     <span class="text-sm font-semibold" data-testid="cluster-explorer-title">{{ clusteringOptions()[0]?.title }}</span>
 }
