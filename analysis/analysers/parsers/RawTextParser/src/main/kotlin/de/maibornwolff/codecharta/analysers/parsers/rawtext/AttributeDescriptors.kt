@@ -26,5 +26,24 @@ internal fun getAttributeDescriptors(maxOccurringIndentationLevel: Int): Map<Str
             analyzers = analyzerName
         )
 
+    descriptors["rloc"] =
+        AttributeDescriptor(
+            title = "Real Lines of Code",
+            description = "Number of lines that contain at least one character " +
+                "which is neither a whitespace nor a tabulation nor part of a comment",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        )
+
+    descriptors["comment_lines"] =
+        AttributeDescriptor(
+            title = "Comment lines",
+            description = "Number of lines containing either a comment or commented-out code",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        )
+
     return descriptors.toMap()
 }
