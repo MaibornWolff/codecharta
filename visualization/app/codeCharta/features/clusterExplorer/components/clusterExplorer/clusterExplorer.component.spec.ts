@@ -99,6 +99,18 @@ describe("ClusterExplorerComponent", () => {
         expect(screen.queryByTestId("cluster-explorer-picker")).toBeNull()
     })
 
+    it("should label the clustering picker with visible text", async () => {
+        // Arrange
+        await setup({ ...AUTHORS, ...TEAMS })
+
+        // Act
+        const picker = screen.getByLabelText("Clustering")
+
+        // Assert
+        expect(picker).toBe(screen.getByTestId("cluster-explorer-picker"))
+        expect(picker.hasAttribute("aria-label")).toBe(false)
+    })
+
     it("should switch to the clustering picked from the titles", async () => {
         // Arrange
         await setup({ ...AUTHORS, ...TEAMS })
