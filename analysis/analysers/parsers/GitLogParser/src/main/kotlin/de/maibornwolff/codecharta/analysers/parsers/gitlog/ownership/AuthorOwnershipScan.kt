@@ -37,7 +37,7 @@ class AuthorOwnershipScan(private val repositoryFolder: File, private val withNa
             val contacts = if (mapped?.size == withEmail.size) withEmail.zip(mapped).toMap() else emptyMap()
             return coAuthors.associateWith { nameOf(contacts[it] ?: it) }
         } finally {
-            input.delete()
+            if (!input.delete()) input.deleteOnExit()
         }
     }
 
