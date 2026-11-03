@@ -194,10 +194,12 @@ issue importer or a coverage importer, the last two as `overlay`.
 The metrics view offers a Clusters tab in the explorer while a loaded file carries clusters, outside
 compare mode. It lists the clusters of one clustering, picked by `title`, flat: `parentId` is not drawn yet.
 
-- **The total** of a cluster is `Σ weight × basis ÷ Σ basis` over the files shown, where basis is the clustering's
-  `weightBasis`, so exclusions and folder focus apply and a file counts by its size. It is labelled "share of lines"
-  for `loc` and names any other metric. Where no shown file holds that metric, every file counts the same instead,
-  labelled "share of files", so a map from the git log alone still works.
+- **The total** of a cluster is `Σ weight × basis ÷ Σ basis` over the files shown, where basis is the map's area
+  metric, so the share is one of what the buildings show, and exclusions and folder focus apply. A weight of `loc`
+  applied to `rloc` assumes a file's lines spread evenly over code, comments and blank lines; exact shares would need
+  the producer to classify each blamed line. Where no shown file holds the area metric, the basis is the clustering's
+  `weightBasis`, and where none holds that either, every file counts the same, labelled "share of files", so a map from
+  the git log alone still works. The label names the metric, "share of lines" for `loc`.
 - **"Not attributed"** is 1 minus the sum of those totals. An `overlay` has none, as its weights are never summed.
 - **Hover** shows only that cluster's shown files, replacing whatever the kept highlight holds until it ends; **a click**
   pins it into the kept highlight. Either greys the rest of the 3D map and limits its labels to those files.

@@ -11,6 +11,8 @@ const clustering = (membership: ClusterMembership = "weighted"): ClusteringData 
     ]
 })
 
+const NO_AREA_METRIC = undefined
+
 const filesWithoutMetrics = (...paths: string[]): ReadonlyMap<string, KeyValuePair> => new Map(paths.map(path => [path, {}]))
 
 describe("clusterSharesOf", () => {
@@ -19,7 +21,7 @@ describe("clusterSharesOf", () => {
         const shown = filesWithoutMetrics("/root/a", "/root/b", "/root/c", "/root/d")
 
         // Act
-        const { rows } = clusterSharesOf(clustering(), shown)
+        const { rows } = clusterSharesOf(clustering(), shown, NO_AREA_METRIC)
 
         // Assert
         expect(rows.map(row => [row.name, row.share])).toEqual([
@@ -33,7 +35,7 @@ describe("clusterSharesOf", () => {
         const shown = filesWithoutMetrics("/root/a")
 
         // Act
-        const { rows } = clusterSharesOf(clustering(), shown)
+        const { rows } = clusterSharesOf(clustering(), shown, NO_AREA_METRIC)
 
         // Assert
         expect(rows.map(row => row.filePaths)).toEqual([["/root/a"], ["/root/a"]])
@@ -45,7 +47,7 @@ describe("clusterSharesOf", () => {
         const shown = filesWithoutMetrics("/root/a", "/root/d")
 
         // Act
-        const { notAttributedShare } = clusterSharesOf(clustering(), shown)
+        const { notAttributedShare } = clusterSharesOf(clustering(), shown, NO_AREA_METRIC)
 
         // Assert
         expect(notAttributedShare).toBe(0.5)
@@ -56,7 +58,7 @@ describe("clusterSharesOf", () => {
         const shown = filesWithoutMetrics("/root/a")
 
         // Act
-        const { notAttributedShare } = clusterSharesOf(clustering("overlay"), shown)
+        const { notAttributedShare } = clusterSharesOf(clustering("overlay"), shown, NO_AREA_METRIC)
 
         // Assert
         expect(notAttributedShare).toBeNull()
@@ -67,7 +69,7 @@ describe("clusterSharesOf", () => {
         const shown = filesWithoutMetrics()
 
         // Act
-        const shares = clusterSharesOf(clustering(), shown)
+        const shares = clusterSharesOf(clustering(), shown, NO_AREA_METRIC)
 
         // Assert
         expect(shares).toEqual({ rows: [], notAttributedShare: null, shareLabel: "share of files", attributeTitles: {} })
@@ -86,13 +88,13 @@ describe("clusterSharesOf", () => {
         }
 
         // Act
-        const { rows } = clusterSharesOf(twoRepositories, shown)
+        const { rows } = clusterSharesOf(twoRepositories, shown, NO_AREA_METRIC)
 
         // Assert
         expect(rows.map(row => row.repositoryMarker)).toEqual(["a1b2c3d", "f00ba42"])
     })
 
-    describe("with the metric of the weight basis in the map", () => {
+    describe("with the area metric in the map", () => {
         const byLines: ClusteringData = {
             title: "Author ownership",
             membership: "weighted",
@@ -103,50 +105,58 @@ describe("clusterSharesOf", () => {
             ]
         }
         const files = new Map([
-            ["/root/small", { loc: 10 }],
-            ["/root/big", { loc: 90 }]
+            ["/root/small", { rloc: 10, loc: 50 }],
+            ["/root/big", { rloc: 90, loc: 50 }]
         ])
 
-        it("should weigh a cluster's files by their lines and say so", () => {
+        it("should weigh a cluster's files by the area metric, as the map sizes them, and say so", () => {
             // Arrange & Act
-            const { rows, shareLabel } = clusterSharesOf(byLines, files)
+            const { rows, shareLabel } = clusterSharesOf(byLines, files, "rloc")
 
             // Assert
             expect(rows.map(row => [row.name, row.share])).toEqual([
                 ["Big", 0.45],
                 ["Small", 0.1]
             ])
+            expect(shareLabel).toBe("share of rloc")
+        })
+
+        it("should call an area of lines of code a share of lines", () => {
+            // Arrange & Act
+            const { shareLabel } = clusterSharesOf(byLines, files, "loc")
+
+            // Assert
             expect(shareLabel).toBe("share of lines")
         })
 
-        it("should report the lines nobody owns as not attributed", () => {
+        it("should report the area nobody owns as not attributed", () => {
             // Arrange & Act
-            const { notAttributedShare } = clusterSharesOf(byLines, files)
+            const { notAttributedShare } = clusterSharesOf(byLines, files, "rloc")
 
             // Assert
             expect(notAttributedShare).toBeCloseTo(0.45)
         })
 
-        it("should count only the lines of shown files", () => {
+        it("should count only the area of shown files", () => {
             // Arrange
-            const onlySmall = new Map([["/root/small", { loc: 10 }]])
+            const onlySmall = new Map([["/root/small", { rloc: 10 }]])
 
             // Act
-            const { rows } = clusterSharesOf(byLines, onlySmall)
+            const { rows } = clusterSharesOf(byLines, onlySmall, "rloc")
 
             // Assert
             expect(rows.map(row => [row.name, row.share])).toEqual([["Small", 1]])
         })
 
-        it("should keep a cluster whose files have no lines, at a share of nothing", () => {
+        it("should keep a cluster whose files have no area, at a share of nothing", () => {
             // Arrange
             const withBinary = new Map([
-                ["/root/small", { loc: 10 }],
+                ["/root/small", { rloc: 10 }],
                 ["/root/big", {}]
             ])
 
             // Act
-            const { rows } = clusterSharesOf(byLines, withBinary)
+            const { rows } = clusterSharesOf(byLines, withBinary, "rloc")
 
             // Assert
             expect(rows.map(row => [row.name, row.share])).toEqual([
@@ -164,30 +174,48 @@ describe("clusterSharesOf", () => {
             }
 
             // Act
-            const { rows, attributeTitles } = clusterSharesOf(withAttribute, files)
+            const { rows, attributeTitles } = clusterSharesOf(withAttribute, files, "rloc")
 
             // Assert
             expect(rows[0].attributes).toEqual({ commits: 3 })
             expect(attributeTitles).toEqual({ commits: "Commits" })
         })
 
-        it("should name any other metric in the label", () => {
+        it("should fall back to the weight basis when no shown file holds the area metric", () => {
+            // Arrange
+            const onlyLines = new Map([
+                ["/root/small", { loc: 10 }],
+                ["/root/big", { loc: 90 }]
+            ])
+
+            // Act
+            const { rows, shareLabel } = clusterSharesOf(byLines, onlyLines, "rloc")
+
+            // Assert
+            expect(rows.map(row => [row.name, row.share])).toEqual([
+                ["Big", 0.45],
+                ["Small", 0.1]
+            ])
+            expect(shareLabel).toBe("share of lines")
+        })
+
+        it("should name any other weight basis in the label", () => {
             // Arrange
             const byCommits = { ...byLines, weightBasis: "commits" }
 
             // Act
-            const { shareLabel } = clusterSharesOf(byCommits, new Map([["/root/small", { commits: 3 }]]))
+            const { shareLabel } = clusterSharesOf(byCommits, new Map([["/root/small", { commits: 3 }]]), NO_AREA_METRIC)
 
             // Assert
             expect(shareLabel).toBe("share of commits")
         })
 
-        it("should fall back to files when no shown file holds the metric", () => {
+        it("should fall back to files when no shown file holds the area metric or the weight basis", () => {
             // Arrange
-            const noLines = filesWithoutMetrics("/root/small", "/root/big")
+            const noMetrics = filesWithoutMetrics("/root/small", "/root/big")
 
             // Act
-            const { rows, shareLabel } = clusterSharesOf(byLines, noLines)
+            const { rows, shareLabel } = clusterSharesOf(byLines, noMetrics, "rloc")
 
             // Assert
             expect(rows.map(row => [row.name, row.share])).toEqual([

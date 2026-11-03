@@ -13,6 +13,8 @@ async function openClustersTab(page: Page) {
     await page.getByTestId("explorer-mode-clusters").click()
 }
 
+const shareLabel = (page: Page) => page.getByTestId("cluster-explorer-share-label")
+
 const row = (page: Page, name: string) => page.getByTestId("cluster-explorer-row").filter({ hasText: name })
 
 // The map's middle, clear of the explorer, whose rows change on hover themselves.
@@ -37,21 +39,21 @@ test.describe("Cluster explorer", () => {
         await expect(page.getByTestId("explorer-mode-clusters")).toBeVisible()
     })
 
-    test("should list the shares of files and switch clusterings by title", async ({ page }) => {
+    test("should list the shares of the area metric and switch clusterings by title", async ({ page }) => {
         // Arrange & Act
         await openClustersTab(page)
 
         // Assert
-        await expect(row(page, "Author 1")).toContainText("44%")
-        await expect(row(page, "Author 3")).toContainText("19%")
-        await expect(page.getByTestId("cluster-explorer-not-attributed")).toContainText("38%")
+        await expect(shareLabel(page)).toHaveText("share of rloc")
+        await expect(row(page, "Author 1")).toContainText("25%")
+        await expect(row(page, "Author 3")).toContainText("5%")
+        await expect(page.getByTestId("cluster-explorer-not-attributed")).toContainText("69%")
 
         // Act
         await page.getByTestId("cluster-explorer-picker").selectOption({ label: "Teams" })
 
         // Assert
         await expect(row(page, "Web")).toContainText("22%")
-        await expect(page.getByTestId("cluster-explorer-share-label")).toHaveText("share of rloc")
         await expect(page.getByTestId("cluster-explorer-not-attributed")).toHaveCount(0)
     })
 
@@ -67,14 +69,14 @@ test.describe("Cluster explorer", () => {
         await expect.poll(async () => (await mapPixels(page)).equals(unlit)).toBe(false)
 
         // Act
-        await page.getByText("share of files").hover()
+        await shareLabel(page).hover()
 
         // Assert
         await expect.poll(async () => (await mapPixels(page)).equals(unlit)).toBe(true)
 
         // Act
         await row(page, "Author 1").click()
-        await page.getByText("share of files").hover()
+        await shareLabel(page).hover()
 
         // Assert
         await expect(row(page, "Author 1")).toHaveAttribute("aria-pressed", "true")
@@ -101,14 +103,14 @@ test.describe("Cluster explorer", () => {
         await expect(page.locator("cc-code-map").getByText("smallLeaf.html")).toBeVisible()
 
         // Act
-        await page.getByText("share of files").hover()
+        await shareLabel(page).hover()
 
         // Assert
         await expect(labelOutsideCluster).toBeVisible()
 
         // Act
         await row(page, "Author 3").click()
-        await page.getByText("share of files").hover()
+        await shareLabel(page).hover()
 
         // Assert
         await expect(labelOutsideCluster).toHaveCount(0)
@@ -119,7 +121,7 @@ test.describe("Cluster explorer", () => {
         await openClustersTab(page)
         const labelOfPinnedOnly = page.locator("cc-code-map").getByText("bigLeaf.ts")
         await row(page, "Author 1").click()
-        await page.getByText("share of files").hover()
+        await shareLabel(page).hover()
         await expect(labelOfPinnedOnly).toBeVisible()
 
         // Act
@@ -130,7 +132,7 @@ test.describe("Cluster explorer", () => {
         await expect(row(page, "Author 1")).toHaveAttribute("aria-pressed", "true")
 
         // Act
-        await page.getByText("share of files").hover()
+        await shareLabel(page).hover()
 
         // Assert
         await expect(labelOfPinnedOnly).toBeVisible()
@@ -169,14 +171,14 @@ test.describe("Cluster explorer", () => {
         await expect(row(page, "Ann Example")).toBeVisible()
     })
 
-    test("should measure each author's share by lines, with nothing else to sort by", async ({ page }) => {
+    test("should measure each author's share by the area metric, not the lines the clustering counts", async ({ page }) => {
         // Arrange & Act
         await new NavBarFolderButtonPageObject(page).openFiles([FILE_WITH_REAL_NAMES])
         await page.getByTestId("explorer-mode-clusters").click()
 
         // Assert
-        await expect(page.getByTestId("cluster-explorer-share-label")).toHaveText("share of lines")
-        await expect(row(page, "Ann Example")).toContainText("69%")
+        await expect(shareLabel(page)).toHaveText("share of rloc")
+        await expect(row(page, "Ann Example")).toContainText("25%")
         await expect(page.getByTestId("cluster-explorer-sort")).toHaveCount(0)
     })
 

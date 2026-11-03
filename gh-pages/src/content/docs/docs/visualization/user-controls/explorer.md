@@ -28,10 +28,11 @@ Metric view adds a [Clusters](#clusters) tab when a loaded map carries clusters.
 A map made with [`--author-ownership` or `--commit-changes-since`](/docs/parser/git-log) or another producer of clusters has a **Clusters** tab, except while [comparing](/docs/visualization/user-controls/compare) two maps. It lists
 the clusters of one clustering; pick another by its title if the map has several.
 
-- Each row shows the cluster's **share of lines**: how many of the lines in the files shown on the map it holds.
-  Excluding files or focusing a folder changes the shares. A map without line counts, such as one from the git log alone,
-  shows a **share of files** instead, where every file counts the same whatever its size. Another clustering may measure
-  something else, which the label above the list names.
+- Each row shows the cluster's share of the **area metric**, such as **share of rloc**: how much of what sizes the
+  buildings shown on the map it holds, so it changes with the area metric. An author who last changed half of a file
+  holds half of its area. Excluding files or focusing a folder changes the shares. A map whose files have no area
+  metric value uses the measure its clustering names, or else a **share of files**, where every file counts the same
+  whatever its size. The label above the list names the measure.
 - **Not attributed** is the share nobody holds, such as uncommitted lines. For commits, shares overlap, so they can add up
   to more than 100% and this row does not appear.
 - Hover a row to show only its files on the map, whatever else is kept lit: they stay in colour with labels, and the

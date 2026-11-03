@@ -29,9 +29,9 @@ const LINES_METRIC = "loc"
 export const SHARE_OF_FILES = "share of files"
 
 /** A cluster's share is its weights times the size of their files, over the size of all shown files. */
-export function clusterSharesOf(clustering: ClusteringData, shownFiles: ShownFiles): ClusterShares {
+export function clusterSharesOf(clustering: ClusteringData, shownFiles: ShownFiles, areaMetric: string | undefined): ClusterShares {
     const markers = repositoryMarkersOf(clustering)
-    const measure = shareMeasureOf(clustering, shownFiles)
+    const measure = shareMeasureOf(clustering, shownFiles, areaMetric)
     const rows = clustering.clusters
         .map(cluster => rowOf(cluster, shownFiles, measure, markers.get(cluster.id) ?? null))
         .filter(row => row.filePaths.length > 0)
@@ -44,16 +44,23 @@ export function clusterSharesOf(clustering: ClusteringData, shownFiles: ShownFil
     }
 }
 
-// A map may not hold the metric its clustering names, such as one from the git log alone; then every file counts the same.
-function shareMeasureOf(clustering: ClusteringData, shownFiles: ShownFiles): ShareMeasure {
-    const metric = clustering.weightBasis
-    const metricTotal = metric ? [...shownFiles.values()].reduce((sum, attributes) => sum + (attributes[metric] ?? 0), 0) : 0
-    if (!metric || metricTotal <= 0) {
-        return { label: SHARE_OF_FILES, total: shownFiles.size, sizeOf: () => 1 }
+// The area metric sizes the buildings, so its share is what the map shows. A map may hold neither it nor the metric its
+// clustering names, such as one from the git log alone; then every file counts the same.
+function shareMeasureOf(clustering: ClusteringData, shownFiles: ShownFiles, areaMetric: string | undefined): ShareMeasure {
+    return (
+        metricMeasureOf(areaMetric, shownFiles) ??
+        metricMeasureOf(clustering.weightBasis, shownFiles) ?? { label: SHARE_OF_FILES, total: shownFiles.size, sizeOf: () => 1 }
+    )
+}
+
+function metricMeasureOf(metric: string | undefined, shownFiles: ShownFiles): ShareMeasure | null {
+    const total = metric ? [...shownFiles.values()].reduce((sum, attributes) => sum + (attributes[metric] ?? 0), 0) : 0
+    if (!metric || total <= 0) {
+        return null
     }
     return {
         label: metric === LINES_METRIC ? "share of lines" : `share of ${metric}`,
-        total: metricTotal,
+        total,
         sizeOf: path => shownFiles.get(path)?.[metric] ?? 0
     }
 }
