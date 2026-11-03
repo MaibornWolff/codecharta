@@ -94,6 +94,48 @@ describe("clusterSharesOf", () => {
         expect(rows.map(row => row.repositoryMarker)).toEqual(["a1b2c3d", "f00ba42"])
     })
 
+    describe("for an overlay, whose shares overlap", () => {
+        const teams: ClusteringData = {
+            title: "Teams",
+            membership: "overlay",
+            weightBasis: "loc",
+            clusters: [{ id: "web", name: "Web", members: { "/root/a": 0.5, "/root/b": 1 } }]
+        }
+
+        it("should measure the part of the map its files cover, whatever their weights", () => {
+            // Arrange
+            const files = new Map([
+                ["/root/a", { rloc: 30, loc: 99 }],
+                ["/root/b", { rloc: 10, loc: 1 }],
+                ["/root/c", { rloc: 60, loc: 1 }]
+            ])
+
+            // Act
+            const { rows, shareLabel } = clusterSharesOf(teams, files, "rloc")
+
+            // Assert
+            expect(rows.map(row => [row.name, row.share, row.mapShare])).toEqual([["Web", 0.4, null]])
+            expect(shareLabel).toBe("share of the map")
+        })
+
+        it("should count its files where no shown file holds the area metric, ignoring the weight basis", () => {
+            // Arrange
+            const files = new Map([
+                ["/root/a", { loc: 99 }],
+                ["/root/b", { loc: 1 }],
+                ["/root/c", { loc: 1 }],
+                ["/root/d", { loc: 1 }]
+            ])
+
+            // Act
+            const { rows, shareLabel } = clusterSharesOf(teams, files, "rloc")
+
+            // Assert
+            expect(rows.map(row => [row.name, row.share])).toEqual([["Web", 0.5]])
+            expect(shareLabel).toBe("share of files")
+        })
+    })
+
     describe("with the area metric in the map", () => {
         const byLines: ClusteringData = {
             title: "Author ownership",

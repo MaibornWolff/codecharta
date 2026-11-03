@@ -120,11 +120,12 @@ describe("ClusterExplorerComponent", () => {
 
     it("should name the share's sort option after what it measures", async () => {
         // Arrange & Act
-        await setup({ commits: { ...COMMITS["commit-changes"], weightBasis: "loc" } })
+        await setup(COMMITS, "loc")
 
         // Assert
         const options = within(screen.getByTestId("cluster-explorer-sort")).getAllByRole("option")
-        expect(options.map(option => option.textContent)).toEqual(["Share of lines", "Date", "Lines changed"])
+        expect(options.map(option => option.textContent)).toEqual(["Share of the map", "Date", "Lines changed"])
+        expect(screen.queryByTestId("cluster-explorer-map-share-bar")).toBeNull()
     })
 
     const rowTexts = () => screen.getAllByTestId("cluster-explorer-row").map(row => row.textContent?.replace(/\s+/g, " ").trim())

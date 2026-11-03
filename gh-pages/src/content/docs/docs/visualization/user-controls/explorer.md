@@ -36,6 +36,8 @@ the clusters of one clustering; pick another by its title if the map has several
 - Below the share, **in 40% of the map** says how much of the map's area the cluster's files cover, which is what lights
   up when you hover the row: a building lights up whole, even if the cluster holds only part of it. The bar shows both,
   the share in full colour over the covered part in a lighter one.
+- A **commit**, or any other cluster that may overlap with the others, shows its **share of the map**: how much of the
+  map's area its files cover, whatever it changed in them. The lines it changed show below its name.
 - **Not attributed** is the share nobody holds, such as uncommitted lines. For commits, shares overlap, so they can add up
   to more than 100% and this row does not appear.
 - Hover a row to show only its files on the map, whatever else is kept lit: they stay in colour with labels, and the
