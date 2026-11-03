@@ -4,7 +4,7 @@
     aria-label="Source"
     data-testid="local-source-dialog"
     (close)="handleClosed()"
-    (keydown)="$event.stopPropagation()"
+    (keydown)="keepKeysInViewer($event)"
 >
     @if (source(); as shown) {
         <div class="flex h-full flex-col">
@@ -50,10 +50,7 @@
             <div
                 #scroller
                 class="cc-source cc-syntax min-h-0 flex-1 overflow-auto focus:outline-none"
-                role="textbox"
-                aria-readonly="true"
-                aria-multiline="true"
-                tabindex="0"
+                tabindex="-1"
                 aria-label="Source code"
                 [class.cc-source-wraps]="wrapsLines()"
                 [attr.data-testid]="isColoured() ? 'local-source-highlighted' : 'local-source-plain'"

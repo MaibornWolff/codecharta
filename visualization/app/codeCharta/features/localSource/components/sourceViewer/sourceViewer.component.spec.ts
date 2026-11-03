@@ -145,15 +145,30 @@ describe("SourceViewerComponent", () => {
         expect(document.activeElement).toBe(screen.getByLabelText("Source code", { selector: "div" }))
     })
 
-    it("should present the code as read-only text that keys can reach", async () => {
-        // Act
+    it("should put the focus back on the code when a scroll key is pressed outside it", async () => {
+        // Arrange
         await openViewer(aFile("val answer = 42\n"))
+        const back = screen.getByRole("button", { name: "Back", hidden: true })
+        back.focus()
+
+        // Act
+        back.dispatchEvent(new KeyboardEvent("keydown", { key: "PageDown", bubbles: true }))
 
         // Assert
-        const code = screen.getByRole("textbox", { name: "Source code", hidden: true })
-        expect(code.getAttribute("aria-readonly")).toBe("true")
-        expect(code.getAttribute("aria-multiline")).toBe("true")
-        expect(code.getAttribute("tabindex")).toBe("0")
+        expect(document.activeElement).toBe(screen.getByLabelText("Source code", { selector: "div" }))
+    })
+
+    it("should leave the focus on a button for a key that does not scroll", async () => {
+        // Arrange
+        await openViewer(aFile("val answer = 42\n"))
+        const back = screen.getByRole("button", { name: "Back", hidden: true })
+        back.focus()
+
+        // Act
+        back.dispatchEvent(new KeyboardEvent("keydown", { key: " ", bubbles: true }))
+
+        // Assert
+        expect(document.activeElement).toBe(back)
     })
 
     it("should say so when the browser does not allow copying", async () => {
