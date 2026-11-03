@@ -145,6 +145,17 @@ describe("SourceViewerComponent", () => {
         expect(document.activeElement).toBe(screen.getByLabelText("Source code", { selector: "div" }))
     })
 
+    it("should present the code as read-only text that keys can reach", async () => {
+        // Act
+        await openViewer(aFile("val answer = 42\n"))
+
+        // Assert
+        const code = screen.getByRole("textbox", { name: "Source code", hidden: true })
+        expect(code.getAttribute("aria-readonly")).toBe("true")
+        expect(code.getAttribute("aria-multiline")).toBe("true")
+        expect(code.getAttribute("tabindex")).toBe("0")
+    })
+
     it("should say so when the browser does not allow copying", async () => {
         // Arrange
         const { fixture } = await openViewer(aFile("val answer = 42\n"))
