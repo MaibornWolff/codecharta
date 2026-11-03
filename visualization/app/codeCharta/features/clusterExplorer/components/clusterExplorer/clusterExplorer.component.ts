@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, injec
 import { toSignal } from "@angular/core/rxjs-interop"
 import { formatClusterShare, showsRealNames } from "../../../../lenses/clusters/clusters.facade"
 import { ExplorerScrollHostService, ListViewport, listWindow } from "../../../sidebarExplorer/facade"
+import { clusterListEntriesOf } from "../../selectors/clusterListEntries"
 import { attributeSummaryOf, BY_SHARE, matchingRowsInOrder, sortOptionsOf } from "../../selectors/clusterRowOrder"
 import { ClusterShareRow, ClusterShares, clusterSharesOf, SHARE_OF_FILES } from "../../selectors/clusterShares"
 import { ClusterHighlightService } from "../../services/clusterHighlight.service"
@@ -27,6 +28,7 @@ export class ClusterExplorerComponent implements OnDestroy {
     private readonly shownFiles = toSignal(this.readStore.shownFiles$, { requireSync: true })
     private readonly chosenKey = signal<string | null>(null)
     private readonly chosenSort = signal(BY_SHARE)
+    private readonly isOffMapGroupOpen = signal(false)
     readonly filterText = signal("")
 
     readonly clusteringOptions = computed(() =>
@@ -49,8 +51,16 @@ export class ClusterExplorerComponent implements OnDestroy {
     readonly activeSort = computed(() => this.sortOptions().find(option => option.key === this.chosenSort())?.key ?? BY_SHARE)
     readonly showsFilter = computed(() => this.shares().rows.length > MOST_ROWS_WITHOUT_FILTER || this.filterText() !== "")
     readonly rows = computed(() => matchingRowsInOrder(this.shares().rows, this.filterText(), this.activeSort()))
-    readonly window = computed(() => listWindow({ ...this.viewport.geometry(), rowCount: this.rows().length }))
-    readonly renderedRows = computed(() => this.rows().slice(this.window().firstIndex, this.window().lastIndex + 1))
+    readonly entries = computed(() => {
+        const offMapIds = this.clusterIdsOffTheMap()
+        return clusterListEntriesOf(this.rows(), {
+            isOffMap: row => offMapIds.has(row.id),
+            isOpen: this.isOffMapGroupOpen(),
+            sharesAddUp: this.shares().notAttributedShare !== null
+        })
+    })
+    readonly window = computed(() => listWindow({ ...this.viewport.geometry(), rowCount: this.entries().length }))
+    readonly renderedEntries = computed(() => this.entries().slice(this.window().firstIndex, this.window().lastIndex + 1))
     // Whichever clustering is open: the map holds the names either way.
     readonly showsRealNames = computed(() => Object.keys(this.clusterings()).some(showsRealNames))
     readonly pinnedClusterId = this.highlight.pinnedClusterId
@@ -65,7 +75,7 @@ export class ClusterExplorerComponent implements OnDestroy {
     })
 
     // Every row keeps the same height, which the list's windowing relies on, so one row needing this line gives it to all
-    readonly reservesDetailLine = computed(() => this.sortOptions().length > 1 || this.clusterIdsOffTheMap().size > 0)
+    readonly reservesDetailLine = computed(() => this.sortOptions().length > 1)
 
     constructor() {
         effect(() => this.viewport.attachTo(this.list().nativeElement, this.scrollHostService.element()))
@@ -99,6 +109,10 @@ export class ClusterExplorerComponent implements OnDestroy {
     filter(event: Event): void {
         this.highlight.endHover()
         this.filterText.set((event.target as HTMLInputElement).value)
+    }
+
+    toggleOffMapGroup(): void {
+        this.isOffMapGroupOpen.update(isOpen => !isOpen)
     }
 
     hover(row: ClusterShareRow): void {

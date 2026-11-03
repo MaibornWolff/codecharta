@@ -190,7 +190,7 @@ describe("ClusterExplorerComponent", () => {
         expect(screen.getAllByTestId("cluster-explorer-row").length).toBeLessThan(100)
     })
 
-    it("should mark a cluster none of whose shown files is on the map, and only that one", async () => {
+    it("should fold the clusters none of whose shown files is on the map into one closed group with their share", async () => {
         // Arrange
         const { detectChanges } = await setup(AUTHORS)
 
@@ -199,27 +199,54 @@ describe("ClusterExplorerComponent", () => {
         detectChanges()
 
         // Assert
-        const [authorWithBuilding, authorWithout] = screen.getAllByTestId("cluster-explorer-row")
-        expect(authorWithBuilding.textContent).not.toContain("not on the map")
-        expect(authorWithBuilding.getAttribute("title")).toBe("Author 2\n2 files")
-        expect(authorWithout.textContent).toContain("not on the map")
-        expect(authorWithout.getAttribute("title")).toBe("Author 1\n1 file, none of them on the map")
+        expect(rowTexts()).toEqual(["Author 2 75%"])
+        const group = screen.getByTestId("cluster-explorer-off-map-group")
+        expect(group.textContent?.replace(/\s+/g, " ").trim()).toBe("Not on the map (1) 13%")
+        expect(group.getAttribute("aria-expanded")).toBe("false")
     })
 
-    it("should drop the mark once a file of the cluster is back on the map", async () => {
+    it("should list the clusters of the group once it is opened", async () => {
+        // Arrange
+        const { detectChanges } = await setup(AUTHORS)
+        isOnMap.set(path => path === "/root/b")
+        detectChanges()
+
+        // Act
+        await userEvent.click(screen.getByTestId("cluster-explorer-off-map-group"))
+
+        // Assert
+        expect(rowTexts()).toEqual(["Author 2 75%", "Author 1 13%"])
+        expect(screen.getAllByTestId("cluster-explorer-row")[1].getAttribute("title")).toBe("Author 1\n1 file, none of them on the map")
+        expect(screen.getByTestId("cluster-explorer-off-map-group").getAttribute("aria-expanded")).toBe("true")
+    })
+
+    it("should give the group no share where the shares overlap", async () => {
+        // Arrange
+        const { detectChanges } = await setup(COMMITS)
+
+        // Act
+        isOnMap.set(() => false)
+        detectChanges()
+
+        // Assert
+        expect(screen.getByTestId("cluster-explorer-off-map-group").textContent?.replace(/\s+/g, " ").trim()).toBe("Not on the map (2)")
+    })
+
+    it("should drop the group once every cluster is back on the map", async () => {
         // Arrange
         const { detectChanges } = await setup(AUTHORS)
         isOnMap.set(() => false)
         detectChanges()
-        const markedWhileOff = screen.getAllByTestId("cluster-explorer-row")[1].textContent
+        const groupWhileOff = screen.queryByTestId("cluster-explorer-off-map-group")
 
         // Act
         isOnMap.set(() => true)
         detectChanges()
 
         // Assert
-        expect(markedWhileOff).toContain("not on the map")
-        expect(screen.getAllByTestId("cluster-explorer-row")[1].textContent).not.toContain("not on the map")
+        expect(groupWhileOff).not.toBeNull()
+        expect(screen.queryByTestId("cluster-explorer-off-map-group")).toBeNull()
+        expect(rowTexts()).toEqual(["Author 2 75%", "Author 1 13%"])
     })
 
     it("should show the title and no picker with a single clustering", async () => {

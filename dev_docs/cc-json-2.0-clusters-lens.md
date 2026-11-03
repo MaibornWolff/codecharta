@@ -202,7 +202,8 @@ compare mode. It lists the clusters of one clustering, picked by `title`, flat: 
 - **Hover** shows only that cluster's shown files, replacing whatever the kept highlight holds until it ends; **a click**
   pins it into the kept highlight. Either greys the rest of the 3D map and limits its labels to those files.
 - **A cluster with no building** among its shown files, say because they have no area in the current metric,
-  is marked "not on the map"; its share still counts them.
+  goes into one closed "not on the map" group after the other rows, in the same order, which opens on a click; its share
+  still counts them, and the group sums those shares unless it is an `overlay`.
 - **Attributes** of a cluster show below its name by their `title`, the sorted one first. The list sorts by share or by
   any attribute, highest first, whatever the descriptor's `direction`: which end matters is the reader's question.
 - **A long list** renders only the rows on screen, and above ten clusters it can be filtered by name.

@@ -136,15 +136,21 @@ test.describe("Cluster explorer", () => {
         await expect(labelOfPinnedOnly).toBeVisible()
     })
 
-    test("should mark only the cluster whose files have no building on the map", async ({ page }) => {
-        // Arrange & Act
+    test("should fold only the cluster whose files have no building on the map into a group that opens on a click", async ({ page }) => {
+        // Arrange
         await new NavBarFolderButtonPageObject(page).openFiles([FILE_WITH_CLUSTER_OFF_THE_MAP])
         await page.getByTestId("explorer-mode-clusters").click()
+        const group = page.getByTestId("cluster-explorer-off-map-group")
+        await expect(group).toContainText("Not on the map (1)")
+        await expect(row(page, "Author 1")).toBeVisible()
+        await expect(row(page, "Author 5")).toHaveCount(0)
+
+        // Act
+        await group.click()
 
         // Assert
-        await expect(row(page, "Author 5").getByTestId("cluster-explorer-off-map")).toBeVisible()
         await expect(row(page, "Author 5")).toHaveAttribute("title", "Author 5\n1 file, none of them on the map")
-        await expect(row(page, "Author 1").getByTestId("cluster-explorer-off-map")).toHaveCount(0)
+        await expect(group).toHaveAttribute("aria-expanded", "true")
     })
 
     test("should warn when a map shows real author names, and only then", async ({ page }) => {
