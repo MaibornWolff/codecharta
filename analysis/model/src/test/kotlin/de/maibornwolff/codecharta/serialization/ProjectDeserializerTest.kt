@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.serialization
 import de.maibornwolff.codecharta.model.Project
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Timeout
 import org.junit.jupiter.api.assertThrows
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -11,12 +12,14 @@ import java.io.PipedOutputStream
 import java.io.PrintStream
 import java.io.StringReader
 import java.nio.charset.StandardCharsets
+import java.util.concurrent.TimeUnit
 
 class ProjectDeserializerTest {
     companion object {
         private const val EXAMPLE_2_0 = "example.cc.json"
         private const val EXAMPLE_LEGACY = "example_api_version_1.3.cc.json"
         private const val EXAMPLE_LEGACY_GZ = "example_api_version_1.3.cc.json.gz"
+        private const val NO_WAIT_MILLIS = 300L
     }
 
     @Test
@@ -187,5 +190,15 @@ class ProjectDeserializerTest {
 
         // then
         assertThat(project.rootNode.children.first().checksum).isEqualTo(sampleChecksum)
+    }
+
+    @Test
+    @Timeout(value = NO_WAIT_MILLIS, unit = TimeUnit.MILLISECONDS)
+    fun `should read no project from an input without a pipe without waiting for one`() {
+        // Act
+        val project = ProjectDeserializer.deserializeProject(NoPipedInput)
+
+        // Assert
+        assertThat(project).isNull()
     }
 }

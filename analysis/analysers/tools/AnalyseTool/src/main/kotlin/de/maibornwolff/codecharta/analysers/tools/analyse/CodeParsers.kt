@@ -5,9 +5,15 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.DependencyParser
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.DomainLanguageParser
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
 import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
+import de.maibornwolff.codecharta.serialization.NoPipedInput
 
 object CodeParsers {
-    fun create(): List<AnalyserInterface> = listOf(RawTextParser(), UnifiedParser(), DependencyParser(), DomainLanguageParser())
+    fun create(): List<AnalyserInterface> = listOf(
+        RawTextParser(input = NoPipedInput),
+        UnifiedParser(input = NoPipedInput),
+        DependencyParser(input = NoPipedInput),
+        DomainLanguageParser(input = NoPipedInput)
+    )
 
     val needingEveryFile = mapOf(
         DependencyParser.NAME to "its dependency graph needs every file of the project",
