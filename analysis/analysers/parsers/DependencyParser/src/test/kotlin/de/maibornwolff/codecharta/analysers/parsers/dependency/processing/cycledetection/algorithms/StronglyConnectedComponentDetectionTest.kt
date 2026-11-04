@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycled
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.model.build
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Timeout
 
 class StronglyConnectedComponentDetectionTest {
     @Test
@@ -48,5 +49,26 @@ class StronglyConnectedComponentDetectionTest {
         assertThat(scc).hasSize(2)
         assertThat(scc[0].nodes).containsExactlyInAnyOrder(node1, node2)
         assertThat(scc[1].nodes).containsExactlyInAnyOrder(node3, node4)
+    }
+
+    @Test
+    @Timeout(value = DETECTION_TIMEOUT_SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
+    fun `should return one strongly connected component for a chain too long for a recursive search`() {
+        // Arrange
+        val nodeCount = 50_000
+        val chainBackToItsStart = (0 until nodeCount)
+            .map { id -> NodeInformation.build(id = "node$id", dependencies = setOf("node${(id + 1) % nodeCount}")) }
+            .toSet()
+
+        // Act
+        val scc = StronglyConnectedComponentDetection().run(chainBackToItsStart)
+
+        // Assert
+        assertThat(scc).hasSize(1)
+        assertThat(scc[0].nodes).isEqualTo(chainBackToItsStart)
+    }
+
+    companion object {
+        private const val DETECTION_TIMEOUT_SECONDS = 10L
     }
 }
