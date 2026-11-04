@@ -4,14 +4,40 @@ import java.util.Collections
 import java.util.concurrent.TimeUnit
 import kotlin.math.log10
 
-class ProgressTracker {
-    private var startTime = System.currentTimeMillis()
+/**
+ * Draws a progress line at most once per [REDRAW_INTERVAL_MILLIS], and always the last update: parsers report every
+ * file, from many threads, and drawing each one held them all on the lock of the console.
+ */
+class ProgressTracker(private val clock: () -> Long = System::currentTimeMillis) {
+    private val startTime = clock()
     private var lastLineLength = 0
+
+    @Volatile
+    private var lastDrawTime: Long? = null
+
+    fun updateProgress(total: Long, parsed: Long, unit: String, filename: String = "") {
+        val now = clock()
+        if (isTooSoon(total, parsed, now)) return
+        draw(total, parsed, unit, filename, now)
+    }
+
+    private fun isTooSoon(total: Long, parsed: Long, now: Long): Boolean {
+        val drawnAt = lastDrawTime ?: return false
+        return parsed < total && now - drawnAt < REDRAW_INTERVAL_MILLIS
+    }
 
     // function based on java implementation by Alexander Shuev: https://stackoverflow.com/questions/1001290/console-based-progress-in-java
     @Synchronized
-    fun updateProgress(total: Long, parsed: Long, unit: String, filename: String = "") {
-        val eta = if (parsed == 0L) 0 else (total - parsed) * (System.currentTimeMillis() - startTime) / parsed
+    private fun draw(
+        total: Long,
+        parsed: Long,
+        unit: String,
+        filename: String,
+        now: Long
+    ) {
+        if (isTooSoon(total, parsed, now)) return
+        lastDrawTime = now
+        val eta = if (parsed == 0L) 0 else (total - parsed) * (now - startTime) / parsed
         val etaHms =
             if (parsed == 0L) {
                 "N/A"
@@ -75,5 +101,9 @@ class ProgressTracker {
         }
         lastLineLength = currentLength
         return result
+    }
+
+    companion object {
+        const val REDRAW_INTERVAL_MILLIS = 100L
     }
 }

@@ -46,7 +46,7 @@ class ProgressTrackerTest {
     @Test
     fun `should show 50 percent progress at halfway point`() {
         // Given
-        val progressTracker = ProgressTracker()
+        val progressTracker = ProgressTracker(clockAdvancingByRedrawInterval())
         val total = 100L
         val parsed = 50L
         val unit = "files"
@@ -98,7 +98,7 @@ class ProgressTrackerTest {
     @Test
     fun `should handle clearing spaces correctly when filename changes`() {
         // Given
-        val progressTracker = ProgressTracker()
+        val progressTracker = ProgressTracker(clockAdvancingByRedrawInterval())
         val total = 100L
         val unit = "files"
         val longFilename = "this-is-a-very-long-filename.txt"
@@ -169,5 +169,38 @@ class ProgressTrackerTest {
 
         // Assert
         assertThat(mostUpdatesPrintingAtOnce.get()).isEqualTo(1)
+    }
+
+    @Test
+    fun `should not redraw before the redraw interval has passed`() {
+        // Arrange
+        val progressTracker = ProgressTracker(clock = { 0L })
+
+        // Act
+        progressTracker.updateProgress(100, 1, "files")
+        progressTracker.updateProgress(100, 2, "files")
+
+        // Assert
+        val output = errContent.toString()
+        assertThat(output).contains(" 1/100 files").doesNotContain(" 2/100 files")
+    }
+
+    @Test
+    fun `should draw the last update even before the redraw interval has passed`() {
+        // Arrange
+        val progressTracker = ProgressTracker(clock = { 0L })
+
+        // Act
+        progressTracker.updateProgress(100, 1, "files")
+        progressTracker.updateProgress(100, 100, "files")
+
+        // Assert
+        val output = errContent.toString()
+        assertThat(output).contains("100/100 files")
+    }
+
+    private fun clockAdvancingByRedrawInterval(): () -> Long {
+        var now = 0L
+        return { now.also { now += ProgressTracker.REDRAW_INTERVAL_MILLIS } }
     }
 }
