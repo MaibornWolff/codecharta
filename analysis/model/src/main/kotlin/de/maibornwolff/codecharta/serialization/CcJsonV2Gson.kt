@@ -5,10 +5,10 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonSerializationContext
-import com.google.gson.JsonSerializer
 import com.google.gson.ToNumberPolicy
+import com.google.gson.TypeAdapter
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypeDeserializer
 import de.maibornwolff.codecharta.model.AttributeTypeSerializer
@@ -26,7 +26,8 @@ object CcJsonV2Gson {
             .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
             .registerTypeAdapter(AttributeType::class.java, AttributeTypeSerializer())
             .registerTypeAdapter(AttributeType::class.java, AttributeTypeDeserializer())
-            .registerTypeAdapter(LensesDto::class.java, LensesDtoSerializer())
+            // The deserializer, registered last, takes precedence and leaves writing to the writer before it
+            .registerTypeAdapter(LensesDto::class.java, LensesDtoWriter { gson })
             .registerTypeAdapter(LensesDto::class.java, LensesDtoDeserializer())
             .create()
 
@@ -39,24 +40,33 @@ object CcJsonV2Gson {
 
     private val TYPED_LENS_KEYS = setOf(METRICS_KEY, DEPENDENCY_KEY, DOMAIN_KEY, CLUSTERS_KEY)
 
-    private class LensesDtoSerializer : JsonSerializer<LensesDto> {
-        override fun serialize(src: LensesDto, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
-            val result = JsonObject()
-            result.add(METRICS_KEY, context.serialize(src.metrics))
-            result.add(DEPENDENCY_KEY, context.serialize(src.dependency))
-            src.domain?.let { result.add(DOMAIN_KEY, serializeDomain(it, context)) }
-            src.clusters?.let { result.add(CLUSTERS_KEY, context.serialize(it)) }
-            src.opaqueLenses.forEach { (lensName, lensValue) -> result.add(lensName, lensValue) }
-            return result
+    // Streams the lenses straight to the output: building them as a JSON tree first held a second copy of a large domain
+    // lens in memory and took as long again
+    private class LensesDtoWriter(private val gson: () -> Gson) : TypeAdapter<LensesDto>() {
+        override fun write(out: JsonWriter, src: LensesDto) {
+            out.beginObject()
+            writeMember(out, METRICS_KEY, src.metrics)
+            writeMember(out, DEPENDENCY_KEY, src.dependency)
+            src.domain?.let { writeDomain(out, it) }
+            src.clusters?.let { writeMember(out, CLUSTERS_KEY, it) }
+            src.opaqueLenses.forEach { (lensName, lensValue) -> writeMember(out, lensName, lensValue) }
+            out.endObject()
         }
 
         // A lens without nodes stays the reserved `{}` slot rather than growing an empty `nodes` object,
         // so a file that reserved the key round-trips unchanged.
-        private fun serializeDomain(domain: DomainLens, context: JsonSerializationContext): JsonElement {
-            val result = JsonObject()
-            if (domain.carriesData) result.add(NODES_KEY, context.serialize(domain.nodes))
-            return result
+        private fun writeDomain(out: JsonWriter, domain: DomainLens) {
+            out.name(DOMAIN_KEY).beginObject()
+            if (domain.carriesData) writeMember(out, NODES_KEY, domain.nodes)
+            out.endObject()
         }
+
+        private fun writeMember(out: JsonWriter, name: String, value: Any) {
+            out.name(name)
+            gson().toJson(value, value.javaClass, out)
+        }
+
+        override fun read(reader: JsonReader): LensesDto = throw UnsupportedOperationException("LensesDtoDeserializer reads the lenses")
     }
 
     private class LensesDtoDeserializer : JsonDeserializer<LensesDto> {
