@@ -24,7 +24,8 @@ class AnalysisException(message: String) : RuntimeException(message)
 data class ConfiguredAnalyser(
     val analyser: AnalyserInterface,
     val arguments: List<String> = emptyList(),
-    val readsProjectFolder: Boolean = true
+    val readsProjectFolder: Boolean = true,
+    val whenDone: () -> Unit = {}
 )
 
 class ProjectAnalyser {
@@ -68,7 +69,8 @@ class ProjectAnalyser {
     }
 
     private fun runInParallel(analysers: List<ConfiguredAnalyser>, runOne: (ConfiguredAnalyser) -> Result<Project>): List<Result<Project>> {
-        val threadPool = Executors.newFixedThreadPool(minOf(analysers.size, Runtime.getRuntime().availableProcessors()))
+        // A thread for each, as parsers that share a file loop wait for each other, see SharedFileLoop
+        val threadPool = Executors.newFixedThreadPool(analysers.size)
         try {
             return analysers
                 .map { analyser -> threadPool.submit(Callable { runOne(analyser) }) }
@@ -85,7 +87,13 @@ class ProjectAnalyser {
         throw exception.cause ?: exception
     }
 
-    private fun runAnalyser(configured: ConfiguredAnalyser, projectFolder: File, workFolder: File, excludePattern: String?): Project {
+    private fun runAnalyser(configured: ConfiguredAnalyser, projectFolder: File, workFolder: File, excludePattern: String?): Project = try {
+        mapOf(configured, projectFolder, workFolder, excludePattern)
+    } finally {
+        configured.whenDone()
+    }
+
+    private fun mapOf(configured: ConfiguredAnalyser, projectFolder: File, workFolder: File, excludePattern: String?): Project {
         val analyser = configured.analyser
         val mapFile = File(workFolder, analyser.name + FileExtension.CCJSON.primaryExtension)
         val arguments = inputArguments(configured, projectFolder, excludePattern) + listOf("--output-file", mapFile.path, NOT_COMPRESSED)

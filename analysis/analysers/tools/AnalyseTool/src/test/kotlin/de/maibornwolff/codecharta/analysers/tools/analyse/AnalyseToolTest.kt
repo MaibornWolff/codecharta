@@ -409,7 +409,9 @@ class AnalyseToolTest {
         val failingParser = UnifiedParser(fileMeasurer = { _, _ -> throw IllegalStateException("broken extractor") })
 
         // Act
-        val exitCode = analyse(projectFolder.path, "--output-file=${mapFile.path}", parsers = { listOf(RawTextParser(), failingParser) })
+        val exitCode = analyse(projectFolder.path, "--output-file=${mapFile.path}", parsers = { _ ->
+            listOf(RawTextParser(), failingParser)
+        })
 
         // Assert
         assertThat(exitCode).isEqualTo(1)
@@ -530,7 +532,7 @@ class AnalyseToolTest {
     private fun analyse(
         vararg arguments: String,
         svnLogWriter: SvnLogWriter = SvnLogWriter(listOf(MISSING_COMMAND)),
-        parsers: () -> List<AnalyserInterface> = { listOf(RawTextParser(), UnifiedParser()) },
+        parsers: (SharedFileLoop?) -> List<AnalyserInterface> = { listOf(RawTextParser(), UnifiedParser()) },
         quiet: Boolean = true
     ): Int {
         val tool = AnalyseTool(PrintStream(output), workingFolder, svnLogWriter, parsers)
