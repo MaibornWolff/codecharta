@@ -182,6 +182,18 @@ class ProjectAnalyserTest {
         assertThat(recordingAnalyser.arguments).containsExactly("--repo-path", "repo")
     }
 
+    @Test
+    fun `should have an analyser write its map uncompressed for the merge`() {
+        // Arrange
+        val recordingAnalyser = RecordingAnalyser()
+
+        // Act
+        ProjectAnalyser().analyse(projectFolder, listOf(ConfiguredAnalyser(recordingAnalyser)), File(projectFolder, "out"))
+
+        // Assert
+        assertThat(recordingAnalyser.isNotCompressed).isTrue()
+    }
+
     private fun bothAnalysers() = listOf(ConfiguredAnalyser(RawTextParser()), ConfiguredAnalyser(UnifiedParser()))
 
     private fun filesOf(project: Project): Map<String, Map<String, Any>> = project.rootNode.nodes
@@ -238,11 +250,14 @@ class ProjectAnalyserTest {
         @CommandLine.Option(names = ["--output-file"])
         private var outputFile: String? = null
 
+        @CommandLine.Option(names = ["--not-compressed"])
+        var isNotCompressed = false
+
         @CommandLine.Unmatched
         var arguments: MutableList<String> = mutableListOf()
 
         override fun call(): Unit? {
-            ProjectSerializer.serializeToFileOrStream(Project("recorded"), outputFile, System.out, true)
+            ProjectSerializer.serializeToFileOrStream(Project("recorded"), outputFile, System.out, !isNotCompressed)
             return null
         }
 
