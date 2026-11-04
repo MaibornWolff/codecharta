@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ProjectListing
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.readInParallel
 import de.maibornwolff.treesitter.excavationsite.api.SqlMember
 import de.maibornwolff.treesitter.excavationsite.api.SqlMemberKind
@@ -101,10 +102,7 @@ internal class SqlProject private constructor(private val files: Set<String>, pr
 
         private fun isSql(file: String): Boolean = SQL_SUFFIXES.any { file.endsWith(it, ignoreCase = true) }
 
-        private fun filesBelow(analysisRoot: File): Set<String> = analysisRoot
-            .walkTopDown()
-            .onEnter { folder -> folder == analysisRoot || !folder.name.startsWith(HIDDEN_PREFIX) }
-            .filter { it.isFile }
-            .mapTo(HashSet()) { it.relativeTo(analysisRoot).path }
+        private fun filesBelow(analysisRoot: File): Set<String> =
+            ProjectListing.of(analysisRoot).filePathsOutside { name -> name.startsWith(HIDDEN_PREFIX) }
     }
 }
