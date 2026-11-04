@@ -21,7 +21,9 @@ class SourceFileScannerTest {
         scanner: SourceFileScanner = SourceFileScanner(listOf("kt", "ts", "js", "py", "txt", "log")),
         input: File = projectDirectory,
         useGitignore: Boolean = false
-    ): List<String> = scanner.scan(input, useGitignore).map { it.toRelativeString(projectDirectory).replace(File.separatorChar, '/') }
+    ): List<String> = scanner.scan(input, useGitignore).map { relativePathOf(it) }
+
+    private fun relativePathOf(file: File): String = file.toRelativeString(projectDirectory).replace(File.separatorChar, '/')
 
     @Test
     fun `should find files of the allowed extensions recursively and nothing else`() {
@@ -181,6 +183,37 @@ class SourceFileScannerTest {
         // Assert
         assertThat(found).containsExactly("Service.kt")
         assertThat(foundTest).isEmpty()
+    }
+
+    @Test
+    fun `should list every file and folder a project scan lets through, whatever their extension`() {
+        // Arrange
+        write(".gitignore", "generated/")
+        write("a.kt")
+        write("docs/notes.md")
+        write("generated/Gen.kt")
+        write("vendor/Vendor.kt")
+        val scanner = SourceFileScanner(listOf("kt"), excludePatterns = listOf("/vendor/"))
+
+        // Act
+        val project = scanner.scanProject(projectDirectory, useGitignore = true)
+
+        // Assert
+        assertThat(project.entries.map { relativePathOf(it) }).containsExactly(".gitignore", "a.kt", "docs", "docs/notes.md")
+        assertThat(project.sourceFiles.map { relativePathOf(it) }).containsExactly("a.kt")
+    }
+
+    @Test
+    fun `should list no entries when a project scan is given a single file`() {
+        // Arrange
+        val file = write("a.kt")
+
+        // Act
+        val project = SourceFileScanner(listOf("kt")).scanProject(file)
+
+        // Assert
+        assertThat(project.entries).isEmpty()
+        assertThat(project.sourceFiles).containsExactly(file)
     }
 
     @Test
