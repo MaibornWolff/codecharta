@@ -155,8 +155,13 @@ internal class FfmSyntaxTree private constructor(
 
         fun column(packedPoint: Long): Int = packedPoint.toInt()
 
-        fun parse(content: String, grammar: FfmGrammar): FfmSyntaxTree =
-            SharedParses.parse(content, grammar) { parseOwnTree(content, grammar) }
+        /** Set while the parses of this thread are shared, see [SharedParses]. */
+        val lenderOfThread = ThreadLocal<TreeLender<FfmSyntaxTree>>()
+
+        fun parse(content: String, grammar: FfmGrammar): FfmSyntaxTree {
+            val lender = lenderOfThread.get() ?: return parseOwnTree(content, grammar)
+            return lender.lend(content, grammar) { parseOwnTree(content, grammar) }
+        }
 
         private fun parseOwnTree(content: String, grammar: FfmGrammar): FfmSyntaxTree {
             val arena = Arena.ofConfined()
