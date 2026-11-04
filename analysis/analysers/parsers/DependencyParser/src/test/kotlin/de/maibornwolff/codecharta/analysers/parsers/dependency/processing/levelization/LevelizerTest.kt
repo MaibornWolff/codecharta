@@ -1,10 +1,12 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization.model.GraphEdge
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization.model.GraphNode
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization.model.GraphNodeBuilder
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Timeout
 
 class LevelizerTest {
     @Test
@@ -127,5 +129,31 @@ class LevelizerTest {
                 tuple("root1", 0),
                 tuple("root2", 1)
             )
+    }
+
+    @Test
+    @Timeout(value = LEVELING_TIMEOUT_SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
+    fun `should level a package with many children and many edges between their classes`() {
+        // Arrange
+        val childCount = 6_000
+        val edgesPerChild = 20
+        val children = (0 until childCount).map { child -> GraphNode(id = "p.c$child", parent = "p", children = listOf()) }
+        val edgesToEarlierChildren = (1 until childCount).flatMap { child ->
+            (1..edgesPerChild).map { step -> GraphEdge("p.c$child.Source", "p.c${(step * EDGE_SPREAD) % child}.Target", 1, "import") }
+        }
+        val packageNode = GraphNode(id = "p", parent = null, children = children, edges = edgesToEarlierChildren.toSet())
+
+        // Act
+        val leveledChildren = levelize(listOf(packageNode)).first().children
+
+        // Assert
+        assertThat(leveledChildren).hasSize(childCount)
+        assertThat(leveledChildren.first { it.id == "p.c0" }.level).isEqualTo(0)
+        assertThat(leveledChildren.first { it.id == "p.c1" }.level).isEqualTo(1)
+    }
+
+    companion object {
+        private const val LEVELING_TIMEOUT_SECONDS = 10L
+        private const val EDGE_SPREAD = 7_919
     }
 }

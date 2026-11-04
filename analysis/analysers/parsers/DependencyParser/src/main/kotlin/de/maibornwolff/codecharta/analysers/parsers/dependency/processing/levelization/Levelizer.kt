@@ -41,10 +41,11 @@ private fun calculateLevelsOfChildren(node: GraphNode): GraphNode {
         node.edges.size
     ) { node.edges.size > 100000 }
 
+    val directChildren = DirectChildren(node.children)
     val transformedEdges = transformProgressBar.use { step ->
         node.edges
             .parallelStream()
-            .map { transformEdgeToDirectChildren(it, node).apply { step() } }
+            .map { transformEdgeToDirectChildren(it, directChildren).apply { step() } }
             .toList()
             .filterNotNull()
             .filter { it.source != it.target }
@@ -80,7 +81,7 @@ private fun calculateLevelsOfChildren(node: GraphNode): GraphNode {
     }
     val groupedAcyclicEdges = acyclicEdges.groupBy { it.source }
     val distributedNodes = calculateLevelZeroNodes(node, groupedAcyclicEdges).toMutableList()
-    val distributedNodeIds = distributedNodes.map { it.id }
+    val distributedNodeIds = distributedNodes.mapTo(HashSet()) { it.id }
     var undistributedNodes = node.children
         .filter { !distributedNodeIds.contains(it.id) }
 
@@ -89,7 +90,7 @@ private fun calculateLevelsOfChildren(node: GraphNode): GraphNode {
         val nextLevelNodes = calculateNextLevel(currentLevel, undistributedNodes, distributedNodes, groupedAcyclicEdges)
         distributedNodes.addAll(nextLevelNodes)
 
-        val nextLevelNodeIds = nextLevelNodes.map { it.id }
+        val nextLevelNodeIds = nextLevelNodes.mapTo(HashSet()) { it.id }
         undistributedNodes = undistributedNodes.filter { !nextLevelNodeIds.contains(it.id) }
         currentLevel++
     }
@@ -103,7 +104,7 @@ private fun calculateNextLevel(
     distributedNodes: List<GraphNode>,
     dependenciesPerNode: Map<String, List<GraphEdge>>
 ): List<GraphNode> {
-    val allowedDependencyTargetsIds = distributedNodes.map { it.id }
+    val allowedDependencyTargetsIds = distributedNodes.mapTo(HashSet()) { it.id }
 
     return undistributedNodes.flatMap { node ->
         val dependenciesForNode = dependenciesPerNode[node.id]
@@ -145,24 +146,35 @@ private fun removeCycles(incomingEdgesPerNode: MutableMap<String, Int>, edges: L
     return edges.filter { edge -> !edgesToRemove.contains(Edge(edge.source, edge.target)) }
 }
 
-private fun transformEdgeToDirectChildren(edge: GraphEdge, node: GraphNode): GraphEdge? {
-    val directChildrenIds = node.children.map { it.id }
-    val directTarget = directChildrenIds.find { edge.target == it }
-    val directSource = directChildrenIds.find { edge.source == it }
-
-    val target = directTarget ?: findMostSuitableChild(directChildrenIds, edge.target)
-    val source = directSource ?: findMostSuitableChild(directChildrenIds, edge.source)
-    if (target == null || source == null) {
-        return null
-    }
+private fun transformEdgeToDirectChildren(edge: GraphEdge, directChildren: DirectChildren): GraphEdge? {
+    val target = directChildren.holding(edge.target) ?: return null
+    val source = directChildren.holding(edge.source) ?: return null
     return edge.copy(source = source, target = target)
 }
 
-private fun findMostSuitableChild(directChildrenIds: List<String>, id: String): String? {
-    val nestedChildId = id.split(".")
-    val childrenIdPaths = directChildrenIds.map { it.split(".") }
-    val find = childrenIdPaths.find { directChildId ->
-        directChildId.size < nestedChildId.size && nestedChildId.subList(0, directChildId.size) == directChildId
+/**
+ * The child of a node that an id belongs to: the child with that id, else the first child, in the order of the
+ * children, whose id is an ancestor of it, as `a.b` of `a.b.C`. Looked up by the ancestors of the id instead of by
+ * comparing every child, which a package with many children and edges cannot afford.
+ */
+private class DirectChildren(children: List<GraphNode>) {
+    private val orderById = HashMap<String, Int>()
+
+    init {
+        children.forEachIndexed { order, child -> orderById.putIfAbsent(child.id, order) }
     }
-    return find?.joinToString(".")
+
+    fun holding(id: String): String? {
+        if (id in orderById) return id
+        return ancestorIdsOf(id).filter { it in orderById }.minByOrNull { orderById.getValue(it) }
+    }
+
+    private fun ancestorIdsOf(id: String): List<String> {
+        val separators = id.indices.filter { id[it] == ID_SEPARATOR }
+        return separators.map { id.substring(0, it) }
+    }
+
+    companion object {
+        private const val ID_SEPARATOR = '.'
+    }
 }
