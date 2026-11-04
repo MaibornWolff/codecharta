@@ -29,7 +29,7 @@ class ProjectScanner(
     private val excludePatterns: List<String> = listOf(),
     private val includeExtensions: List<String> = listOf(),
     private val baseFileNodes: Map<String, Node> = emptyMap(),
-    private val useGitignore: Boolean = true,
+    useGitignore: Boolean = true,
     private val localChangesFiles: Set<String> = emptySet(),
     private val fileMeasurer: FileMeasurer = collectorMeasurer
 ) {
@@ -46,7 +46,7 @@ class ProjectScanner(
     private val fileMetrics = ConcurrentHashMap<String, MutableNode>()
     private val excludePatternRegex = excludePatterns.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
-    private val gitignoreHandler = GitignoreHandler(root)
+    private val gitignoreHandler = if (useGitignore) GitignoreHandler(root) else null
 
     fun foundParsableFiles(): Boolean = fileMetrics.isNotEmpty()
 
@@ -57,7 +57,7 @@ class ProjectScanner(
     /** The files whose analysis failed, relative to the root; they are missing from the output. */
     fun failures(): List<FailedFile> = failures.sortedBy { it.path }
 
-    fun getGitIgnoreStatistics(): Pair<Int, List<String>> = if (useGitignore) gitignoreHandler.getStatistics() else Pair(0, emptyList())
+    fun getGitIgnoreStatistics(): Pair<Int, List<String>> = gitignoreHandler?.getStatistics() ?: Pair(0, emptyList())
 
     fun getNotFoundFileExtensions(): Set<String> {
         val result = mutableSetOf<String>()
@@ -154,15 +154,14 @@ class ProjectScanner(
         .toString()
         .replace('\\', '/')
 
-    private fun shouldSkipDirectory(dir: File): Boolean {
-        if (!dir.isDirectory) return false
-        return (useGitignore && gitignoreHandler.shouldExclude(dir))
-    }
+    private fun shouldSkipDirectory(dir: File): Boolean = dir.isDirectory && isExcludedByGitignore(dir)
+
+    private fun isExcludedByGitignore(file: File): Boolean = gitignoreHandler?.shouldExclude(file) == true
 
     private fun isParsableFile(file: File): Boolean {
         if (UndecodableFileName.reportIfUndecodable(file) || !file.isFile) return false
 
-        if (useGitignore && gitignoreHandler.shouldExclude(file)) return false
+        if (isExcludedByGitignore(file)) return false
 
         val relativePath = getRelativeFileName(file.toString())
 
