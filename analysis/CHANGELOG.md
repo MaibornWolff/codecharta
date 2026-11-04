@@ -26,7 +26,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - **Faster start in large projects**: the parsers start analysing sooner when a project holds large ignored folders
-  such as `node_modules` or build output, most noticeably in Docker.
+  such as `node_modules` or build output, and the dependency parser no longer pauses along the way, most noticeably
+  in Docker.
+
+### Fixed 🐞
+
+- **Dependencies into ignored folders**: the dependency parser no longer resolves an import or include to a file that
+  `.gitignore` or the exclude patterns leave out, so the edge goes to the file on the map.
 
 ## [2.3.0] - 2026-10-28
 

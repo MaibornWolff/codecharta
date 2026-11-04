@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileScanner
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.ProjectListing
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.progress.SilentProgressReporter
@@ -115,6 +116,37 @@ class ExtractionPipelineTest {
 
         // Assert
         assertThat(seenFiles).hasSize(2).allSatisfy { assertThat(it).containsExactlyInAnyOrder("Item.kt", "Service.kt") }
+    }
+
+    @Test
+    fun `should let the project lookups see only what the scan lets through`() {
+        // Arrange
+        writeSources()
+        File(projectDirectory, ".gitignore").writeText("generated/")
+        File(projectDirectory, "generated").mkdirs()
+        File(projectDirectory, "generated/Generated.kt").writeText("package shop\n\nclass Generated")
+
+        // Act
+        pipeline().run(projectDirectory, bypassGitignore = false)
+
+        // Assert
+        assertThat(ProjectListing.of(projectDirectory).filesOutside { false })
+            .containsExactly(listOf(".gitignore"), listOf("Item.kt"), listOf("Service.kt"))
+    }
+
+    @Test
+    fun `should let the project lookups see the ignored files when the gitignore is bypassed`() {
+        // Arrange
+        writeSources()
+        File(projectDirectory, ".gitignore").writeText("generated/")
+        File(projectDirectory, "generated").mkdirs()
+        File(projectDirectory, "generated/Generated.kt").writeText("package shop\n\nclass Generated")
+
+        // Act
+        pipeline().run(projectDirectory, bypassGitignore = true)
+
+        // Assert
+        assertThat(ProjectListing.of(projectDirectory).filesOutside { false }).contains(listOf("generated", "Generated.kt"))
     }
 
     @Test
