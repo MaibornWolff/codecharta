@@ -1,13 +1,11 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli
 
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FrameworkDetector
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Framework
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Language
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.LanguageKeywords
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywords
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages.ExtractionWeights
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.stopwords.DlcIgnoreParser
-import java.nio.file.Path
 import java.nio.file.Paths
 
 class ConfigurationBuilder(
@@ -20,7 +18,7 @@ class ConfigurationBuilder(
                 "Please provide a directory with -d flag"
             }
         val allowedExtensions = Language.allExtensions()
-        val frameworksByPath = detectFrameworks(directory)
+        val frameworksByPath = frameworkDetector.detectFrameworks(Paths.get(directory), useGitignore = !parsedArgs.bypassGitignore)
         val globalKeywords = buildGlobalKeywords(parsedArgs.noTechnicalStopWords, parsedArgs.stopWordLevel)
         val weights = buildExtractionWeights(parsedArgs)
         val customStopWords = loadCustomStopWords(directory)
@@ -40,8 +38,6 @@ class ConfigurationBuilder(
             sortBy = parsedArgs.sortBy
         )
     }
-
-    private fun detectFrameworks(directory: String): Map<Path, Set<Framework>> = frameworkDetector.detectFrameworks(Paths.get(directory))
 
     // Only the technical stop words are global. Per-language keywords are scoped to the files of that
     // language by `StopWordFilter`, so a Go file's `func` does not disappear from a Kotlin one.

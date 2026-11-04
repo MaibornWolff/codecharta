@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.gitignore.GitignoreHandler
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Framework
 import de.maibornwolff.codecharta.util.Logger
 import kotlinx.serialization.json.Json
@@ -24,11 +25,13 @@ class FrameworkDetector {
 
     // One walk for every ecosystem: the tree is walked again by FileScanner, so a walk per ecosystem on
     // top of that is the difference between two and three full traversals of a large repository.
-    fun detectFrameworks(directoryPath: Path): Map<Path, Set<Framework>> {
+    fun detectFrameworks(directoryPath: Path, useGitignore: Boolean = true): Map<Path, Set<Framework>> {
         val frameworksByPath = mutableMapOf<Path, Set<Framework>>()
-        directoryPath
-            .toFile()
+        val root = directoryPath.toFile()
+        val gitignoreHandler = if (useGitignore) GitignoreHandler(root) else null
+        root
             .walkTopDown()
+            .onEnter { folder -> folder == root || !isSkippedFolder(folder, gitignoreHandler) }
             .forEach { file ->
                 ecosystems
                     .filter { ecosystem -> ecosystem.matchesProjectFile(file) }
@@ -36,6 +39,9 @@ class FrameworkDetector {
             }
         return frameworksByPath
     }
+
+    private fun isSkippedFolder(folder: File, gitignoreHandler: GitignoreHandler?): Boolean =
+        folder.name in ALWAYS_SKIPPED_FOLDERS || gitignoreHandler?.shouldExclude(folder) == true
 
     private fun addFrameworksOf(projectFile: Path, ecosystem: Ecosystem, frameworksByPath: MutableMap<Path, Set<Framework>>) {
         val frameworks = identifyFrameworks(projectFile, ecosystem)
@@ -50,9 +56,7 @@ class FrameworkDetector {
         emptySet()
     }
 
-    private fun isPackageJson(file: File): Boolean = file.isFile &&
-        file.name == "package.json" &&
-        !file.path.contains("node_modules")
+    private fun isPackageJson(file: File): Boolean = file.isFile && file.name == "package.json"
 
     private fun isCsproj(file: File): Boolean = file.isFile && file.extension == "csproj"
 
@@ -95,4 +99,8 @@ class FrameworkDetector {
         ?.jsonObject
         ?.keys
         ?: emptySet()
+
+    companion object {
+        private val ALWAYS_SKIPPED_FOLDERS = setOf(".git", "node_modules")
+    }
 }
