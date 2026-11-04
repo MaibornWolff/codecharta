@@ -72,7 +72,7 @@ class InputHelper {
                 return false
             }
 
-            if (getFilesInFolder(inputResource).isEmpty()) {
+            if (!containsAnyFile(inputResource)) {
                 Logger.error {
                     "The specified path `${inputResource.path}` exists but is empty!"
                 }
@@ -112,12 +112,10 @@ class InputHelper {
             return resultList
         }
 
-        private fun getFilesInFolder(folder: File): List<File> {
-            val files =
-                folder.walk().filter {
-                    !it.name.startsWith(".") && !it.isDirectory
-                }
-            return files.toList()
-        }
+        private fun containsAnyFile(folder: File): Boolean = folder.walk().any(::isVisibleFile)
+
+        private fun getFilesInFolder(folder: File): List<File> = folder.walk().filter(::isVisibleFile).toList()
+
+        private fun isVisibleFile(file: File): Boolean = !file.name.startsWith(".") && !file.isDirectory
     }
 }
