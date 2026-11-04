@@ -58,42 +58,51 @@ final class TreeSitterApi {
     private static final MethodHandle PARSER_PARSE_STRING =
         core("ts_parser_parse_string", FunctionDescriptor.of(ADDRESS, ADDRESS, ADDRESS, ADDRESS, JAVA_INT));
     private static final MethodHandle TREE_DELETE = core("ts_tree_delete", FunctionDescriptor.ofVoid(ADDRESS));
-    private static final MethodHandle TREE_ROOT_NODE = core("ts_tree_root_node", FunctionDescriptor.of(NODE, ADDRESS));
+    private static final MethodHandle TREE_ROOT_NODE = shortCall("ts_tree_root_node", FunctionDescriptor.of(NODE, ADDRESS));
     private static final MethodHandle CURSOR_NEW = core("ts_tree_cursor_new", FunctionDescriptor.of(CURSOR, NODE));
-    private static final MethodHandle CURSOR_RESET = core("ts_tree_cursor_reset", FunctionDescriptor.ofVoid(ADDRESS, NODE));
+    private static final MethodHandle CURSOR_RESET = shortCall("ts_tree_cursor_reset", FunctionDescriptor.ofVoid(ADDRESS, NODE));
     private static final MethodHandle CURSOR_DELETE = core("ts_tree_cursor_delete", FunctionDescriptor.ofVoid(ADDRESS));
     private static final MethodHandle CURSOR_CURRENT_NODE =
-        core("ts_tree_cursor_current_node", FunctionDescriptor.of(NODE, ADDRESS));
+        shortCall("ts_tree_cursor_current_node", FunctionDescriptor.of(NODE, ADDRESS));
     private static final MethodHandle CURSOR_GOTO_FIRST_CHILD =
-        core("ts_tree_cursor_goto_first_child", FunctionDescriptor.of(JAVA_BOOLEAN, ADDRESS));
+        shortCall("ts_tree_cursor_goto_first_child", FunctionDescriptor.of(JAVA_BOOLEAN, ADDRESS));
     private static final MethodHandle CURSOR_GOTO_NEXT_SIBLING =
-        core("ts_tree_cursor_goto_next_sibling", FunctionDescriptor.of(JAVA_BOOLEAN, ADDRESS));
+        shortCall("ts_tree_cursor_goto_next_sibling", FunctionDescriptor.of(JAVA_BOOLEAN, ADDRESS));
     private static final MethodHandle CURSOR_GOTO_PARENT =
-        core("ts_tree_cursor_goto_parent", FunctionDescriptor.of(JAVA_BOOLEAN, ADDRESS));
-    private static final MethodHandle NODE_SYMBOL = core("ts_node_symbol", FunctionDescriptor.of(SYMBOL, NODE));
-    private static final MethodHandle NODE_IS_NAMED = core("ts_node_is_named", FunctionDescriptor.of(JAVA_BOOLEAN, NODE));
-    private static final MethodHandle NODE_START_POINT = core("ts_node_start_point", FunctionDescriptor.of(POINT, NODE));
-    private static final MethodHandle NODE_END_POINT = core("ts_node_end_point", FunctionDescriptor.of(POINT, NODE));
-    private static final MethodHandle NODE_START_BYTE = core("ts_node_start_byte", FunctionDescriptor.of(JAVA_INT, NODE));
-    private static final MethodHandle NODE_END_BYTE = core("ts_node_end_byte", FunctionDescriptor.of(JAVA_INT, NODE));
-    private static final MethodHandle NODE_CHILD_COUNT = core("ts_node_child_count", FunctionDescriptor.of(JAVA_INT, NODE));
+        shortCall("ts_tree_cursor_goto_parent", FunctionDescriptor.of(JAVA_BOOLEAN, ADDRESS));
+    private static final MethodHandle NODE_SYMBOL = shortCall("ts_node_symbol", FunctionDescriptor.of(SYMBOL, NODE));
+    private static final MethodHandle NODE_IS_NAMED = shortCall("ts_node_is_named", FunctionDescriptor.of(JAVA_BOOLEAN, NODE));
+    private static final MethodHandle NODE_START_POINT = shortCall("ts_node_start_point", FunctionDescriptor.of(POINT, NODE));
+    private static final MethodHandle NODE_END_POINT = shortCall("ts_node_end_point", FunctionDescriptor.of(POINT, NODE));
+    private static final MethodHandle NODE_START_BYTE = shortCall("ts_node_start_byte", FunctionDescriptor.of(JAVA_INT, NODE));
+    private static final MethodHandle NODE_END_BYTE = shortCall("ts_node_end_byte", FunctionDescriptor.of(JAVA_INT, NODE));
+    private static final MethodHandle NODE_CHILD_COUNT = shortCall("ts_node_child_count", FunctionDescriptor.of(JAVA_INT, NODE));
     private static final MethodHandle NODE_CHILD = core("ts_node_child", FunctionDescriptor.of(NODE, NODE, JAVA_INT));
     private static final MethodHandle NODE_NAMED_CHILD_COUNT =
-        core("ts_node_named_child_count", FunctionDescriptor.of(JAVA_INT, NODE));
+        shortCall("ts_node_named_child_count", FunctionDescriptor.of(JAVA_INT, NODE));
     private static final MethodHandle NODE_NAMED_CHILD = core("ts_node_named_child", FunctionDescriptor.of(NODE, NODE, JAVA_INT));
     private static final MethodHandle NODE_PARENT = core("ts_node_parent", FunctionDescriptor.of(NODE, NODE));
     private static final MethodHandle NODE_PREV_SIBLING = core("ts_node_prev_sibling", FunctionDescriptor.of(NODE, NODE));
     private static final MethodHandle NODE_CHILD_BY_FIELD_NAME =
         core("ts_node_child_by_field_name", FunctionDescriptor.of(NODE, NODE, ADDRESS, JAVA_INT));
     private static final MethodHandle LANGUAGE_SYMBOL_COUNT =
-        core("ts_language_symbol_count", FunctionDescriptor.of(JAVA_INT, ADDRESS));
+        shortCall("ts_language_symbol_count", FunctionDescriptor.of(JAVA_INT, ADDRESS));
     private static final MethodHandle LANGUAGE_SYMBOL_NAME =
-        core("ts_language_symbol_name", FunctionDescriptor.of(ADDRESS, ADDRESS, SYMBOL));
+        shortCall("ts_language_symbol_name", FunctionDescriptor.of(ADDRESS, ADDRESS, SYMBOL));
 
     private TreeSitterApi() {}
 
     private static MethodHandle core(String name, FunctionDescriptor descriptor) {
         return LINKER.downcallHandle(find(CORE, name), descriptor);
+    }
+
+    /**
+     * A call that takes constant time, made without the thread-state change a downcall otherwise needs: there are
+     * several per node, and the change cost more than the call. Only for calls that are short and never call back
+     * into Java, as the garbage collector waits for them; finding a parent, a sibling or a child by index is not one.
+     */
+    private static MethodHandle shortCall(String name, FunctionDescriptor descriptor) {
+        return LINKER.downcallHandle(find(CORE, name), descriptor, Linker.Option.critical(false));
     }
 
     private static MemorySegment find(SymbolLookup library, String name) {
