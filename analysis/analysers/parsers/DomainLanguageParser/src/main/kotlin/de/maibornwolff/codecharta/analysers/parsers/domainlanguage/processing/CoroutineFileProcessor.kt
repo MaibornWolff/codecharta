@@ -4,7 +4,8 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailedFil
 import de.maibornwolff.codecharta.util.Logger
 import de.maibornwolff.treesitter.excavationsite.api.isUnusableParser
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
@@ -13,6 +14,9 @@ import kotlinx.coroutines.sync.withPermit
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.Executors
+import java.util.concurrent.ThreadFactory
+import java.util.concurrent.atomic.AtomicInteger
 
 class CoroutineFileProcessor : FileProcessor {
     override fun processFilesIndividually(
@@ -25,24 +29,35 @@ class CoroutineFileProcessor : FileProcessor {
         val results = ConcurrentResults()
         val baseFolder = File(basePath)
 
-        // TreeSitter parsing is CPU-bound, so it belongs on Dispatchers.Default rather than the 64-thread
-        // IO pool. The semaphore bounds how many files are read and held in memory at once.
+        // The semaphore bounds how many files are read and held in memory at once
         val inFlight = Semaphore(MAX_FILES_IN_FLIGHT)
 
-        runBlocking(Dispatchers.Default) {
-            files
-                .map { file ->
-                    async {
-                        val relativePath = file.toRelativeString(baseFolder)
-                        recordingFailureOf(relativePath, results) {
-                            inFlight.withPermit { results.record(relativePath, processor(file, contentReader(file))) }
+        ownThreads().use { dispatcher ->
+            runBlocking(dispatcher) {
+                files
+                    .map { file ->
+                        async {
+                            val relativePath = file.toRelativeString(baseFolder)
+                            recordingFailureOf(relativePath, results) {
+                                inFlight.withPermit { results.record(relativePath, processor(file, contentReader(file))) }
+                            }
+                            onFileProcessed?.invoke()
                         }
-                        onFileProcessed?.invoke()
-                    }
-                }.awaitAll()
+                    }.awaitAll()
+            }
         }
 
         return results.toProcessingResult()
+    }
+
+    // Tree-sitter parsing is CPU-bound, so one thread per core. Not Dispatchers.Default: under ccsh analyse -p the
+    // other parsers fill its queue first, and this parser's files would wait behind all of theirs
+    private fun ownThreads(): ExecutorCoroutineDispatcher {
+        val threadNumber = AtomicInteger()
+        val threadFactory = ThreadFactory { task ->
+            Thread(task, "$THREAD_NAME-${threadNumber.incrementAndGet()}").apply { isDaemon = true }
+        }
+        return Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), threadFactory).asCoroutineDispatcher()
     }
 
     private inline fun recordingFailureOf(relativePath: String, results: ConcurrentResults, process: () -> Unit) {
@@ -82,5 +97,6 @@ class CoroutineFileProcessor : FileProcessor {
 
     companion object {
         private const val MAX_FILES_IN_FLIGHT = 64
+        internal const val THREAD_NAME = "domain-language"
     }
 }
