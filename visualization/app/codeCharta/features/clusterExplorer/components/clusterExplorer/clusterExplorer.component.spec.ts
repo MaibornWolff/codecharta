@@ -144,7 +144,7 @@ describe("ClusterExplorerComponent", () => {
         await setup(COMMITS)
 
         // Act
-        await userEvent.selectOptions(screen.getByTestId("cluster-explorer-sort"), "Date")
+        await userEvent.selectOptions(screen.getByLabelText("Sort by"), "Date")
 
         // Assert
         expect(rowTexts()[0]).toContain("New and small")
