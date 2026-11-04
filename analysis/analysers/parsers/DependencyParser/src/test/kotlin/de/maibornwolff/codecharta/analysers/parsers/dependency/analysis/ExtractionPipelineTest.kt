@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.FileLoop
 import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileScanner
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.ProjectListing
@@ -39,13 +40,15 @@ class ExtractionPipelineTest {
     private fun pipeline(
         fileTimeoutSeconds: Int = ExtractionPipeline.NO_FILE_TIMEOUT,
         createAnalyzer: (FileInfo) -> LanguageAnalyzer = LanguageAnalyzerFactory::createAnalyzer,
-        readContent: (File) -> String = File::readText
+        readContent: (File) -> String = File::readText,
+        fileLoop: FileLoop? = null
     ) = ExtractionPipeline(
         SourceFileScanner(SupportedLanguage.allSuffixes()),
         SilentProgressReporter,
         fileTimeoutSeconds = fileTimeoutSeconds,
         createAnalyzer = createAnalyzer,
-        readContent = readContent
+        readContent = readContent,
+        fileLoop = fileLoop
     )
 
     private fun unreadable(vararg fileNames: String): (File) -> String = { file ->
@@ -98,6 +101,28 @@ class ExtractionPipelineTest {
 
         // Assert
         assertThat(reports.flatMap { it.nodes }).hasSize(2)
+    }
+
+    @Test
+    fun `should extract every file on the thread of a file loop it is given`() {
+        // Arrange
+        writeSources()
+        val loopThread = Thread.currentThread()
+        val analysingThreads = ConcurrentLinkedQueue<Thread>()
+        val recordingThread: (FileInfo) -> LanguageAnalyzer = { fileInfo ->
+            val analyzer = LanguageAnalyzerFactory.createAnalyzer(fileInfo)
+            LanguageAnalyzer { analyzer.analyze().also { analysingThreads.add(Thread.currentThread()) } }
+        }
+        val fileLoop = object : FileLoop {
+            override fun <R> map(files: List<File>, work: (File) -> R): List<R> = files.map(work)
+        }
+
+        // Act
+        val reports = pipeline(createAnalyzer = recordingThread, fileLoop = fileLoop).run(projectDirectory, bypassGitignore = true).reports
+
+        // Assert
+        assertThat(reports.flatMap { it.nodes }.map { it.pathWithName.withDots() }).containsExactly("shop.Item", "shop.Service")
+        assertThat(analysingThreads).containsExactly(loopThread, loopThread)
     }
 
     @Test

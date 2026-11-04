@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailedFile
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailureReport
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.FileLoop
 import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileScanner
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.ProjectListing
@@ -39,7 +40,8 @@ class ExtractionPipeline(
     private val fileTimeoutSeconds: Int = NO_FILE_TIMEOUT,
     private val createAnalyzer: (FileInfo) -> LanguageAnalyzer = LanguageAnalyzerFactory::createAnalyzer,
     private val readContent: (File) -> String = { file -> fileScanner.readContent(file) },
-    private val parseDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val parseDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val fileLoop: FileLoop? = null
 ) {
     /** [input] is a project directory or a single source file; see [analysisRootOf] for what it is judged against. */
     fun run(input: File, bypassGitignore: Boolean): Extraction {
@@ -56,11 +58,21 @@ class ExtractionPipeline(
         progressReporter.startPhase("Extracting dependencies", sourceFiles.size.toLong())
         val failures = ConcurrentLinkedQueue<FailedFile>()
         val analysedFiles = sourceFiles.mapTo(HashSet()) { relativePathOf(it, analysisRoot) }
-        val reports = runBlocking { analyzeInParallel(sourceFiles, AnalysedProject(analysisRoot, analysedFiles), failures) }
+        val reports = analyze(sourceFiles, AnalysedProject(analysisRoot, analysedFiles), failures)
         progressReporter.completePhase()
         val sortedFailures = failures.sortedBy { it.path }
         FailureReport.warnAbout(sortedFailures)
         return Extraction(reports, sortedFailures)
+    }
+
+    // A file loop parses on its own threads, without a timeout, as a parse it shares with other parsers is bound to
+    // the thread that made it
+    private fun analyze(sourceFiles: List<File>, project: AnalysedProject, failures: ConcurrentLinkedQueue<FailedFile>): List<FileReport> {
+        val loop = fileLoop
+        if (loop == null || fileTimeoutSeconds > NO_FILE_TIMEOUT) return runBlocking { analyzeInParallel(sourceFiles, project, failures) }
+        return loop
+            .map(sourceFiles) { sourceFile -> runBlocking { analyzeOne(sourceFile, project, failures, Dispatchers.Unconfined) } }
+            .filterNotNull()
     }
 
     private suspend fun analyzeInParallel(
@@ -70,18 +82,23 @@ class ExtractionPipeline(
     ): List<FileReport> = coroutineScope {
         val semaphore = Semaphore(maxConcurrency)
         sourceFiles
-            .map { sourceFile -> async { semaphore.withPermit { analyzeOne(sourceFile, project, failures) } } }
+            .map { sourceFile -> async { semaphore.withPermit { analyzeOne(sourceFile, project, failures, parseDispatcher) } } }
             .awaitAll()
             .filterNotNull()
     }
 
     // A file that fails is left out of the result, and with it its node in the tree, so every failure is
     // collected and reported by its cause once the phase is over; a parser that fits no file stops the run.
-    private suspend fun analyzeOne(sourceFile: File, project: AnalysedProject, failures: ConcurrentLinkedQueue<FailedFile>): FileReport? {
+    private suspend fun analyzeOne(
+        sourceFile: File,
+        project: AnalysedProject,
+        failures: ConcurrentLinkedQueue<FailedFile>,
+        dispatcher: CoroutineDispatcher
+    ): FileReport? {
         val analysisRoot = project.analysisRoot
         try {
             val fileInfo = toFileInfo(sourceFile, project) ?: return null
-            return withOptionalTimeout { createAnalyzer(fileInfo).analyze() }
+            return withOptionalTimeout(dispatcher) { createAnalyzer(fileInfo).analyze() }
         } catch (timeout: TimeoutCancellationException) {
             // The parse itself is a blocking native call, so cancelling only abandons the coroutine waiting
             // on it: the parse thread runs to completion in the background and this file is skipped.
@@ -97,10 +114,12 @@ class ExtractionPipeline(
         }
     }
 
-    private suspend fun <T> withOptionalTimeout(block: () -> T): T = if (fileTimeoutSeconds <= NO_FILE_TIMEOUT) {
-        withContext(parseDispatcher) { block() }
+    private suspend fun <T> withOptionalTimeout(dispatcher: CoroutineDispatcher, block: () -> T): T = if (fileTimeoutSeconds <=
+        NO_FILE_TIMEOUT
+    ) {
+        withContext(dispatcher) { block() }
     } else {
-        withTimeout(fileTimeoutSeconds * MILLIS_PER_SECOND) { withContext(parseDispatcher) { block() } }
+        withTimeout(fileTimeoutSeconds * MILLIS_PER_SECOND) { withContext(dispatcher) { block() } }
     }
 
     // Only a file of no supported language is no file to analyse; one that cannot be read fails like one that cannot be parsed

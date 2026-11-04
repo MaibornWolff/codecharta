@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailedFile
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.FileLoop
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.treesitter.excavationsite.api.GrammarUnavailableException
 import kotlinx.coroutines.CancellationException
@@ -485,5 +486,25 @@ class ProjectScannerTest {
         assertThat(parsedFiles).containsExactlyInAnyOrder("src/Main.kt", "src/App.java")
         assertThat(parsedFiles).doesNotContain("src/debug.log")
         assertThat(parsedFiles).doesNotContain("src/script.py")
+    }
+
+    @Test
+    fun `should measure its files through a file loop it is given`() {
+        // Arrange
+        File(rootDir, "Main.kt").writeText("fun main() {}")
+        File(rootDir, "Util.kt").writeText("fun util() {}")
+        val loopedFiles = mutableListOf<String>()
+        val fileLoop = object : FileLoop {
+            override fun <R> map(files: List<File>, work: (File) -> R): List<R> =
+                files.map { file -> work(file).also { loopedFiles.add(file.name) } }
+        }
+        val scanner = ProjectScanner(rootDir, projectBuilder, useGitignore = false, fileLoop = fileLoop)
+
+        // Act
+        scanner.traverseInputProject(verbose = false)
+
+        // Assert
+        assertThat(loopedFiles).containsExactlyInAnyOrder("Main.kt", "Util.kt")
+        assertThat(getParsedFilePaths()).containsExactlyInAnyOrder("Main.kt", "Util.kt")
     }
 }
