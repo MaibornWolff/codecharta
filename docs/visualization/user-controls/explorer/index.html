@@ -89,19 +89,34 @@ The Dependencies view has no <strong>FLATTENED</strong> counter, and the
 <a href="/docs/visualization/user-controls/domain-view">Domain view</a> switches its Explorer between files and words. The
 Metric view adds a <a href="#clusters">Clusters</a> tab when a loaded map carries clusters.</p>
 <div class="sl-heading-wrapper level-h2"><h2 id="clusters">Clusters</h2><a class="sl-anchor-link" href="#clusters"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Clusters”</span></a></div>
-<p>A map made with <a href="/docs/parser/git-log"><code dir="auto">--author-ownership</code></a> or another producer of clusters has a <strong>Clusters</strong> tab, except while <a href="/docs/visualization/user-controls/compare">comparing</a> two maps. It lists
+<p>A map made with <a href="/docs/parser/git-log"><code dir="auto">--author-ownership</code> or <code dir="auto">--commit-changes-since</code></a> or another producer of clusters has a <strong>Clusters</strong> tab, except while <a href="/docs/visualization/user-controls/compare">comparing</a> two maps. It lists
 the clusters of one clustering; pick another by its title if the map has several.</p>
 <ul>
-<li>Each row shows the cluster’s <strong>share of files</strong>: every file shown on the map counts the same, whatever its size, and
-excluding files or focusing a folder changes the shares. A 5-line file counts as much as a 5,000-line one.</li>
-<li><strong>Not attributed</strong> is the share nobody holds, such as binary files and uncommitted lines.</li>
+<li>Each row shows the cluster’s share of the <strong>area metric</strong>, such as <strong>share of rloc</strong>: how much of what sizes the
+buildings shown on the map it holds, so it changes with the area metric. An author who last changed half of a file
+holds half of its area. Excluding files or focusing a folder changes the shares. A map whose files have no area
+metric value uses the measure its clustering names, or else a <strong>share of files</strong>, where every file counts the same
+whatever its size. The label above the list names the measure.</li>
+<li>Below the share, <strong>in 40% of the map</strong> says how much of the map’s area the cluster’s files cover, which is what lights
+up when you hover the row: a building lights up whole, even if the cluster holds only part of it. The bar shows both,
+the share in full colour over the covered part in a lighter one.</li>
+<li>A <strong>commit</strong>, or any other cluster that may overlap with the others, shows its <strong>share of the map</strong>: how much of the
+map’s area its files cover, whatever it changed in them. The lines it changed show below its name.</li>
+<li><strong>Not attributed</strong> is the share nobody holds, such as uncommitted lines. For commits, shares overlap, so they can add up
+to more than 100% and this row does not appear.</li>
 <li>Hover a row to show only its files on the map, whatever else is kept lit: they stay in colour with labels, and the
 rest turns grey. Click it to keep them lit,
 which marks the row with a border; click again to let go.</li>
-<li>Authors appear as numbers, such as <strong>Author 3</strong>. If the map joins two repositories, each row also shows a short
-marker for its repository, because their numbers count separately.</li>
+<li>A cluster the map says more about, such as a commit’s date and size, shows that below its name and in its tooltip. Pick
+one of those values above the list to sort by it, highest or newest first. A list of more than ten clusters can be
+filtered by name.</li>
+<li><strong>Not on the map</strong> gathers the clusters none of whose shown files has a building, with their share where shares add
+up. Click it to list them.</li>
+<li>Authors appear under invented names, such as <strong>Teal Falcon</strong>. If the map joins two repositories, each row also shows a
+short marker for its repository, because the same name can stand for different people there.</li>
 </ul>
-<p>Author numbers are pseudonymous: anyone with the repository can match them to people, so such a map may still be
+<p>Invented names are pseudonymous, not anonymous: anyone with the repository can match them to people by comparing
+<code dir="auto">git blame</code>, so such a map may still be
 personal data under GDPR. A map made with <code dir="auto">--with-author-names</code> lists real names instead, and the tab warns about it.</p>
 <div class="sl-heading-wrapper level-h2"><h2 id="searching">Searching</h2><a class="sl-anchor-link" href="#searching"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Searching”</span></a></div>
 <p>Type a pattern into the search box. The search uses <a href="https://git-scm.com/docs/gitignore" rel="noopener noreferrer" target="_blank">.gitignore-style</a> patterns:</p>
