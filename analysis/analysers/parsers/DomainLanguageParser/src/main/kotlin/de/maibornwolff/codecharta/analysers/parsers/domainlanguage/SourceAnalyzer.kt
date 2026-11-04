@@ -96,12 +96,15 @@ class SourceAnalyzer(
         tfidfScores: Map<String, Double>,
         limit: Int?,
         sortBy: SortBy
-    ): Map<String, List<WordFrequency>> = perFileWordCounts.mapValues { (_, wordCounts) ->
-        val frequencies =
-            wordCounts.map { (word, count) ->
-                WordFrequency.withScore(word, count, tfidfScores)
-            }
-        sortAndLimit(frequencies, sortBy, limit)
+    ): Map<String, List<WordFrequency>> {
+        val files = perFileWordCounts.entries.toList()
+        val wordsOfEachFile = files
+            .parallelStream()
+            .map { (_, wordCounts) ->
+                val frequencies = wordCounts.map { (word, count) -> WordFrequency.withScore(word, count, tfidfScores) }
+                sortAndLimit(frequencies, sortBy, limit)
+            }.toList()
+        return files.zip(wordsOfEachFile).associate { (file, words) -> file.key to words }
     }
 
     private fun sortAndLimit(frequencies: List<WordFrequency>, sortBy: SortBy, limit: Int?): List<WordFrequency> {
