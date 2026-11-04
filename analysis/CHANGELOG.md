@@ -23,6 +23,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Lines of code in Objective-C, PHP and Ruby**: `unifiedparser` no longer counts a blank line after an `#include`, or a
   line past the end of the file, as code.
 
+### Changed
+
+- **Faster start in large projects**: the parsers start analysing sooner when a project holds large ignored folders
+  such as `node_modules` or build output, most noticeably in Docker.
+
 ## [2.3.0] - 2026-10-28
 
 ### Added 🚀
