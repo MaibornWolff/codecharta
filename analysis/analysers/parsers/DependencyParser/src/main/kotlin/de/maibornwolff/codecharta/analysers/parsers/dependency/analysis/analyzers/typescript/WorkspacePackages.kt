@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ProjectListing
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
@@ -27,14 +28,17 @@ internal class WorkspacePackages private constructor(private val foldersByName: 
         fun of(analysisRoot: File): WorkspacePackages = packagesByRoot.computeIfAbsent(analysisRoot.absolutePath) { read(analysisRoot) }
 
         private fun read(analysisRoot: File): WorkspacePackages {
-            val packageFiles = analysisRoot
-                .walkTopDown()
-                .onEnter { folder -> folder == analysisRoot || !(folder.name.startsWith(HIDDEN_PREFIX) || folder.name == NODE_MODULES) }
-                .filter { it.name == PACKAGE_JSON && it.isFile }
+            val listing = ProjectListing.of(analysisRoot)
+            val packageFiles = listing
+                .filesOutside(::isSkippedFolder)
+                .filter { it.last() == PACKAGE_JSON }
+                .map { listing.fileAt(it) }
                 .sortedWith(compareBy<File>({ it.invariantSeparatorsPath.count { char -> char == '/' } }, { it.invariantSeparatorsPath }))
             val foldersByName = LinkedHashMap<String, File>()
             packageFiles.forEach { file -> PackageJson.read(file)?.name?.let { name -> foldersByName.putIfAbsent(name, file.parentFile) } }
             return WorkspacePackages(foldersByName)
         }
+
+        private fun isSkippedFolder(name: String): Boolean = name.startsWith(HIDDEN_PREFIX) || name == NODE_MODULES
     }
 }

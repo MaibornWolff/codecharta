@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.cpp
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ProjectListing
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
@@ -75,15 +76,9 @@ internal class CppIncludes private constructor(private val analysisRoot: File, p
         fun of(analysisRoot: File): CppIncludes = includesByRoot.computeIfAbsent(analysisRoot.absolutePath) { read(analysisRoot) }
 
         // Sorted, so of equally near files the first in path order wins
-        private fun read(analysisRoot: File): CppIncludes {
-            val files = analysisRoot
-                .walkTopDown()
-                .onEnter { folder -> folder == analysisRoot || !(folder.name.startsWith(HIDDEN_PREFIX) || folder.name in SKIPPED_FOLDERS) }
-                .filter { it.isFile }
-                .map { it.relativeTo(analysisRoot).invariantSeparatorsPath.split(SEPARATOR) }
-                .sortedBy { it.joinToString(SEPARATOR) }
-                .toList()
-            return CppIncludes(analysisRoot, files)
-        }
+        private fun read(analysisRoot: File): CppIncludes =
+            CppIncludes(analysisRoot, ProjectListing.of(analysisRoot).filesOutside(::isSkippedFolder))
+
+        private fun isSkippedFolder(name: String): Boolean = name.startsWith(HIDDEN_PREFIX) || name in SKIPPED_FOLDERS
     }
 }

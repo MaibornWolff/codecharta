@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.delphi
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ProjectListing
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.readInParallel
 import de.maibornwolff.treesitter.excavationsite.api.DelphiSection
 import de.maibornwolff.treesitter.excavationsite.api.DelphiUnit
@@ -59,10 +60,7 @@ internal class DelphiProject private constructor(private val files: Set<String>,
 
         private fun isDelphi(file: String): Boolean = DELPHI_SUFFIXES.any { file.endsWith(it, ignoreCase = true) }
 
-        private fun filesBelow(analysisRoot: File): Set<String> = analysisRoot
-            .walkTopDown()
-            .onEnter { folder -> folder == analysisRoot || !folder.name.startsWith(HIDDEN_PREFIX) }
-            .filter { it.isFile }
-            .mapTo(HashSet()) { it.relativeTo(analysisRoot).path }
+        private fun filesBelow(analysisRoot: File): Set<String> =
+            ProjectListing.of(analysisRoot).filePathsOutside { name -> name.startsWith(HIDDEN_PREFIX) }
     }
 }

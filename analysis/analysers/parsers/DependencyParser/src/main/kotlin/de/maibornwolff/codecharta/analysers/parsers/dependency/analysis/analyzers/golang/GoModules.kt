@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.golang
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ProjectListing
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
@@ -80,12 +81,8 @@ internal class GoModules private constructor(private val analysisRoot: File, pri
         fun of(analysisRoot: File): GoModules =
             modulesByRoot.computeIfAbsent(analysisRoot.absolutePath) { GoModules(analysisRoot, foldersBelow(analysisRoot)) }
 
-        private fun foldersBelow(analysisRoot: File): List<List<String>> = analysisRoot
-            .walkTopDown()
-            .onEnter { folder -> folder == analysisRoot || !(folder.name.startsWith(HIDDEN_PREFIX) || folder.name == NODE_MODULES) }
-            .filter { it.isDirectory }
-            .map { folder -> folder.relativeTo(analysisRoot).invariantSeparatorsPath.split(SEPARATOR).filter { it.isNotEmpty() } }
-            .sortedBy { it.joinToString(SEPARATOR) }
-            .toList()
+        private fun foldersBelow(analysisRoot: File): List<List<String>> = ProjectListing.of(analysisRoot).foldersOutside(::isSkippedFolder)
+
+        private fun isSkippedFolder(name: String): Boolean = name.startsWith(HIDDEN_PREFIX) || name == NODE_MODULES
     }
 }

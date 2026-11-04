@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.rust
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.scan.TestFileDetector
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ProjectListing
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.readInParallel
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.splitNameToParts
 import de.maibornwolff.treesitter.excavationsite.api.RustModule
@@ -69,10 +70,8 @@ internal class RustProject private constructor(
 
         fun segmentsOf(physicalPath: String): List<String> = splitNameToParts(physicalPath).filter { it != CURRENT_FOLDER }
 
-        private fun filesBelow(analysisRoot: File): Set<String> = analysisRoot
-            .walkTopDown()
-            .onEnter { folder -> folder == analysisRoot || !(folder.name.startsWith(HIDDEN_PREFIX) || folder.name in SKIPPED_FOLDERS) }
-            .filter { it.isFile }
-            .mapTo(HashSet()) { it.relativeTo(analysisRoot).path }
+        private fun filesBelow(analysisRoot: File): Set<String> = ProjectListing.of(analysisRoot).filePathsOutside(::isSkippedFolder)
+
+        private fun isSkippedFolder(name: String): Boolean = name.startsWith(HIDDEN_PREFIX) || name in SKIPPED_FOLDERS
     }
 }
