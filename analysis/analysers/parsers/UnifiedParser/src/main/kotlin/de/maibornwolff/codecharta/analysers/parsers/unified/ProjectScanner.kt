@@ -34,7 +34,7 @@ class ProjectScanner(
     private val fileMeasurer: FileMeasurer = collectorMeasurer
 ) {
     private var totalFiles = 0L
-    private var filesParsed = 0L
+    private val filesParsed = AtomicLong(0)
     private var ignoredFiles = 0L
     private val ignoredFileTypes = mutableSetOf<String>()
     private val filesSkipped = AtomicLong(0)
@@ -80,9 +80,9 @@ class ProjectScanner(
 
             parsableFiles.forEach { file ->
                 launch {
-                    filesParsed++
                     collectMetricsSkippingFailure(file, verbose)
-                    if (!verbose) logProgress(file.name, filesParsed)
+                    val parsedFiles = filesParsed.incrementAndGet()
+                    if (!verbose) logProgress(file.name, parsedFiles)
                 }
             }
         }
