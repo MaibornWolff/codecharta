@@ -88,9 +88,9 @@ class ProjectAnalyser {
     private fun runAnalyser(configured: ConfiguredAnalyser, projectFolder: File, workFolder: File, excludePattern: String?): Project {
         val analyser = configured.analyser
         val mapFile = File(workFolder, analyser.name + FileExtension.CCJSON.primaryExtension)
-        val arguments = inputArguments(configured, projectFolder, excludePattern) + listOf("--output-file", mapFile.path)
+        val arguments = inputArguments(configured, projectFolder, excludePattern) + listOf("--output-file", mapFile.path, NOT_COMPRESSED)
         val failureReason = execute(analyser, arguments)
-        val writtenFile = File(OutputFileHandler.checkAndFixFileExtension(mapFile.path, true, FileExtension.JSON))
+        val writtenFile = File(OutputFileHandler.checkAndFixFileExtension(mapFile.path, false, FileExtension.JSON))
         if (failureReason != null || !writtenFile.exists()) {
             throw AnalysisException("The analyser ${analyser.name} failed on ${projectFolder.path}: ${failureReason ?: "it wrote no map"}")
         }
@@ -132,5 +132,8 @@ class ProjectAnalyser {
     companion object {
         private const val FAILURE_EXIT_CODE = 1
         private const val WORK_FOLDER_PREFIX = "codecharta-analysis"
+
+        // The maps of the analysers are read back right away for the merge, so compressing them only costs time
+        private const val NOT_COMPRESSED = "--not-compressed"
     }
 }
