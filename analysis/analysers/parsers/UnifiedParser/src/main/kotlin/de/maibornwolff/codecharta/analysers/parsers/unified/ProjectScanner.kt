@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailedFile
 import de.maibornwolff.codecharta.analysers.analyserinterface.gitignore.GitignoreHandler
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.FileLoop
 import de.maibornwolff.codecharta.analysers.analyserinterface.scan.UndecodableFileName
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.AvailableCollectors
 import de.maibornwolff.codecharta.model.ChecksumCalculator
@@ -31,7 +32,8 @@ class ProjectScanner(
     private val baseFileNodes: Map<String, Node> = emptyMap(),
     useGitignore: Boolean = true,
     private val localChangesFiles: Set<String> = emptySet(),
-    private val fileMeasurer: FileMeasurer = collectorMeasurer
+    private val fileMeasurer: FileMeasurer = collectorMeasurer,
+    private val fileLoop: FileLoop? = null
 ) {
     private var totalFiles = 0L
     private val filesParsed = AtomicLong(0)
@@ -70,21 +72,18 @@ class ProjectScanner(
     }
 
     fun traverseInputProject(verbose: Boolean) {
-        runBlocking(Dispatchers.Default) {
-            val parsableFiles = root
-                .walkTopDown()
-                .onEnter { dir -> !shouldSkipDirectory(dir) }
-                .filter { isParsableFile(it) }
-                .toList()
-            totalFiles = parsableFiles.size.toLong()
+        val parsableFiles = root
+            .walkTopDown()
+            .onEnter { dir -> !shouldSkipDirectory(dir) }
+            .filter { isParsableFile(it) }
+            .toList()
+        totalFiles = parsableFiles.size.toLong()
 
-            parsableFiles.forEach { file ->
-                launch {
-                    collectMetricsSkippingFailure(file, verbose)
-                    val parsedFiles = filesParsed.incrementAndGet()
-                    if (!verbose) logProgress(file.name, parsedFiles)
-                }
-            }
+        val loop = fileLoop
+        if (loop == null) {
+            runBlocking(Dispatchers.Default) { parsableFiles.forEach { file -> launch { measure(file, verbose) } } }
+        } else {
+            loop.map(parsableFiles) { file -> measure(file, verbose) }
         }
 
         progressTracker.updateProgress(totalFiles, totalFiles, parsingUnit.name)
@@ -102,6 +101,12 @@ class ProjectScanner(
 
     // A file that fails is left out, so one file cannot stop the analysis of a project; the failures are reported
     // together afterwards. A grammar that fits no file of its language stops the analysis instead.
+    private fun measure(file: File, verbose: Boolean) {
+        collectMetricsSkippingFailure(file, verbose)
+        val parsedFiles = filesParsed.incrementAndGet()
+        if (!verbose) logProgress(file.name, parsedFiles)
+    }
+
     private fun collectMetricsSkippingFailure(file: File, verbose: Boolean) {
         try {
             collectMetricsForFile(file, verbose)

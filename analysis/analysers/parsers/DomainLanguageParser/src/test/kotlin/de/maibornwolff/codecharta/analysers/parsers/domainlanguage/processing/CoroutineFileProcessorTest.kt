@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.FileLoop
 import de.maibornwolff.treesitter.excavationsite.api.GrammarUnavailableException
 import java.io.File
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -201,5 +202,24 @@ class CoroutineFileProcessorTest {
         // Assert
         assertEquals(files.size, processingThreads.size)
         assertTrue(processingThreads.all { it.startsWith(CoroutineFileProcessor.THREAD_NAME) })
+    }
+
+    @Test
+    fun `should process the files through a file loop it is given`() {
+        // Arrange
+        val loopedFiles = mutableListOf<String>()
+        val fileLoop = object : FileLoop {
+            override fun <R> map(files: List<File>, work: (File) -> R): List<R> =
+                files.map { file -> work(file).also { loopedFiles.add(file.name) } }
+        }
+        val processor = CoroutineFileProcessor(fileLoop)
+        val files = listOf(File("first.kt"), File("second.kt"))
+
+        // Act
+        val result = processor.processFilesIndividually(files, ".", { "content" }, { _, _ -> FileResult.Processed(mapOf("word" to 1)) })
+
+        // Assert
+        assertEquals(listOf("first.kt", "second.kt"), loopedFiles)
+        assertEquals(setOf("first.kt", "second.kt"), result.perFileWordCounts.keys)
     }
 }

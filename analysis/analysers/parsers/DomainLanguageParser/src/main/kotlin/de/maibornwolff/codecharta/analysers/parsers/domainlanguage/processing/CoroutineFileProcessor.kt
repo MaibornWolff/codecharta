@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailedFile
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.FileLoop
 import de.maibornwolff.codecharta.util.Logger
 import de.maibornwolff.treesitter.excavationsite.api.isUnusableParser
 import kotlinx.coroutines.CancellationException
@@ -18,7 +19,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger
 
-class CoroutineFileProcessor : FileProcessor {
+class CoroutineFileProcessor(private val fileLoop: FileLoop? = null) : FileProcessor {
     override fun processFilesIndividually(
         files: List<File>,
         basePath: String,
@@ -28,26 +29,26 @@ class CoroutineFileProcessor : FileProcessor {
     ): FileProcessingResult {
         val results = ConcurrentResults()
         val baseFolder = File(basePath)
-
-        // The semaphore bounds how many files are read and held in memory at once
-        val inFlight = Semaphore(MAX_FILES_IN_FLIGHT)
-
-        ownThreads().use { dispatcher ->
-            runBlocking(dispatcher) {
-                files
-                    .map { file ->
-                        async {
-                            val relativePath = file.toRelativeString(baseFolder)
-                            recordingFailureOf(relativePath, results) {
-                                inFlight.withPermit { results.record(relativePath, processor(file, contentReader(file))) }
-                            }
-                            onFileProcessed?.invoke()
-                        }
-                    }.awaitAll()
-            }
+        val processOne: (File) -> Unit = { file ->
+            val relativePath = file.toRelativeString(baseFolder)
+            recordingFailureOf(relativePath, results) { results.record(relativePath, processor(file, contentReader(file))) }
+            onFileProcessed?.invoke()
         }
 
+        val loop = fileLoop
+        if (loop == null) processOnOwnThreads(files, processOne) else loop.map(files, processOne)
+
         return results.toProcessingResult()
+    }
+
+    private fun processOnOwnThreads(files: List<File>, processOne: (File) -> Unit) {
+        // The semaphore bounds how many files are read and held in memory at once
+        val inFlight = Semaphore(MAX_FILES_IN_FLIGHT)
+        ownThreads().use { dispatcher ->
+            runBlocking(dispatcher) {
+                files.map { file -> async { inFlight.withPermit { processOne(file) } } }.awaitAll()
+            }
+        }
     }
 
     // Tree-sitter parsing is CPU-bound, so one thread per core. Not Dispatchers.Default: under ccsh analyse -p the

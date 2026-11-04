@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.CommonAnalyserPara
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailableRun
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailureReport
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.RunExitCode
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.FileLoop
 import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileScanner
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ExtractionPipeline
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.LanguageAnalyzerFactory
@@ -41,7 +42,8 @@ class DependencyParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val createAnalyzer: (FileInfo) -> LanguageAnalyzer = LanguageAnalyzerFactory::createAnalyzer,
-    private val runExitCode: RunExitCode = RunExitCode()
+    private val runExitCode: RunExitCode = RunExitCode(),
+    private val fileLoop: FileLoop? = null
 ) : CommonAnalyserParameters(),
     AnalyserInterface,
     AttributeGenerator,
@@ -134,8 +136,13 @@ class DependencyParser(
 
         return ProgressReporterFactory.create(quiet = false).use { progressReporter ->
             val extraction =
-                ExtractionPipeline(scanner, progressReporter, fileTimeoutSeconds = fileTimeoutSeconds, createAnalyzer = createAnalyzer)
-                    .run(input, bypassGitignore)
+                ExtractionPipeline(
+                    scanner,
+                    progressReporter,
+                    fileTimeoutSeconds = fileTimeoutSeconds,
+                    createAnalyzer = createAnalyzer,
+                    fileLoop = fileLoop
+                ).run(input, bypassGitignore)
             if (extraction.reports.isEmpty() && extraction.failures.isNotEmpty()) {
                 runExitCode.failWith(FailureReport.nothingAnalysed(extraction.failures))
                 return null

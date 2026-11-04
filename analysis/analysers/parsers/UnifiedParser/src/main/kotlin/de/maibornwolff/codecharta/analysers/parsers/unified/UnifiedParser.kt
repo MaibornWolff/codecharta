@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailureRe
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.RunExitCode
 import de.maibornwolff.codecharta.analysers.analyserinterface.localchanges.LocalChangesDetector
 import de.maibornwolff.codecharta.analysers.analyserinterface.localchanges.LocalChangesResult
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.FileLoop
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.AvailableCollectors
 import de.maibornwolff.codecharta.model.AttributeDescriptor
@@ -43,7 +44,8 @@ class UnifiedParser(
     private val error: PrintStream = System.err,
     private val baseFileHelper: BaseFileResolver = BaseFileResolver(),
     private val fileMeasurer: FileMeasurer = collectorMeasurer,
-    private val runExitCode: RunExitCode = RunExitCode()
+    private val runExitCode: RunExitCode = RunExitCode(),
+    private val fileLoop: FileLoop? = null
 ) : CommonAnalyserParameters(),
     AnalyserInterface,
     AttributeGenerator,
@@ -113,7 +115,8 @@ class UnifiedParser(
             baseFileNodeMap,
             useGitignore,
             localChangesResult.changedFiles,
-            fileMeasurer
+            fileMeasurer,
+            fileLoop
         )
 
         projectScanner.traverseInputProject(verbose)
