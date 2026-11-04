@@ -7,6 +7,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.IgnoreRule
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDependencyMapping
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Metric
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TextRun
 
 /**
  * Angular template language definition: an HTML file with Angular's template syntax, which also covers plain HTML.
@@ -14,6 +15,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.Metric
 object AngularDefinition : LanguageDefinition {
     override val nodeMetrics: Map<String, Set<Metric>> = AngularMetricMapping.nodeMetrics
     override val nodeExtractions: Map<String, Extract> = AngularExtractionMapping.nodeExtractions
+    override val textRun: TextRun = AngularExtractionMapping.textRun
     override val dependencyMapping: LanguageDependencyMapping = AngularDependencyMapping.dependencyMapping
     override val calculationConfig = CalculationConfig(
         ignoreForCommentLines = QUOTING_PARENTS.map { quotingParent -> IgnoreRule.TypeWithParentType(COMMENT, quotingParent) }

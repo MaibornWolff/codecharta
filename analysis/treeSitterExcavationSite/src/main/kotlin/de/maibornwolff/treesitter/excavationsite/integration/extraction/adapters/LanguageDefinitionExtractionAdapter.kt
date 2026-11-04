@@ -5,6 +5,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.CommentFormats
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Extract
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
 import de.maibornwolff.treesitter.excavationsite.shared.domain.StringFormats
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TextRun
 
 /**
  * Adapts a LanguageDefinition to the ExtractionNodeTypes interface.
@@ -14,6 +15,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.StringFormats
  */
 class LanguageDefinitionExtractionAdapter(definition: LanguageDefinition) : ExtractionNodeTypes {
     override val nodeExtractions: Map<String, Extract> = definition.nodeExtractions
+
+    override val textRun: TextRun? = definition.textRun
 
     override val commentFormats: Map<String, CommentFormats> = definition.nodeExtractions
         .mapNotNull { (nodeType, extract) ->
