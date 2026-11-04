@@ -7,20 +7,12 @@ class DepthFirstSearchCycleDetection(private val edges: List<NumberEdge>, privat
     private var maxCycleLength = Int.MAX_VALUE
 
     fun detectSingleCycle(): Set<List<NumberEdge>> {
-        val nodes = edges.flatMap { listOf(it.from, it.to) }.toSet()
         if (limitCycleLength) {
             maxCycleLength = getMaxCycleLength(edges.size)
         }
-        val edgeLookup = edges.groupBy { it.from }.toMap()
-        val cycles = nodes.flatMap {
-            if (processedNodes.contains(it)) {
-                listOf()
-            } else {
-                val (processedNodeIds, cycles) = this.getCycles(it, it, edgeLookup, setOf(), listOf(), this::singleCycleResult)
-                processedNodes.addAll(processedNodeIds)
-                cycles
-            }
-        }
+        val search = SingleCycleSearch(edges.groupBy { it.from }, processedNodes, maxCycleLength)
+        val nodes = edges.flatMap { listOf(it.from, it.to) }.toSet()
+        val cycles = nodes.mapNotNull { startNode -> if (startNode in processedNodes) null else search.findCycleFrom(startNode) }
         return filterDuplicates(cycles).toSet()
     }
 
@@ -34,7 +26,7 @@ class DepthFirstSearchCycleDetection(private val edges: List<NumberEdge>, privat
             if (processedNodes.contains(it)) {
                 setOf()
             } else {
-                val (processedNodeIds, cycles) = this.getCycles(it, it, edgeLookup, setOf(), listOf(), this::allCycleResults)
+                val (processedNodeIds, cycles) = this.getCycles(it, it, edgeLookup, setOf(), listOf())
                 processedNodes.addAll(processedNodeIds)
                 cycles.toSet()
             }
@@ -54,8 +46,7 @@ class DepthFirstSearchCycleDetection(private val edges: List<NumberEdge>, privat
         currentNode: Int,
         allEdges: Map<Int, List<NumberEdge>>,
         visitedNodeIds: Set<Int>,
-        visitedEdges: List<NumberEdge>,
-        recursiveFunction: (List<NumberEdge>, Int, Map<Int, List<NumberEdge>>, Set<Int>, Int, List<NumberEdge>) -> List<CycleResult>
+        visitedEdges: List<NumberEdge>
     ): CycleResult {
         if (visitedNodeIds.contains(currentNode) || processedNodes.contains(currentNode)) {
             val lastEdgeFromCurrentNodeIndex = visitedEdges.indexOfLast { it.from == currentNode }
@@ -75,7 +66,7 @@ class DepthFirstSearchCycleDetection(private val edges: List<NumberEdge>, privat
         if (outgoingEdges.isEmpty()) {
             return CycleResult(cycles = listOf(), visitedNodeIds = visitedNodeIds)
         }
-        val results = recursiveFunction(outgoingEdges, startNode, allEdges, visitedNodeIds, currentNode, visitedEdges)
+        val results = allCycleResults(outgoingEdges, startNode, allEdges, visitedNodeIds, currentNode, visitedEdges)
         return CycleResult(
             visitedNodeIds = results.flatMap { it.visitedNodeIds }.toSet(),
             cycles = results.flatMap { it.cycles }
@@ -95,33 +86,8 @@ class DepthFirstSearchCycleDetection(private val edges: List<NumberEdge>, privat
             edge.to,
             allEdges,
             visitedNodeIds + currentNode,
-            visitedEdges + edge,
-            this@DepthFirstSearchCycleDetection::allCycleResults
+            visitedEdges + edge
         )
-    }
-
-    private fun singleCycleResult(
-        outgoingEdges: List<NumberEdge>,
-        startNode: Int,
-        allEdges: Map<Int, List<NumberEdge>>,
-        visitedNodeIds: Set<Int>,
-        currentNode: Int,
-        visitedEdges: List<NumberEdge>
-    ): List<CycleResult> {
-        outgoingEdges.forEach { edge ->
-            val cycleOfChild = this.getCycles(
-                startNode,
-                edge.to,
-                allEdges,
-                visitedNodeIds + currentNode,
-                visitedEdges + edge,
-                this::singleCycleResult
-            )
-            if (cycleOfChild.cycles.isNotEmpty()) {
-                return listOf(cycleOfChild)
-            }
-        }
-        return listOf(CycleResult(cycles = listOf(), visitedNodeIds = visitedNodeIds))
     }
 
     private fun normalizeCycle(cycle: List<NumberEdge>): List<NumberEdge> {

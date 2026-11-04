@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycle
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Timeout
 
 class DepthFirstSearchCycleDetectionTest {
     @Test
@@ -98,5 +99,38 @@ class DepthFirstSearchCycleDetectionTest {
 
         // Assert
         assertThat(cycles).hasSize(1)
+    }
+
+    @Test
+    @Timeout(value = SEARCH_TIMEOUT_SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
+    fun `should find no single cycle in a dense graph without one`() {
+        // Arrange
+        val nodeCount = 40
+        val edgesToEveryLowerNode = (1 until nodeCount).flatMap { from -> (0 until from).map { to -> NumberEdge(from, to) } }
+        val testee = DepthFirstSearchCycleDetection(edgesToEveryLowerNode, limitCycleLength = false)
+
+        // Act
+        val cycles = testee.detectSingleCycle()
+
+        // Assert
+        assertThat(cycles).isEmpty()
+    }
+
+    @Test
+    fun `should find the single cycle of a chain too long for a recursive search`() {
+        // Arrange
+        val nodeCount = 50_000
+        val chainBackToItsStart = (0 until nodeCount).map { from -> NumberEdge(from, (from + 1) % nodeCount) }
+        val testee = DepthFirstSearchCycleDetection(chainBackToItsStart, limitCycleLength = false)
+
+        // Act
+        val cycles = testee.detectSingleCycle()
+
+        // Assert
+        assertThat(cycles).containsExactly(chainBackToItsStart)
+    }
+
+    companion object {
+        private const val SEARCH_TIMEOUT_SECONDS = 10L
     }
 }
