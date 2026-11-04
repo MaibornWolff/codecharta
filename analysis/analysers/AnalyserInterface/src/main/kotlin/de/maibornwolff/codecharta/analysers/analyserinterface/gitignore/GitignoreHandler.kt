@@ -9,7 +9,14 @@ import java.util.concurrent.atomic.AtomicInteger
 // A folder's .gitignore is read the first time a path below it is checked, never by walking the tree up front: a
 // walk prunes ignored folders, so the .gitignore files inside node_modules or build output are never read, as in git.
 class GitignoreHandler(private val root: File) {
+    private val rootPath = root.absolutePath
     private val rulesByDirectory = ConcurrentHashMap<String, List<GitignoreRule>>()
+
+    // Per folder, as every file of a folder asks the same about it: walking up from each file cost a scan of a large
+    // project more than reading it
+    private val ancestorRulesByDirectory = ConcurrentHashMap<String, List<Pair<File, List<GitignoreRule>>>>()
+    private val isExcludedByDirectory = ConcurrentHashMap<String, Boolean>()
+    private val isWithinGitDirectoryByDirectory = ConcurrentHashMap<String, Boolean>()
     private val consultedGitignoreFiles = ConcurrentLinkedQueue<String>()
     private val excludedFileCount = AtomicInteger(0)
 
@@ -54,33 +61,34 @@ class GitignoreHandler(private val root: File) {
         return isIgnored
     }
 
-    private fun isFileWithinRoot(file: File): Boolean = file.absolutePath.startsWith(root.absolutePath)
+    private fun isFileWithinRoot(file: File): Boolean = file.absolutePath.startsWith(rootPath)
 
     // True when [file] is the scan root's .git directory or lives anywhere beneath it. The root itself
     // is never treated as a .git dir (a scan rooted at a .git dir is nonsensical, and pruning it would
     // just yield no files).
     private fun isWithinGitDirectory(file: File): Boolean {
-        var current: File? = file
-        val rootPath = root.absolutePath
-        while (current != null && current.absolutePath != rootPath && current.absolutePath.startsWith(rootPath)) {
-            if (current.name == GIT_DIRECTORY_NAME) return true
-            current = current.parentFile
-        }
-        return false
+        val path = file.absolutePath
+        if (path == rootPath || !path.startsWith(rootPath)) return false
+        if (file.name == GIT_DIRECTORY_NAME) return true
+        val parent = file.parentFile ?: return false
+        return memoized(isWithinGitDirectoryByDirectory, parent.absolutePath) { isWithinGitDirectory(parent) }
     }
 
+    // The rules of the folders from the parent of [file] up to the root, nearest first
     private fun collectAncestorGitignoreRules(file: File): List<Pair<File, List<GitignoreRule>>> {
-        val applicableRules = mutableListOf<Pair<File, List<GitignoreRule>>>()
-
-        var currentDir = file.parentFile
-        while (currentDir != null && currentDir.absolutePath.startsWith(root.absolutePath)) {
-            val rules = rulesOf(currentDir)
-            if (rules.isNotEmpty()) applicableRules.add(Pair(currentDir, rules))
-            currentDir = currentDir.parentFile
+        val directory = file.parentFile ?: return emptyList()
+        val path = directory.absolutePath
+        if (!path.startsWith(rootPath)) return emptyList()
+        return memoized(ancestorRulesByDirectory, path) {
+            val rules = rulesOf(directory)
+            val ancestorRules = collectAncestorGitignoreRules(directory)
+            if (rules.isEmpty()) ancestorRules else listOf(Pair(directory, rules)) + ancestorRules
         }
-
-        return applicableRules
     }
+
+    // Not computeIfAbsent: the computation fills the same map for the folders above
+    private fun <T : Any> memoized(cache: ConcurrentHashMap<String, T>, path: String, compute: () -> T): T =
+        cache[path] ?: compute().also { cache.putIfAbsent(path, it) }
 
     private fun applyGitignoreRulesHierarchically(file: File, applicableRules: List<Pair<File, List<GitignoreRule>>>): Boolean {
         val rulesFromRootToFile = applicableRules.reversed()
@@ -106,10 +114,10 @@ class GitignoreHandler(private val root: File) {
     private fun isParentDirectoryExcluded(parentDir: File): Boolean {
         if (!isFileWithinRoot(parentDir)) return false
 
-        val applicableRules = collectAncestorGitignoreRules(parentDir)
-        if (applicableRules.isEmpty()) return false
-
-        return applyGitignoreRulesHierarchically(parentDir, applicableRules)
+        return isExcludedByDirectory.computeIfAbsent(parentDir.absolutePath) {
+            val applicableRules = collectAncestorGitignoreRules(parentDir)
+            applicableRules.isNotEmpty() && applyGitignoreRulesHierarchically(parentDir, applicableRules)
+        }
     }
 
     private fun getRelativePath(directory: File, file: File): Path = directory.toPath().relativize(file.toPath())
