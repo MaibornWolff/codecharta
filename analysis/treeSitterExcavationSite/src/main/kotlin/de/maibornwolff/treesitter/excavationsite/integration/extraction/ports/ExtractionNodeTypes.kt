@@ -3,6 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.integration.extraction.ports
 import de.maibornwolff.treesitter.excavationsite.shared.domain.CommentFormats
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Extract
 import de.maibornwolff.treesitter.excavationsite.shared.domain.StringFormats
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TextRun
 
 /**
  * Port interface for extraction node type configuration.
@@ -29,4 +30,8 @@ interface ExtractionNodeTypes {
      * Used by StringExtractor for efficient lookup.
      */
     val stringFormats: Map<String, StringFormats>
+
+    /** Text that the grammar splits into runs of sibling nodes, read once per run. */
+    val textRun: TextRun?
+        get() = null
 }

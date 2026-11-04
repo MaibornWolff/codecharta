@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Dependencies into ignored folders**: the dependency parser no longer resolves an import or include to a file that
   `.gitignore` or the exclude patterns leave out, so the edge goes to the file on the map.
+- **Large HTML files**: the domain language parser no longer hangs on an HTML file with much text between its tags.
 
 ## [2.3.0] - 2026-10-28
 

@@ -5,6 +5,7 @@ import de.maibornwolff.treesitter.excavationsite.api.TreeSitterExtraction
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Timeout
 
 class AngularExtractionTest {
     @Nested
@@ -304,6 +305,20 @@ class AngularExtractionTest {
         }
 
         @Test
+        @Timeout(TEXT_PIECES_TIMEOUT_SECONDS)
+        fun `should extract the texts of an element with many texts between its child elements`() {
+            // Arrange
+            val textPieces = 8_000
+            val code = "<p>" + "caf&eacute; <b>Hoard</b> ".repeat(textPieces) + "</p>"
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.texts).containsExactlyElementsOf(List(textPieces) { listOf("caf\u00e9", "Hoard") }.flatten())
+        }
+
+        @Test
         fun `should not extract the value of an attribute whose name ends in a text word only inside a word`() {
             // Arrange
             val code = """<cc-card context="turquoise" subtitle="Lair" hint="Quiet"></cc-card>"""
@@ -354,5 +369,9 @@ class AngularExtractionTest {
             // Assert
             assertThat(result.texts).containsExactly("Open the vault")
         }
+    }
+
+    companion object {
+        private const val TEXT_PIECES_TIMEOUT_SECONDS = 10L
     }
 }

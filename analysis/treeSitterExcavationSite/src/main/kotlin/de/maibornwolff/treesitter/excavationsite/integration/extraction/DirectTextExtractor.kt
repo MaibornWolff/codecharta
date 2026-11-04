@@ -27,8 +27,17 @@ internal class DirectTextExtractor(private val extractionNodeTypes: ExtractionNo
      */
     fun extract(tree: FfmSyntaxTree): List<ExtractedText> {
         val results = mutableListOf<ExtractedText>()
-        tree.walk { node, nodeType -> processNode(node, nodeType, results) }
+        val textRunReader = extractionNodeTypes.textRun?.let(::TextRunReader)
+        tree.walk { node, nodeType ->
+            textRunReader?.let { readTextRuns(node, nodeType, it, results) }
+            processNode(node, nodeType, results)
+        }
         return results
+    }
+
+    private fun readTextRuns(node: SyntaxNode, nodeType: String, textRunReader: TextRunReader, results: MutableList<ExtractedText>) {
+        textRunReader.takeTextStartingAt(node, nodeType)?.let { text -> results.add(textOf(text)) }
+        textRunReader.readRunsBelow(node)
     }
 
     private fun processNode(node: SyntaxNode, nodeType: String, results: MutableList<ExtractedText>) {
@@ -99,6 +108,8 @@ internal class DirectTextExtractor(private val extractionNodeTypes: ExtractionNo
     // The text a user reads holds no escape sequences; an inline template's are resolved before it is parsed
     private fun extractText(node: SyntaxNode, extraction: Extract.Text, results: MutableList<ExtractedText>) {
         val text = extraction.custom(node) ?: return
-        results.add(ExtractedText(text, ExtractionContext.TEXT, interpretsEscapes = false))
+        results.add(textOf(text))
     }
+
+    private fun textOf(text: String) = ExtractedText(text, ExtractionContext.TEXT, interpretsEscapes = false)
 }
