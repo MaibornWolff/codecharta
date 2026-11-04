@@ -18,12 +18,17 @@ class StopWordFilter(
         stopWords + globalKeywordSet + customStopWords
     }
 
-    private data class ExclusionScope(val filePath: Path, val language: Language?)
+    private data class FileScope(val filePath: Path, val language: Language?)
 
-    private val excludedWordsCache = ConcurrentHashMap<ExclusionScope, Set<String>>()
+    private data class ExclusionScope(val frameworkKeywords: List<LanguageKeywords>, val language: Language?)
+
+    // A few scopes hold the excluded words, each shared by the files of the same frameworks and language: a set per
+    // file held thousands of copies of the same words until the run ended
+    private val excludedWordsByScope = ConcurrentHashMap<ExclusionScope, Set<String>>()
+    private val excludedWordsByFile = ConcurrentHashMap<FileScope, Set<String>>()
 
     fun isExcluded(word: String, filePath: Path, language: Language? = null): Boolean =
-        isExcludedFrom(word, getExcludedWordsFor(ExclusionScope(filePath, language)))
+        isExcludedFrom(word, getExcludedWordsFor(FileScope(filePath, language)))
 
     private fun isExcludedFrom(word: String, excludedWords: Set<String>): Boolean {
         if (word in excludedWords) return true
@@ -33,16 +38,18 @@ class StopWordFilter(
         return false
     }
 
-    private fun getExcludedWordsFor(scope: ExclusionScope): Set<String> = excludedWordsCache.computeIfAbsent(scope) {
-        val frameworkKeywords =
-            pathScopedKeywordProvider
-                .getFrameworkKeywordsForFile(it.filePath)
-                .flatMap { keywords -> keywords.getKeywords() }
-                .toSet()
-        allExcludedWords + frameworkKeywords + (it.language?.keywords?.getKeywords() ?: emptySet())
+    private fun getExcludedWordsFor(fileScope: FileScope): Set<String> = excludedWordsByFile.computeIfAbsent(fileScope) {
+        val frameworkKeywords = pathScopedKeywordProvider.getFrameworkKeywordsForFile(it.filePath)
+        excludedWordsByScope.computeIfAbsent(ExclusionScope(frameworkKeywords, it.language), ::readExcludedWords)
+    }
+
+    private fun readExcludedWords(scope: ExclusionScope): Set<String> {
+        val frameworkKeywords = scope.frameworkKeywords.flatMap { keywords -> keywords.getKeywords() }.toSet()
+        return allExcludedWords + frameworkKeywords + (scope.language?.keywords?.getKeywords() ?: emptySet())
     }
 
     fun clearCache() {
-        excludedWordsCache.clear()
+        excludedWordsByFile.clear()
+        excludedWordsByScope.clear()
     }
 }
