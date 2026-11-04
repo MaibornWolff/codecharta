@@ -35,6 +35,7 @@ object ProjectDeserializer {
         parseProject(CompressedStreamHandler.wrapInput(input).bufferedReader().readText(), allowLegacy)
 
     fun deserializeProject(input: InputStream, allowLegacy: Boolean = false): Project? {
+        if (input === NoPipedInput) return null
         val content = CompressedStreamHandler.wrapInput(input)
         val projectString = ProjectInputReader.extractProjectString(content)
         if (projectString.length <= 1) return null

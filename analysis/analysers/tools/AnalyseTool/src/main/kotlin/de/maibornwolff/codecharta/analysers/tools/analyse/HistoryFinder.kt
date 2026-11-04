@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.analysers.parsers.gitlog.RepoScanCommand
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.commitchanges.CommitChangesScan
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.SVNLogParser
+import de.maibornwolff.codecharta.serialization.NoPipedInput
 import java.io.File
 
 data class History(val versionControl: VersionControl, val analyser: ConfiguredAnalyser)
@@ -56,7 +57,7 @@ class HistoryFinder(private val svnLogWriter: SvnLogWriter, private val homeFold
         val logFile = File(workFolder, SVN_LOG_FILE_NAME)
         val failure = svnLogWriter.write(projectFolder, logFile)
         if (failure != null) return Lookup(skipped = VersionControl.SVN.skipped(failure))
-        val analyser = ConfiguredAnalyser(SVNLogParser(), listOf(logFile.path), readsProjectFolder = false)
+        val analyser = ConfiguredAnalyser(SVNLogParser(input = NoPipedInput), listOf(logFile.path), readsProjectFolder = false)
         return Lookup(History(VersionControl.SVN, analyser))
     }
 
