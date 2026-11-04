@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Commit changes**: `--commit-changes-since` on `ccsh analyse` and `gitlogparser repo-scan` adds what each commit since
   that day changed in each file to the map, with the commit's date and size.
 
+### Changed
+
+- **Faster start in large projects**: the parsers start analysing sooner when a project holds large ignored folders
+  such as `node_modules` or build output, most noticeably in Docker.
+
 ## [2.3.0] - 2026-10-28
 
 ### Added 🚀
