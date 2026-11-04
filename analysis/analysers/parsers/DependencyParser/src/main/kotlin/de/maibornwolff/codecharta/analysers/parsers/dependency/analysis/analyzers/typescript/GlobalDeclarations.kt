@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ProjectListing
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_GLOBAL_SEGMENT
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.mapInParallel
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
@@ -23,6 +24,7 @@ internal class GlobalDeclarations private constructor(private val pathsByName: M
         private const val DECLARE_GLOBAL = "declare global"
         private const val HIDDEN_PREFIX = "."
         private const val NODE_MODULES = "node_modules"
+        private const val EXTENSION_SEPARATOR = '.'
         private val globalsByRoot = ConcurrentHashMap<String, GlobalDeclarations>()
 
         fun of(analysisRoot: File): GlobalDeclarations = globalsByRoot.computeIfAbsent(analysisRoot.absolutePath) { read(analysisRoot) }
@@ -35,12 +37,15 @@ internal class GlobalDeclarations private constructor(private val pathsByName: M
             return GlobalDeclarations(pathsByName)
         }
 
-        private fun sourceFilesBelow(analysisRoot: File): List<File> = analysisRoot
-            .walkTopDown()
-            .onEnter { folder -> folder == analysisRoot || !(folder.name.startsWith(HIDDEN_PREFIX) || folder.name == NODE_MODULES) }
-            .filter { it.isFile && it.extension in MODULE_ENDINGS }
-            .sortedBy { it.invariantSeparatorsPath }
-            .toList()
+        private fun sourceFilesBelow(analysisRoot: File): List<File> {
+            val listing = ProjectListing.of(analysisRoot)
+            return listing
+                .filesOutside(::isSkippedFolder)
+                .filter { it.last().substringAfterLast(EXTENSION_SEPARATOR, "") in MODULE_ENDINGS }
+                .map { listing.fileAt(it) }
+        }
+
+        private fun isSkippedFolder(name: String): Boolean = name.startsWith(HIDDEN_PREFIX) || name == NODE_MODULES
 
         private fun globalNamesIn(file: File): List<String> {
             val content = runCatching { file.readText() }.getOrNull() ?: return emptyList()

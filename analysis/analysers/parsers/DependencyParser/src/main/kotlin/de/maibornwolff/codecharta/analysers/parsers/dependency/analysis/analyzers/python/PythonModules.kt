@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.python
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ProjectListing
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
@@ -55,24 +56,16 @@ internal class PythonModules private constructor(private val folders: Set<List<S
         fun of(analysisRoot: File): PythonModules = modulesByRoot.computeIfAbsent(analysisRoot.absolutePath) { read(analysisRoot) }
 
         private fun read(analysisRoot: File): PythonModules {
-            val entries = analysisRoot
-                .walkTopDown()
-                .onEnter { folder -> folder == analysisRoot || !(folder.name.startsWith(HIDDEN_PREFIX) || folder.name in SKIPPED_FOLDERS) }
-                .filter { it.isDirectory || it.name.endsWith(PYTHON_SUFFIX) }
-                .toList()
-            val (folders, files) = entries.partition { it.isDirectory }
+            val listing = ProjectListing.of(analysisRoot)
             return PythonModules(
-                folders.mapTo(HashSet()) { segmentsBelow(analysisRoot, it) },
-                files.mapTo(HashSet()) {
-                    segmentsBelow(analysisRoot, it).let { path ->
-                        path.dropLast(1) +
-                            path.last().removeSuffix(PYTHON_SUFFIX)
-                    }
-                }
+                listing.foldersOutside(::isSkippedFolder).toHashSet(),
+                listing
+                    .filesOutside(::isSkippedFolder)
+                    .filter { it.last().endsWith(PYTHON_SUFFIX) }
+                    .mapTo(HashSet()) { path -> path.dropLast(1) + path.last().removeSuffix(PYTHON_SUFFIX) }
             )
         }
 
-        private fun segmentsBelow(analysisRoot: File, file: File): List<String> =
-            file.relativeTo(analysisRoot).invariantSeparatorsPath.split(SEPARATOR).filter { it.isNotEmpty() }
+        private fun isSkippedFolder(name: String): Boolean = name.startsWith(HIDDEN_PREFIX) || name in SKIPPED_FOLDERS
     }
 }

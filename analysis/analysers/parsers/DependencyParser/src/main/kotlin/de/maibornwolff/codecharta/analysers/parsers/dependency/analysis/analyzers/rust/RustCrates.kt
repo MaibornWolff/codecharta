@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.rust
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ProjectListing
 import java.io.File
 
 /**
@@ -43,19 +44,15 @@ internal class RustCrates(private val analysisRoot: File?, private val rustFiles
 
     private fun manifestFolders(): List<List<String>> {
         val root = analysisRoot ?: return emptyList()
-        return root
-            .walkTopDown()
-            .onEnter { folder -> folder == root || folder.name !in SKIPPED_FOLDERS && !folder.name.startsWith(HIDDEN_PREFIX) }
-            .filter { it.isFile && it.name == MANIFEST }
-            .map { manifest ->
-                manifest.parentFile
-                    .relativeTo(root)
-                    .invariantSeparatorsPath
-                    .split(SEPARATOR)
-                    .filter { it.isNotEmpty() }
-            }.sortedBy { it.joinToString(SEPARATOR) }
-            .toList()
+        return ProjectListing
+            .of(root)
+            .filesOutside(::isSkippedFolder)
+            .filter { it.last() == MANIFEST }
+            .map { manifest -> manifest.dropLast(1) }
+            .sortedBy { it.joinToString(SEPARATOR) }
     }
+
+    private fun isSkippedFolder(name: String): Boolean = name.startsWith(HIDDEN_PREFIX) || name in SKIPPED_FOLDERS
 
     private fun packageIn(folder: List<String>): RustPackage? {
         val manifest = CargoManifestReader.parse(fileOf(folder + MANIFEST).readText())
