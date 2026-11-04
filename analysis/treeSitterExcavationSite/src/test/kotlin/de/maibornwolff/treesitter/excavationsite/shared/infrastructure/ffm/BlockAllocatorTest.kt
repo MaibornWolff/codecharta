@@ -125,4 +125,23 @@ class BlockAllocatorTest {
             assertThat(segment.byteSize()).isEqualTo(largerThanBlock)
         }
     }
+
+    @Test
+    fun `should start with a block smaller than the largest one`() {
+        Arena.ofConfined().use { arena ->
+            // Arrange
+            val allocator = BlockAllocator(arena)
+            val first = allocator.allocate(JAVA_LONG)
+
+            // Act
+            val afterSmallBlock = allocator.allocate(SMALL_BLOCK, 1)
+
+            // Assert
+            assertThat(afterSmallBlock.address()).isNotEqualTo(first.address() + JAVA_LONG.byteSize())
+        }
+    }
+
+    companion object {
+        private const val SMALL_BLOCK = 64L * 1024
+    }
 }
