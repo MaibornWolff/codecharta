@@ -36,40 +36,57 @@ class StronglyConnectedComponentDetection {
         return sccs
     }
 
-    private fun strongConnect(node: TarjanNode) {
-        val nodeIndex = index
-        indexMap[node] = nodeIndex
-        lowLinkMap[node] = nodeIndex
-        index++
-        stack.add(node)
-        onStack.add(node)
-
-        var lowLink = nodeIndex
-        node.neighbors.forEach { successor ->
-            val reachableIndex = lowestIndexReachableThrough(successor) ?: return@forEach
-            lowLink = minOf(lowLink, reachableIndex)
-            lowLinkMap[node] = lowLink
-        }
-
-        if (lowLink == nodeIndex) {
-            val stronglyConnectedNodes = mutableSetOf<TarjanNode>()
-            var poppedNode: TarjanNode
-            do {
-                poppedNode = stack.removeAt(stack.size - 1)
-                onStack.remove(poppedNode)
-                stronglyConnectedNodes.add(poppedNode)
-            } while (poppedNode != node)
-            sccs.add(StronglyConnectedTarjanComponent(stronglyConnectedNodes))
+    // On a stack of its own instead of recursing per successor, so a long chain cannot overflow the call stack
+    private fun strongConnect(root: TarjanNode) {
+        val frames = ArrayDeque<TarjanFrame>()
+        frames.addLast(enter(root))
+        while (frames.isNotEmpty()) {
+            val frame = frames.last()
+            val successor = frame.nextNeighbor()
+            when {
+                successor == null -> finish(frames.removeLast(), frames.lastOrNull())
+                !indexMap.containsKey(successor) -> frames.addLast(enter(successor))
+                onStack.contains(successor) -> frame.lowerLowLink(indexMap.getValue(successor))
+            }
         }
     }
 
-    // Null when the successor belongs to an already completed component: it cannot lower this node's low link.
-    private fun lowestIndexReachableThrough(successor: TarjanNode): Int? {
-        if (!indexMap.containsKey(successor)) {
-            strongConnect(successor)
-            return lowLinkMap[successor]
+    private fun enter(node: TarjanNode): TarjanFrame {
+        val nodeIndex = index++
+        indexMap[node] = nodeIndex
+        lowLinkMap[node] = nodeIndex
+        stack.add(node)
+        onStack.add(node)
+        return TarjanFrame(node, nodeIndex)
+    }
+
+    private fun finish(frame: TarjanFrame, caller: TarjanFrame?) {
+        lowLinkMap[frame.node] = frame.lowLink
+        caller?.lowerLowLink(frame.lowLink)
+        if (frame.lowLink == frame.index) sccs.add(StronglyConnectedTarjanComponent(popComponentOf(frame.node)))
+    }
+
+    private fun popComponentOf(node: TarjanNode): Set<TarjanNode> {
+        val stronglyConnectedNodes = mutableSetOf<TarjanNode>()
+        var poppedNode: TarjanNode
+        do {
+            poppedNode = stack.removeAt(stack.size - 1)
+            onStack.remove(poppedNode)
+            stronglyConnectedNodes.add(poppedNode)
+        } while (poppedNode != node)
+        return stronglyConnectedNodes
+    }
+
+    private class TarjanFrame(val node: TarjanNode, val index: Int) {
+        private val neighbors = node.neighbors.iterator()
+        var lowLink = index
+            private set
+
+        fun nextNeighbor(): TarjanNode? = if (neighbors.hasNext()) neighbors.next() else null
+
+        fun lowerLowLink(reachableIndex: Int) {
+            lowLink = minOf(lowLink, reachableIndex)
         }
-        return if (onStack.contains(successor)) indexMap[successor] else null
     }
 }
 
@@ -89,13 +106,18 @@ class TarjanNode(val id: Int, val neighbors: MutableSet<TarjanNode> = mutableSet
 fun <K> List<StronglyConnectedTarjanComponent>.toDto(
     map: Map<K, TarjanNode>,
     nodeInformations: Set<NodeInformation<K>>
-): List<StronglyConnectedComponent<K>> = map { it.toDto(map, nodeInformations) }
+): List<StronglyConnectedComponent<K>> {
+    val idByTarjanNode = map.entries.associate { (id, tarjanNode) -> tarjanNode to id }
+    val nodeInformationById = HashMap<K, NodeInformation<K>>()
+    nodeInformations.forEach { nodeInformation -> nodeInformationById.putIfAbsent(nodeInformation.id, nodeInformation) }
+    return map { it.toDto(idByTarjanNode, nodeInformationById) }
+}
 
 data class StronglyConnectedTarjanComponent(val nodes: Set<TarjanNode>) {
-    fun <K> toDto(map: Map<K, TarjanNode>, nodeInformations: Set<NodeInformation<K>>) = StronglyConnectedComponent(
+    fun <K> toDto(idByTarjanNode: Map<TarjanNode, K>, nodeInformationById: Map<K, NodeInformation<K>>) = StronglyConnectedComponent(
         nodes
-            .mapNotNull { tarjanNode -> map.entries.find { it.value == tarjanNode } }
-            .mapNotNull { tarjanNode -> nodeInformations.find { it.id == tarjanNode.key } }
+            .mapNotNull { tarjanNode -> idByTarjanNode[tarjanNode] }
+            .mapNotNull { id -> nodeInformationById[id] }
             .toSet()
     )
 }
