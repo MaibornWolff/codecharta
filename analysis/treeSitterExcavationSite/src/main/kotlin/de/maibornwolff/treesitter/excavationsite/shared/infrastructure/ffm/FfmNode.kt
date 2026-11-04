@@ -19,7 +19,11 @@ internal class FfmNode(val segment: MemorySegment, private val tree: FfmSyntaxTr
     private var start = UNREAD_POINT
     private var end = UNREAD_POINT
 
-    override val type: String get() = tree.grammar.symbolName(TreeSitterApi.nodeSymbol(segmentUnlessNull()))
+    private var readType: String? = null
+
+    // Read once: metric calculators and extractors ask a node for its type several times
+    override val type: String
+        get() = readType ?: tree.grammar.symbolName(TreeSitterApi.nodeSymbol(segmentUnlessNull())).also { readType = it }
     override val isNull: Boolean get() = subtreeAddress == NULL_ADDRESS
     override val childCount: Int get() = TreeSitterApi.nodeChildCount(segmentUnlessNull())
     override val namedChildCount: Int get() = TreeSitterApi.nodeNamedChildCount(segmentUnlessNull())
