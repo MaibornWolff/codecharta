@@ -2,6 +2,8 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.k
 
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.filter
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.isExcluded
+import io.mockk.every
+import io.mockk.mockk
 import java.nio.file.Paths
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -560,5 +562,24 @@ class StopWordFilterTest {
         // Assert
         assertEquals(listOf("user"), filteredFrontend)
         assertEquals(listOf("component", "user"), filteredBackend)
+    }
+
+    @Test
+    fun `should read the excluded words once for the files that share their frameworks and language`() {
+        // Arrange
+        var frameworkKeywordReads = 0
+        val frameworkKeywords = LanguageKeywords { setOf("component").also { frameworkKeywordReads++ } }
+        val keywordProvider = mockk<PathScopedKeywordProvider>()
+        every { keywordProvider.getFrameworkKeywordsForFile(any()) } returns listOf(frameworkKeywords)
+        val filter = StopWordFilter(pathScopedKeywordProvider = keywordProvider)
+
+        // Act
+        val excludedInFirstFile = filter.isExcluded("component", Paths.get("/app/first.ts"), Language.TYPESCRIPT)
+        val excludedInSecondFile = filter.isExcluded("component", Paths.get("/app/second.ts"), Language.TYPESCRIPT)
+
+        // Assert
+        assertTrue(excludedInFirstFile)
+        assertTrue(excludedInSecondFile)
+        assertEquals(1, frameworkKeywordReads)
     }
 }
