@@ -105,11 +105,8 @@ class CommitChangesScanTest {
 
     @Test
     fun `should name the git version it needs when git cannot list the commits`() {
-        // Arrange
-        val noRepository = File(repository.parentFile, "no-repository-${System.nanoTime()}").apply { mkdirs() }
-
         // Act & Assert
-        assertThatThrownBy { CommitChangesScan(noRepository, since).lens() }.hasMessageContaining("git 2.37")
+        assertThatThrownBy { CommitChangesScan(repository, since).lens() }.hasMessageContaining("git 2.37")
     }
 
     @Test
