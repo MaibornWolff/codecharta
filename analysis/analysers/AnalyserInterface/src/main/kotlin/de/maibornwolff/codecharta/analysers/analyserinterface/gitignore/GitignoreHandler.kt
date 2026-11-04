@@ -2,37 +2,30 @@ package de.maibornwolff.codecharta.analysers.analyserinterface.gitignore
 
 import java.io.File
 import java.nio.file.Path
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 
+// A folder's .gitignore is read the first time a path below it is checked, never by walking the tree up front: a
+// walk prunes ignored folders, so the .gitignore files inside node_modules or build output are never read, as in git.
 class GitignoreHandler(private val root: File) {
-    private val gitignoreCache = mutableMapOf<String, Pair<GitignorePatternMatcher, List<GitignoreRule>>>()
-    private val discoveredGitignoreFiles = mutableListOf<String>()
+    private val rulesByDirectory = ConcurrentHashMap<String, List<GitignoreRule>>()
+    private val consultedGitignoreFiles = ConcurrentLinkedQueue<String>()
     private val excludedFileCount = AtomicInteger(0)
 
-    init {
-        // Never descend into a .git directory while discovering .gitignore files — it holds no rules
-        // that should affect a scan and can be huge.
-        root
-            .walk()
-            .onEnter { it.name != GIT_DIRECTORY_NAME }
-            .filter { it.isFile && it.name == GITIGNORE_FILE_NAME }
-            .forEach { parseAndCacheGitignoreFile(it) }
-    }
+    private fun rulesOf(directory: File): List<GitignoreRule> =
+        rulesByDirectory.computeIfAbsent(directory.absolutePath) { readGitignoreRules(directory) }
 
-    private fun parseAndCacheGitignoreFile(gitignoreFile: File) {
-        try {
-            val directory = gitignoreFile.parentFile
-            val matcher = GitignorePatternMatcher(directory)
-            val rules = matcher.parseGitignoreFile(gitignoreFile)
-
-            if (rules.isNotEmpty()) {
-                gitignoreCache[directory.absolutePath] = Pair(matcher, rules)
-
-                val relativePath = getRelativePath(root, gitignoreFile).toString()
-                discoveredGitignoreFiles.add(relativePath)
+    private fun readGitignoreRules(directory: File): List<GitignoreRule> {
+        val gitignoreFile = File(directory, GITIGNORE_FILE_NAME)
+        if (!gitignoreFile.isFile) return emptyList()
+        return try {
+            GitignorePatternMatcher(directory).parseGitignoreFile(gitignoreFile).also { rules ->
+                if (rules.isNotEmpty()) consultedGitignoreFiles.add(getRelativePath(root, gitignoreFile).toString())
             }
         } catch (e: Exception) {
             System.err.println("Warning: Could not parse .gitignore at ${gitignoreFile.path}: ${e.message}")
+            emptyList()
         }
     }
 
@@ -42,14 +35,9 @@ class GitignoreHandler(private val root: File) {
         }
 
         // git always implicitly ignores the repository's own .git directory; the gitignore emulation must
-        // too. Checked before the empty-cache short-circuit so it still holds for a repo whose root
-        // .gitignore suppresses the build-folder fallback — otherwise the whole object store gets walked.
+        // too, otherwise the whole object store gets walked.
         if (isWithinGitDirectory(file)) {
             return true
-        }
-
-        if (gitignoreCache.isEmpty()) {
-            return false
         }
 
         val applicableRules = collectAncestorGitignoreRules(file)
@@ -81,28 +69,24 @@ class GitignoreHandler(private val root: File) {
         return false
     }
 
-    private fun collectAncestorGitignoreRules(file: File): List<Triple<File, GitignorePatternMatcher, List<GitignoreRule>>> {
-        val applicableRules = mutableListOf<Triple<File, GitignorePatternMatcher, List<GitignoreRule>>>()
+    private fun collectAncestorGitignoreRules(file: File): List<Pair<File, List<GitignoreRule>>> {
+        val applicableRules = mutableListOf<Pair<File, List<GitignoreRule>>>()
 
         var currentDir = file.parentFile
         while (currentDir != null && currentDir.absolutePath.startsWith(root.absolutePath)) {
-            gitignoreCache[currentDir.absolutePath]?.let { (matcher, rules) ->
-                applicableRules.add(Triple(currentDir, matcher, rules))
-            }
+            val rules = rulesOf(currentDir)
+            if (rules.isNotEmpty()) applicableRules.add(Pair(currentDir, rules))
             currentDir = currentDir.parentFile
         }
 
         return applicableRules
     }
 
-    private fun applyGitignoreRulesHierarchically(
-        file: File,
-        applicableRules: List<Triple<File, GitignorePatternMatcher, List<GitignoreRule>>>
-    ): Boolean {
+    private fun applyGitignoreRulesHierarchically(file: File, applicableRules: List<Pair<File, List<GitignoreRule>>>): Boolean {
         val rulesFromRootToFile = applicableRules.reversed()
 
         var isIgnored = false
-        for ((directory, _, rules) in rulesFromRootToFile) {
+        for ((directory, rules) in rulesFromRootToFile) {
             val relPath = getRelativePath(directory, file)
 
             for (rule in rules) {
@@ -136,7 +120,7 @@ class GitignoreHandler(private val root: File) {
         false
     }
 
-    fun getStatistics(): Pair<Int, List<String>> = Pair(excludedFileCount.get(), discoveredGitignoreFiles.toList())
+    fun getStatistics(): Pair<Int, List<String>> = Pair(excludedFileCount.get(), consultedGitignoreFiles.sorted())
 
     companion object {
         private const val GIT_DIRECTORY_NAME = ".git"
