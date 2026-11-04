@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.vue
 
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ProjectListing
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.ProjectListing
 import java.io.File
 
 /** The files of a project a lookup across it reads: those the run analyses, else every file below the root. */

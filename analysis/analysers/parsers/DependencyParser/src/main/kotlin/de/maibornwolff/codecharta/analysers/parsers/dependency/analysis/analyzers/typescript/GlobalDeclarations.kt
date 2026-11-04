@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript
 
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ProjectListing
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.TSE_GLOBAL_SEGMENT
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.ProjectListing
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.mapInParallel
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
