@@ -33,17 +33,19 @@
     />
 }
 @if (sortOptions().length > 1) {
-    <select
-        class="select select-sm mt-2 w-full"
-        aria-label="Sort clusters by"
-        data-testid="cluster-explorer-sort"
-        [value]="activeSort()"
-        (change)="chooseSort($event)"
-    >
-        @for (option of sortOptions(); track option.key) {
-            <option [value]="option.key" [selected]="option.key === activeSort()">{{ option.title }}</option>
-        }
-    </select>
+    <label class="form-control mt-2 w-full gap-1">
+        <span class="text-xs opacity-60">Sort by</span>
+        <select
+            class="select select-sm w-full"
+            data-testid="cluster-explorer-sort"
+            [value]="activeSort()"
+            (change)="chooseSort($event)"
+        >
+            @for (option of sortOptions(); track option.key) {
+                <option [value]="option.key" [selected]="option.key === activeSort()">{{ option.title }}</option>
+            }
+        </select>
+    </label>
 }
 <div class="mt-2 text-right text-xs opacity-60" data-testid="cluster-explorer-share-label">{{ shares().shareLabel }}</div>
 <ul #list class="mt-1" data-testid="cluster-explorer-list">
