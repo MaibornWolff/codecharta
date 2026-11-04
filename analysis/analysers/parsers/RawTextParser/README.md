@@ -10,6 +10,9 @@ This parser analyzes code, regardless of the programming language, to generate t
 - code and comment lines: about 300 languages, read from the language table of
   [tokei](https://github.com/XAMPPRocky/tokei) (`src/main/resources/tokei`, MIT licence)
 
+The MIT licence in `src/main/resources/tokei` covers only `languages.json`, copied from tokei; everything else is under
+the project licence.
+
 ## Supported Metrics
 
 - Indentation Level: The number of lines of code of a file, with a certain indentation level or higher.
