@@ -121,7 +121,27 @@ internal class FfmSyntaxTree private constructor(
         return existingCursor
     }
 
+    internal var isShared = false
+    var isLeased = false
+        private set
+    private var markWhenLeased = 0L
+
+    // A shared tree is closed by its sharing scope; closing it here only gives it back
     override fun close() {
+        if (isShared) {
+            nodeAllocator.release(markWhenLeased)
+            isLeased = false
+            return
+        }
+        closeTree()
+    }
+
+    fun lease() {
+        isLeased = true
+        markWhenLeased = nodeAllocator.mark()
+    }
+
+    fun closeTree() {
         if (!arena.scope().isAlive) return
         childCursor?.let { TreeSitterApi.cursorDelete(it) }
         arena.close()
@@ -135,7 +155,10 @@ internal class FfmSyntaxTree private constructor(
 
         fun column(packedPoint: Long): Int = packedPoint.toInt()
 
-        fun parse(content: String, grammar: FfmGrammar): FfmSyntaxTree {
+        fun parse(content: String, grammar: FfmGrammar): FfmSyntaxTree =
+            SharedParses.parse(content, grammar) { parseOwnTree(content, grammar) }
+
+        private fun parseOwnTree(content: String, grammar: FfmGrammar): FfmSyntaxTree {
             val arena = Arena.ofConfined()
             try {
                 val nullTerminatedSource = arena.allocateFrom(content)
