@@ -40,11 +40,15 @@ internal class MetricCollector(private val definition: LanguageDefinition) {
     fun collectMetrics(tree: FfmSyntaxTree, content: String): Map<String, Double> {
         rootNodeType = tree.rootNode.type
 
-        val metricValues = newMetricValues()
         val perFileMetricInfo = calculatorsMap.getPerFileMetricInfo()
+        val calculators = perFileMetricInfo.values.toTypedArray()
+        // One plain counter per calculator: a map of boxed counts allocated an Integer per node and metric
+        val sums = IntArray(calculators.size)
 
-        tree.walk { node, nodeType -> visitNode(node, nodeType, perFileMetricInfo, metricValues) }
+        tree.walk { node, nodeType -> visitNode(node, nodeType, calculators, sums) }
 
+        val metricValues = newMetricValues()
+        perFileMetricInfo.keys.forEachIndexed { index, metric -> metricValues[metric] = metricValues.getValue(metric) + sums[index] }
         return buildMetricsResult(metricValues, totalLines(content, tree.rootNode.endRow))
     }
 
@@ -54,19 +58,14 @@ internal class MetricCollector(private val definition: LanguageDefinition) {
         return metricValues
     }
 
-    private fun visitNode(
-        node: SyntaxNode,
-        nodeType: String,
-        perFileMetricInfo: Map<AvailableFileMetrics, PerFileCalculator>,
-        metricValues: MutableMap<AvailableFileMetrics, Int>
-    ) {
+    private fun visitNode(node: SyntaxNode, nodeType: String, calculators: Array<PerFileCalculator>, sums: IntArray) {
         if (nodeType == rootNodeType) return
 
         val startRow = node.startRow
         val endRow = node.endRow
 
-        for ((metric, calculator) in perFileMetricInfo) {
-            metricValues[metric] = metricValues.getOrDefault(metric, 0) + calculator(node, nodeType, startRow, endRow)
+        for (index in calculators.indices) {
+            sums[index] += calculators[index](node, nodeType, startRow, endRow)
         }
 
         calculatorsMap.processPerFunctionMetricsForNode(node, nodeType, startRow, endRow)
