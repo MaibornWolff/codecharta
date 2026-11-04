@@ -6,31 +6,24 @@ package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm
  * what each spends on it. The trees are closed when [sharing] returns, so a scope holds the trees of one file.
  */
 internal object SharedParses {
-    private val scopeOfThread = ThreadLocal<Scope>()
-
     fun <T> sharing(block: () -> T): T {
-        if (scopeOfThread.get() != null) return block()
+        if (FfmSyntaxTree.lenderOfThread.get() != null) return block()
         val scope = Scope()
-        scopeOfThread.set(scope)
+        FfmSyntaxTree.lenderOfThread.set(scope)
         try {
             return block()
         } finally {
-            scopeOfThread.remove()
+            FfmSyntaxTree.lenderOfThread.remove()
             scope.close()
         }
     }
 
-    fun parse(content: String, grammar: FfmGrammar, parseTree: () -> FfmSyntaxTree): FfmSyntaxTree {
-        val scope = scopeOfThread.get() ?: return parseTree()
-        return scope.lease(content, grammar, parseTree)
-    }
-
-    private class Scope {
+    private class Scope : TreeLender<FfmSyntaxTree> {
         private val trees = ArrayList<SharedTree>()
 
-        fun lease(content: String, grammar: FfmGrammar, parseTree: () -> FfmSyntaxTree): FfmSyntaxTree {
+        override fun lend(content: String, grammar: FfmGrammar, parse: () -> FfmSyntaxTree): FfmSyntaxTree {
             val shared = trees.firstOrNull { it.canServe(content, grammar) }
-                ?: SharedTree(content, parseTree().apply { isShared = true }).also(trees::add)
+                ?: SharedTree(content, parse().apply { isShared = true }).also(trees::add)
             return shared.tree.apply { lease() }
         }
 
