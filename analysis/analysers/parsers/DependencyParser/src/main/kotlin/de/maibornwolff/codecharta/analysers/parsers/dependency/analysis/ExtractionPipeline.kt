@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailedFil
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailureReport
 import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileScanner
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.ProjectListing
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
@@ -42,12 +43,15 @@ class ExtractionPipeline(
 ) {
     /** [input] is a project directory or a single source file; see [analysisRootOf] for what it is judged against. */
     fun run(input: File, bypassGitignore: Boolean): Extraction {
-        val sourceFiles = fileScanner.scan(input, useGitignore = !bypassGitignore)
+        val scannedProject = fileScanner.scanProject(input, useGitignore = !bypassGitignore)
+        val sourceFiles = scannedProject.sourceFiles
         if (sourceFiles.isEmpty()) {
             Logger.warn { "No supported source files found under ${input.path}" }
             return Extraction(emptyList(), emptyList())
         }
         val analysisRoot = analysisRootOf(input)
+        // A single file is judged without `.gitignore`, so the lookups around it walk its directory instead
+        if (input.isDirectory) ProjectListing.register(analysisRoot, scannedProject.entries)
 
         progressReporter.startPhase("Extracting dependencies", sourceFiles.size.toLong())
         val failures = ConcurrentLinkedQueue<FailedFile>()

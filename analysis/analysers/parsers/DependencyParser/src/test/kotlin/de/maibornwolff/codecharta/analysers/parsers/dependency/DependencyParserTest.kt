@@ -237,6 +237,26 @@ class DependencyParserTest {
     }
 
     @Test
+    fun `should resolve an include only against the files the gitignore leaves`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve(".gitignore").writeText("generated/\n")
+        tempDir.resolve("generated").createDirectories()
+        tempDir.resolve("generated/config.h").writeText("class Other { public: int x; };")
+        tempDir.resolve("include").createDirectories()
+        tempDir.resolve("include/config.h").writeText("class Settings { public: int port; };")
+        tempDir.resolve("src").createDirectories()
+        tempDir.resolve("src/server.cpp").writeText("#include <config.h>\n\nclass Server {\n  Settings settings;\n};")
+
+        // Act
+        val output = runParser(tempDir.toString())
+
+        // Assert
+        assertThat(fileEdgeNames(output)).containsExactly("server.cpp" to "config.h")
+    }
+
+    @Test
     fun `should include build folders when asked to`(
         @TempDir tempDir: Path
     ) {
