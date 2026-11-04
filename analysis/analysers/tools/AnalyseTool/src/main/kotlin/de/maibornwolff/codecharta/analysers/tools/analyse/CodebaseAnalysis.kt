@@ -19,7 +19,7 @@ private data class MappedCodebase(val project: Project, val mappedHistories: Lis
 class CodebaseAnalysis(
     private val console: AnalysisConsole,
     private val svnLogWriter: SvnLogWriter,
-    private val createParsers: () -> List<AnalyserInterface>
+    private val createParsers: (SharedFileLoop?) -> List<AnalyserInterface>
 ) {
     fun run(request: AnalyseRequest) {
         val workFolder = createTempDirectory(WORK_FOLDER_PREFIX).toFile()
@@ -41,13 +41,19 @@ class CodebaseAnalysis(
         }
     }
 
+    // Parsers share their parses only when they run at the same time, see SharedFileLoop
     private fun selectParsers(request: AnalyseRequest): ParserSelection {
-        val parsers = createParsers()
+        val sharedFileLoop = SharedFileLoop().takeIf { request.parallel }
+        val parsers = createParsers(sharedFileLoop)
         val skipped = parsers.mapNotNull { parser -> whySkipped(parser, request)?.let { SkippedSource(parser.name, it) } }
+        skipped.forEach { sharedFileLoop?.leave(it.name) }
         val applicable = parsers.filter { parser -> skipped.none { it.name == parser.name } }
         if (applicable.isEmpty()) throw AnalysisException("No parser applies to ${request.projectFolder.path}, so there is nothing to map.")
         val arguments = excludePatternsFor(request).map { "--exclude=$it" } + listOfNotNull(LOCAL_CHANGES.takeIf { request.localChanges })
-        return ParserSelection(applicable.map { ConfiguredAnalyser(it, arguments) }, skipped)
+        val configured = applicable.map { parser ->
+            ConfiguredAnalyser(parser, arguments, whenDone = { sharedFileLoop?.leave(parser.name) })
+        }
+        return ParserSelection(configured, skipped)
     }
 
     private fun whySkipped(parser: AnalyserInterface, request: AnalyseRequest): String? = when {

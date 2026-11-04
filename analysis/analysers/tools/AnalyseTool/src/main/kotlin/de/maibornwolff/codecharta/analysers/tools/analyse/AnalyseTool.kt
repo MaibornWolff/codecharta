@@ -24,7 +24,7 @@ class AnalyseTool(
     private val output: PrintStream = System.out,
     private val workingFolder: File = File("."),
     private val svnLogWriter: SvnLogWriter = SvnLogWriter(),
-    private val createParsers: () -> List<AnalyserInterface> = CodeParsers::create
+    private val createParsers: (SharedFileLoop?) -> List<AnalyserInterface> = CodeParsers::create
 ) : AnalyserInterface,
     CommandLine.IExitCodeGenerator {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -151,7 +151,7 @@ class AnalyseTool(
     }
 
     private fun leftOutSources(): Set<String> {
-        val leavableSources = createParsers().map { it.name } + VersionControl.entries.map { it.label }
+        val leavableSources = createParsers(null).map { it.name } + VersionControl.entries.map { it.label }
         val leftOutSources = leftOut.map(VersionControl::sourceNameOf).toSet()
         val unknownSource = leftOutSources.firstOrNull { it !in leavableSources } ?: return leftOutSources
         throw AnalysisException("--without does not know $unknownSource. Leave out one of: ${leavableSources.joinToString()}")
