@@ -31,7 +31,7 @@ class ProjectMetricsCollector(
     private val localChangesFiles: Set<String> = emptySet()
 ) {
     private var totalFiles = 0L
-    private var filesParsed = 0L
+    private val filesParsed = AtomicLong(0)
     private val filesSkipped = AtomicLong(0)
     private val filesAnalyzed = AtomicLong(0)
     private val parsingUnit = ParsingUnit.Files
@@ -62,8 +62,7 @@ class ProjectMetricsCollector(
                         isParsableFileExtension(standardizedPath) &&
                         isIncludedByLocalChanges(standardizedPath)
                     ) {
-                        filesParsed++
-                        logProgress(it.name, filesParsed)
+                        logProgress(it.name, filesParsed.incrementAndGet())
                         projectMetrics.addFileMetrics(standardizedPath, collectMetricsForFile(it, standardizedPath))
                         lastFileName = it.name
                     }
@@ -110,7 +109,7 @@ class ProjectMetricsCollector(
         return if (baseNode != null && baseNode.checksum == currentChecksum) {
             reuseMetricsFromBaseFile(baseNode)
         } else {
-            calculateMetricsForFile(file, currentChecksum)
+            calculateMetricsForFile(file.name, fileContent, currentChecksum)
         }
     }
 
@@ -125,11 +124,12 @@ class ProjectMetricsCollector(
         return fileMetrics
     }
 
-    private fun calculateMetricsForFile(file: File, checksum: String?): FileMetrics {
+    // Lines as a file reader splits them, so a last line break adds no empty line
+    private fun calculateMetricsForFile(fileName: String, content: String, checksum: String?): FileMetrics {
         filesAnalyzed.incrementAndGet()
 
-        val metrics = createSelectedMetrics(file.name)
-        file.bufferedReader().useLines { lines -> lines.forEach { line -> metrics.forEach { it.parseLine(line) } } }
+        val metrics = createSelectedMetrics(fileName)
+        content.reader().buffered().useLines { lines -> lines.forEach { line -> metrics.forEach { it.parseLine(line) } } }
 
         if (metrics.isEmpty()) return FileMetrics()
         val resultMetrics = metrics.map { it.getValue() }.reduceRight { current: FileMetrics, acc: FileMetrics ->
