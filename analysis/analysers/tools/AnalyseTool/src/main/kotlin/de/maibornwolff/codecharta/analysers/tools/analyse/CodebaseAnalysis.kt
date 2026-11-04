@@ -14,7 +14,7 @@ import kotlin.io.path.createTempDirectory
 
 private data class ParserSelection(val parsers: List<ConfiguredAnalyser>, val skipped: List<SkippedSource>)
 
-private data class MappedCodebase(val project: Project, val failedHistories: List<SkippedSource>)
+private data class MappedCodebase(val project: Project, val mappedHistories: List<VersionControl>, val failedHistories: List<SkippedSource>)
 
 class CodebaseAnalysis(
     private val console: AnalysisConsole,
@@ -35,7 +35,7 @@ class CodebaseAnalysis(
             console.println("Map: ${request.outputFile.path}")
             printSkipped(selection.skipped + inHistoryOrder(search.skipped + mapped.failedHistories))
             if (request.authorOwnership && mapped.project.lenses.clusters.carriesData) printOwnershipHints(request, mapped.project)
-            request.commitChangesSince?.let { printCommitChangesHints(request, it, mapped.project) }
+            request.commitChangesSince?.let { printCommitChangesHints(request, it, mapped) }
         } finally {
             workFolder.deleteRecursively()
         }
@@ -70,10 +70,11 @@ class CodebaseAnalysis(
         val code = merge(parsers.map { resultOf.getValue(it).getOrThrow() })
         val historyResults = histories.map { it to resultOf.getValue(it.analyser) }
         val historyProjects = historyResults.mapNotNull { (_, result) -> result.getOrNull() }.map { HistoryFilter.keepFilesOf(code, it) }
+        val mappedHistories = historyResults.filter { (_, result) -> result.isSuccess }.map { (history, _) -> history.versionControl }
         val failedHistories = historyResults.mapNotNull { (history, result) ->
             result.exceptionOrNull()?.let { history.versionControl.skipped(it.message.orEmpty()) }
         }
-        return MappedCodebase(merge(listOf(code) + historyProjects), failedHistories)
+        return MappedCodebase(merge(listOf(code) + historyProjects), mappedHistories, failedHistories)
     }
 
     private fun merge(projects: List<Project>): Project =
@@ -108,9 +109,13 @@ class CodebaseAnalysis(
         console.println(if (carriesRealNames) AuthorOwnershipScan.REAL_NAMES_WARNING else AuthorOwnershipScan.PERSONAL_DATA_NOTE)
     }
 
-    private fun printCommitChangesHints(request: AnalyseRequest, since: LocalDate, project: Project) {
+    private fun printCommitChangesHints(request: AnalyseRequest, since: LocalDate, mapped: MappedCodebase) {
+        if (VersionControl.GIT !in mapped.mappedHistories) {
+            console.println(COMMIT_CHANGES_NEED_HISTORY_HINT)
+            return
+        }
         if (CommitChangesScan(request.analysedFolder, since).isShallowClone()) console.println(CommitChangesScan.SHALLOW_CLONE_WARNING)
-        val carriesCommitChanges = CommitChangesScan.carriesCommitChanges(project.lenses.clusters)
+        val carriesCommitChanges = CommitChangesScan.carriesCommitChanges(mapped.project.lenses.clusters)
         console.println(if (carriesCommitChanges) CommitChangesScan.PERSONAL_DATA_NOTE else CommitChangesScan.noCommitHint(since))
     }
 
@@ -120,6 +125,8 @@ class CodebaseAnalysis(
     }
 
     companion object {
+        internal const val COMMIT_CHANGES_NEED_HISTORY_HINT =
+            "No commit changes: ${CommitChangesScan.FLAG} needs the git history, which is not in the map."
         private const val WORK_FOLDER_PREFIX = "codecharta-analyse"
         private const val LOCAL_CHANGES = "--local-changes"
     }

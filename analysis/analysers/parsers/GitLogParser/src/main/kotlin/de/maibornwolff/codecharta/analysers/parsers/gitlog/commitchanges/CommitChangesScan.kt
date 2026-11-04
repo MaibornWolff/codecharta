@@ -23,15 +23,16 @@ class CommitChangesScan(repositoryFolder: File, private val since: LocalDate) {
             "log",
             "--no-merges",
             "--topo-order",
-            "--since=$sinceEpochSecond",
+            "--since-as-filter=$sinceEpochSecond",
             "--relative",
             "-M",
             "--numstat",
             "-z",
             CommitLogOutput.FORMAT
         ) { it.readBytes().toString(Charsets.UTF_8) }
+        checkNotNull(output) { GIT_TOO_OLD_ERROR }
         // Git reads a far-future --since as the current time, which lets a commit of this very second through
-        return CommitLogOutput.parse(output.orEmpty()).filter { it.committedAtEpochSecond >= sinceEpochSecond }
+        return CommitLogOutput.parse(output).filter { it.committedAtEpochSecond >= sinceEpochSecond }
     }
 
     private fun linesByPathToday(): Map<String, Int?> = git.numstatOfHead().associate { row ->
@@ -58,6 +59,7 @@ class CommitChangesScan(repositoryFolder: File, private val since: LocalDate) {
         const val SHALLOW_CLONE_WARNING =
             "Warning: this repository is a shallow clone, so its oldest commit counts every file as changed. " +
                 "Fetch the full history to get its real changes."
+        const val GIT_TOO_OLD_ERROR = "git could not list the commits for $FLAG, which needs git 2.37 or newer."
 
         private const val TAB = "\t"
         private const val NUMSTAT_FIELD_COUNT = 3

@@ -106,7 +106,8 @@ a clustering titled **Author ownership (real names)**, and still no emails. The 
 ## Commit changes
 
 With `--commit-changes-since YYYY-MM-DD`, `repo-scan` also records what each commit since that day, in UTC, changed: one
-cluster per commit, in a clustering titled **Commit changes**, so you can see which commits reached furthest.
+cluster per commit, in a clustering titled **Commit changes**, so you can see which commits reached furthest. It needs
+git 2.37 or newer.
 
 - A file's share is the lines the commit added and removed, divided by the lines in the file today, up to the whole file.
   A commit may have rewritten a file several times over, so these shares are never added up across commits. A binary or

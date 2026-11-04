@@ -106,6 +106,21 @@ class AnalyseToolTest {
     }
 
     @Test
+    fun `should say last that commit changes need the git history when the folder is inside a repository`() {
+        // Arrange
+        val since = "2000-01-01"
+        writeSource("module/src/App.kt", APP_SOURCE)
+        commitAll()
+
+        // Act
+        analyse(File(projectFolder, "module").path, "--output-file=${mapFile.path}", "--commit-changes-since=$since")
+
+        // Assert
+        assertThat(output.toString().trim().lines().last()).isEqualTo(CodebaseAnalysis.COMMIT_CHANGES_NEED_HISTORY_HINT)
+        assertThat(output.toString()).doesNotContain(CommitChangesScan.noCommitHint(LocalDate.parse(since)))
+    }
+
+    @Test
     fun `should refuse commit changes when the git history is left out`() {
         // Arrange
         writeSource("src/App.kt", APP_SOURCE)

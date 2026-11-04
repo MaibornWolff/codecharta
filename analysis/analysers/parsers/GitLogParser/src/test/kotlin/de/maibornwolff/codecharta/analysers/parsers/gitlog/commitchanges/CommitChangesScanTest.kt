@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.gitlog.commitchanges
 import de.maibornwolff.codecharta.model.Cluster
 import de.maibornwolff.codecharta.model.NodeId
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -86,6 +87,29 @@ class CommitChangesScanTest {
 
         // Assert
         assertThat(clusters.map { it.name.substringAfter(" ") }).containsExactly("first moment")
+    }
+
+    @Test
+    fun `should keep a commit since the day that lies behind an older dated one`() {
+        // Arrange
+        commitFile("a.kt", "1\n", message = "behind", committedAt = "2026-06-01T12:00:00Z")
+        commitFile("a.kt", "2\n", message = "clock in the past", committedAt = "2025-06-01T12:00:00Z")
+        commitFile("a.kt", "3\n", message = "newest", committedAt = "2026-06-02T12:00:00Z")
+
+        // Act
+        val clusters = clusters()
+
+        // Assert
+        assertThat(clusters.map { it.name.substringAfter(" ") }).containsExactly("newest", "behind")
+    }
+
+    @Test
+    fun `should name the git version it needs when git cannot list the commits`() {
+        // Arrange
+        val noRepository = File(repository.parentFile, "no-repository-${System.nanoTime()}").apply { mkdirs() }
+
+        // Act & Assert
+        assertThatThrownBy { CommitChangesScan(noRepository, since).lens() }.hasMessageContaining("git 2.37")
     }
 
     @Test
