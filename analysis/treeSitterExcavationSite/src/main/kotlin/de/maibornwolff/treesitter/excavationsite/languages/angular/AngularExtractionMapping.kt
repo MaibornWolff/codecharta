@@ -2,11 +2,12 @@ package de.maibornwolff.treesitter.excavationsite.languages.angular
 
 import de.maibornwolff.treesitter.excavationsite.languages.angular.extractors.extractTemplateComment
 import de.maibornwolff.treesitter.excavationsite.languages.angular.extractors.extractTemplateIdentifier
-import de.maibornwolff.treesitter.excavationsite.languages.angular.extractors.extractTemplateText
 import de.maibornwolff.treesitter.excavationsite.languages.angular.extractors.extractUserFacingAttributeText
+import de.maibornwolff.treesitter.excavationsite.languages.angular.extractors.joinTemplateText
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Extract
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractionMapping
 import de.maibornwolff.treesitter.excavationsite.shared.domain.StringFormats
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TextRun
 
 /**
  * Angular template extraction definitions: the identifiers of bindings, interpolations and control flow blocks,
@@ -18,10 +19,10 @@ object AngularExtractionMapping : ExtractionMapping {
 
         put(COMMENT, Extract.Comment(custom = ::extractTemplateComment))
 
-        put(TEXT, Extract.Text(::extractTemplateText))
-        put(ENTITY, Extract.Text(::extractTemplateText))
         put(ATTRIBUTE_VALUE, Extract.Text(::extractUserFacingAttributeText))
         put(STRING, Extract.StringLiteral(format = StringFormats.Quoted(stripSingleQuotes = true)))
         put(TEMPLATE_STRING, Extract.StringLiteral(format = StringFormats.Template))
     }
+
+    override val textRun = TextRun(setOf(TEXT, ENTITY), ::joinTemplateText)
 }
