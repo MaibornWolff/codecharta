@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis
+package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

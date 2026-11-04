@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis
+package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common
 
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
