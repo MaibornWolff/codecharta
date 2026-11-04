@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.delphi
 
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ProjectListing
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.ProjectListing
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.readInParallel
 import de.maibornwolff.treesitter.excavationsite.api.DelphiSection
 import de.maibornwolff.treesitter.excavationsite.api.DelphiUnit

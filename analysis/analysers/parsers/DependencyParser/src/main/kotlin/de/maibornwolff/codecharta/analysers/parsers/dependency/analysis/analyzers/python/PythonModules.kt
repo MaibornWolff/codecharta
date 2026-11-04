@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.python
 
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ProjectListing
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.ProjectListing
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 

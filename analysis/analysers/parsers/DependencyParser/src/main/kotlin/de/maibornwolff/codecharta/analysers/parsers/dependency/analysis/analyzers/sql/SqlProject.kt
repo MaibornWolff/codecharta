@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql
 
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ProjectListing
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.ProjectListing
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.readInParallel
 import de.maibornwolff.treesitter.excavationsite.api.SqlMember
 import de.maibornwolff.treesitter.excavationsite.api.SqlMemberKind
