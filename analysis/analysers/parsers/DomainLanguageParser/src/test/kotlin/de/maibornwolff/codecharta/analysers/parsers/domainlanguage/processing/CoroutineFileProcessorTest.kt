@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
 
 import de.maibornwolff.treesitter.excavationsite.api.GrammarUnavailableException
 import java.io.File
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -181,5 +182,24 @@ class CoroutineFileProcessorTest {
         assertEquals(2, result.perFileWordCounts.size)
         assertEquals(mapOf("hello" to 1, "world" to 1), result.perFileWordCounts["test1.kt"])
         assertEquals(mapOf("hello" to 1, "kotlin" to 1), result.perFileWordCounts["test2.kt"])
+    }
+
+    @Test
+    fun `should process the files on threads of its own instead of the shared pool of the other parsers`() {
+        // Arrange
+        val processor = CoroutineFileProcessor()
+        val files = (1..20).map { File("file$it.kt") }
+        val processingThreads = ConcurrentLinkedQueue<String>()
+        val wordExtractor: (File, String) -> FileResult = { _, _ ->
+            processingThreads.add(Thread.currentThread().name)
+            FileResult.Processed(mapOf("word" to 1))
+        }
+
+        // Act
+        processor.processFilesIndividually(files, ".", { "content" }, wordExtractor)
+
+        // Assert
+        assertEquals(files.size, processingThreads.size)
+        assertTrue(processingThreads.all { it.startsWith(CoroutineFileProcessor.THREAD_NAME) })
     }
 }
