@@ -30,13 +30,14 @@ class GitignoreHandlerTest {
     }
 
     @Test
-    fun `should discover root level gitignore file`() {
+    fun `should report the root gitignore file once a path below it is checked`() {
         // Arrange
         val gitignoreFile = File(rootDir, ".gitignore")
         gitignoreFile.writeText("*.log")
+        val handler = GitignoreHandler(rootDir)
 
         // Act
-        val handler = GitignoreHandler(rootDir)
+        handler.shouldExclude(File(rootDir, "readme.txt"))
         val (_, gitignoreFiles) = handler.getStatistics()
 
         // Assert
@@ -46,7 +47,7 @@ class GitignoreHandlerTest {
     }
 
     @Test
-    fun `should discover multiple nested gitignore files`() {
+    fun `should report every gitignore file on the way to a checked path`() {
         // Arrange
         val rootGitignore = File(rootDir, ".gitignore")
         rootGitignore.writeText("*.log")
@@ -60,9 +61,10 @@ class GitignoreHandlerTest {
         testDir.mkdirs()
         val testGitignore = File(testDir, ".gitignore")
         testGitignore.writeText("*.bak")
+        val handler = GitignoreHandler(rootDir)
 
         // Act
-        val handler = GitignoreHandler(rootDir)
+        handler.shouldExclude(File(testDir, "readme.txt"))
         val (_, gitignoreFiles) = handler.getStatistics()
 
         // Assert
@@ -81,9 +83,10 @@ class GitignoreHandlerTest {
         srcDir.mkdirs()
         val srcGitignore = File(srcDir, ".gitignore")
         srcGitignore.writeText("*.tmp")
+        val handler = GitignoreHandler(rootDir)
 
         // Act
-        val handler = GitignoreHandler(rootDir)
+        handler.shouldExclude(File(srcDir, "readme.txt"))
         val (_, gitignoreFiles) = handler.getStatistics()
 
         // Assert
@@ -96,9 +99,10 @@ class GitignoreHandlerTest {
         // Arrange
         val gitignoreFile = File(rootDir, ".gitignore")
         gitignoreFile.writeText("")
+        val handler = GitignoreHandler(rootDir)
 
         // Act
-        val handler = GitignoreHandler(rootDir)
+        handler.shouldExclude(File(rootDir, "readme.txt"))
         val (_, gitignoreFiles) = handler.getStatistics()
 
         // Assert
@@ -116,13 +120,60 @@ class GitignoreHandlerTest {
             # Another comment
             """.trimIndent()
         )
+        val handler = GitignoreHandler(rootDir)
 
         // Act
-        val handler = GitignoreHandler(rootDir)
+        handler.shouldExclude(File(rootDir, "readme.txt"))
         val (_, gitignoreFiles) = handler.getStatistics()
 
         // Assert
         assertThat(gitignoreFiles.size).isEqualTo(0)
+    }
+
+    @Test
+    fun `should not read the gitignore files inside an ignored folder`() {
+        // Arrange
+        File(rootDir, ".gitignore").writeText("vendor/")
+        val vendorPackage = File(rootDir, "vendor/package")
+        vendorPackage.mkdirs()
+        File(vendorPackage, ".gitignore").writeText("*.tmp")
+        val sourceFolder = File(rootDir, "src")
+        sourceFolder.mkdirs()
+        val handler = GitignoreHandler(rootDir)
+
+        // Act
+        val isVendorExcluded = handler.shouldExclude(File(rootDir, "vendor"))
+        handler.shouldExclude(File(sourceFolder, "Main.kt"))
+        val (_, gitignoreFiles) = handler.getStatistics()
+
+        // Assert
+        assertThat(isVendorExcluded).isTrue()
+        assertThat(gitignoreFiles).containsExactly(".gitignore")
+    }
+
+    @Test
+    fun `should list the gitignore files in path order`() {
+        // Arrange
+        File(rootDir, ".gitignore").writeText("*.log")
+        val zetaFolder = File(rootDir, "zeta")
+        val alphaFolder = File(rootDir, "alpha")
+        zetaFolder.mkdirs()
+        alphaFolder.mkdirs()
+        File(zetaFolder, ".gitignore").writeText("*.tmp")
+        File(alphaFolder, ".gitignore").writeText("*.tmp")
+        val handler = GitignoreHandler(rootDir)
+
+        // Act
+        handler.shouldExclude(File(zetaFolder, "readme.txt"))
+        handler.shouldExclude(File(alphaFolder, "readme.txt"))
+        val (_, gitignoreFiles) = handler.getStatistics()
+
+        // Assert
+        assertThat(gitignoreFiles).containsExactly(
+            ".gitignore",
+            "alpha${File.separator}.gitignore",
+            "zeta${File.separator}.gitignore"
+        )
     }
 
     @Test
