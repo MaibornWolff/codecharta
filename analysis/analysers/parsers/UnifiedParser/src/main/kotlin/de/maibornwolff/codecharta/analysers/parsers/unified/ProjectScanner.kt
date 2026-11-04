@@ -120,9 +120,8 @@ class ProjectScanner(
         require(file.isFile) { "Expected file but found folder at $relativeFilePath!" }
 
         val fileContent = file.readText()
-        val currentChecksum = ChecksumCalculator.calculateChecksum(fileContent)
         val baseNode = baseFileNodes[relativeFilePath]
-        if (baseNode != null && baseNode.checksum == currentChecksum) {
+        if (baseNode != null && baseNode.checksum == ChecksumCalculator.calculateChecksum(fileContent)) {
             reuseMetricsFromBaseFile(baseNode, relativeFilePath, verbose)
         } else {
             applyLanguageSpecificCollector(file, fileContent, relativeFilePath, verbose)
