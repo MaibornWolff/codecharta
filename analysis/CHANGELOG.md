@@ -28,12 +28,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Faster start in large projects**: the parsers start analysing sooner when a project holds large ignored folders
   such as `node_modules` or build output, and the dependency parser no longer pauses along the way, most noticeably
   in Docker.
+- **Faster analysis of large projects**: `ccsh analyse` maps a project with tens of thousands of files in a fraction of
+  the time and with less memory, most of all one with many packages.
 
 ### Fixed 🐞
 
 - **Dependencies into ignored folders**: the dependency parser no longer resolves an import or include to a file that
   `.gitignore` or the exclude patterns leave out, so the edge goes to the file on the map.
 - **Large HTML files**: the domain language parser no longer hangs on an HTML file with much text between its tags.
+- **Long dependency cycles**: the dependency parser no longer crashes on a cycle that runs through thousands of files
+  or packages.
 
 ## [2.3.0] - 2026-10-28
 
