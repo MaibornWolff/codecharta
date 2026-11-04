@@ -443,4 +443,82 @@ class FrameworkDetectorTest {
         assertTrue(frameworksByPath[tempDir]?.contains(Framework.REACT) == true)
         assertTrue(frameworksByPath[tempDir]?.contains(Framework.ASPNET) == true)
     }
+
+    @Test
+    fun `should skip the project files of folders the gitignore excludes`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve(".gitignore").writeText("node_modules/")
+        val dependencyFolder = Files.createDirectories(tempDir.resolve("node_modules/some-package"))
+        dependencyFolder.resolve("package.json").writeText(REACT_PACKAGE_JSON)
+        val detector = FrameworkDetector()
+
+        // Act
+        val frameworksByPath = detector.detectFrameworks(tempDir)
+
+        // Assert
+        assertTrue(frameworksByPath.isEmpty())
+    }
+
+    @Test
+    fun `should read the project files of ignored folders when the gitignore is bypassed`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve(".gitignore").writeText("generated/")
+        val generatedFolder = Files.createDirectories(tempDir.resolve("generated/client"))
+        generatedFolder.resolve("package.json").writeText(REACT_PACKAGE_JSON)
+        val detector = FrameworkDetector()
+
+        // Act
+        val frameworksByPath = detector.detectFrameworks(tempDir, useGitignore = false)
+
+        // Assert
+        assertEquals(setOf(Framework.REACT), frameworksByPath[generatedFolder])
+    }
+
+    @Test
+    fun `should skip node_modules when the gitignore is bypassed`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val dependencyFolder = Files.createDirectories(tempDir.resolve("node_modules/some-package"))
+        dependencyFolder.resolve("package.json").writeText(REACT_PACKAGE_JSON)
+        val detector = FrameworkDetector()
+
+        // Act
+        val frameworksByPath = detector.detectFrameworks(tempDir, useGitignore = false)
+
+        // Assert
+        assertTrue(frameworksByPath.isEmpty())
+    }
+
+    @Test
+    fun `should skip the git folder when the gitignore is bypassed`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val gitFolder = Files.createDirectories(tempDir.resolve(".git/objects"))
+        gitFolder.resolve("package.json").writeText(REACT_PACKAGE_JSON)
+        val detector = FrameworkDetector()
+
+        // Act
+        val frameworksByPath = detector.detectFrameworks(tempDir, useGitignore = false)
+
+        // Assert
+        assertTrue(frameworksByPath.isEmpty())
+    }
+
+    companion object {
+        private val REACT_PACKAGE_JSON =
+            """
+            {
+              "name": "react-project",
+              "dependencies": {
+                "react": "^18.0.0"
+              }
+            }
+            """.trimIndent()
+    }
 }
