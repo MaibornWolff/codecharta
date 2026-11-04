@@ -49,8 +49,9 @@ class ProjectMetricsCollector(
                 .walkTopDown()
                 .onEnter { dir -> !isExcludedByGitignore(dir) }
                 .filter { it.isFile && !isExcludedByGitignore(it) }
+                .toList()
 
-            totalFiles = files.count().toLong()
+            totalFiles = files.size.toLong()
 
             files.forEach {
                 launch {
