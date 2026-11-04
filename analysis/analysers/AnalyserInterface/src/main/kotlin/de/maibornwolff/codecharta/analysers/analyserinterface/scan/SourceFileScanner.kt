@@ -22,30 +22,31 @@ class SourceFileScanner(
     private val excludePatternRegex: Regex? =
         excludePatterns.takeIf { it.isNotEmpty() }?.joinToString(separator = "|", prefix = "(", postfix = ")")?.toRegex()
 
-    fun scan(input: File, useGitignore: Boolean = true, onFileFound: (() -> Unit)? = null): List<File> {
+    fun scan(input: File, useGitignore: Boolean = true, onFileFound: (() -> Unit)? = null): List<File> =
+        scanProject(input, useGitignore).sourceFiles.onEach { onFileFound?.invoke() }
+
+    /** The source files of [input] and, for a directory, every file and folder below it the walk lets through. */
+    fun scanProject(input: File, useGitignore: Boolean = true): ScannedProject {
         if (!input.exists()) {
             Logger.warn { "Input does not exist: ${input.path}" }
-            return emptyList()
+            return ScannedProject(emptyList(), emptyList())
         }
         // A single file's own directory is the project it is judged against, so a lone `FooTest.java`
         // is still recognized as a test.
         val testFileDetector = TestFileDetector(if (input.isFile) input.absoluteFile.parentFile else input)
-        val files =
-            if (input.isFile) {
-                listOf(input).filter { isAnalysable(it, testFileDetector) }
-            } else {
-                walk(input, if (useGitignore) GitignoreHandler(input) else null, testFileDetector)
-            }
-        return files.sortedBy { it.path }.onEach { onFileFound?.invoke() }
+        if (input.isFile) return ScannedProject(listOf(input).filter { isAnalysable(it, testFileDetector) }, emptyList())
+        val entries = walk(input, if (useGitignore) GitignoreHandler(input) else null)
+        val sourceFiles = entries.filter { it.isFile && isAnalysable(it, testFileDetector) }
+        return ScannedProject(sourceFiles, entries)
     }
 
-    private fun walk(rootDirectory: File, gitignoreHandler: GitignoreHandler?, testFileDetector: TestFileDetector): List<File> =
-        rootDirectory
-            .walkTopDown()
-            .onEnter { directory -> !isExcluded(directory, rootDirectory, gitignoreHandler) }
-            .filter { !UndecodableFileName.reportIfUndecodable(it) && it.isFile }
-            .filter { file -> !isExcluded(file, rootDirectory, gitignoreHandler) && isAnalysable(file, testFileDetector) }
-            .toList()
+    private fun walk(rootDirectory: File, gitignoreHandler: GitignoreHandler?): List<File> = rootDirectory
+        .walkTopDown()
+        .onEnter { directory -> !isExcluded(directory, rootDirectory, gitignoreHandler) }
+        .filter { entry -> entry != rootDirectory && !UndecodableFileName.reportIfUndecodable(entry) }
+        .filter { entry -> !isExcluded(entry, rootDirectory, gitignoreHandler) }
+        .sortedBy { it.path }
+        .toList()
 
     private fun isExcluded(candidate: File, rootDirectory: File, gitignoreHandler: GitignoreHandler?): Boolean =
         gitignoreHandler?.shouldExclude(candidate) == true || isExcludedByPattern(candidate, rootDirectory)
