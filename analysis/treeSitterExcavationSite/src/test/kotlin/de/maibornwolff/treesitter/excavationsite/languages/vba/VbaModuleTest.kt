@@ -276,6 +276,27 @@ class VbaModuleTest {
     }
 
     @Test
+    fun `should read the forms and reports the AllForms and AllReports of a project name`() {
+        // Arrange
+        val body = """
+            If CurrentProject.AllForms("frmCustomerList").IsLoaded Then Exit Sub
+            loaded = Application.CurrentProject.AllReports("rptInvoice").IsLoaded
+            loaded = AllForms("frmMain").IsLoaded
+        """
+
+        // Act
+        val names = namesOfRoutine(body)
+
+        // Assert
+        assertThat(names).containsExactly(
+            VbaName(listOf("frmCustomerList"), VbaNameKind.FORM),
+            code("loaded"),
+            VbaName(listOf("rptInvoice"), VbaNameKind.REPORT),
+            code("AllForms")
+        )
+    }
+
+    @Test
     fun `should give the names outside every declaration to the module`() {
         // Arrange
         val code = """
