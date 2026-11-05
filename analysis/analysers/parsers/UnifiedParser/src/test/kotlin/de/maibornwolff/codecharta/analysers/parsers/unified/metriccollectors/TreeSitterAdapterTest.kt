@@ -64,6 +64,9 @@ class TreeSitterAdapterTest {
         val pythonFile = File("test.py")
         val delphiUnitFile = File("Unit.pas")
         val delphiProjectFile = File("Project.dpr")
+        val vbaModuleFile = File("modOrders.bas")
+        val vbaClassFile = File("clsCustomer.cls")
+        val vb6FormFile = File("frmMain.frm")
 
         // Act & Assert
         assertThat(TreeSitterAdapter.getLanguageForFile(javaFile)).isEqualTo(Language.JAVA)
@@ -71,6 +74,9 @@ class TreeSitterAdapterTest {
         assertThat(TreeSitterAdapter.getLanguageForFile(pythonFile)).isEqualTo(Language.PYTHON)
         assertThat(TreeSitterAdapter.getLanguageForFile(delphiUnitFile)).isEqualTo(Language.DELPHI)
         assertThat(TreeSitterAdapter.getLanguageForFile(delphiProjectFile)).isEqualTo(Language.DELPHI)
+        assertThat(TreeSitterAdapter.getLanguageForFile(vbaModuleFile)).isEqualTo(Language.VBA)
+        assertThat(TreeSitterAdapter.getLanguageForFile(vbaClassFile)).isEqualTo(Language.VBA)
+        assertThat(TreeSitterAdapter.getLanguageForFile(vb6FormFile)).isEqualTo(Language.VB6)
     }
 
     @Test

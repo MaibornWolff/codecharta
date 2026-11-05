@@ -34,5 +34,7 @@ enum class FileExtension(
     DELPHI(".pas", setOf(".dpr")),
     RUST(".rs"),
     HTML(".html"),
-    SQL(".sql", setOf(".pks", ".pkb", ".pls"))
+    SQL(".sql", setOf(".pks", ".pkb", ".pls")),
+    VBA(".bas", setOf(".cls")),
+    VB6(".frm")
 }

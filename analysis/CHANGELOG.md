@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   that day changed in each file to the map, with the commit's date and size.
 - **Code and comment lines for about 300 languages**: `rawtextparser` adds `rloc` and `comment_lines` to every file
   whose language the code counter tokei knows, counted the same way as in the Unified Parser.
+- **VBA and VB6**: `unifiedparser` measures exported VBA modules and classes from Access, Excel and Word, and VB6
+  forms, with complexity, functions, lines of code and comment lines.
 
 ### Changed
 
