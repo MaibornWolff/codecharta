@@ -16,7 +16,7 @@ The `domain` lens payload keys its entries under `nodes`:
 ## Supported Languages
 
 Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, Rust, Objective-C, Vue, shell,
-Angular templates (`.html`) and SQL.
+Angular templates (`.html`), SQL, VBA (`.bas`, `.cls`) and VB6 forms (`.frm`).
 
 An Angular template contributes the identifiers of its bindings, interpolations and control flow blocks, but not the
 names Angular gives (pipe names, `@defer` triggers, the `index` or `trackBy` of `*ngFor`), its HTML
@@ -39,6 +39,11 @@ In SQL the types, built-in functions and system schemas of every dialect are sto
 `dbo`), and so are the names of the dialects and database products (`postgres`, `oracle`, `mariadb`, `sqlserver`)
 and `id`. Its keywords are not: a keyword never comes out as a word, and one that is an English word (`order`,
 `group`, `transaction`) names the domain in a name or a comment.
+
+In VBA and VB6 the keywords, types and built-in names are stop words, English ones such as `date` or `currency` too,
+but not `open` and `close`. So are the naming prefixes of Access code (`tbl`, `qry`, `frm`, `txt`, `str`, `rs`) and the
+words of event handlers (`click`, `focus`, `unload`, `initialize`, `form` of `cmdSave_Click` or `Form_Load`). The event
+words that also name a domain stay: `report`, `current`, `change`, `key`.
 
 ## Usage and Parameters
 

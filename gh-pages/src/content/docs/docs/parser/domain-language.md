@@ -83,6 +83,8 @@ its entries by node id under `nodes`:
 | Rust              | .rs                                   |
 | Angular templates | .html                                 |
 | SQL               | .sql, .pks, .pkb, .pls                |
+| VBA               | .bas, .cls                            |
+| VB6 forms         | .frm                                  |
 
 Every `.html` file is read as an Angular template, by this parser as by `unifiedparser` and `dependencyparser`.
 Exclude the `.html` files that are no templates of an Angular application, such as reports or documentation, with
@@ -119,6 +121,13 @@ In SQL the types, built-in functions and system schemas of every dialect are sto
 `dbo`), and so are the names of the dialects and database products (`postgres`, `oracle`, `mariadb`, `sqlserver`)
 and `id`. Its keywords are not: a keyword never comes out as a word, and one that is an English word (`order`,
 `group`, `transaction`) names the domain in a name or a comment.
+
+### VBA and VB6
+
+In VBA and VB6 the keywords, types and built-in names are stop words, English ones such as `date` or `currency` too,
+but not `open` and `close`. So are the naming prefixes of Access code (`tbl`, `qry`, `frm`, `txt`, `str`, `rs`) and the
+words of event handlers (`click`, `focus`, `unload`, `initialize`, `form` of `cmdSave_Click` or `Form_Load`). The event
+words that also name a domain stay: `report`, `current`, `change`, `key`.
 
 ## Input and stop words
 

@@ -304,6 +304,58 @@ class FileAnalyzerTest {
     }
 
     @Test
+    fun `should drop the keywords, naming prefixes and event words of a VBA form module`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val formModule = File(tempDirPath.toFile(), "Form_frmOrders.cls")
+        formModule.writeText(
+            """
+            VERSION 1.0 CLASS
+            BEGIN
+              MultiUse = -1  'True
+            END
+            Attribute VB_Name = "Form_frmOrders"
+            Option Compare Database
+
+            Private Sub cmdInvoice_Click()
+                Dim strCustomerCity As String
+                ' Dim lngOldInvoice As Long
+            End Sub
+            """.trimIndent()
+        )
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(formModule, formModule.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(setOf("invoice", "customer", "city", "old"), words.keys)
+    }
+
+    @Test
+    fun `should drop the VBA keywords of a VB6 form`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val form = File(tempDirPath.toFile(), "frmShipping.frm")
+        form.writeText(
+            """
+            Private Sub cmdShip_Click()
+                Dim lngParcels As Long
+            End Sub
+            """.trimIndent()
+        )
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(form, form.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(setOf("ship", "parcels"), words.keys)
+    }
+
+    @Test
     fun `should return empty map when file has no extractable words`(
         @TempDir tempDirPath: Path
     ) {
