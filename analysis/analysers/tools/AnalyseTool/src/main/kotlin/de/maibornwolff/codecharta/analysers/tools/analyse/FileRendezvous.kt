@@ -75,11 +75,11 @@ internal class Participation<R>(val order: Int, val files: List<File>, private v
     private val results = AtomicReferenceArray<Result<R>>(files.size)
 
     fun run(index: Int) {
-        results.set(index, runCatching { work(files[index]) })
+        results[index] = runCatching { work(files[index]) }
     }
 
     // A failure ends the parser it belongs to, as it would on the parser's own threads
-    fun results(): List<R> = List(files.size) { index -> results.get(index).getOrThrow() }
+    fun results(): List<R> = List(files.size) { index -> results[index].getOrThrow() }
 }
 
 internal class FileWork(private val participation: Participation<*>, private val index: Int) {
