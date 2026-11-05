@@ -20,7 +20,9 @@ differ, the parser follows the majority and says so. The rules shared by every l
   SESSION SET CURRENT_SCHEMA = sales;` (Oracle) make the first schema they name the default schema for the rest of the
   file: an unqualified `CREATE TABLE orders` after them creates `sales.orders` (decision 4). `USE x` is not read: in
   SQL Server it switches the database, in MySQL the schema, and the parser cannot tell the dialect.
-- The folder of a file plays no part; neither does its name, except for the order of migrations (see "Which file").
+- The folder of a file plays no part; neither does its name, except for the order of migrations (see "Which file")
+  and for an Access query: a `.sql` file of a `queries` folder that creates nothing is a view named after its file,
+  which also names forms and VBA functions, see [vba.md](vba.md).
 
 ## Declarations
 

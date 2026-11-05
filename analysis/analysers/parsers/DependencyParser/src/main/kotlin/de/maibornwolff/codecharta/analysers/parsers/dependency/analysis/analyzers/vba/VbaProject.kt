@@ -14,10 +14,15 @@ internal data class VbaOffer(val module: VbaModuleFile, val path: List<String>)
  * The VBA and VB6 modules of a run, read once: every module looks names up in the modules and public names of all of
  * them. A module name several files declare (two exported applications) offers what each of its copies declares.
  */
-internal class VbaProject private constructor(private val files: Set<String>, private val sourceOf: (String) -> String) {
+internal class VbaProject private constructor(
+    private val files: Set<String>,
+    private val queryFiles: Set<String>,
+    private val sourceOf: (String) -> String
+) {
     private val modules = ConcurrentHashMap<String, VbaModuleFile>()
     private val modulesByName by lazy { allModules().groupBy { it.name.lowercase() } }
     private val offersByName by lazy { offersByName() }
+    private val queryNames by lazy { queryFiles.map { AccessQueryFiles.queryNameOf(it) }.toSet() }
 
     fun moduleOf(file: String): VbaModuleFile = modules.computeIfAbsent(file) {
         VbaModuleFile(it, TreeSitterDependencies.vbaModule(sourceOf(it), grammarOf(it)))
@@ -25,6 +30,9 @@ internal class VbaProject private constructor(private val files: Set<String>, pr
 
     /** The copies of the module [name], written in any case. */
     fun modulesNamed(name: String): List<VbaModuleFile> = modulesByName[name.lowercase()].orEmpty()
+
+    /** The logical path of the Access query [name], written in any case, or null if the run has no such query. */
+    fun queryNamed(name: String): List<String>? = name.lowercase().takeIf { it in queryNames }?.let { listOf(it) }
 
     /** What the modules offer under [name] to every other module, written in any case. */
     fun offersOf(name: String): List<VbaOffer> = offersByName[name.lowercase()].orEmpty()
@@ -53,12 +61,14 @@ internal class VbaProject private constructor(private val files: Set<String>, pr
         fun of(analysisRoot: File, analysedFiles: Set<String>): VbaProject = projectsByRun.computeIfAbsent(
             analysisRoot.absolutePath to analysedFiles
         ) {
-            val files = analysedFiles.ifEmpty { filesBelow(analysisRoot) }.filterTo(HashSet()) { isVba(it) }
-            VbaProject(files) { file -> analysisRoot.resolve(file).readText() }
+            val runFiles = analysedFiles.ifEmpty { filesBelow(analysisRoot) }
+            val files = runFiles.filterTo(HashSet()) { isVba(it) }
+            val queryFiles = runFiles.filterTo(HashSet()) { AccessQueryFiles.isQueryFile(it) }
+            VbaProject(files, queryFiles) { file -> analysisRoot.resolve(file).readText() }
         }
 
         /** A file analysed without a root: a project of its own. */
-        fun ofSingleFile(file: String, content: String): VbaProject = VbaProject(setOf(file)) { content }
+        fun ofSingleFile(file: String, content: String): VbaProject = VbaProject(setOf(file), emptySet()) { content }
 
         private fun grammarOf(file: String): Language =
             if (file.endsWith(VB6_FORM_SUFFIX, ignoreCase = true)) Language.VB6 else Language.VBA

@@ -19,7 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   whose language the code counter tokei knows, counted the same way as in the Unified Parser.
 - **VBA and VB6**: `unifiedparser` measures exported VBA modules and classes from Access, Excel and Word, and VB6
   forms, with complexity, functions, lines of code and comment lines; `domainlanguageparser` reads their domain
-  words, and `dependencyparser` draws the dependencies between their modules and the forms and reports they open.
+  words, and `dependencyparser` draws the dependencies between their modules, the forms and reports they open, and the
+  Access queries exported as SQL, with the forms and VBA functions those name.
 
 ### Changed
 

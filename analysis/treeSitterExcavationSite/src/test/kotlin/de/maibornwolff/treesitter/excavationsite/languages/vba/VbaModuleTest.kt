@@ -212,7 +212,7 @@ class VbaModuleTest {
             code("OrderTotal"),
             code("modOrders", "OrderTotal"),
             code("Form_frmMain", "Caption"),
-            code("CurrentDb", "OpenRecordset"),
+            VbaName(listOf("Orders"), VbaNameKind.RELATION),
             code("clsVip"),
             code("Recordset")
         )
@@ -293,6 +293,31 @@ class VbaModuleTest {
             code("loaded"),
             VbaName(listOf("rptInvoice"), VbaNameKind.REPORT),
             code("AllForms")
+        )
+    }
+
+    @Test
+    fun `should read the queries and tables code opens or reads by a literal name, spaces too, but no SQL text`() {
+        // Arrange
+        val body = """
+            DoCmd.OpenQuery "qryArchive", acViewNormal
+            DoCmd.OpenQuery QueryName:="qryCleanup"
+            Set records = CurrentDb.OpenRecordset("qryOrders", dbOpenSnapshot)
+            text = CurrentDb.QueryDefs("qryOrderTotal").SQL
+            Set records = CurrentDb.OpenRecordset("SELECT * FROM Orders")
+            Set records = CurrentDb.OpenRecordset("Order Details")
+        """
+
+        // Act
+        val relations = namesOfRoutine(body).filter { it.kind == VbaNameKind.RELATION }
+
+        // Assert
+        assertThat(relations).containsExactly(
+            VbaName(listOf("qryArchive"), VbaNameKind.RELATION),
+            VbaName(listOf("qryCleanup"), VbaNameKind.RELATION),
+            VbaName(listOf("qryOrders"), VbaNameKind.RELATION),
+            VbaName(listOf("qryOrderTotal"), VbaNameKind.RELATION),
+            VbaName(listOf("Order Details"), VbaNameKind.RELATION)
         )
     }
 
