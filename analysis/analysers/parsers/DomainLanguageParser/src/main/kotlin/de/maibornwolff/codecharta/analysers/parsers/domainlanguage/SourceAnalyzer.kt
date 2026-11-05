@@ -98,7 +98,7 @@ class SourceAnalyzer(
         sortBy: SortBy
     ): Map<String, List<WordFrequency>> {
         val files = perFileWordCounts.entries.toList()
-        val wordsOfEachFile = files
+        val wordsOfEachFile: List<List<WordFrequency>> = files
             .parallelStream()
             .map { (_, wordCounts) ->
                 val frequencies = wordCounts.map { (word, count) -> WordFrequency.withScore(word, count, tfidfScores) }
