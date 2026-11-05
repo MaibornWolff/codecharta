@@ -5,6 +5,7 @@ import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiUnit
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.JavascriptDependencyMapping
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustModule
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.AccessQuery
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlScript
 import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaModule
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
@@ -53,6 +54,12 @@ object TreeSitterDependencies {
      * kind of object they ask for, and the names of the statements outside every object with their default schema.
      */
     fun sqlScript(content: String): SqlScript = DependenciesFacade.sqlScript(content)
+
+    /**
+     * What an Access query names: the tables, queries and functions of its SQL, and the forms and reports its `[Forms]!`
+     * and `[Reports]!` chains name.
+     */
+    fun accessQuery(content: String): AccessQuery = DependenciesFacade.accessQuery(content)
 
     /**
      * What a VBA module or class, or a VB6 form, declares: its `VB_Name`, whether it is a class, and each module-level

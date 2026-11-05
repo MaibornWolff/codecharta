@@ -19,6 +19,7 @@ import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustNamesp
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustPath
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustUse
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustVisibility
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.AccessQuery
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlMember
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlMemberKind
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlName
@@ -84,6 +85,7 @@ typealias SqlObjectKind = SqlObjectKind
 typealias SqlMember = SqlMember
 typealias SqlMemberKind = SqlMemberKind
 typealias SqlStatements = SqlStatements
+typealias AccessQuery = AccessQuery
 typealias VbaModule = VbaModule
 typealias VbaModuleKind = VbaModuleKind
 typealias VbaDeclaration = VbaDeclaration

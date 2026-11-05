@@ -5,7 +5,9 @@ import de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors.Uni
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiUnit
 import de.maibornwolff.treesitter.excavationsite.languages.rust.extractors.ModuleReader
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustModule
+import de.maibornwolff.treesitter.excavationsite.languages.sql.extractors.AccessQueryReader
 import de.maibornwolff.treesitter.excavationsite.languages.sql.extractors.ScriptReader
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.AccessQuery
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlScript
 import de.maibornwolff.treesitter.excavationsite.languages.vba.extractors.VbaModuleReader
 import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaModule
@@ -76,6 +78,12 @@ object DependenciesFacade {
     fun sqlScript(content: String): SqlScript {
         val grammar = NativeTreeSitter.grammar(LanguageRegistry.getGrammarLibrary(Language.SQL))
         return FfmSyntaxTree.parse(content, grammar).use { it.readReleasingReachedNodes(ScriptReader::read) }
+    }
+
+    /** What an Access query names, for the name lookup of `vba.md`, read with the SQL grammar. */
+    fun accessQuery(content: String): AccessQuery {
+        val grammar = NativeTreeSitter.grammar(LanguageRegistry.getGrammarLibrary(Language.SQL))
+        return FfmSyntaxTree.parse(content, grammar).use { it.readReleasingReachedNodes(AccessQueryReader::read) }
     }
 
     /** What a VBA or VB6 module declares and names, for the name lookup of `vba.md`. */

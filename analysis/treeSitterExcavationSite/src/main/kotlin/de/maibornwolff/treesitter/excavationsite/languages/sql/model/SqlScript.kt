@@ -81,3 +81,9 @@ enum class SqlNameKind {
 
 /** A name as written, in its parts, and the kind of object its position asks for. */
 data class SqlName(val parts: List<String>, val kind: SqlNameKind)
+
+/**
+ * What an Access query names (`vba.md`, Access queries): its SQL names as [SqlScript] reads them, and the forms and
+ * reports a bang chain names (`[Forms]![frmOrders]![txtId]` names `frmOrders`), as written.
+ */
+data class AccessQuery(val names: List<SqlName>, val forms: List<String>, val reports: List<String>)
