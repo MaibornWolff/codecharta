@@ -1,41 +1,61 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords
 
 import de.maibornwolff.codecharta.util.FileExtension
+import java.io.File
 import de.maibornwolff.treesitter.excavationsite.api.Language as LibraryLanguage
 
 private fun suffixesOf(fileExtension: FileExtension): Set<String> =
     (setOf(fileExtension.primaryExtension) + fileExtension.otherValidExtensions).map { it.removePrefix(".") }.toSet()
 
-enum class Language(val libraryLanguage: LibraryLanguage, internal val extensions: Set<String>, private val keywordResource: String) {
-    KOTLIN(LibraryLanguage.KOTLIN, setOf("kt", "kts"), "keywords/kotlin-keywords.txt"),
-    TYPESCRIPT(LibraryLanguage.TYPESCRIPT, setOf("ts", "tsx", "cts", "mts"), "keywords/typescript-keywords.txt"),
-    JAVASCRIPT(LibraryLanguage.JAVASCRIPT, setOf("js", "jsx", "mjs", "cjs"), "keywords/javascript-keywords.txt"),
-    JAVA(LibraryLanguage.JAVA, setOf("java"), "keywords/java-keywords.txt"),
-    PYTHON(LibraryLanguage.PYTHON, setOf("py", "pyw"), "keywords/python-keywords.txt"),
-    CSHARP(LibraryLanguage.CSHARP, setOf("cs"), "keywords/csharp-keywords.txt"),
-    GO(LibraryLanguage.GO, setOf("go"), "keywords/go-keywords.txt"),
-    C(LibraryLanguage.C, setOf("c", "h"), "keywords/c-keywords.txt"),
-    CPP(LibraryLanguage.CPP, setOf("cpp", "cc", "cxx", "hpp", "hxx", "h++"), "keywords/cpp-keywords.txt"),
-    PHP(LibraryLanguage.PHP, setOf("php", "phtml"), "keywords/php-keywords.txt"),
-    RUBY(LibraryLanguage.RUBY, setOf("rb", "rake", "gemspec"), "keywords/ruby-keywords.txt"),
-    SWIFT(LibraryLanguage.SWIFT, setOf("swift"), "keywords/swift-keywords.txt"),
-    BASH(LibraryLanguage.BASH, setOf("sh", "bash", "zsh"), "keywords/bash-keywords.txt"),
-    OBJC(LibraryLanguage.OBJECTIVE_C, setOf("m", "mm"), "keywords/objc-keywords.txt"),
-    VUE(LibraryLanguage.VUE, setOf("vue"), "keywords/vue-keywords.txt"),
-    RUST(LibraryLanguage.RUST, setOf("rs"), "keywords/rust-keywords.txt"),
-    ANGULAR(LibraryLanguage.ANGULAR, setOf("html"), "keywords/angular-template-keywords.txt"),
-    SQL(LibraryLanguage.SQL, suffixesOf(FileExtension.SQL), "keywords/sql-keywords.txt"),
-    VBA(LibraryLanguage.VBA, suffixesOf(FileExtension.VBA), "keywords/vba-keywords.txt"),
-    VB6(LibraryLanguage.VB6, suffixesOf(FileExtension.VB6), "keywords/vba-keywords.txt")
+enum class Language(
+    val libraryLanguage: LibraryLanguage,
+    internal val extensions: Set<String>,
+    private val keywordResources: List<String>
+) {
+    KOTLIN(LibraryLanguage.KOTLIN, setOf("kt", "kts"), listOf("keywords/kotlin-keywords.txt")),
+    TYPESCRIPT(LibraryLanguage.TYPESCRIPT, setOf("ts", "tsx", "cts", "mts"), listOf("keywords/typescript-keywords.txt")),
+    JAVASCRIPT(LibraryLanguage.JAVASCRIPT, setOf("js", "jsx", "mjs", "cjs"), listOf("keywords/javascript-keywords.txt")),
+    JAVA(LibraryLanguage.JAVA, setOf("java"), listOf("keywords/java-keywords.txt")),
+    PYTHON(LibraryLanguage.PYTHON, setOf("py", "pyw"), listOf("keywords/python-keywords.txt")),
+    CSHARP(LibraryLanguage.CSHARP, setOf("cs"), listOf("keywords/csharp-keywords.txt")),
+    GO(LibraryLanguage.GO, setOf("go"), listOf("keywords/go-keywords.txt")),
+    C(LibraryLanguage.C, setOf("c", "h"), listOf("keywords/c-keywords.txt")),
+    CPP(LibraryLanguage.CPP, setOf("cpp", "cc", "cxx", "hpp", "hxx", "h++"), listOf("keywords/cpp-keywords.txt")),
+    PHP(LibraryLanguage.PHP, setOf("php", "phtml"), listOf("keywords/php-keywords.txt")),
+    RUBY(LibraryLanguage.RUBY, setOf("rb", "rake", "gemspec"), listOf("keywords/ruby-keywords.txt")),
+    SWIFT(LibraryLanguage.SWIFT, setOf("swift"), listOf("keywords/swift-keywords.txt")),
+    BASH(LibraryLanguage.BASH, setOf("sh", "bash", "zsh"), listOf("keywords/bash-keywords.txt")),
+    OBJC(LibraryLanguage.OBJECTIVE_C, setOf("m", "mm"), listOf("keywords/objc-keywords.txt")),
+    VUE(LibraryLanguage.VUE, setOf("vue"), listOf("keywords/vue-keywords.txt")),
+    RUST(LibraryLanguage.RUST, setOf("rs"), listOf("keywords/rust-keywords.txt")),
+    ANGULAR(LibraryLanguage.ANGULAR, setOf("html"), listOf("keywords/angular-template-keywords.txt")),
+    SQL(LibraryLanguage.SQL, suffixesOf(FileExtension.SQL), listOf("keywords/sql-keywords.txt")),
+    VBA(LibraryLanguage.VBA, suffixesOf(FileExtension.VBA), listOf("keywords/vba-keywords.txt")),
+    VB6(LibraryLanguage.VB6, suffixesOf(FileExtension.VB6), listOf("keywords/vba-keywords.txt")),
+
+    // The SQL of an Access query names its objects with the prefixes of VBA code (`qryOrders`, `tblCustomers`)
+    ACCESS_QUERY(LibraryLanguage.SQL, emptySet(), listOf("keywords/sql-keywords.txt", "keywords/vba-keywords.txt"))
     ;
 
     // Scoped per language rather than merged into one global set: a Kotlin file must not lose `func`
     // to Go's keyword list, nor `end` to Ruby's.
-    val keywords: LanguageKeywords by lazy { ResourceKeywords(keywordResource) }
+    val keywords: LanguageKeywords by lazy {
+        val resources = keywordResources.map { ResourceKeywords(it) }
+        LanguageKeywords { resources.flatMapTo(HashSet()) { it.getKeywords() } }
+    }
 
     companion object {
+        private const val ACCESS_QUERY_FOLDER = "queries"
+
         fun fromExtension(extension: String): Language? = entries.find { language ->
             extension.lowercase() in language.extensions
+        }
+
+        /** The language of [file] by its ending; a `.sql` file in a folder named `queries` is an Access query. */
+        fun of(file: File): Language? {
+            val language = fromExtension(file.extension)
+            val isAccessQuery = language == SQL && file.parentFile?.name.equals(ACCESS_QUERY_FOLDER, ignoreCase = true)
+            return if (isAccessQuery) ACCESS_QUERY else language
         }
 
         fun allExtensions(): List<String> = entries.flatMap { it.extensions.toList() }
