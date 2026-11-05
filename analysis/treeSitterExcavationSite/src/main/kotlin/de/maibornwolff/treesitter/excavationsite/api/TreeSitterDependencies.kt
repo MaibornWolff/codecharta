@@ -6,6 +6,7 @@ import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiUn
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.JavascriptDependencyMapping
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustModule
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlScript
+import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaModule
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ComponentRegistration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DependencyResult
@@ -52,6 +53,12 @@ object TreeSitterDependencies {
      * kind of object they ask for, and the names of the statements outside every object with their default schema.
      */
     fun sqlScript(content: String): SqlScript = DependenciesFacade.sqlScript(content)
+
+    /**
+     * What a VBA module or class, or a VB6 form, declares: its `VB_Name`, whether it is a class, and each module-level
+     * declaration with whether other modules see it and the names it writes, the forms and reports it opens among them.
+     */
+    fun vbaModule(content: String, language: Language): VbaModule = DependenciesFacade.vbaModule(content, language)
 
     fun isDependencyAnalysisSupported(language: Language): Boolean {
         val definition = LanguageRegistry.getLanguageDefinition(language)

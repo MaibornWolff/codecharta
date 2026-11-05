@@ -27,6 +27,12 @@ import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlObject
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlObjectKind
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlScript
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlStatements
+import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaDeclaration
+import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaDeclarationKind
+import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaModule
+import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaModuleKind
+import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaName
+import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaNameKind
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AliasPathStart
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularDeclaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularSelector
@@ -78,5 +84,11 @@ typealias SqlObjectKind = SqlObjectKind
 typealias SqlMember = SqlMember
 typealias SqlMemberKind = SqlMemberKind
 typealias SqlStatements = SqlStatements
+typealias VbaModule = VbaModule
+typealias VbaModuleKind = VbaModuleKind
+typealias VbaDeclaration = VbaDeclaration
+typealias VbaDeclarationKind = VbaDeclarationKind
+typealias VbaName = VbaName
+typealias VbaNameKind = VbaNameKind
 typealias SqlName = SqlName
 typealias SqlNameKind = SqlNameKind
