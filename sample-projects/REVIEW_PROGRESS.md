@@ -67,7 +67,7 @@ Only the reports change. No parser code is touched in this review. `SUMMARY.md` 
 | C | done | 0 |
 | C# | done | 0 |
 | Rust | done | 0 |
-| ABL | dropped | none; ABL support is removed completely, see the note at the top of its report |
+| ABL | dropped | none; ABL support and its sample project are removed |
 
 The counts of the untouched languages were taken on 2026-10-08 and lowered on 2026-10-09 for the items closed
 by Objective-C and on 2026-10-12 for the one closed by C++ (escape sequences in C) and the two closed by Ruby and the one closed by Delphi

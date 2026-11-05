@@ -712,7 +712,6 @@ class RobustnessContractTest {
                     }
                     </script>
             """.trimIndent()
-            Language.ABL -> "// Comment\nPROCEDURE foo:\nDEFINE VARIABLE s AS CHARACTER NO-UNDO.\ns = \"hello\".\nEND PROCEDURE."
             Language.DELPHI -> "// Comment\nprocedure foo;\nbegin if True then WriteLn('hello'); end;"
             Language.RUST -> """
                     // Comment

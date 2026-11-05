@@ -30,7 +30,6 @@ class GrammarLoadingTest {
         "C, translation_unit",
         "OBJECTIVE_C, translation_unit",
         "VUE, program",
-        "ABL, source_file",
         "DELPHI, root",
         "RUST, source_file",
         "SQL, source_file",

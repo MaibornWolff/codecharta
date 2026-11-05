@@ -6,7 +6,7 @@ A Kotlin library for calculating code metrics and extracting text from source co
 
 - **Code Metrics**: Complexity, lines of code, comment lines, function counts, code smells, per-function aggregations
 - **Text Extraction**: Identifiers, comments, and string literals with context
-- **21 Languages and Frameworks**: Java, Kotlin, TypeScript, TSX, JavaScript, Python, Go, PHP, Ruby, Swift, Bash, C#, C++, C, Objective-C, Vue, ABL, Delphi, Rust, Angular templates, SQL
+- **20 Languages and Frameworks**: Java, Kotlin, TypeScript, TSX, JavaScript, Python, Go, PHP, Ruby, Swift, Bash, C#, C++, C, Objective-C, Vue, Delphi, Rust, Angular templates, SQL
 - **Zero External Dependencies**: Only the native tree-sitter libraries are required, loaded through Java's foreign function API
 
 ## Requirements
@@ -130,7 +130,6 @@ println(TreeSitterDependencies.getSupportedLanguages())                        /
 | C | `.c` | Stable | Stable | — |
 | Objective-C | `.m`, `.mm` | Stable | Stable | — |
 | Vue | `.vue` | Stable | Stable | Experimental |
-| ABL | `.p`, `.cls`, `.w`, `.i` | Experimental | Experimental | — |
 | Delphi | `.pas`, `.dpr` | Stable | Stable | Experimental |
 | Rust | `.rs` | Stable | Stable | Experimental |
 | Angular templates (and plain HTML) | `.html` | Experimental | Experimental | Experimental |

@@ -1,5 +1,5 @@
 export interface SourceLanguage {
-    /** Prism's grammar; null where Prism has none, as for ABL, and the file stays plain. */
+    /** Prism's grammar; null for a file of no known language, which stays plain. */
     grammar: string | null
     label: string
 }
@@ -64,10 +64,7 @@ const LANGUAGE_BY_EXTENSION: Readonly<Record<string, SourceLanguage>> = {
     json: { grammar: "json", label: "JSON" },
     yaml: YAML,
     yml: YAML,
-    md: { grammar: "markdown", label: "Markdown" },
-    p: { grammar: null, label: "ABL" },
-    cls: { grammar: null, label: "ABL" },
-    w: { grammar: null, label: "ABL" }
+    md: { grammar: "markdown", label: "Markdown" }
 }
 
 export function sourceLanguageOf(filePath: string): SourceLanguage {

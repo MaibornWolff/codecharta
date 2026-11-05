@@ -195,13 +195,13 @@ describe("SourceViewerComponent", () => {
         expect(coloured.querySelector(".token.number").textContent).toBe("42")
     })
 
-    it("should leave a file of a language without a grammar plain and name its language", async () => {
+    it("should leave a file of no known language plain and name it plain text", async () => {
         // Act
-        await openViewer(aFile("DEFINE VARIABLE x AS INTEGER.", "orders.p"))
+        await openViewer(aFile("plain words", "notes.txt"))
 
         // Assert
         expect(screen.getByTestId("local-source-plain")).not.toBe(null)
-        expect(screen.getByTestId("source-viewer-language").textContent.trim()).toBe("ABL")
+        expect(screen.getByTestId("source-viewer-language").textContent.trim()).toBe("Plain text")
         expect(highlightSource).not.toHaveBeenCalled()
     })
 

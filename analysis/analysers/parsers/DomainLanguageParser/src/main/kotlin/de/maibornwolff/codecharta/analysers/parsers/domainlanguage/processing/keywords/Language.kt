@@ -22,14 +22,13 @@ enum class Language(val libraryLanguage: LibraryLanguage, internal val extension
     BASH(LibraryLanguage.BASH, setOf("sh", "bash", "zsh"), "keywords/bash-keywords.txt"),
     OBJC(LibraryLanguage.OBJECTIVE_C, setOf("m", "mm"), "keywords/objc-keywords.txt"),
     VUE(LibraryLanguage.VUE, setOf("vue"), "keywords/vue-keywords.txt"),
-    ABL(LibraryLanguage.ABL, setOf("p", "cls", "w"), "keywords/abl-keywords.txt"),
     RUST(LibraryLanguage.RUST, setOf("rs"), "keywords/rust-keywords.txt"),
     ANGULAR(LibraryLanguage.ANGULAR, setOf("html"), "keywords/angular-template-keywords.txt"),
     SQL(LibraryLanguage.SQL, suffixesOf(FileExtension.SQL), "keywords/sql-keywords.txt")
     ;
 
     // Scoped per language rather than merged into one global set: a Kotlin file must not lose `func`
-    // to Go's keyword list, nor a Ruby file `end` to ABL's.
+    // to Go's keyword list, nor `end` to Ruby's.
     val keywords: LanguageKeywords by lazy { ResourceKeywords(keywordResource) }
 
     companion object {
