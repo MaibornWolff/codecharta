@@ -215,7 +215,21 @@ class LanguageTest {
     @Test
     fun `should have ResourceKeywords for VBA with the naming prefixes and event handler words of Access`() {
         // Arrange
-        val words = listOf("tbl", "qry", "frm", "rpt", "txt", "cbo", "cmd", "str", "lng", "rs", "qdf", "click", "dbl", "unload", "form")
+        val words = listOf(
+            "tbl", "qry", "frm", "rpt", "txt", "cbo", "cmd", "str", "lng", "rs", "qdf", "ary", "td", "click", "dbl", "unload", "form"
+        )
+
+        // Act
+        val keywords = ResourceKeywords("keywords/vba-keywords.txt").getKeywords()
+
+        // Assert
+        assertEquals(words, words.filter { it in keywords })
+    }
+
+    @Test
+    fun `should have ResourceKeywords for VBA with the built-in names of Access and id, as in SQL`() {
+        // Arrange
+        val words = listOf("requery", "openargs", "args", "docmd", "recordset", "id")
 
         // Act
         val keywords = ResourceKeywords("keywords/vba-keywords.txt").getKeywords()

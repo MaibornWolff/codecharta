@@ -218,6 +218,9 @@ currentdb
 currentproject
 recordset
 recordsetclone
+requery
+openargs
+args
 querydef
 querydefs
 tabledef
@@ -276,11 +279,15 @@ var
 obj
 col
 arr
+ary
 rs
 rst
 db
 dbs
 fld
+prp
+td
+qd
 ws
 wb
 wks
@@ -290,6 +297,9 @@ app
 cn
 cnn
 conn
+
+# Ids, as in SQL: `CustomerID` names the customer, not the id
+id
 
 # Event handler words
 click
