@@ -250,8 +250,9 @@ VBA module or class (`Language.VBA`) or a VB6 form (`Language.VB6`), what the VB
   the compiler does, and so are labels, `With` members and the conditions of an `#If`. A form or report a literal
   names (`DoCmd.OpenForm "x"`, `FormName:="x"`, `DoCmd.OpenReport`, `Forms!x`, `Forms("x")`, `Reports!x`,
   `Reports("x")`, `CurrentProject.AllForms("x")`, `AllReports("x")`) comes as a name of kind `FORM` or `REPORT`, a query
-or table (`DoCmd.OpenQuery "x"`, `OpenRecordset("x")`, `QueryDefs("x")`) of kind `RELATION`; a literal that holds SQL
-names none.
+or table (`DoCmd.OpenQuery "x"`, `OpenRecordset("x")`, `QueryDefs("x")`, `DLookup("Field", "x")` and the other domain
+functions, a `RowSource` or `RecordSource` set to `"x"`) of kind `RELATION`; a `DoCmd` method with an object type
+(`DoCmd.Close acForm, "x"`) by that type. A literal that holds SQL names none.
 
 ### Access query facts
 
