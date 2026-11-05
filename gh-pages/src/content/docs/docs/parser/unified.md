@@ -66,6 +66,8 @@ Usage: ccsh unifiedparser [-h] [--bypass-gitignore] [--commit=<ref>] [-ibf]
 | Rust         | .rs                                    |
 | Angular/HTML | .html                                  |
 | SQL          | .sql, .pks, .pkb, .pls                 |
+| VBA          | .bas, .cls                             |
+| VB6 forms    | .frm                                   |
 
 Some languages need a word of explanation:
 
@@ -76,6 +78,10 @@ Some languages need a word of explanation:
   reports or documentation, with `-e`. The inline `template` of a `@Component` in a `.ts` file is measured as well,
   and its complexity adds to the complexity and logic complexity of the `.ts` file.
 - **SQL**: one grammar covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL, so no dialect has to be chosen.
+- **VBA and VB6**: the parser reads the modules and classes that Access, Excel and Word export, not the code inside an
+  `.accdb`, `.xlsm` or `.docm` file. A VB6 form (`.frm`) is measured behind its layout. Subs, functions and property
+  procedures count as functions; branches, every `Case`, loops, `And`/`Or`/`Xor`/`Eqv`/`Imp`, `IIf` and an
+  `On Error GoTo` handler add to the complexity.
 
 ## Metrics
 
