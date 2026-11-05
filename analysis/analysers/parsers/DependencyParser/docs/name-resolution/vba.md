@@ -59,8 +59,9 @@ one declaration with two copies (shared rule 2).
 
 A form or report named by a literal means its module (decision 2): `DoCmd.OpenForm "frmX"`,
 `DoCmd.OpenForm FormName:="frmX"`, `Forms!frmX` and `Forms("frmX")` mean `Form_frmX`; `DoCmd.OpenReport "rptX"`,
-`Reports!rptX` and `Reports("rptX")` mean `Report_rptX`. A form without code has no module and draws no edge. A name in
-a variable (`DoCmd.OpenForm strName`) draws none.
+`Reports!rptX` and `Reports("rptX")` mean `Report_rptX`, and so do a project's `AllForms("frmX")` and
+`AllReports("rptX")` (`CurrentProject.AllForms("frmX").IsLoaded`). A form without code has no module and draws no
+edge. A name in a variable (`DoCmd.OpenForm strName`) draws none.
 
 ## Case
 
@@ -84,7 +85,7 @@ rule yet; `sample-projects/regression/vba/known-gaps.md` says how it deviates.
 | Simple name 3, decision 3: the nearest of two modules, a tie | `spec-ambiguous` | ok |
 | Qualified: `M.N`, the own module's private names | `spec-module-qualified` | ok |
 | Qualified: a form's default instance, a member of a value | `spec-member-access` | ok |
-| Access, decision 2: `DoCmd`, `Forms`, `Reports` | `spec-access-objects` | ok |
+| Access, decision 2: `DoCmd`, `Forms`, `Reports`, `AllForms`, `AllReports` | `spec-access-objects` | ok |
 | Case, decision 5: another case | `spec-case` | ok |
 | Shared rule 2, copies | `spec-copies` | ok |
 
@@ -104,7 +105,9 @@ rule yet; `sample-projects/regression/vba/known-gaps.md` says how it deviates.
    their own, as Delphi's free routines (delphi.md decision 1); a class, form or report module is one declaration whose
    members belong to it, as a Java class (decided by Christian, 2026-11-05).
 2. A form or report named by a literal in `DoCmd.OpenForm`, `DoCmd.OpenReport`, `Forms!x`, `Forms("x")`, `Reports!x`
-   and `Reports("x")` means its code module `Form_x` or `Report_x` (decided by Christian, 2026-11-05).
+   and `Reports("x")` means its code module `Form_x` or `Report_x` (decided by Christian, 2026-11-05); so does a
+   project's `AllForms("x")` and `AllReports("x")`, which Northwind uses to ask whether a form is open (derived from
+   the Northwind run, 2026-11-05).
 3. A name several modules offer means nothing, as the compiler rejects it, unless one of them is nearer by folder; the
    folder rule tells two exported applications in one repository apart, whose modules may share names (decided by
    Christian, 2026-11-05; the folder part derived from shared rule 2).
