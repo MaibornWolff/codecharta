@@ -39,14 +39,14 @@ also on the showcase projects, against a second build such as the last release. 
 differs, 1 when edges differ, 2 on wrong arguments or a probe folder without `expected.txt`, and 3 when a ccsh run
 fails, writes no map or cannot analyse a file.
 
-Language folders: `abl`, `angular`, `bash`, `c`, `cpp`, `csharp`, `delphi`, `go`, `java`, `javascript`, `kotlin`,
+Language folders: `angular`, `bash`, `c`, `cpp`, `csharp`, `delphi`, `go`, `java`, `javascript`, `kotlin`,
 `objectivec`, `php`, `python`, `ruby`, `rust`, `sql`, `swift`, `typescript`, `vue`.
 
 | Parser | Languages |
 | --- | --- |
-| `unifiedparser` | every language except abl (extensions: `.js .cjs .mjs`, `.ts .cts .mts`, `.tsx`, `.java`, `.kt`, `.cs`, `.cpp .cc .cxx .c++ .hh .hpp .hxx`, `.c .h`, `.m`, `.py`, `.go`, `.php`, `.rb`, `.swift`, `.sh`, `.vue`, `.pas .dpr`, `.rs`, `.html`, `.sql .pks .pkb .pls`) |
+| `unifiedparser` | every language (extensions: `.js .cjs .mjs`, `.ts .cts .mts`, `.tsx`, `.java`, `.kt`, `.cs`, `.cpp .cc .cxx .c++ .hh .hpp .hxx`, `.c .h`, `.m`, `.py`, `.go`, `.php`, `.rb`, `.swift`, `.sh`, `.vue`, `.pas .dpr`, `.rs`, `.html`, `.sql .pks .pkb .pls`) |
 | `dependencyparser` | php, csharp, typescript (+tsx), javascript, java, go, python, c and cpp (one C++ grammar), kotlin, vue, delphi, rust, angular (templates), sql |
-| `domainlanguageparser` | kotlin, typescript, javascript, java, python, csharp, go, c, cpp, php, ruby, swift, bash, objectivec, vue, abl, rust, angular (templates), sql |
+| `domainlanguageparser` | kotlin, typescript, javascript, java, python, csharp, go, c, cpp, php, ruby, swift, bash, objectivec, vue, rust, angular (templates), sql |
 
 ## The shared domain model
 

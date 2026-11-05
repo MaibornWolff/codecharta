@@ -1,6 +1,5 @@
 package de.maibornwolff.treesitter.excavationsite.languages
 
-import de.maibornwolff.treesitter.excavationsite.languages.abl.AblDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.angular.AngularDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.bash.BashDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.c.CDefinition
@@ -43,7 +42,6 @@ object LanguageRegistry {
         Language.C to Registration(GrammarLibrary("c"), CDefinition),
         Language.OBJECTIVE_C to Registration(GrammarLibrary("objc"), ObjectiveCDefinition),
         Language.VUE to Registration(GrammarLibrary("javascript"), VueDefinition),
-        Language.ABL to Registration(GrammarLibrary("abl"), AblDefinition),
         Language.DELPHI to Registration(GrammarLibrary("pascal"), DelphiDefinition),
         Language.RUST to Registration(GrammarLibrary("rust"), RustDefinition),
         Language.ANGULAR to Registration(GrammarLibrary("angular"), AngularDefinition),

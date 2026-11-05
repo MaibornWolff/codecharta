@@ -20,7 +20,6 @@ enum class Language(val primaryExtension: String, val otherExtensions: Set<Strin
     C(primaryExtension = ".c"),
     OBJECTIVE_C(primaryExtension = ".m", otherExtensions = setOf(".mm")),
     VUE(primaryExtension = ".vue"),
-    ABL(primaryExtension = ".p", otherExtensions = setOf(".cls", ".w", ".i")),
     DELPHI(primaryExtension = ".pas", otherExtensions = setOf(".dpr")),
     RUST(primaryExtension = ".rs"),
     ANGULAR(primaryExtension = ".html"),

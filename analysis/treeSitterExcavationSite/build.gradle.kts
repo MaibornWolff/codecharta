@@ -21,7 +21,6 @@ dependencies {
     runtimeOnly(libs.tree.sitter.c)
     runtimeOnly(libs.tree.sitter.objc)
     runtimeOnly(libs.tree.sitter.vue)
-    runtimeOnly(libs.tree.sitter.abl)
     runtimeOnly(files("libs/tree-sitter-tsx-0.23.2.jar"))
     runtimeOnly(files("libs/tree-sitter-pascal-0.10.2.jar"))
     runtimeOnly(files("libs/tree-sitter-angular-0.9.2-codecharta.2.jar"))

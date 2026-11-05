@@ -8,8 +8,7 @@ round-2 summary of 2026-09-06 is in the git history of this file; what changed s
 
 Christian decided every finding between 2026-10-08 and 2026-10-12 (`REVIEW_PROGRESS.md`). Each item below ends in
 its decision: **→ accept** is to be fixed in the parser, **→ ignore** stays as it is. Where one item bundles
-several findings the decision names the part. ABL support is dropped completely, so ABL is no longer listed; its
-report is kept for reference.
+several findings the decision names the part. ABL support is dropped completely, so ABL is no longer listed.
 
 All runs used `LC_ALL=C.UTF-8`. JavaScript keeps the UTF-8 runs as `output/*-utf8.cc.json` beside the POSIX ones.
 

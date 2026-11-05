@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Faster analysis of large projects**: `ccsh analyse` maps a project with tens of thousands of files in a fraction of
   the time and with less memory, most of all one with many packages.
 
+### Removed
+
+- **ABL**: the parsers no longer read OpenEdge ABL (Progress) files.
+
 ### Fixed 🐞
 
 - **Lines of code in Objective-C, PHP and Ruby**: `unifiedparser` no longer counts a blank line after an `#include`, or a

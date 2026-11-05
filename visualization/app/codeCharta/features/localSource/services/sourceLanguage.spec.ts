@@ -37,7 +37,6 @@ describe("sourceLanguageOf", () => {
         ["Service.cs", "C#"],
         ["src/engine.hpp", "C++"],
         ["App.vue", "Vue"],
-        ["orders.p", "ABL"],
         ["src/Makefile", "Plain text"]
     ])("should name the language of %s %s", (filePath, label) => {
         // Act
@@ -48,7 +47,7 @@ describe("sourceLanguageOf", () => {
     })
 
     it.each([
-        ["an ABL program, which Prism has no grammar for", "orders.p"],
+        ["a file of no known language", "notes.txt"],
         ["a file without an extension", "src/Makefile"],
         ["a hidden file named only by its dot", "app/.gitignore"],
         ["a folder whose name has a dot", "my.app/README"]

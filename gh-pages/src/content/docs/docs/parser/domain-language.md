@@ -80,7 +80,6 @@ its entries by node id under `nodes`:
 | Bash              | .sh, .bash, .zsh                      |
 | Objective-C       | .m, .mm                               |
 | Vue               | .vue                                  |
-| ABL (Progress)    | .p, .cls, .w                          |
 | Rust              | .rs                                   |
 | Angular templates | .html                                 |
 | SQL               | .sql, .pks, .pkb, .pls                |
