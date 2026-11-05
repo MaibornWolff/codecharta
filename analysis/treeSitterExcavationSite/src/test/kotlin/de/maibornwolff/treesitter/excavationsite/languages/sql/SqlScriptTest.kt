@@ -203,6 +203,28 @@ class SqlScriptTest {
     @Nested
     inner class Names {
         @Test
+        fun `should ask a relation for each table of a join in parentheses, also of joins nested in each other`() {
+            // Arrange
+            val code = """
+                CREATE VIEW open_orders AS
+                SELECT orders.id FROM status INNER JOIN (customers INNER JOIN (orders LEFT JOIN totals ON orders.id = totals.id)
+                ON customers.id = orders.customer_id) ON status.id = orders.status_id WHERE orders.id IN (SELECT id FROM archive);
+            """
+
+            // Act
+            val relations = namesOf(code).filter { it.kind == SqlNameKind.RELATION }
+
+            // Assert
+            assertThat(relations).containsExactlyInAnyOrder(
+                name("status", SqlNameKind.RELATION),
+                name("customers", SqlNameKind.RELATION),
+                name("orders", SqlNameKind.RELATION),
+                name("totals", SqlNameKind.RELATION),
+                name("archive", SqlNameKind.RELATION)
+            )
+        }
+
+        @Test
         fun `should read no name in the body of a routine in another language, before or after its LANGUAGE clause`() {
             // Arrange
             val code = """

@@ -47,6 +47,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Large HTML files**: the domain language parser no longer hangs on an HTML file with much text between its tags.
 - **Long dependency cycles**: the dependency parser no longer crashes on a cycle that runs through thousands of files
   or packages.
+- **SQL joins in parentheses**: the dependency parser links a query to every table of a join written in parentheses,
+  not only to the first and the last.
 
 ## [2.3.0] - 2026-10-28
 

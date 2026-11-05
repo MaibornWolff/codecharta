@@ -37,9 +37,23 @@ internal class SqlNameCollector(private val locals: Set<String>, private val inP
                 index = sequence.second
                 continue
             }
-            if (positionOf(child) != ownName && !isForeignBody(parent, child)) visitChild(parent, children, index)
+            when {
+                isJoinedInParentheses(
+                    children,
+                    index
+                ) -> usedParts(child, SqlNames.comparablePartsOf(child))?.let { record(it, SqlNameKind.RELATION) }
+                positionOf(child) != ownName && !isForeignBody(parent, child) -> visitChild(parent, children, index)
+            }
             index++
         }
+    }
+
+    // FROM (customers INNER JOIN (orders LEFT JOIN totals ...: the grammar marks only the first table after the keyword
+    private fun isJoinedInParentheses(children: List<SyntaxNode>, index: Int): Boolean {
+        if (children[index].type != OBJECT_NAME) return false
+        var before = index - 1
+        while (before >= 0 && children[before].type == OPENING_PARENTHESIS) before--
+        return before < index - 1 && before >= 0 && NameTokens.wordOf(children[before]) in RELATION_KEYWORDS
     }
 
     private fun isForeignBody(parent: SyntaxNode?, child: SyntaxNode): Boolean =
