@@ -55,16 +55,10 @@ object TreeSitterDependencies {
      */
     fun sqlScript(content: String): SqlScript = DependenciesFacade.sqlScript(content)
 
-    /**
-     * What an Access query names: the tables, queries and functions of its SQL, and the forms and reports its `[Forms]!`
-     * and `[Reports]!` chains name.
-     */
+    /** What an Access query names: its tables, queries and functions, and the forms and reports of its bang chains. */
     fun accessQuery(content: String): AccessQuery = DependenciesFacade.accessQuery(content)
 
-    /**
-     * What a VBA module or class, or a VB6 form, declares: its `VB_Name`, whether it is a class, and each module-level
-     * declaration with whether other modules see it and the names it writes, the forms and reports it opens among them.
-     */
+    /** What a VBA module or class, or a VB6 form, declares and names, see [VbaModule]. */
     fun vbaModule(content: String, language: Language): VbaModule = DependenciesFacade.vbaModule(content, language)
 
     fun isDependencyAnalysisSupported(language: Language): Boolean {
