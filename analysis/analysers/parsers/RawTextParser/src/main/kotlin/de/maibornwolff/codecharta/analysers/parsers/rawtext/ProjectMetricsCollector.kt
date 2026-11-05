@@ -12,6 +12,7 @@ import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.util.Logger
+import de.maibornwolff.codecharta.util.SourceText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -103,7 +104,7 @@ class ProjectMetricsCollector(
     fun getGitIgnoreStatistics(): Pair<Int, List<String>> = gitignoreHandler?.getStatistics() ?: Pair(0, emptyList())
 
     private fun collectMetricsForFile(file: File, standardizedPath: String): FileMetrics {
-        val fileContent = file.readText()
+        val fileContent = SourceText.read(file)
         val currentChecksum = ChecksumCalculator.calculateChecksum(fileContent)
         val baseNode = baseFileNodeMap[standardizedPath.removePrefix("/")]
         return if (baseNode != null && baseNode.checksum == currentChecksum) {

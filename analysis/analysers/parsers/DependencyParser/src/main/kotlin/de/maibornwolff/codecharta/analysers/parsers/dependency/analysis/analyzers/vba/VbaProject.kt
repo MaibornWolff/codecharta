@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.ProjectListing
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.readInParallel
 import de.maibornwolff.codecharta.util.AccessQueryFiles
+import de.maibornwolff.codecharta.util.SourceText
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import java.io.File
@@ -65,7 +66,7 @@ internal class VbaProject private constructor(
             val runFiles = analysedFiles.ifEmpty { filesBelow(analysisRoot) }
             val files = runFiles.filterTo(HashSet()) { isVba(it) }
             val queryFiles = runFiles.filterTo(HashSet()) { AccessQueryFiles.isQueryFile(it) }
-            VbaProject(files, queryFiles) { file -> analysisRoot.resolve(file).readText() }
+            VbaProject(files, queryFiles) { file -> SourceText.read(analysisRoot.resolve(file)) }
         }
 
         /** A file analysed without a root: a project of its own. */
