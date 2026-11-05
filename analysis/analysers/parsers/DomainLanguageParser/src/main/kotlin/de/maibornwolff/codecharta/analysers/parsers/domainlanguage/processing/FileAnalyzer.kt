@@ -21,7 +21,7 @@ class FileAnalyzer(
 
     fun extractWordsFromFile(file: File, content: String): FileResult {
         val language =
-            Language.fromExtension(file.extension)
+            Language.of(file)
                 ?: return FileResult.Skipped(file.extension.lowercase())
         val filePath = file.toPath().toAbsolutePath()
         val words = getPipeline(language).process(content, filePath)

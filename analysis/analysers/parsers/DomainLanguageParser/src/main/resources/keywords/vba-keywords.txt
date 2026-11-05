@@ -240,6 +240,8 @@ dll
 # Naming prefixes of Access code (Reddick and Leszynski conventions)
 tbl
 qry
+qrycbo
+qryrpt
 qdf
 tdf
 frm

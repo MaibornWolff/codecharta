@@ -356,6 +356,25 @@ class FileAnalyzerTest {
     }
 
     @Test
+    fun `should drop the Access naming prefixes of a query in a queries folder, but not of other SQL`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val sql = "CREATE VIEW qryInvoices AS SELECT * FROM qrycboCustomers;"
+        val query = File(tempDirPath.toFile(), "queries").also { it.mkdirs() }.resolve("qryInvoices.sql").also { it.writeText(sql) }
+        val script = File(tempDirPath.toFile(), "migrations").also { it.mkdirs() }.resolve("V1__views.sql").also { it.writeText(sql) }
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val queryWords = analyzer.extractWordsFromFile(query, sql).wordsOrEmpty()
+        val scriptWords = analyzer.extractWordsFromFile(script, sql).wordsOrEmpty()
+
+        // Assert
+        assertEquals(setOf("invoices", "customers"), queryWords.keys)
+        assertTrue(scriptWords.containsKey("qry"))
+    }
+
+    @Test
     fun `should return empty map when file has no extractable words`(
         @TempDir tempDirPath: Path
     ) {

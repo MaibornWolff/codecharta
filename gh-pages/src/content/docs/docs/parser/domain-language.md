@@ -127,7 +127,8 @@ and `id`. Its keywords are not: a keyword never comes out as a word, and one tha
 In VBA and VB6 the keywords, types and built-in names are stop words, English ones such as `date` or `currency` too,
 but not `open` and `close`. So are `id`, as in SQL, the naming prefixes of Access code (`tbl`, `qry`, `frm`, `txt`, `str`, `rs`) and the
 words of event handlers (`click`, `focus`, `unload`, `initialize`, `form` of `cmdSave_Click` or `Form_Load`). The event
-words that also name a domain stay: `report`, `current`, `change`, `key`.
+words that also name a domain stay: `report`, `current`, `change`, `key`. A `.sql` file in a folder named `queries`
+holds an Access query, so the stop words of SQL and of VBA both apply to it (`qryOrders` gives `orders`).
 
 ## Input and stop words
 
