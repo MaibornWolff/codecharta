@@ -7,6 +7,8 @@ import de.maibornwolff.treesitter.excavationsite.languages.rust.extractors.Modul
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustModule
 import de.maibornwolff.treesitter.excavationsite.languages.sql.extractors.ScriptReader
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlScript
+import de.maibornwolff.treesitter.excavationsite.languages.vba.extractors.VbaModuleReader
+import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaModule
 import de.maibornwolff.treesitter.excavationsite.languages.vue.VueDependencyMapping
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ComponentRegistration
@@ -19,6 +21,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmSy
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.NativeTreeSitter
 
 object DependenciesFacade {
+    private val VBA_LANGUAGES = setOf(Language.VBA, Language.VB6)
+
     /**
      * The package, imports and declarations of the given source code, with what the sources in another language it
      * embeds import and declare.
@@ -72,6 +76,13 @@ object DependenciesFacade {
     fun sqlScript(content: String): SqlScript {
         val grammar = NativeTreeSitter.grammar(LanguageRegistry.getGrammarLibrary(Language.SQL))
         return FfmSyntaxTree.parse(content, grammar).use { it.readReleasingReachedNodes(ScriptReader::read) }
+    }
+
+    /** What a VBA or VB6 module declares and names, for the name lookup of `vba.md`. */
+    fun vbaModule(content: String, language: Language): VbaModule {
+        require(language in VBA_LANGUAGES) { "A VBA module is read as VBA or VB6, not as ${language.name}" }
+        val grammar = NativeTreeSitter.grammar(LanguageRegistry.getGrammarLibrary(language))
+        return FfmSyntaxTree.parse(content, grammar).use { it.readReleasingReachedNodes(VbaModuleReader::read) }
     }
 
     fun bundlerAliases(

@@ -234,6 +234,23 @@ Delphi only through it, `analyze()` stays for other consumers:
   constants, variables, types and routines, inline and loop variables) is left out, ignoring case as the compiler does.
   An attribute is marked, so `[Table]` can mean `TableAttribute`.
 
+### VBA module facts
+
+`TreeSitterDependencies.vbaModule(content, language)` returns a `VbaModule` (types in `languages/vba/model`) for a
+VBA module or class (`Language.VBA`) or a VB6 form (`Language.VB6`), what the VBA name lookup of the dependency parser
+(`docs/name-resolution/vba.md`) needs from one file. VBA has no `analyze()` mapping:
+
+- the module name from its `VB_Name` attribute (empty without one), and whether it is a class: an exported class,
+  form, report or document module and a VB6 form start with a `VERSION` line, a standard module does not.
+- `declarations`: every routine (`Sub`, `Function`, the accessors of a property as one, `Declare`), each variable and
+  constant of a module-level `Dim`, `Private`, `Public`, `Global` or `Const` line, every `Type` with its fields and
+  `Enum` with its values, with whether other modules see it. Every branch of an `#If` counts.
+- `names` per declaration and of the module (`Implements`, event parameters): each name as written, up to the first
+  call or bang; what a routine declares (parameters, `Dim`, `Static`, `Const`) and `Me` are left out, ignoring case as
+  the compiler does, and so are labels, `With` members and the conditions of an `#If`. A form or report a literal
+  names (`DoCmd.OpenForm "x"`, `FormName:="x"`, `DoCmd.OpenReport`, `Forms!x`, `Forms("x")`, `Reports!x`,
+  `Reports("x")`) comes as a name of kind `FORM` or `REPORT`.
+
 ### SQL script facts
 
 `TreeSitterDependencies.sqlScript(content)` returns a `SqlScript` (types in `languages/sql/model`), what the SQL name
