@@ -38,6 +38,16 @@ See `plans/add-delphi-dependency-support.md` ("Accepted v1 limitations") for the
 
 ---
 
+### VBA and VB6
+
+**Severity: Low**
+
+- **A comment continued with ` _` breaks the parse of its next line.** VBA continues a comment that ends in a line
+  continuation, tree-sitter-vba 0.14.5 does not, so the next line becomes an ERROR node. Rare in exported code.
+- **A procedure header split by `#If … #Else … #End If` counts the parameters of both branches.**
+
+---
+
 ## Previously Suspected (Not Confirmed)
 
 The following issues were investigated but **not found**:

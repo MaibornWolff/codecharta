@@ -19,6 +19,7 @@ import de.maibornwolff.treesitter.excavationsite.languages.rust.RustDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.sql.SqlDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.swift.SwiftDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.tsx.TsxDefinition
+import de.maibornwolff.treesitter.excavationsite.languages.vba.VbaDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.vue.VueDefinition
 import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
@@ -45,7 +46,9 @@ object LanguageRegistry {
         Language.DELPHI to Registration(GrammarLibrary("pascal"), DelphiDefinition),
         Language.RUST to Registration(GrammarLibrary("rust"), RustDefinition),
         Language.ANGULAR to Registration(GrammarLibrary("angular"), AngularDefinition),
-        Language.SQL to Registration(GrammarLibrary("sql-island", "sql_island"), SqlDefinition)
+        Language.SQL to Registration(GrammarLibrary("sql-island", "sql_island"), SqlDefinition),
+        Language.VBA to Registration(GrammarLibrary("vba"), VbaDefinition),
+        Language.VB6 to Registration(GrammarLibrary("vb6"), VbaDefinition)
     )
 
     fun getGrammarLibrary(language: Language): GrammarLibrary = registrationOf(language).grammarLibrary

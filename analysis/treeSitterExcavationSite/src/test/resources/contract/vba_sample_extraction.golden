@@ -1,0 +1,25 @@
+# Identifiers
+OpenOrders
+OrderTotal
+TAX_RATE
+c
+discount
+gCount
+orderId
+rs
+total
+
+# Comments
+Calculates the order total
+legacy comment
+show error
+
+# Strings
+OrderID = 1
+SELECT * FROM tblOrderDetails WHERE OrderID = 
+frmOrders
+frmOrders
+modOrders
+opened
+qryOpenOrders
+rptInvoice

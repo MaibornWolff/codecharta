@@ -21,8 +21,9 @@ sealed class MetricCondition {
         override fun matches(node: SyntaxNode): Boolean = node.children().any { it.type in allowedTypes }
     }
 
-    data class ChildTextMatches(val childType: String, val allowedTexts: Set<String>) : MetricCondition() {
-        override fun matches(node: SyntaxNode): Boolean = textsOfChildren(node, childType).any { it in allowedTexts }
+    data class ChildTextMatches(val childType: String, val allowedTexts: Set<String>, val ignoreCase: Boolean = false) : MetricCondition() {
+        override fun matches(node: SyntaxNode): Boolean =
+            textsOfChildren(node, childType).any { text -> allowedTexts.any { it.equals(text, ignoreCase) } }
     }
 
     /** Needs at least one child of [childType], such as an ICU case that is not the `other` case. */
@@ -35,6 +36,16 @@ sealed class MetricCondition {
 
     data class TextMatches(val pattern: Regex) : MetricCondition() {
         override fun matches(node: SyntaxNode): Boolean = pattern.matches(node.text)
+    }
+
+    /** For grammars that leave the operator token out of the tree: the first word between the first and the last child. */
+    data class HiddenOperatorMatches(val allowedOperators: Set<String>) : MetricCondition() {
+        override fun matches(node: SyntaxNode): Boolean {
+            if (node.childCount < 2) return false
+            val betweenOperands = node.text.removePrefix(node.getChild(0).text).removeSuffix(node.getChild(node.childCount - 1).text)
+            val operator = betweenOperands.trim().substringBefore(' ').substringBefore('\t')
+            return allowedOperators.any { it.equals(operator, ignoreCase = true) }
+        }
     }
 
     data class ParentMatches(val allowedTypes: Set<String>) : MetricCondition() {
