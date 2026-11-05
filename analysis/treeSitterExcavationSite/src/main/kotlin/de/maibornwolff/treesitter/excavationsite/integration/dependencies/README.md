@@ -251,6 +251,12 @@ VBA module or class (`Language.VBA`) or a VB6 form (`Language.VB6`), what the VB
   names (`DoCmd.OpenForm "x"`, `FormName:="x"`, `DoCmd.OpenReport`, `Forms!x`, `Forms("x")`, `Reports!x`,
   `Reports("x")`, `CurrentProject.AllForms("x")`, `AllReports("x")`) comes as a name of kind `FORM` or `REPORT`.
 
+### Access query facts
+
+`TreeSitterDependencies.accessQuery(content)` returns an `AccessQuery` (in `languages/sql/model`) for the SQL text of
+one Access query, read with the SQL grammar: its `names` as `sqlScript()` reads those of a statement, and the `forms`
+and `reports` that a bang chain names (`[Forms]![frmOrders]![txtId]` names `frmOrders`), whose links are no names.
+
 ### SQL script facts
 
 `TreeSitterDependencies.sqlScript(content)` returns a `SqlScript` (types in `languages/sql/model`), what the SQL name
