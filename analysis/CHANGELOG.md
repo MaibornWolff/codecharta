@@ -18,11 +18,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Code and comment lines for about 300 languages**: `rawtextparser` adds `rloc` and `comment_lines` to every file
   whose language the code counter tokei knows, counted the same way as in the Unified Parser.
 
-### Fixed 🐞
-
-- **Lines of code in Objective-C, PHP and Ruby**: `unifiedparser` no longer counts a blank line after an `#include`, or a
-  line past the end of the file, as code.
-
 ### Changed
 
 - **Faster start in large projects**: the parsers start analysing sooner when a project holds large ignored folders
@@ -33,6 +28,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- **Lines of code in Objective-C, PHP and Ruby**: `unifiedparser` no longer counts a blank line after an `#include`, or a
+  line past the end of the file, as code.
 - **Dependencies into ignored folders**: the dependency parser no longer resolves an import or include to a file that
   `.gitignore` or the exclude patterns leave out, so the edge goes to the file on the map.
 - **Large HTML files**: the domain language parser no longer hangs on an HTML file with much text between its tags.
