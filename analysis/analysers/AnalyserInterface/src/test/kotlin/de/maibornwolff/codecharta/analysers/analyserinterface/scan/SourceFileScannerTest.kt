@@ -252,6 +252,19 @@ class SourceFileScannerTest {
     }
 
     @Test
+    fun `should read a VBA module the VBA editor exported in the Windows code page`() {
+        // Arrange
+        val file = File(projectDirectory, "modBestellung.bas")
+        file.writeBytes("' Bestellübersicht".toByteArray(charset("windows-1252")))
+
+        // Act
+        val content = SourceFileScanner(listOf("bas")).readFileContent(file)
+
+        // Assert
+        assertThat(content.getOrThrow()).isEqualTo("' Bestellübersicht")
+    }
+
+    @Test
     fun `should read a file in the charset it is given`() {
         // Arrange
         val file = File(projectDirectory, "utf16.txt")

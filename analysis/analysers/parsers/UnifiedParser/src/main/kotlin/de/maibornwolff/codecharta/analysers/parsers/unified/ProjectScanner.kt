@@ -13,6 +13,7 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.util.Logger
+import de.maibornwolff.codecharta.util.SourceText
 import de.maibornwolff.treesitter.excavationsite.api.isUnusableParser
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -124,7 +125,7 @@ class ProjectScanner(
         val relativeFilePath = getRelativeFileName(file.toString())
         require(file.isFile) { "Expected file but found folder at $relativeFilePath!" }
 
-        val fileContent = file.readText()
+        val fileContent = SourceText.read(file)
         val baseNode = baseFileNodes[relativeFilePath]
         if (baseNode != null && baseNode.checksum == ChecksumCalculator.calculateChecksum(fileContent)) {
             reuseMetricsFromBaseFile(baseNode, relativeFilePath, verbose)

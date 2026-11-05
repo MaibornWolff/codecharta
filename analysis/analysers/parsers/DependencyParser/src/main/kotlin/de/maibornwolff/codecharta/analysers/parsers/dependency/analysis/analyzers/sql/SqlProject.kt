@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.ProjectListing
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.readInParallel
 import de.maibornwolff.codecharta.util.AccessQueryFiles
+import de.maibornwolff.codecharta.util.SourceText
 import de.maibornwolff.treesitter.excavationsite.api.AccessQuery
 import de.maibornwolff.treesitter.excavationsite.api.SqlMember
 import de.maibornwolff.treesitter.excavationsite.api.SqlMemberKind
@@ -116,7 +117,7 @@ internal class SqlProject private constructor(private val files: Set<String>, pr
             analysisRoot.absolutePath to analysedFiles
         ) {
             val files = analysedFiles.ifEmpty { filesBelow(analysisRoot) }.filterTo(HashSet()) { isSql(it) }
-            SqlProject(files) { file -> analysisRoot.resolve(file).readText() }
+            SqlProject(files) { file -> SourceText.read(analysisRoot.resolve(file)) }
         }
 
         /** A file analysed without a root: a project of its own. */
