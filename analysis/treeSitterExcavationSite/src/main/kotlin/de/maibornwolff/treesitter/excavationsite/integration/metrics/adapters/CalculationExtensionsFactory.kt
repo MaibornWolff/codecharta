@@ -51,6 +51,9 @@ object CalculationExtensionsFactory {
         is IgnoreRule.TypeWhenParentTypeIsNot -> {
             nodeType == rule.nodeType && node.parent.type != rule.requiredParentType
         }
+        is IgnoreRule.LineBreakAfterNoCode -> {
+            nodeType == rule.lineBreakType && !endsLineOfCode(node.prevSibling, node, rule)
+        }
         is IgnoreRule.FirstChildIsDocstring -> {
             val childNode = node.getChild(0)
             if (childNode.isNull) {
@@ -60,6 +63,13 @@ object CalculationExtensionsFactory {
             }
         }
     }
+
+    private fun endsLineOfCode(previous: SyntaxNode, lineBreak: SyntaxNode, rule: IgnoreRule.LineBreakAfterNoCode): Boolean =
+        !previous.isNull &&
+            previous.type != rule.lineBreakType &&
+            previous.type !in rule.nonCodeTypes &&
+            previous.endRow == lineBreak.startRow &&
+            previous.endColumn > 0
 
     private fun buildLeafNodeFunction(rule: LeafNodeRule?): (SyntaxNode) -> Boolean {
         if (rule == null) {

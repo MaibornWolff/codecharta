@@ -14,7 +14,11 @@ abstract class MetricPerFunctionCalc {
         var isInBody = false
         var body: FunctionBodyBounds? = null
 
-        fun hasEndedBefore(node: SyntaxNode): Boolean = node.startRow > endRow || (node.startRow == endRow && node.startColumn > endColumn)
+        fun hasEndedBefore(node: SyntaxNode): Boolean = node.startRow > endRow || (node.startRow == endRow && startsAfterEndOnSameRow(node))
+
+        private fun startsAfterEndOnSameRow(node: SyntaxNode): Boolean = node.startColumn > endColumn || endsAtLineStart
+
+        private val endsAtLineStart: Boolean get() = endColumn == 0
     }
 
     protected class FunctionBodyBounds(body: SyntaxNode, val isDelimited: Boolean) {

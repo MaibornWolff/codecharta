@@ -734,6 +734,12 @@ class RobustnessContractTest {
                         IF 1 = 1 SELECT 1;
                     END
             """.trimIndent()
+            Language.VBA, Language.VB6 -> """
+                    ' Comment
+                    Sub Foo()
+                        If True Then MsgBox "hello"
+                    End Sub
+            """.trimIndent()
         }
     }
 }

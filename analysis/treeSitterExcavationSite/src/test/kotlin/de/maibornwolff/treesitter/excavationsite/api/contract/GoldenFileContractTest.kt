@@ -44,7 +44,9 @@ class GoldenFileContractTest {
             Language.DELPHI to "delphi_sample.pas",
             Language.RUST to "rust_sample.rs",
             Language.ANGULAR to "angular_sample.html",
-            Language.SQL to "sql_sample.sql"
+            Language.SQL to "sql_sample.sql",
+            Language.VBA to "vba_sample.bas",
+            Language.VB6 to "vb6_sample.frm"
         )
 
         private val GOLDEN_BASE_NAMES = mapOf(
@@ -67,7 +69,9 @@ class GoldenFileContractTest {
             Language.DELPHI to "delphi_sample",
             Language.RUST to "rust_sample",
             Language.ANGULAR to "angular_sample",
-            Language.SQL to "sql_sample"
+            Language.SQL to "sql_sample",
+            Language.VBA to "vba_sample",
+            Language.VB6 to "vb6_sample"
         )
     }
 

@@ -23,7 +23,9 @@ enum class Language(val primaryExtension: String, val otherExtensions: Set<Strin
     DELPHI(primaryExtension = ".pas", otherExtensions = setOf(".dpr")),
     RUST(primaryExtension = ".rs"),
     ANGULAR(primaryExtension = ".html"),
-    SQL(primaryExtension = ".sql", otherExtensions = setOf(".pks", ".pkb", ".pls"));
+    SQL(primaryExtension = ".sql", otherExtensions = setOf(".pks", ".pkb", ".pls")),
+    VBA(primaryExtension = ".bas", otherExtensions = setOf(".cls")),
+    VB6(primaryExtension = ".frm");
 
     companion object {
         private val extensionMap: Map<String, Language> by lazy {
