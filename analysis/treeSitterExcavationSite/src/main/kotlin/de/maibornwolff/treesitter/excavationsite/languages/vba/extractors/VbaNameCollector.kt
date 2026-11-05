@@ -18,6 +18,9 @@ internal object VbaNameCollector {
     private const val CALL_STATEMENT = "call_statement"
     private const val TYPE_EXPRESSION = "type_expression"
     private const val DOTTED_TYPE_EXPRESSION = "dotted_type_expression"
+    private const val IMPLICIT_MEMBER = "implicit_member_expression"
+    private const val LEFT_FIELD = "left"
+    private const val RIGHT_FIELD = "right"
     private const val NAME_FIELD = "name"
     private const val RECEIVER_FIELD = "receiver"
     private const val MEMBER_FIELD = "member"
@@ -29,6 +32,7 @@ internal object VbaNameCollector {
     private const val BANG = "!"
 
     private val TYPE_NAMES = setOf(TYPE_EXPRESSION, DOTTED_TYPE_EXPRESSION)
+    private val ASSIGNMENTS = setOf("assignment_statement", "let_statement")
     private val NOT_WALKED = setOf(
         "comment", "string_literal", "attribute_statement", "option_statement", "def_type_statement", "frm_version_statement",
         "frm_begin_block", "label_statement", "goto_statement", "on_error_statement", "on_goto_statement", "resume_statement",
@@ -57,6 +61,7 @@ internal object VbaNameCollector {
             node.type == QUALIFIED_MEMBER -> walkChain(node, locals, out)
             node.type == CALL_EXPRESSION -> walkCall(node, FUNCTION_FIELD, locals, out)
             node.type == CALL_STATEMENT -> walkCall(node, CALLEE_FIELD, locals, out)
+            node.type in ASSIGNMENTS -> walkAssignment(node, locals, out)
             node.type in TYPE_NAMES -> add(TreeTraversal.findAllDescendantsOfType(node, IDENTIFIER).map { it.text }, locals, out)
             node.type in NOT_WALKED -> Unit
             VbaConditionalCode.isConditional(node) -> VbaConditionalCode.codeOf(node).forEach { walk(it, locals, out) }
@@ -71,6 +76,19 @@ internal object VbaNameCollector {
 
     private fun isSameNode(node: SyntaxNode, other: SyntaxNode?): Boolean =
         other != null && node.startByte == other.startByte && node.type == other.type
+
+    private fun walkAssignment(assignment: SyntaxNode, locals: VbaLocalNames, out: MutableList<VbaName>) {
+        val property = assignment.getChildByFieldName(LEFT_FIELD).orNull()?.let { assignedPropertyOf(it) }
+        val value = assignment.getChildByFieldName(RIGHT_FIELD).orNull()
+        if (property != null && value != null) VbaAccessObjects.assignedTo(property, value)?.let { out.add(it) }
+        walkChildren(assignment, locals, out)
+    }
+
+    private fun assignedPropertyOf(target: SyntaxNode): String? = when (target.type) {
+        IDENTIFIER -> target.text
+        QUALIFIED_MEMBER, IMPLICIT_MEMBER -> target.getChildByFieldName(MEMBER_FIELD).orNull()?.text
+        else -> null
+    }
 
     private fun walkCall(call: SyntaxNode, calleeField: String, locals: VbaLocalNames, out: MutableList<VbaName>) {
         val callee = call.getChildByFieldName(calleeField).orNull()

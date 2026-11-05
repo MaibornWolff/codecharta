@@ -74,8 +74,13 @@ edge. A name in a variable (`DoCmd.OpenForm strName`) draws none.
   controls after them are no names.
 - A call that no SQL routine of the run declares means the `Public` function of a standard module of that name, looked
   up as rule 3 of a simple name does from the query's file: `ToAccessDate(OrderDate)`.
-- In VBA, `DoCmd.OpenQuery "qryX"` (also `QueryName:=`), `OpenRecordset("qryX")` and `QueryDefs("qryX")` mean the query;
-  a literal that holds SQL (`OpenRecordset("SELECT …")`) means none.
+- In VBA, `DoCmd.OpenQuery "qryX"` (also `QueryName:=`), `OpenRecordset("qryX")`, `QueryDefs("qryX")`, the domain
+  functions (`DLookup("Field", "qryX", …)`, `DCount`, `DSum`, `DMax`, `DMin`, `DAvg`, `DFirst`, `DLast`) and a row or
+  record source set to a name (`Me.cboEmployee.RowSource = "qryX"`) mean the query; a literal that holds SQL
+  (`OpenRecordset("SELECT …")`) means none.
+- The `DoCmd` methods that take an object type and a name (`Close`, `OutputTo`, `SelectObject`, `DeleteObject`,
+  `SendObject`, `Save`) mean the object of that type: `DoCmd.Close acForm, "frmX"` the form module `Form_frmX`,
+  `DoCmd.OutputTo acOutputQuery, "qryX"` the query (derived from the Northwind run, 2026-11-05).
 
 ## Case
 
@@ -110,6 +115,8 @@ rule yet; `sample-projects/regression/vba/known-gaps.md` says how it deviates.
   tell; a `With` member (`.MoveFirst`) is no name.
 - Undeclared variables (without `Option Explicit`): a name a routine assigns without declaring it is looked up like any
   other, so it means a project declaration of that name.
+- Names in strings passed to the project's own routines (`GetRandomPkValue("qryCustomers", …)`): only the routine's
+  body tells what the string means.
 - Names in strings: `Application.Run "modX.Proc"`, `Eval("Func()")`, the event properties of a form layout
   (`OnClick = "=Func()"`), the record source of a form layout and SQL text in VBA strings.
 - A project name in front of a module (`VBAProject.modOrders.Total`) and references to other VBA projects.

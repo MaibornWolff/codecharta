@@ -322,6 +322,67 @@ class VbaModuleTest {
     }
 
     @Test
+    fun `should read the query or table a domain function reads`() {
+        // Arrange
+        val body = """
+            name = DLookup("FullName", "qryEmployees", "EmployeeID = 1")
+            count = DCount("*", Domain:="Orders")
+            total = Nz(DSum("Quantity", "qryStock"), 0)
+            name = DLookup("FullName", strDomain)
+        """
+
+        // Act
+        val relations = namesOfRoutine(body).filter { it.kind == VbaNameKind.RELATION }
+
+        // Assert
+        assertThat(relations.map { it.segments.single() }).containsExactly("qryEmployees", "Orders", "qryStock")
+    }
+
+    @Test
+    fun `should read the object a DoCmd method names by its type and a literal`() {
+        // Arrange
+        val body = """
+            DoCmd.Close acForm, "frmGenericDialog", acSaveNo
+            DoCmd.Close ObjectType:=acReport, ObjectName:="rptInvoice"
+            DoCmd.OutputTo acOutputQuery, "qryProductList_Export", acFormatXLSX
+            DoCmd.SelectObject acTable, "Orders"
+            DoCmd.Close acForm, Me.Name
+            DoCmd.Close
+        """
+
+        // Act
+        val accessObjects = namesOfRoutine(body).filter { it.kind != VbaNameKind.CODE }
+
+        // Assert
+        assertThat(accessObjects).containsExactly(
+            VbaName(listOf("frmGenericDialog"), VbaNameKind.FORM),
+            VbaName(listOf("rptInvoice"), VbaNameKind.REPORT),
+            VbaName(listOf("qryProductList_Export"), VbaNameKind.RELATION),
+            VbaName(listOf("Orders"), VbaNameKind.RELATION)
+        )
+    }
+
+    @Test
+    fun `should read the query or table a row or record source is set to, but no SQL text`() {
+        // Arrange
+        val body = """
+            Me.ProductID.RowSource = "qrycboProducts"
+            RecordSource = "qryOrders"
+            With Me.cboVendor
+                .RowSource = "qrycboVendors"
+            End With
+            Me.RecordSource = "SELECT * FROM qryOrder WHERE OrderID = 1"
+            Me.Caption = "qryNotASource"
+        """
+
+        // Act
+        val relations = namesOfRoutine(body).filter { it.kind == VbaNameKind.RELATION }
+
+        // Assert
+        assertThat(relations.map { it.segments.single() }).containsExactly("qrycboProducts", "qryOrders", "qrycboVendors")
+    }
+
+    @Test
     fun `should give the names outside every declaration to the module`() {
         // Arrange
         val code = """

@@ -9,3 +9,7 @@ Public Sub ArchiveOrders()
     Set records = CurrentDb.OpenRecordset("SELECT * FROM qryOrderTotal")
     DoCmd.OpenQuery "qryMissing"
 End Sub
+
+Public Function EmployeeName(ByVal employeeId As Long) As String
+    EmployeeName = DLookup("FullName", "qryEmployees", "EmployeeID = " & employeeId)
+End Function

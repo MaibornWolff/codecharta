@@ -7,4 +7,7 @@ Option Compare Database
 Option Explicit
 
 Private Sub Form_Load()
+    Me.cboEmployee.RowSource = "qryEmployees"
+    DoCmd.OutputTo acOutputQuery, "qryOrderTotal", acFormatXLSX
+    DoCmd.Close acForm, "frmDialog"
 End Sub
