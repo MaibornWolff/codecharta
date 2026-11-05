@@ -16,10 +16,11 @@ data class DeclaringCopy(val file: FilePath, val isFileScoped: Boolean, val kind
 object NearestCopy : CopyRules {
     override fun filesFor(copies: List<DeclaringCopy>, usingFile: FilePath): List<FilePath> =
         listOf(copies.maxBy { sharedFolderCount(it.file, usingFile) }.file)
-
-    private fun sharedFolderCount(declaringFile: FilePath, usingFile: FilePath): Int = declaringFile.segments
-        .dropLast(1)
-        .zip(usingFile.segments.dropLast(1))
-        .takeWhile { (first, second) -> first == second }
-        .size
 }
+
+/** How many folders, from the root on, [declaringFile] and [usingFile] share: the nearness of shared rule 2. */
+fun sharedFolderCount(declaringFile: FilePath, usingFile: FilePath): Int = declaringFile.segments
+    .dropLast(1)
+    .zip(usingFile.segments.dropLast(1))
+    .takeWhile { (first, second) -> first == second }
+    .size
