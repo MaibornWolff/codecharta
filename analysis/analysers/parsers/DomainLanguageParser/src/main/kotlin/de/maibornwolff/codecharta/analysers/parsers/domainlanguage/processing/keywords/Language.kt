@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords
 
+import de.maibornwolff.codecharta.util.AccessQueryFiles
 import de.maibornwolff.codecharta.util.FileExtension
 import java.io.File
 import de.maibornwolff.treesitter.excavationsite.api.Language as LibraryLanguage
@@ -45,8 +46,6 @@ enum class Language(
     }
 
     companion object {
-        private const val ACCESS_QUERY_FOLDER = "queries"
-
         fun fromExtension(extension: String): Language? = entries.find { language ->
             extension.lowercase() in language.extensions
         }
@@ -54,8 +53,7 @@ enum class Language(
         /** The language of [file] by its ending; a `.sql` file in a folder named `queries` is an Access query. */
         fun of(file: File): Language? {
             val language = fromExtension(file.extension)
-            val isAccessQuery = language == SQL && file.parentFile?.name.equals(ACCESS_QUERY_FOLDER, ignoreCase = true)
-            return if (isAccessQuery) ACCESS_QUERY else language
+            return if (language == SQL && AccessQueryFiles.isQueryFile(file.path)) ACCESS_QUERY else language
         }
 
         fun allExtensions(): List<String> = entries.flatMap { it.extensions.toList() }

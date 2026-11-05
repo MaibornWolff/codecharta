@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.ProjectListing
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.readInParallel
+import de.maibornwolff.codecharta.util.AccessQueryFiles
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import java.io.File

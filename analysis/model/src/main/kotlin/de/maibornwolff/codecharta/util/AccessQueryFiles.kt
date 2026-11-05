@@ -1,11 +1,11 @@
-package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.vba
+package de.maibornwolff.codecharta.util
 
 /**
- * The Access queries of a run (`vba.md`, Access queries): a `.sql` file in a folder named `queries`, as the export
+ * The Access queries of a run (dependency parser, `vba.md`): a `.sql` file in a folder named `queries`, as the export
  * tools write one per query, is the query named after its file. Its name compares as SQL compares an unquoted name, in
  * lower case.
  */
-internal object AccessQueryFiles {
+object AccessQueryFiles {
     private const val QUERY_FOLDER = "queries"
     private const val SQL_SUFFIX = ".sql"
     private val SEPARATORS = charArrayOf('/', '\\')
