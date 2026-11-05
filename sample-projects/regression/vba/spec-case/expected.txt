@@ -1,0 +1,3 @@
+# vba.md, case, decision 5: a name in another case means the declaration
+file modB.bas -> modA.bas
+leaf modB.bas#Run -> modA.bas#OrderTotal

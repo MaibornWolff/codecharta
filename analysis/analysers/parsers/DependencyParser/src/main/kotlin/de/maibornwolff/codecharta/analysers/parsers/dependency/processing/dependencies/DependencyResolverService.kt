@@ -77,6 +77,7 @@ class DependencyResolverService {
             SupportedLanguage.RUST -> EmptyStandardLibrary()
             SupportedLanguage.ANGULAR -> EmptyStandardLibrary()
             SupportedLanguage.SQL -> EmptyStandardLibrary()
+            SupportedLanguage.VBA -> EmptyStandardLibrary()
         }
     }
 }

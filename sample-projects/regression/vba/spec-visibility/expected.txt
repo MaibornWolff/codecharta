@@ -1,0 +1,7 @@
+# vba.md, declarations: routines, types and enums are public by default, variables and constants private
+file modB.bas -> modA.bas
+leaf modB.bas#Use -> modA.bas#Implicit
+leaf modB.bas#Use -> modA.bas#PUBLIC_CONST
+leaf modB.bas#Use -> modA.bas#Shown
+leaf modB.bas#Use -> modA.bas#gOld
+leaf modB.bas#Use -> modA.bas#gVar

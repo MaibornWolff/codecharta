@@ -1,0 +1,13 @@
+# vba.md, Access, decision 2: DoCmd, Forms and Reports name a form or report by a literal
+file forms/frmDetails.cls -> forms/frmMain.cls
+file forms/frmDetails.cls -> reports/rptStock.cls
+file forms/frmOrders.cls -> forms/frmDetails.cls
+file forms/frmOrders.cls -> reports/rptInvoice.cls
+file modules/modNav.bas -> forms/frmMain.cls
+file modules/modNav.bas -> reports/rptStock.cls
+leaf forms/frmDetails.cls#Form_frmDetails -> forms/frmMain.cls#Form_frmMain
+leaf forms/frmDetails.cls#Form_frmDetails -> reports/rptStock.cls#Report_rptStock
+leaf forms/frmOrders.cls#Form_frmOrders -> forms/frmDetails.cls#Form_frmDetails
+leaf forms/frmOrders.cls#Form_frmOrders -> reports/rptInvoice.cls#Report_rptInvoice
+leaf modules/modNav.bas#ShowMain -> forms/frmMain.cls#Form_frmMain
+leaf modules/modNav.bas#ShowMain -> reports/rptStock.cls#Report_rptStock

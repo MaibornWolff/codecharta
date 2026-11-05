@@ -1,0 +1,4 @@
+# vba.md, qualified: M.N means N of M, a private N only inside M
+file modB.bas -> modA.bas
+leaf modA.bas#Run -> modA.bas#Secret
+leaf modB.bas#Run2 -> modA.bas#Shown
