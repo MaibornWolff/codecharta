@@ -462,6 +462,24 @@ class FrameworkDetectorTest {
     }
 
     @Test
+    fun `should skip a project file the gitignore excludes in a kept folder`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve(".gitignore").writeText("legacy/package.json")
+        val legacyFolder = Files.createDirectories(tempDir.resolve("legacy"))
+        legacyFolder.resolve("package.json").writeText(REACT_PACKAGE_JSON)
+        legacyFolder.resolve("Kept.csproj").writeText(ASPNET_CSPROJ)
+        val detector = FrameworkDetector()
+
+        // Act
+        val frameworksByPath = detector.detectFrameworks(tempDir)
+
+        // Assert
+        assertEquals(mapOf(legacyFolder to setOf(Framework.ASPNET)), frameworksByPath)
+    }
+
+    @Test
     fun `should read the project files of ignored folders when the gitignore is bypassed`(
         @TempDir tempDir: Path
     ) {
@@ -511,6 +529,15 @@ class FrameworkDetectorTest {
     }
 
     companion object {
+        private val ASPNET_CSPROJ =
+            """
+            <Project Sdk="Microsoft.NET.Sdk.Web">
+              <ItemGroup>
+                <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+              </ItemGroup>
+            </Project>
+            """.trimIndent()
+
         private val REACT_PACKAGE_JSON =
             """
             {

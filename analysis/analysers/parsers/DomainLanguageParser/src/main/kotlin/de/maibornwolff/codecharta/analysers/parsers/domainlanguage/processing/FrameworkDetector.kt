@@ -35,6 +35,7 @@ class FrameworkDetector {
             .forEach { file ->
                 ecosystems
                     .filter { ecosystem -> ecosystem.matchesProjectFile(file) }
+                    .filterNot { gitignoreHandler?.shouldExclude(file) == true }
                     .forEach { ecosystem -> addFrameworksOf(file.toPath(), ecosystem, frameworksByPath) }
             }
         return frameworksByPath
