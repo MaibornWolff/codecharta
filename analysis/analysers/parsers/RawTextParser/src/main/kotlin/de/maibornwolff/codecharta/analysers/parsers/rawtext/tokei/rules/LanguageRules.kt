@@ -4,7 +4,9 @@ import de.maibornwolff.codecharta.analysers.parsers.rawtext.language.LanguageSyn
 
 internal object LanguageRules {
     private val rules =
-        listOf(ShellRule, RubyRule, PhpRule, JavaScriptRule, VueRule, PascalRule, SqlRule, CFamilyRule, GoRule, PythonRule, SwiftRule)
+        listOf(
+            ShellRule, RubyRule, PhpRule, JavaScriptRule, VueRule, PascalRule, SqlRule, CFamilyRule, GoRule, PythonRule, SwiftRule, VbaRule
+        )
     private val ruleByLanguage = rules.flatMap { rule -> rule.tokeiLanguages.map { it to rule } }.toMap()
 
     fun applyTo(tokeiLanguage: String, syntax: LanguageSyntax): LanguageSyntax = ruleByLanguage[tokeiLanguage]?.applyTo(syntax) ?: syntax

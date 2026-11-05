@@ -95,7 +95,7 @@ On top of the table, the parser knows constructs the table cannot describe:
 | all                                   | a char literal such as `'"'`, and a run of quotes closing a `"""` string |
 
 A C, C++ or Objective-C `//` comment that ends in `\` goes on in the next line, and a Python docstring may start with a
-prefix such as `r"""`. In a Vue file only the lines inside the first `<script>` block count, as in the Unified Parser.
+prefix such as `r"""`. In VBA and VB6, `Rem` starts a comment as `'` does, and an apostrophe inside a string does not. In a Vue file only the lines inside the first `<script>` block count, as in the Unified Parser.
 
 The parser reads markers, not the language's grammar, so a construct neither the table nor these rules know can still
 miscount.
