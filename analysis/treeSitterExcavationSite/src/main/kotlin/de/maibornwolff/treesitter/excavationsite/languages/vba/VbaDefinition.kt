@@ -15,7 +15,10 @@ object VbaDefinition : LanguageDefinition {
 
     override val calculationConfig = CalculationConfig(
         hasFunctionBodyStartOrEndNode = false,
-        ignoreForRloc = listOf(IgnoreRule.LineBreakAfterNoCode(lineBreakType = "newline", nonCodeTypes = setOf("comment"))),
+        ignoreForRloc = listOf(
+            IgnoreRule.LineBreakAfterNoCode(lineBreakType = "newline", nonCodeTypes = setOf("comment")),
+            IgnoreRule.TypeInSet(setOf("block"))
+        ),
         ignoreForMessageChainCall = listOf(
             IgnoreRule.TypeWithParentType(VbaMetricMapping.QUALIFIED_MEMBER_EXPRESSION, VbaMetricMapping.CALL_EXPRESSION)
         )
