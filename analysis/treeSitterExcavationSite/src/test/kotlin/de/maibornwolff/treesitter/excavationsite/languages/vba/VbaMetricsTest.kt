@@ -307,6 +307,27 @@ class VbaMetricsTest {
         }
 
         @Test
+        fun `should not count a comment line before the first statement of a block`() {
+            // Arrange
+            val code = """
+                Sub Count()
+                    ' counts to three
+                    Do While i < 3
+                        ' next number
+                        i = i + 1
+                    Loop
+
+                End Sub
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterMetrics.parse(code, Language.VBA)
+
+            // Assert
+            assertThat(listOf(result.realLinesOfCode, result.perFunctionMetrics["max_rloc_per_function"])).isEqualTo(listOf(5.0, 3.0))
+        }
+
+        @Test
         fun `should count the export header as real lines of code`() {
             // Arrange
             val code = """
