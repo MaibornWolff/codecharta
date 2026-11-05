@@ -1,0 +1,2 @@
+# vba.md, simple name 2: the own module before the public names of the project
+leaf modB.bas#Run -> modB.bas#Price

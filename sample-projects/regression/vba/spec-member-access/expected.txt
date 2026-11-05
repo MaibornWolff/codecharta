@@ -1,0 +1,8 @@
+# vba.md, qualified: a form's default instance means the form, the member of a value its variable or routine
+file modUse.bas -> Form_frmMain.cls
+file modUse.bas -> modData.bas
+leaf modData.bas#GetOrder -> modData.bas#TOrder
+leaf modData.bas#gOrder -> modData.bas#TOrder
+leaf modUse.bas#Run -> Form_frmMain.cls#Form_frmMain
+leaf modUse.bas#Run -> modData.bas#GetOrder
+leaf modUse.bas#Run -> modData.bas#gOrder

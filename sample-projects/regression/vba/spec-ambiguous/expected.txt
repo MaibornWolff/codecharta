@@ -1,0 +1,5 @@
+# vba.md, simple name 3, decision 3: of several modules the nearest by folder, a tie means nothing
+file app/modules/modUse.bas -> app/lib/modC.bas
+file app/modules/modUse.bas -> app/modules/modA.bas
+leaf app/modules/modUse.bas#Run -> app/lib/modC.bas#Rate
+leaf app/modules/modUse.bas#Run -> app/modules/modA.bas#Total

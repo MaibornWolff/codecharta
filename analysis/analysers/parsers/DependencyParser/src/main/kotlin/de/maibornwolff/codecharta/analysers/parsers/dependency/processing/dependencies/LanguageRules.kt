@@ -17,6 +17,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.TypescriptNameRules
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.vba.VbaNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.CopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.DefaultNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NameRules
@@ -36,6 +37,7 @@ internal object LanguageRules {
         SupportedLanguage.PYTHON -> PythonNameRules
         SupportedLanguage.RUST -> RustNameRules
         SupportedLanguage.SQL -> SqlNameRules
+        SupportedLanguage.VBA -> VbaNameRules
         SupportedLanguage.TYPESCRIPT, SupportedLanguage.JAVASCRIPT, SupportedLanguage.VUE -> TypescriptNameRules
         else -> DefaultNameRules
     }

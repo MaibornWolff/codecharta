@@ -133,7 +133,7 @@ gzipped; output is gzipped by default.
 
 ## Supported languages
 
-Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates and SQL, with
+Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates, SQL and VBA, with
 the same file extensions as the [Unified Parser](/docs/parser/unified#supported-languages). C files (`.c`, `.h`) are
 read as C++.
 
@@ -254,6 +254,16 @@ the last of these files, the latest migration: paths are ordered folder by folde
 in them compared as numbers, so `V10__orders.sql` comes after `V9__orders.sql`, and a later folder wins over an
 earlier one whatever the file names. Flyway's repeatable migrations (`R__views.sql`) come after the versioned ones of
 their folder, as Flyway runs them last. Statements in strings, `USE` and `DROP` are not read.
+
+VBA and VB6 have no imports either: the modules of the analysed folder (`.bas`, `.cls`, `.frm`) are read as one
+project, each named by its `VB_Name`. Every routine, property, `Declare`, module-level variable and constant, `Type` and
+`Enum` of a standard module is a leaf at the module name plus its own (`modOrders.OrderTotal`); a class, form or report
+module is one leaf. A name means a parameter or local declaration first, then a declaration of the own module, then a
+module or a `Public` declaration of a standard module, with the values of public enums; of several modules offering a
+name the nearest by folder wins, and a tie, which the compiler rejects as ambiguous, draws no edge. `modOrders.Total`
+means `Total` of that module. Names compare without regard to case. `DoCmd.OpenForm "frmX"`, `Forms!frmX` and
+`Forms("frmX")` point at the form module `Form_frmX`, `DoCmd.OpenReport`, `Reports!rptX` and `Reports("rptX")` at the
+report module `Report_rptX`. A member of a value, a `With` member, a library name and a name in a string draw no edge.
 
 ## Tests are excluded by default
 

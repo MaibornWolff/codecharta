@@ -1,0 +1,3 @@
+# Shared rule 2: a module two folders declare means the nearest copy
+file one/modMain.bas -> one/modUtil.bas
+leaf one/modMain.bas#Run -> one/modUtil.bas#Twice

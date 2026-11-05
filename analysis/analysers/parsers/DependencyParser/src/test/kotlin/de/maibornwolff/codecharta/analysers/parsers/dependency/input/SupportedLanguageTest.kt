@@ -22,6 +22,13 @@ class SupportedLanguageTest {
     }
 
     @Test
+    fun `should detect VBA from the endings of modules, classes and VB6 forms`() {
+        // Act & Assert
+        assertThat(listOf("modOrders.bas", "clsCustomer.cls", "frmMain.frm").map { SupportedLanguage.ofFileName(it) })
+            .containsExactly(SupportedLanguage.VBA, SupportedLanguage.VBA, SupportedLanguage.VBA)
+    }
+
+    @Test
     fun `should detect a language regardless of how the extension is cased`() {
         // Act & Assert
         assertThat(SupportedLanguage.ofFileName("Main.KT")).isEqualTo(SupportedLanguage.KOTLIN)

@@ -25,7 +25,8 @@ enum class SupportedLanguage(val displayName: String, private val fileExtensions
     DELPHI("Delphi", listOf(FileExtension.DELPHI)),
     RUST("Rust", listOf(FileExtension.RUST)),
     ANGULAR("Angular template", listOf(FileExtension.HTML)),
-    SQL("SQL", listOf(FileExtension.SQL));
+    SQL("SQL", listOf(FileExtension.SQL)),
+    VBA("VBA", listOf(FileExtension.VBA, FileExtension.VB6));
 
     val lensName: String
         get() = name.lowercase().replace(ENUM_WORD_SEPARATOR, "")
