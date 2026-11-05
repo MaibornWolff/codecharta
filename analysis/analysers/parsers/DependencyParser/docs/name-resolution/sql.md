@@ -66,7 +66,7 @@ Oracle and SQL Server one schema cannot hold both. The place a name stands in te
 
 | Position | Means |
 | --- | --- |
-| `FROM`, `JOIN`, `INTO`, `UPDATE`, `DELETE FROM`, `MERGE`, `REFERENCES`, `INHERITS`, trigger `ON`, `%ROWTYPE`, `%TYPE` | a table, a view or a synonym |
+| `FROM`, `JOIN`, `INTO`, `UPDATE`, `DELETE FROM`, `MERGE`, `REFERENCES`, `INHERITS`, trigger `ON`, `%ROWTYPE`, `%TYPE`, also after the parentheses of a join (`JOIN (orders LEFT JOIN …`) | a table, a view or a synonym |
 | a call, `EXEC`, `CALL`, `PERFORM`, `EXECUTE FUNCTION` (also a call in `FROM`, a table function) | a routine; an Oracle object type (its constructor) |
 | a column, variable, parameter or return type | a type or a domain; a table or a view (its row type) |
 | `NEXTVAL`, `CURRVAL`, `NEXT VALUE FOR`, `nextval('…')` | a sequence |
@@ -153,6 +153,7 @@ the probes of other dialects follow their manuals. "Gap" means the parser does n
 | Declarations, decision 14: a body in another language | `spec-foreign-language-body` | ok |
 | Declarations: `%ROWTYPE`, `%TYPE` | `spec-anchored-types` | ok |
 | Kinds, decision 6: a table and a function of one name | `spec-kind-relation-routine` | ok |
+| Kinds: the tables of a join in parentheses | `spec-join-parentheses` | ok |
 | Kinds, decision 6: a type, else a row type | `spec-kind-row-type` | ok |
 | Kinds, decision 6: a table function | `spec-kind-table-function` | ok |
 | Kinds: a synonym fits every position | `spec-kind-synonym` | ok |
