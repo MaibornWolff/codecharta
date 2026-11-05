@@ -50,7 +50,10 @@ enum class VbaNameKind {
     FORM,
 
     /** The name of an Access report that `DoCmd.OpenReport` opens or the `Reports` collection names. */
-    REPORT
+    REPORT,
+
+    /** The name of an Access query or table that `DoCmd.OpenQuery`, `OpenRecordset` or `QueryDefs` names. */
+    RELATION
 }
 
 /** A name as written, `modOrders.OrderTotal` as `[modOrders, OrderTotal]`, or the name of a form or report. */

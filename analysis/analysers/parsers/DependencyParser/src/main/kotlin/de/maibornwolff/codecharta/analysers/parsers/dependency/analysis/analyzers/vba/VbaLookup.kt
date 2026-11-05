@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.vba
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FilePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.sharedFolderCount
 import de.maibornwolff.treesitter.excavationsite.api.VbaName
 import de.maibornwolff.treesitter.excavationsite.api.VbaNameKind
@@ -7,10 +8,11 @@ import de.maibornwolff.treesitter.excavationsite.api.VbaNameKind
 /**
  * The lookup of `vba.md` for the names one module writes, ignoring case as the compiler does (decision 5): the own
  * module, then the modules and public names of the project, the nearest by folder of several, none on a tie (decision
- * 3). A module name followed by a member means that member; a form or report means its code module (decision 2). The
- * extractor has left out the names a local declaration hides.
+ * 3). A module name followed by a member means that member; a form or report means its code module (decision 2), a
+ * query or table its Access query. The extractor has left out the names a local declaration hides. An Access query
+ * looks names up without an [own] module, from its [usingFile].
  */
-internal class VbaLookup(private val project: VbaProject, private val own: VbaModuleFile) {
+internal class VbaLookup(private val project: VbaProject, private val own: VbaModuleFile?, private val usingFile: FilePath) {
     private sealed interface Target {
         val modules: List<VbaModuleFile>
 
@@ -23,6 +25,7 @@ internal class VbaLookup(private val project: VbaProject, private val own: VbaMo
     fun resolve(name: VbaName): List<String>? = when (name.kind) {
         VbaNameKind.FORM -> codeModuleOf(FORM_PREFIX + name.segments.first())
         VbaNameKind.REPORT -> codeModuleOf(REPORT_PREFIX + name.segments.first())
+        VbaNameKind.RELATION -> project.queryNamed(name.segments.first())
         VbaNameKind.CODE -> resolveCode(name.segments)
     }
 
@@ -32,7 +35,7 @@ internal class VbaLookup(private val project: VbaProject, private val own: VbaMo
     }
 
     private fun resolveCode(segments: List<String>): List<String>? {
-        own.declarationNamed(segments.first())?.let { return own.pathOf(it) }
+        own?.declarationNamed(segments.first())?.let { return own.pathOf(it) }
         return when (val target = nearestTarget(segments.first())) {
             is Target.Declared -> target.path
             is Target.Module -> memberOf(target.modules, segments.getOrNull(1))
@@ -52,14 +55,14 @@ internal class VbaLookup(private val project: VbaProject, private val own: VbaMo
         return nearness.filterValues { it == nearest }.keys.singleOrNull()
     }
 
-    private fun nearnessOf(target: Target): Int = target.modules.maxOf { sharedFolderCount(it.filePath, own.filePath) }
+    private fun nearnessOf(target: Target): Int = target.modules.maxOf { sharedFolderCount(it.filePath, usingFile) }
 
     // A class means itself, whatever member follows: a form's default instance or a public enum of it.
     private fun memberOf(copies: List<VbaModuleFile>, member: String?): List<String>? {
         val module = copies.first()
         if (module.isClass) return listOf(module.name)
         if (member == null) return null
-        val isOwnModule = module.name.equals(own.name, ignoreCase = true)
+        val isOwnModule = module.name.equals(own?.name, ignoreCase = true)
         val declaration = copies.firstNotNullOfOrNull { copy -> copy.declarationNamed(member)?.takeIf { isOwnModule || it.isPublic } }
         return declaration?.let { module.pathOf(it) }
     }

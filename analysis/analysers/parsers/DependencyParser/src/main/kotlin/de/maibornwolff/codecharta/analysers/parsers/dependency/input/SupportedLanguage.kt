@@ -39,6 +39,7 @@ enum class SupportedLanguage(val displayName: String, private val fileExtensions
         get() = when (this) {
             KOTLIN -> JAVA
             JAVASCRIPT, VUE, ANGULAR -> TYPESCRIPT
+            VBA -> SQL
             else -> this
         }
 

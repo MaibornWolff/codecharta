@@ -263,7 +263,10 @@ module or a `Public` declaration of a standard module, with the values of public
 name the nearest by folder wins, and a tie, which the compiler rejects as ambiguous, draws no edge. `modOrders.Total`
 means `Total` of that module. Names compare without regard to case. `DoCmd.OpenForm "frmX"`, `Forms!frmX` and
 `Forms("frmX")` point at the form module `Form_frmX`, `DoCmd.OpenReport`, `Reports!rptX` and `Reports("rptX")` at the
-report module `Report_rptX`, and so do `CurrentProject.AllForms("frmX")` and `AllReports("rptX")`. A member of a value, a `With` member, a library name and a name in a string draw no edge.
+report module `Report_rptX`, and so do `CurrentProject.AllForms("frmX")` and `AllReports("rptX")`. An Access query, a
+`.sql` file in a `queries` folder that creates nothing, is a view named after its file: other queries find it in `FROM`,
+`DoCmd.OpenQuery "qryX"`, `OpenRecordset("qryX")` and `QueryDefs("qryX")` point at it, and it points at the forms its
+`[Forms]![frmX]` names and at the public VBA functions it calls. A member of a value, a `With` member, a library name and a name in a string draw no edge.
 
 ## Tests are excluded by default
 

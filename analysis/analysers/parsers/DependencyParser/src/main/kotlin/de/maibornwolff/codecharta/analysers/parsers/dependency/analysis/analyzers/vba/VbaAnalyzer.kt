@@ -24,7 +24,7 @@ class VbaAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
 
     override fun analyze(): FileReport {
         val module = project.moduleOf(fileInfo.physicalPath)
-        val lookup = VbaLookup(project, module)
+        val lookup = VbaLookup(project, module, module.filePath)
         if (module.isClass) {
             val names = module.module.declarations.flatMap { it.names } + module.module.names
             return FileReport(listOf(node(listOf(module.name), NodeType.CLASS, names, lookup)))

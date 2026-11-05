@@ -63,6 +63,20 @@ A form or report named by a literal means its module (decision 2): `DoCmd.OpenFo
 `AllReports("rptX")` (`CurrentProject.AllForms("frmX").IsLoaded`). A form without code has no module and draws no
 edge. A name in a variable (`DoCmd.OpenForm strName`) draws none.
 
+## Access queries
+
+- A `.sql` file in a folder named `queries` that creates nothing holds the SQL of one Access query, as the export
+  tools write it: the query is a view named after its file, `qryOrders` for `queries/qryOrders.sql` (decision 6). Its
+  name compares as SQL compares an unquoted name, without regard to case, and its leaf carries it in lower case.
+- Its names are looked up as [sql.md](sql.md) says: `FROM qryOrderTotal` means that query, also inside the parentheses
+  Access writes around its joins.
+- `[Forms]![frmX]![txtY]` means the form module `Form_frmX`, `[Reports]![rptX]` the report module `Report_rptX`; the
+  controls after them are no names.
+- A call that no SQL routine of the run declares means the `Public` function of a standard module of that name, looked
+  up as rule 3 of a simple name does from the query's file: `ToAccessDate(OrderDate)`.
+- In VBA, `DoCmd.OpenQuery "qryX"` (also `QueryName:=`), `OpenRecordset("qryX")` and `QueryDefs("qryX")` mean the query;
+  a literal that holds SQL (`OpenRecordset("SELECT …")`) means none.
+
 ## Case
 
 VBA ignores case, and its editor writes every name of a project in one case. The lookup ignores case as well, and a
@@ -86,6 +100,7 @@ rule yet; `sample-projects/regression/vba/known-gaps.md` says how it deviates.
 | Qualified: `M.N`, the own module's private names | `spec-module-qualified` | ok |
 | Qualified: a form's default instance, a member of a value | `spec-member-access` | ok |
 | Access, decision 2: `DoCmd`, `Forms`, `Reports`, `AllForms`, `AllReports` | `spec-access-objects` | ok |
+| Access queries, decision 6: views, forms, VBA functions, `OpenQuery` | `spec-access-queries` | ok |
 | Case, decision 5: another case | `spec-case` | ok |
 | Shared rule 2, copies | `spec-copies` | ok |
 
@@ -96,7 +111,7 @@ rule yet; `sample-projects/regression/vba/known-gaps.md` says how it deviates.
 - Undeclared variables (without `Option Explicit`): a name a routine assigns without declaring it is looked up like any
   other, so it means a project declaration of that name.
 - Names in strings: `Application.Run "modX.Proc"`, `Eval("Func()")`, the event properties of a form layout
-  (`OnClick = "=Func()"`) and the queries `DoCmd.OpenQuery` opens.
+  (`OnClick = "=Func()"`), the record source of a form layout and SQL text in VBA strings.
 - A project name in front of a module (`VBAProject.modOrders.Total`) and references to other VBA projects.
 
 ## Decisions
@@ -115,3 +130,6 @@ rule yet; `sample-projects/regression/vba/known-gaps.md` says how it deviates.
    specification says (derived 2026-11-05).
 5. The lookup ignores case and a name in another case draws the edge, as the compiler; unlike Delphi decision 3, as the
    editor keeps one case per name anyway (decided by Christian, 2026-11-05).
+6. An Access query is the `.sql` file of a `queries` folder that creates nothing, as the add-in exports it; it names
+   forms and public VBA functions and VBA names it, so VBA and SQL share one name scope (shared rule 1), as Kotlin and
+   Java do (decided by Christian, 2026-11-05).

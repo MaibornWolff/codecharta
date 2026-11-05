@@ -7,8 +7,9 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 
 /**
  * The Access forms and reports code names by a literal: `DoCmd.OpenForm "x"` (or `FormName:="x"`), `DoCmd.OpenReport`,
- * `Forms!x`, `Forms("x")`, `Reports!x`, `Reports("x")` and a project's `AllForms("x")` and `AllReports("x")`. A name
- * held in a variable names none.
+ * `Forms!x`, `Forms("x")`, `Reports!x`, `Reports("x")` and a project's `AllForms("x")` and `AllReports("x")`; and the
+ * queries and tables of `DoCmd.OpenQuery "x"`, `OpenRecordset("x")` and `QueryDefs("x")`. A name held in a variable,
+ * and SQL text in place of a name, names none.
  */
 internal object VbaAccessObjects {
     private const val DO_CMD = "docmd"
@@ -22,11 +23,18 @@ internal object VbaAccessObjects {
     private data class Opener(val kind: VbaNameKind, val parameterName: String)
 
     private val COLLECTIONS = mapOf("forms" to VbaNameKind.FORM, "reports" to VbaNameKind.REPORT)
-    private val PROJECT_COLLECTIONS = mapOf("allforms" to VbaNameKind.FORM, "allreports" to VbaNameKind.REPORT)
+    private val PROJECT_COLLECTIONS = mapOf(
+        "allforms" to VbaNameKind.FORM,
+        "allreports" to VbaNameKind.REPORT,
+        "openrecordset" to VbaNameKind.RELATION,
+        "querydefs" to VbaNameKind.RELATION
+    )
     private val OPENERS = mapOf(
         "openform" to Opener(VbaNameKind.FORM, "FormName"),
-        "openreport" to Opener(VbaNameKind.REPORT, "ReportName")
+        "openreport" to Opener(VbaNameKind.REPORT, "ReportName"),
+        "openquery" to Opener(VbaNameKind.RELATION, "QueryName")
     )
+    private val SQL_TEXT = Regex("""^\s*(select|insert|update|delete|transform|parameters)\b""", RegexOption.IGNORE_CASE)
 
     /** The object `Forms!member` or `Reports!member` names, null for any other [collection]. */
     fun namedBy(collection: String, member: String): VbaName? = COLLECTIONS[collection.lowercase()]?.let { VbaName(listOf(member), it) }
@@ -59,8 +67,11 @@ internal object VbaAccessObjects {
         ?.let { literalOf(it) }
 
     private fun literalOf(expression: SyntaxNode): String? = when (expression.type) {
-        STRING_LITERAL -> expression.text.removeSurrounding(QUOTE).replace(QUOTE + QUOTE, QUOTE)
+        STRING_LITERAL -> nameIn(expression.text)
         PARENTHESIZED_EXPRESSION -> expression.namedChildren().singleOrNull()?.let { literalOf(it) }
         else -> null
     }
+
+    private fun nameIn(literal: String): String? =
+        literal.removeSurrounding(QUOTE).replace(QUOTE + QUOTE, QUOTE).takeUnless { SQL_TEXT.containsMatchIn(it) }
 }
