@@ -3,8 +3,8 @@
 
 # Files that should be normalized and converted.
 gradlew.bat text eol=crlf
-# The VBA editor imports a module only with Windows line endings
-analysis/script/access-export/*.bas text eol=crlf
+# Stored with Windows line endings, which the VBA editor needs to import a module, also when downloaded raw
+analysis/script/access-export/*.bas -text
 *.md text
 *.json text
 *.ts
