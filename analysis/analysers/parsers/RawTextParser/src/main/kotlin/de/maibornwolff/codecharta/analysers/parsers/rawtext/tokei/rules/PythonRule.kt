@@ -8,11 +8,15 @@ internal object PythonRule : LanguageRule {
 
     private val stringPrefixes = listOf("r", "u", "f", "b", "fr", "rf", "br", "rb")
 
-    override fun applyTo(syntax: LanguageSyntax) = syntax.copy(docQuotes = syntax.docQuotes + prefixed(syntax.docQuotes))
+    override fun applyTo(syntax: LanguageSyntax) = syntax.copy(
+        quotes = syntax.quotes + prefixed(syntax.quotes),
+        docQuotes = syntax.docQuotes + prefixed(syntax.docQuotes),
+        isDocStringAStatement = true
+    )
 
-    private fun prefixed(docQuotes: List<Delimiters>): List<Delimiters> = stringPrefixes
+    private fun prefixed(quotes: List<Delimiters>): List<Delimiters> = stringPrefixes
         .flatMap(::caseVariants)
-        .flatMap { prefix -> docQuotes.map { it.copy(start = prefix + it.start) } }
+        .flatMap { prefix -> quotes.map { it.copy(start = prefix + it.start) } }
 
     private fun caseVariants(prefix: String): List<String> = prefix.fold(listOf("")) { variants, letter ->
         variants.flatMap { listOf(it + letter.lowercaseChar(), it + letter.uppercaseChar()) }
