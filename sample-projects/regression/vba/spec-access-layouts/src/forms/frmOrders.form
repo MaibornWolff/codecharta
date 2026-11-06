@@ -1,0 +1,34 @@
+Version =21
+VersionRequired =20
+Begin Form
+    RecordSource ="qryOrders"
+    OnOpen ="[Event Procedure]"
+    Begin
+        Begin Section
+            Begin
+                Begin TextBox
+                    Name ="txtTotal"
+                    ControlSource ="=modMath.Rounded([Total])"
+                End
+                Begin CommandButton
+                    Name ="cmdInfo"
+                    OnClick ="=ShowInfo()"
+                End
+                Begin ComboBox
+                    Name ="cboCustomer"
+                    RowSource ="SELECT qryCustomers.Name FROM qryCustomers WHERE qryCustomers.TypeID = [Forms]![frmFilt"
+                        "er]![cboType];"
+                End
+                Begin Subform
+                    Name ="sfrmLines"
+                    SourceObject ="Form.sfrmLines"
+                End
+            End
+        End
+    End
+End
+CodeBehindForm
+Attribute VB_GlobalNameSpace = False
+Private Function ShowInfo()
+    MsgBox DueDate(Now)
+End Function

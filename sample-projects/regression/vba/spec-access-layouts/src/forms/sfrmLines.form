@@ -1,0 +1,15 @@
+Version =21
+VersionRequired =20
+Begin Form
+    RecordSource ="qryLines"
+    Begin
+        Begin Section
+            Begin
+                Begin TextBox
+                    Name ="txtQuantity"
+                    ControlSource ="Quantity"
+                End
+            End
+        End
+    End
+End

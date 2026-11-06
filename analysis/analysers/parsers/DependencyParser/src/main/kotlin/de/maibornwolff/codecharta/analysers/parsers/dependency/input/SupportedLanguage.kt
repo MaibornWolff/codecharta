@@ -26,7 +26,8 @@ enum class SupportedLanguage(val displayName: String, private val fileExtensions
     RUST("Rust", listOf(FileExtension.RUST)),
     ANGULAR("Angular template", listOf(FileExtension.HTML)),
     SQL("SQL", listOf(FileExtension.SQL)),
-    VBA("VBA", listOf(FileExtension.VBA, FileExtension.VB6));
+    VBA("VBA", listOf(FileExtension.VBA, FileExtension.VB6)),
+    ACCESS_LAYOUT("Access layout", listOf(FileExtension.ACCESS_LAYOUT));
 
     val lensName: String
         get() = name.lowercase().replace(ENUM_WORD_SEPARATOR, "")
@@ -39,7 +40,7 @@ enum class SupportedLanguage(val displayName: String, private val fileExtensions
         get() = when (this) {
             KOTLIN -> JAVA
             JAVASCRIPT, VUE, ANGULAR -> TYPESCRIPT
-            VBA -> SQL
+            VBA, ACCESS_LAYOUT -> SQL
             else -> this
         }
 

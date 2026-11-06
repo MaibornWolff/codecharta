@@ -1,0 +1,25 @@
+# vba.md, Access forms and reports: a layout is a leaf named after its file; it uses its sources, subforms, the functions of its expressions (its own module's too), its module for an event procedure, and what its SQL names; the module uses its layout; a form without module is its layout; the code behind the layout is not read
+file forms/frmOrders.cls -> forms/frmOrders.form cyclic upward
+file forms/frmOrders.form -> forms/frmFilter.cls
+file forms/frmOrders.form -> forms/frmOrders.cls cyclic
+file forms/frmOrders.form -> forms/sfrmLines.form
+file forms/frmOrders.form -> modules/modMath.bas
+file forms/frmOrders.form -> queries/qryCustomers.sql
+file forms/frmOrders.form -> queries/qryOrders.sql
+file forms/sfrmLines.form -> queries/qryLines.sql
+file modules/modMath.bas -> forms/sfrmLines.form upward
+file modules/modMath.bas -> reports/rptInvoice.report upward
+file reports/rptInvoice.report -> modules/modMath.bas
+file reports/rptInvoice.report -> queries/qryOrders.sql
+leaf forms/frmOrders.cls#Form_frmOrders -> forms/frmOrders.form#frmOrders_form cyclic upward
+leaf forms/frmOrders.form#frmOrders_form -> forms/frmFilter.cls#Form_frmFilter
+leaf forms/frmOrders.form#frmOrders_form -> forms/frmOrders.cls#Form_frmOrders cyclic
+leaf forms/frmOrders.form#frmOrders_form -> forms/sfrmLines.form#sfrmLines_form
+leaf forms/frmOrders.form#frmOrders_form -> modules/modMath.bas#Rounded
+leaf forms/frmOrders.form#frmOrders_form -> queries/qryCustomers.sql#qrycustomers
+leaf forms/frmOrders.form#frmOrders_form -> queries/qryOrders.sql#qryorders
+leaf forms/sfrmLines.form#sfrmLines_form -> queries/qryLines.sql#qrylines
+leaf modules/modMath.bas#OpenLines -> forms/sfrmLines.form#sfrmLines_form
+leaf modules/modMath.bas#OpenLines -> reports/rptInvoice.report#rptInvoice_report upward
+leaf reports/rptInvoice.report#rptInvoice_report -> modules/modMath.bas#DueDate
+leaf reports/rptInvoice.report#rptInvoice_report -> queries/qryOrders.sql#qryorders

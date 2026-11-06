@@ -270,6 +270,12 @@ methods that name an object by its type (`DoCmd.Close acForm, "frmX"`, `DoCmd.Ou
 domain functions, and a `RowSource` or `RecordSource` set to its name point at it, and it points at the forms its
 `[Forms]![frmX]` names and at the public VBA functions it calls. A member of a value, a `With` member, a library name and a name in a string draw no edge.
 
+The layout of an Access form or report (`.form`, `.report`, written by `SaveAsText`) is a leaf of its own named after
+its file (`frmOrders_form`), which the form's module uses, and a form without a module is its layout. It points at the
+query or table its record and row sources name, the forms and reports of its subform controls, the functions its
+expressions call (`=Rounded([Total])`), its own module for each event bound to `[Event Procedure]`, and what the SQL
+of a row source names, so a form with code is a cycle between module and layout.
+
 ## Tests are excluded by default
 
 A test depends on everything it exercises and nothing depends on it, so including tests shifts every

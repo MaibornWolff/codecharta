@@ -60,8 +60,22 @@ one declaration with two copies (shared rule 2).
 A form or report named by a literal means its module (decision 2): `DoCmd.OpenForm "frmX"`,
 `DoCmd.OpenForm FormName:="frmX"`, `Forms!frmX` (also `[Forms]![frmX]`) and `Forms("frmX")` mean `Form_frmX`; `DoCmd.OpenReport "rptX"`,
 `Reports!rptX` and `Reports("rptX")` mean `Report_rptX`, and so do a project's `AllForms("frmX")` and
-`AllReports("rptX")` (`CurrentProject.AllForms("frmX").IsLoaded`). A form without code has no module and draws no
-edge. A name in a variable (`DoCmd.OpenForm strName`) draws none.
+`AllReports("rptX")` (`CurrentProject.AllForms("frmX").IsLoaded`). A form without code has no module: its layout
+stands for it, and with neither it draws no edge. A name in a variable (`DoCmd.OpenForm strName`) draws none.
+
+The layout of a form or report is the `.form` or `.report` file `SaveAsText` writes, named after the form (decision 7):
+
+- It is one declaration named after its file, the ending included and its dots written as underscores
+  (`frmOrders.form` is `frmOrders_form`), as an Angular template. The code module `Form_frmOrders` uses its layout.
+- It uses the query or table its record source and each row source name (`RecordSource ="qryOrders"`; a value list
+  names none), and the form or report a subform control shows (`SourceObject ="Form.sfrmLines"`, also `Report.x`,
+  `Query.x` and `Table.x`).
+- An expression of a control or event (`ControlSource ="=Rounded([Total])"`, `OnClick ="=OpenOrder()"`, also
+  `DefaultValue` and `ValidationRule`) names what VBA code of its module names: a routine of its own module means the
+  module, so does an event bound to `[Event Procedure]` (decision 8); a public routine of a standard module, a domain
+  function's query and `[Forms]![x]` mean what they mean in VBA. A name in brackets is a field or control of the form.
+- The SQL of a record or row source names what an Access query names.
+- The code after `CodeBehindForm` is the module's, which its own export holds; the layout does not read it.
 
 ## Access queries
 
@@ -106,6 +120,7 @@ rule yet; `sample-projects/regression/vba/known-gaps.md` says how it deviates.
 | Qualified: a form's default instance, a member of a value | `spec-member-access` | ok |
 | Access, decision 2: `DoCmd`, `Forms`, `Reports`, `AllForms`, `AllReports` | `spec-access-objects` | ok |
 | Access queries, decision 6: views, forms, VBA functions, `OpenQuery` | `spec-access-queries` | ok |
+| Access forms and reports, decisions 7 and 8: layouts, sources, subforms, expressions, event procedures | `spec-access-layouts` | ok |
 | Case, decision 5: another case | `spec-case` | ok |
 | Shared rule 2, copies | `spec-copies` | ok |
 
@@ -117,8 +132,8 @@ rule yet; `sample-projects/regression/vba/known-gaps.md` says how it deviates.
   other, so it means a project declaration of that name.
 - Names in strings passed to the project's own routines (`GetRandomPkValue("qryCustomers", …)`): only the routine's
   body tells what the string means.
-- Names in strings: `Application.Run "modX.Proc"`, `Eval("Func()")`, the event properties of a form layout
-  (`OnClick = "=Func()"`), the record source of a form layout and SQL text in VBA strings.
+- Names in strings: `Application.Run "modX.Proc"`, `Eval("Func()")` and SQL text in VBA strings.
+- A macro an event names (`OnClick ="mcrOpenOrders"`) and an embedded macro of a layout.
 - A project name in front of a module (`VBAProject.modOrders.Total`) and references to other VBA projects.
 
 ## Decisions
@@ -140,3 +155,8 @@ rule yet; `sample-projects/regression/vba/known-gaps.md` says how it deviates.
 6. An Access query is the `.sql` file of a `queries` folder that creates nothing, as the add-in exports it; it names
    forms and public VBA functions and VBA names it, so VBA and SQL share one name scope (shared rule 1), as Kotlin and
    Java do (decided by Christian, 2026-11-05).
+7. The layout of a form or report is a declaration of its own, as an Angular template: the `.form` or `.report` file
+   the export macro writes with `SaveAsText`, as the add-in names it, whose code module uses it (decided by Christian,
+   2026-11-06; the leaf name as an Angular template's, as a dot would split the path).
+8. A layout uses its own code module: for each event it binds to `[Event Procedure]` and each routine of the module an
+   expression calls; with the module using its layout, a form with code is a cycle (decided by Christian, 2026-11-06).
