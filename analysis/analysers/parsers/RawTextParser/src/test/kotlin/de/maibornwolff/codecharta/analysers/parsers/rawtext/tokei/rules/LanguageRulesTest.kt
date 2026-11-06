@@ -42,6 +42,18 @@ class LanguageRulesTest {
     }
 
     @Test
+    fun `should open a shell heredoc whose terminator is quoted by a backslash`() {
+        // Arrange
+        val lines = arrayOf("functions=\$(cat << \\EOF", "warn () {", "# text", "EOF", "# comment")
+
+        // Act
+        val kinds = classifyAll("filter-branch.sh", *lines)
+
+        // Assert
+        assertThat(kinds).containsExactly(code, code, code, code, comment)
+    }
+
+    @Test
     fun `should not open a heredoc for a shell here-string`() {
         // Arrange
         val lines = arrayOf("read -r word <<< \"\$text\"", "# comment")
