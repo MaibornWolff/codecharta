@@ -191,6 +191,16 @@ class LanguageTest {
     }
 
     @Test
+    fun `should return the Access layout for forms and reports, with the VBA keywords for the names of their controls`() {
+        // Arrange & Act
+        val languages = listOf("form", "report", "FORM").map { Language.fromExtension(it) }
+
+        // Assert
+        assertEquals(listOf(Language.ACCESS_LAYOUT, Language.ACCESS_LAYOUT, Language.ACCESS_LAYOUT), languages)
+        assertEquals(Language.VBA.keywords.getKeywords(), Language.ACCESS_LAYOUT.keywords.getKeywords())
+    }
+
+    @Test
     fun `should share the VBA keywords with VB6`() {
         // Arrange & Act
         val vb6Keywords = Language.VB6.keywords.getKeywords()

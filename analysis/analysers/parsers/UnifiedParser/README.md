@@ -30,6 +30,7 @@ The Unified Parser is parser to generate code metrics from a source code file or
 | SQL          | .sql, .pks, .pkb, .pls                 |
 | VBA          | .bas, .cls                             |
 | VB6 forms    | .frm                                   |
+| Access forms and reports | .form, .report             |
 
 Every `.html` file is read as an Angular template, by this parser as by `dependencyparser` and
 `domainlanguageparser`; exclude the `.html` files that are no templates of an Angular application, such as
@@ -45,6 +46,11 @@ VBA covers the modules and classes that Access, Excel and Word export, form and 
 (`.frm`) are measured behind their layout. Subs, functions and property procedures count as functions; branches, every
 `Case`, loops, `And`/`Or`/`Xor`/`Eqv`/`Imp`, `IIf` and an `On Error GoTo` handler add to the complexity. The parser
 reads exported source files, not the code inside `.accdb`, `.xlsm` or `.docm` files.
+
+An Access form or report layout (`.form`, `.report`, written by `SaveAsText`) counts as `rloc` only the lines that
+hold logic: the expressions of controls and events and the SQL of record and row sources. The expressions add to the
+complexity like VBA, the SQL like SQL, and `number_of_controls` counts the controls of its sections; the code after
+`CodeBehindForm` belongs to the exported class module and counts there.
 
 ## Supported Metrics
 

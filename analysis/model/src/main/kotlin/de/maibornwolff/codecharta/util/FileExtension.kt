@@ -36,5 +36,6 @@ enum class FileExtension(
     HTML(".html"),
     SQL(".sql", setOf(".pks", ".pkb", ".pls")),
     VBA(".bas", setOf(".cls")),
-    VB6(".frm")
+    VB6(".frm"),
+    ACCESS_LAYOUT(".form", setOf(".report"))
 }

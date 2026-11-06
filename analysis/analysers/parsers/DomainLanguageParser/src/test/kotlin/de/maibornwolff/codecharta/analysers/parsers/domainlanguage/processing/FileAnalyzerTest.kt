@@ -356,6 +356,38 @@ class FileAnalyzerTest {
     }
 
     @Test
+    fun `should read the controls, fields and captions of an Access form without the prefixes of their names`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val form = File(tempDirPath.toFile(), "frmShipping.form")
+        form.writeText(
+            """
+            Begin Form
+                Caption ="Parcel Tracking"
+                Begin
+                    Begin Section
+                        Begin
+                            Begin TextBox
+                                Name ="txtCarrier"
+                                ControlSource ="CarrierCompany"
+                            End
+                        End
+                    End
+                End
+            End
+            """.trimIndent()
+        )
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(form, form.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(setOf("parcel", "tracking", "carrier", "company"), words.keys)
+    }
+
+    @Test
     fun `should drop the Access naming prefixes of a query in a queries folder, but not of other SQL`(
         @TempDir tempDirPath: Path
     ) {
