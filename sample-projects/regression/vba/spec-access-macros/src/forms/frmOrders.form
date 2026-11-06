@@ -1,0 +1,24 @@
+Version =21
+VersionRequired =20
+Begin Form
+    RecordSource ="qryOrders"
+    OnOpen ="mcrOrders.Open"
+    Begin
+        Begin Section
+            Begin
+                Begin CommandButton
+                    Name ="cmdPrint"
+                    OnClickEmMacro = Begin
+                        Version =196611
+                        ColumnsShown =8
+                        Begin
+                            Action ="OpenReport"
+                            Argument ="rptInvoice"
+                            Argument ="2"
+                        End
+                    End
+                End
+            End
+        End
+    End
+End

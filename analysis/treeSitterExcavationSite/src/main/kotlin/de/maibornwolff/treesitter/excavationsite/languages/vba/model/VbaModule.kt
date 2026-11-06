@@ -53,7 +53,10 @@ enum class VbaNameKind {
     REPORT,
 
     /** The name of an Access query or table that `DoCmd.OpenQuery`, `OpenRecordset` or `QueryDefs` names. */
-    RELATION
+    RELATION,
+
+    /** The name of an Access macro that `DoCmd.RunMacro` runs or an event runs, `mcrX.Print` for its submacro `Print`. */
+    MACRO
 }
 
 /** A name as written, `modOrders.OrderTotal` as `[modOrders, OrderTotal]`, or the name of a form or report. */

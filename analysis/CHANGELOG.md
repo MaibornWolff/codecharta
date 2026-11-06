@@ -20,8 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **VBA, VB6 and Access**: `unifiedparser` measures exported VBA modules and classes from Access, Excel and Word, VB6
   forms, the layouts of Access forms and reports with the logic and controls they hold, and Access macros;
   `domainlanguageparser` reads their domain words, and `dependencyparser` draws the dependencies between their
-  modules, the forms and reports with their layouts, and the Access queries exported as SQL, with the forms, queries
-  and VBA functions those name.
+  modules, the forms and reports with their layouts, the macros, and the Access queries exported as SQL, with the
+  forms, queries, macros and VBA functions those name.
 
 ### Changed
 

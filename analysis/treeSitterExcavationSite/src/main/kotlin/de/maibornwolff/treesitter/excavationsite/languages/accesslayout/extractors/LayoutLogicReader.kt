@@ -8,7 +8,8 @@ import de.maibornwolff.treesitter.excavationsite.languages.accessmacro.extractor
  * the `=`), the SQL of its record and row sources ([queries]), the tables and queries they name ([dataSources]), the
  * forms and reports of its subform controls, the [logicLines] all of these take up, and its [controls]; the [names]
  * of its controls, but for the names Access gives by default, and the fields they show, and the [captions] the user sees; whether it [bindsEventProcedure], an event
- * the code module of the form handles; and the [macros] embedded in its events.
+ * the code module of the form handles; the [macros] embedded in its events and the [macroNames] of the stand-alone
+ * macros they run (`OnClick ="mcrOrders.Print"`).
  */
 internal data class LayoutLogic(
     val expressions: List<String>,
@@ -22,12 +23,14 @@ internal data class LayoutLogic(
     val names: List<String>,
     val captions: List<String>,
     val bindsEventProcedure: Boolean,
-    val macros: List<Macro>
+    val macros: List<Macro>,
+    val macroNames: List<String>
 )
 
 internal object LayoutLogicReader {
     private const val EXPRESSION_START = "="
     private const val EVENT_PROCEDURE = "[Event Procedure]"
+    private const val BRACKET = "["
     private const val ROW_SOURCE_TYPE = "RowSourceType"
     private const val VALUE_LIST = "Value List"
     private const val SOURCE_OBJECT = "sourceobject"
@@ -59,6 +62,7 @@ internal object LayoutLogicReader {
         val subreports = mutableListOf<String>()
         val names = mutableListOf<String>()
         val captions = mutableListOf<String>()
+        val macroNames = mutableListOf<String>()
         var logicLines = 0
         var bindsEventProcedure = false
     }
@@ -79,7 +83,8 @@ internal object LayoutLogicReader {
             collected.names,
             collected.captions,
             collected.bindsEventProcedure,
-            layout.embeddedMacros.map { MacroReader.read(it) }
+            layout.embeddedMacros.map { MacroReader.read(it) },
+            collected.macroNames
         )
     }
 
@@ -94,6 +99,7 @@ internal object LayoutLogicReader {
             name in DATA_SOURCES && value.isNotEmpty() && !isValueList(name, block) -> collectDataSource(property, value, collected)
             name == SOURCE_OBJECT -> collectSubObject(value, collected)
             isEventProperty(name) && value.equals(EVENT_PROCEDURE, ignoreCase = true) -> collected.bindsEventProcedure = true
+            isEventProperty(name) && value.isNotEmpty() && !value.startsWith(BRACKET) -> collected.macroNames.add(value)
             value.isEmpty() -> Unit
             name == CAPTION -> collected.captions.add(value)
             name == CONTROL_SOURCE ||
