@@ -1,6 +1,9 @@
 package de.maibornwolff.treesitter.excavationsite.integration.dependencies
 
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
+import de.maibornwolff.treesitter.excavationsite.languages.accesslayout.AccessLayoutComposer
+import de.maibornwolff.treesitter.excavationsite.languages.accesslayout.extractors.LayoutLogicReader
+import de.maibornwolff.treesitter.excavationsite.languages.accesslayout.model.AccessLayout
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors.UnitReader
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiUnit
 import de.maibornwolff.treesitter.excavationsite.languages.rust.extractors.ModuleReader
@@ -11,6 +14,8 @@ import de.maibornwolff.treesitter.excavationsite.languages.sql.model.AccessQuery
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlScript
 import de.maibornwolff.treesitter.excavationsite.languages.vba.extractors.VbaModuleReader
 import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaModule
+import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaName
+import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaNameKind
 import de.maibornwolff.treesitter.excavationsite.languages.vue.VueDependencyMapping
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ComponentRegistration
@@ -24,6 +29,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.Nativ
 
 object DependenciesFacade {
     private val VBA_LANGUAGES = setOf(Language.VBA, Language.VB6)
+    private const val FIELD_OR_CONTROL_START = "["
 
     /**
      * The package, imports and declarations of the given source code, with what the sources in another language it
@@ -85,6 +91,28 @@ object DependenciesFacade {
         val grammar = NativeTreeSitter.grammar(LanguageRegistry.getGrammarLibrary(Language.SQL))
         return FfmSyntaxTree.parse(content, grammar).use { it.readReleasingReachedNodes(AccessQueryReader::read) }
     }
+
+    /**
+     * What an Access form or report layout names, for the name lookup of `vba.md`: its expressions read as one VBA
+     * routine, whose own name and variable are no names of the layout, nor is a name in brackets, a field or control
+     * (`[Total]`); and the SQL of its sources as Access queries.
+     */
+    fun accessLayout(content: String): AccessLayout {
+        val logic = LayoutLogicReader.read(content)
+        val expressionNames = AccessLayoutComposer
+            .expressionRoutineOf(logic)
+            ?.let { routine -> vbaModule(routine.content, Language.VBA).declarations.flatMap { it.names } }
+            .orEmpty()
+            .filterNot { name -> isExpressionRoutine(name) || name.segments.first().startsWith(FIELD_OR_CONTROL_START) }
+        val names = logic.dataSources.map { VbaName(listOf(it), VbaNameKind.RELATION) } +
+            logic.subforms.map { VbaName(listOf(it), VbaNameKind.FORM) } +
+            logic.subreports.map { VbaName(listOf(it), VbaNameKind.REPORT) } +
+            expressionNames
+        return AccessLayout(names, logic.queries.map { accessQuery(it) }, logic.bindsEventProcedure)
+    }
+
+    private fun isExpressionRoutine(name: VbaName): Boolean =
+        name.segments.first().equals(AccessLayoutComposer.EXPRESSION_ROUTINE, ignoreCase = true)
 
     /** What a VBA or VB6 module declares and names, for the name lookup of `vba.md`. */
     fun vbaModule(content: String, language: Language): VbaModule {

@@ -1,0 +1,15 @@
+Version =21
+VersionRequired =20
+Begin Report
+    RecordSource ="qryOrders"
+    Begin
+        Begin Section
+            Begin
+                Begin TextBox
+                    Name ="txtDue"
+                    ControlSource ="=DueDate([OrderDate])"
+                End
+            End
+        End
+    End
+End

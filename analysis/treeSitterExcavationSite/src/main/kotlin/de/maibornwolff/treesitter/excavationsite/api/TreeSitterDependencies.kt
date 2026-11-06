@@ -58,6 +58,9 @@ object TreeSitterDependencies {
     /** What an Access query names: its tables, queries and functions, and the forms and reports of its bang chains. */
     fun accessQuery(content: String): AccessQuery = DependenciesFacade.accessQuery(content)
 
+    /** What the layout of an Access form or report names: its data sources, subforms, expressions and SQL, see [AccessLayout]. */
+    fun accessLayout(content: String): AccessLayout = DependenciesFacade.accessLayout(content)
+
     /** What a VBA module or class, or a VB6 form, declares and names, see [VbaModule]. */
     fun vbaModule(content: String, language: Language): VbaModule = DependenciesFacade.vbaModule(content, language)
 

@@ -37,7 +37,7 @@ internal object LanguageRules {
         SupportedLanguage.PYTHON -> PythonNameRules
         SupportedLanguage.RUST -> RustNameRules
         SupportedLanguage.SQL -> SqlNameRules
-        SupportedLanguage.VBA -> VbaNameRules
+        SupportedLanguage.VBA, SupportedLanguage.ACCESS_LAYOUT -> VbaNameRules
         SupportedLanguage.TYPESCRIPT, SupportedLanguage.JAVASCRIPT, SupportedLanguage.VUE -> TypescriptNameRules
         else -> DefaultNameRules
     }

@@ -4,7 +4,8 @@ package de.maibornwolff.treesitter.excavationsite.languages.accesslayout.extract
  * The logic of a form or report layout: the [expressions] its controls and events compute (`=Sum([Total])`, without
  * the `=`), the SQL of its record and row sources ([queries]), the tables and queries they name ([dataSources]), the
  * forms and reports of its subform controls, the [logicLines] all of these take up, and its [controls]; the [names]
- * of its controls and the fields they show, and the [captions] the user sees.
+ * of its controls and the fields they show, and the [captions] the user sees; whether it [bindsEventProcedure], an event
+ * the code module of the form handles.
  */
 internal data class LayoutLogic(
     val expressions: List<String>,
@@ -16,11 +17,13 @@ internal data class LayoutLogic(
     val controls: Int,
     val lines: Int,
     val names: List<String>,
-    val captions: List<String>
+    val captions: List<String>,
+    val bindsEventProcedure: Boolean
 )
 
 internal object LayoutLogicReader {
     private const val EXPRESSION_START = "="
+    private const val EVENT_PROCEDURE = "[Event Procedure]"
     private const val ROW_SOURCE_TYPE = "RowSourceType"
     private const val VALUE_LIST = "Value List"
     private const val SOURCE_OBJECT = "sourceobject"
@@ -45,6 +48,7 @@ internal object LayoutLogicReader {
         val names = mutableListOf<String>()
         val captions = mutableListOf<String>()
         var logicLines = 0
+        var bindsEventProcedure = false
     }
 
     fun read(content: String): LayoutLogic {
@@ -61,7 +65,8 @@ internal object LayoutLogicReader {
             layout.blocks.count { it.isControl },
             layout.lines,
             collected.names,
-            collected.captions
+            collected.captions,
+            collected.bindsEventProcedure
         )
     }
 
@@ -75,13 +80,16 @@ internal object LayoutLogicReader {
             }
             name in DATA_SOURCES && value.isNotEmpty() && !isValueList(name, block) -> collectDataSource(property, value, collected)
             name == SOURCE_OBJECT -> collectSubObject(value, collected)
+            isEventProperty(name) && value.equals(EVENT_PROCEDURE, ignoreCase = true) -> collected.bindsEventProcedure = true
             value.isEmpty() -> Unit
             name == CAPTION -> collected.captions.add(value)
             name == CONTROL_SOURCE || (name == NAME && block.isControl) -> collected.names.add(value)
         }
     }
 
-    private fun isExpressionProperty(name: String): Boolean = name in EXPRESSION_PROPERTIES || EVENT_PREFIXES.any { name.startsWith(it) }
+    private fun isExpressionProperty(name: String): Boolean = name in EXPRESSION_PROPERTIES || isEventProperty(name)
+
+    private fun isEventProperty(name: String): Boolean = EVENT_PREFIXES.any { name.startsWith(it) }
 
     private fun isValueList(name: String, block: LayoutBlock): Boolean =
         name == ROW_SOURCE && block.valueOf(ROW_SOURCE_TYPE).equals(VALUE_LIST, ignoreCase = true)

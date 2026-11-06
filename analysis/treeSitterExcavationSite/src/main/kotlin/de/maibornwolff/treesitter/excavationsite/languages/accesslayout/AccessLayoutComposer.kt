@@ -15,7 +15,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
  * identifiers, the captions its strings.
  */
 internal object AccessLayoutComposer {
-    private const val EXPRESSION_VALUE = "L"
+    /** The routine and the variable of the expressions are named with one letter, which is no word of the domain. */
+    const val EXPRESSION_ROUTINE = "L"
 
     fun compose(content: String): ComposedSource {
         val logic = LayoutLogicReader.read(content)
@@ -33,10 +34,10 @@ internal object AccessLayoutComposer {
     private fun textsOf(logic: LayoutLogic): List<ExtractedText> = logic.names.map { ExtractedText(it, ExtractionContext.IDENTIFIER) } +
         logic.captions.map { ExtractedText(it, ExtractionContext.STRING, interpretsEscapes = false) }
 
-    /** The routine and the variable are named with one letter, which is no word of the domain. */
-    private fun expressionRoutineOf(logic: LayoutLogic): EmbeddedSource? {
+    /** The expressions of [logic] as one VBA routine, each the value of an assignment, or null for a layout without any. */
+    fun expressionRoutineOf(logic: LayoutLogic): EmbeddedSource? {
         if (logic.expressions.isEmpty()) return null
-        val assignments = logic.expressions.joinToString("\n") { "$EXPRESSION_VALUE = ${it.lines().joinToString(" ")}" }
-        return EmbeddedSource("Sub $EXPRESSION_VALUE()\n$assignments\nEnd Sub\n", Language.VBA)
+        val assignments = logic.expressions.joinToString("\n") { "$EXPRESSION_ROUTINE = ${it.lines().joinToString(" ")}" }
+        return EmbeddedSource("Sub $EXPRESSION_ROUTINE()\n$assignments\nEnd Sub\n", Language.VBA)
     }
 }

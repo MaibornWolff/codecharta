@@ -203,7 +203,7 @@ differ from the namespace levels in the logical layer — which are DependaChart
 ## Supported languages
 
 Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates, SQL and VBA
-(with VB6 forms).
+(with VB6 forms and Access form and report layouts).
 
 An Angular template (`.html`) depends on each component and directive whose selector matches one of its elements, as
 the Angular compiler matches them by tag, attribute and value, property, two-way and event binding, class and, for a
@@ -254,6 +254,12 @@ methods that name an object by its type (`DoCmd.Close acForm, "frmX"`, `DoCmd.Ou
 `DoCmd.OpenQuery "qryX"`, `OpenRecordset("qryX")`, `QueryDefs("qryX")`, `DLookup("Field", "qryX")` and the other
 domain functions, and a `RowSource` or `RecordSource` set to its name point at it, and it points at the forms its
 `[Forms]![frmX]` names and at the public VBA functions it calls. A member of a value, a `With` member, a library name and a name in a string draw no edge.
+
+The layout of an Access form or report (`.form`, `.report`, written by `SaveAsText`) is a leaf of its own named after
+its file (`frmOrders_form`), which the form's module uses, and a form without a module is its layout. It points at the
+query or table its record and row sources name, the forms and reports of its subform controls, the functions its
+expressions call (`=Rounded([Total])`), its own module for each event bound to `[Event Procedure]`, and what the SQL
+of a row source names, so a form with code is a cycle between module and layout.
 
 ## Usage and parameters
 

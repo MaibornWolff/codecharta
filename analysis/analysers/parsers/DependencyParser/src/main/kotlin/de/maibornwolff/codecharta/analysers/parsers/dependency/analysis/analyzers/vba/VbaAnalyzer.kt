@@ -9,12 +9,12 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Pa
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.treesitter.excavationsite.api.VbaDeclarationKind
-import de.maibornwolff.treesitter.excavationsite.api.VbaName
 
 /**
  * The declarations of a VBA module (`docs/name-resolution/vba.md`): each declaration of a standard module at the module
  * name plus its own, a class module as one declaration. Each name they write is looked up as the compiler does and
- * written as the exact path of what it finds, which [VbaNameRules] takes only as written.
+ * written as the exact path of what it finds, which [VbaNameRules] takes only as written. The code module of a form or
+ * report also uses its layout.
  */
 class VbaAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     private val project by lazy {
@@ -27,14 +27,23 @@ class VbaAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         val lookup = VbaLookup(project, module, module.filePath)
         if (module.isClass) {
             val names = module.module.declarations.flatMap { it.names } + module.module.names
-            return FileReport(listOf(node(listOf(module.name), NodeType.CLASS, names, lookup)))
+            val uses = names.mapNotNull { lookup.resolve(it) } + listOfNotNull(layoutOf(module))
+            return FileReport(listOf(node(listOf(module.name), NodeType.CLASS, uses)))
         }
-        val nodes = module.module.declarations.map { node(module.pathOf(it), NODE_TYPES.getValue(it.kind), it.names, lookup) }
+        val nodes = module.module.declarations.map { declaration ->
+            node(module.pathOf(declaration), NODE_TYPES.getValue(declaration.kind), declaration.names.mapNotNull { lookup.resolve(it) })
+        }
         return FileReport(nodes)
     }
 
-    private fun node(path: List<String>, nodeType: NodeType, names: List<VbaName>, lookup: VbaLookup): Node {
-        val uses = names.mapNotNull { lookup.resolve(it) }.filter { it != path }.distinct()
+    // The code module of a form or report depends on its layout, as an Angular component on its template
+    private fun layoutOf(module: VbaModuleFile): List<String>? {
+        val (objectName, kind) = VbaLayoutFiles.objectOfModule(module.name) ?: return null
+        return project.layoutNamed(objectName, kind)
+    }
+
+    private fun node(path: List<String>, nodeType: NodeType, resolvedUses: List<List<String>>): Node {
+        val uses = resolvedUses.filter { it != path }.distinct()
         return Node(
             pathWithName = Path(path),
             physicalPath = fileInfo.physicalPath,
