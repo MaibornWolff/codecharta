@@ -3,8 +3,8 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlLookup
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlProject
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.vba.AccessObjectFiles
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.vba.VbaAccessQueryUses
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.vba.VbaLayoutFiles
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.vba.VbaLookup
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.vba.VbaProject
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.splitNameToParts
@@ -35,7 +35,7 @@ class AccessLayoutAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         val layout = TreeSitterDependencies.accessLayout(fileInfo.content)
         val codeModule = vbaProject.codeModuleOfLayout(fileInfo.physicalPath)
         val lookup = VbaLookup(vbaProject, codeModule, FilePath(splitNameToParts(fileInfo.physicalPath)))
-        val leaf = VbaLayoutFiles.leafOf(fileInfo.physicalPath)
+        val leaf = AccessObjectFiles.leafOf(fileInfo.physicalPath)
         val eventModule = codeModule?.takeIf { layout.bindsEventProcedure }?.let { listOf(it.name) }
         val uses = layout.names.mapNotNull { lookup.resolve(it) } + listOfNotNull(eventModule) + layout.queries.flatMap { usesOf(it) }
         val node = Node(

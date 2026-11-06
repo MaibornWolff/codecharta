@@ -30,8 +30,8 @@ internal class VbaLookup(private val project: VbaProject, private val own: VbaMo
 
     // A form or report without code has no module: its layout stands for it
     private fun formOrReport(objectName: String, kind: VbaNameKind): List<String>? {
-        val codeModule = project.modulesNamed(VbaLayoutFiles.moduleNameOf(objectName, kind)).firstOrNull { it.isClass }
-        return codeModule?.let { listOf(it.name) } ?: project.layoutNamed(objectName, kind)
+        val codeModule = project.modulesNamed(AccessObjectFiles.moduleNameOf(objectName, kind)).firstOrNull { it.isClass }
+        return codeModule?.let { listOf(it.name) } ?: project.objectNamed(objectName, kind)
     }
 
     private fun resolveCode(segments: List<String>): List<String>? {
