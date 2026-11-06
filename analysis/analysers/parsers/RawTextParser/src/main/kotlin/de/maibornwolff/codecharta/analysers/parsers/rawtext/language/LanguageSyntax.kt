@@ -18,6 +18,7 @@ data class LanguageSyntax(
     val isDocStringAStatement: Boolean = false,
     val regexLiteral: RegexLiteral? = null,
     val percentLiteral: PercentLiteral? = null,
+    val templateLiteral: TemplateLiteral? = null,
     val dataSectionMarker: String? = null,
     val measuredBlock: MeasuredBlock? = null
 )
@@ -44,3 +45,5 @@ class HeredocOpener(pattern: String) {
 }
 
 data class HeredocMatch(val terminator: String, val openerLength: Int)
+
+data class TemplateLiteral(val quote: String, val placeholderStart: String)

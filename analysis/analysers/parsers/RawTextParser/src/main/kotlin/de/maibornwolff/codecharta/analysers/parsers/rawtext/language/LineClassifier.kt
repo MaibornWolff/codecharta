@@ -11,6 +11,7 @@ class LineClassifier(private val syntax: LanguageSyntax) {
     private var isInDataSection = false
     private var isLineCommentContinued = false
     private val statement = if (syntax.isDocStringAStatement) StatementTracker() else null
+    private val placeholders = TemplatePlaceholders<OpenRegion>()
 
     fun classify(line: String): LineKind = when {
         !measuredBlock.isMeasured(line) -> UNMEASURED_LINE
@@ -65,7 +66,7 @@ class LineClassifier(private val syntax: LanguageSyntax) {
             scan.position++
             return
         }
-        if (openHeredoc(scan) || openPercentLiteral(scan) || openMultiLineRegex(scan)) return
+        if (resumeTemplate(scan) || openHeredoc(scan) || openPercentLiteral(scan) || openMultiLineRegex(scan)) return
         val marker = markers.firstOrNull { isMarkerAt(scan, it) }
         if (marker == null) {
             scan.hasCode = true
@@ -74,6 +75,14 @@ class LineClassifier(private val syntax: LanguageSyntax) {
             return
         }
         open(scan, marker)
+    }
+
+    private fun resumeTemplate(scan: LineScan): Boolean {
+        val template = placeholders.templateResumedBy(scan.current) ?: return false
+        openRegion = template
+        scan.hasCode = true
+        scan.position++
+        return true
     }
 
     private fun openHeredoc(scan: LineScan): Boolean {
@@ -144,6 +153,7 @@ class LineClassifier(private val syntax: LanguageSyntax) {
         val marker = region.marker
         when {
             marker.region.isQuote && syntax.isBackslashEscapeInQuotes && scan.current == ESCAPE -> scan.position += ESCAPE_LENGTH
+            isPlaceholderStartAt(scan, marker) -> enterPlaceholder(scan, region)
             isEndAt(scan, marker) -> close(scan, region)
             marker.isNestable && scan.line.startsWith(marker.delimiters.start, scan.position) -> {
                 region.depth++
@@ -151,6 +161,17 @@ class LineClassifier(private val syntax: LanguageSyntax) {
             }
             else -> scan.position++
         }
+    }
+
+    private fun isPlaceholderStartAt(scan: LineScan, marker: Marker): Boolean {
+        val template = syntax.templateLiteral ?: return false
+        return marker.delimiters.start == template.quote && scan.line.startsWith(template.placeholderStart, scan.position)
+    }
+
+    private fun enterPlaceholder(scan: LineScan, region: OpenRegion) {
+        placeholders.enter(region)
+        openRegion = null
+        scan.position += checkNotNull(syntax.templateLiteral).placeholderStart.length
     }
 
     private fun isEndAt(scan: LineScan, marker: Marker): Boolean {
