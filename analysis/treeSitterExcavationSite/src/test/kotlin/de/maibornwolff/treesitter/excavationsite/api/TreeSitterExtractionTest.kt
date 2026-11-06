@@ -96,9 +96,9 @@ class TreeSitterExtractionTest {
             Language.PYTHON, Language.GO, Language.PHP, Language.RUBY, Language.SWIFT,
             Language.BASH, Language.CSHARP, Language.CPP, Language.C, Language.OBJECTIVE_C,
             Language.VUE, Language.TSX, Language.DELPHI, Language.RUST, Language.ANGULAR, Language.SQL,
-            Language.VBA, Language.VB6
+            Language.VBA, Language.VB6, Language.ACCESS_LAYOUT
         )
-        assertThat(languages).hasSize(22)
+        assertThat(languages).hasSize(23)
     }
 
     @Test
@@ -111,9 +111,9 @@ class TreeSitterExtractionTest {
             ".java", ".kt", ".kts", ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs",
             ".py", ".go", ".php", ".rb", ".swift", ".sh", ".bash", ".cs",
             ".cpp", ".cc", ".cxx", ".hpp", ".hxx", ".h", ".c", ".m", ".mm",
-            ".vue", ".pas", ".dpr", ".rs", ".html", ".sql", ".pks", ".pkb", ".pls", ".bas", ".cls", ".frm"
+            ".vue", ".pas", ".dpr", ".rs", ".html", ".sql", ".pks", ".pkb", ".pls", ".bas", ".cls", ".frm", ".form", ".report"
         )
-        assertThat(extensions).hasSize(38)
+        assertThat(extensions).hasSize(40)
     }
 
     @Test

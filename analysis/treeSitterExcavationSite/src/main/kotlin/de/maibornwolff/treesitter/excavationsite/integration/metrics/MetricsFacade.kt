@@ -3,6 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.integration.metrics
 import de.maibornwolff.treesitter.excavationsite.integration.embedded.EmbeddedSourcesFacade
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AvailableFileMetrics
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ComposedSource
 import de.maibornwolff.treesitter.excavationsite.shared.domain.EmbeddedSource
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import de.maibornwolff.treesitter.excavationsite.shared.domain.MetricsResult
@@ -35,12 +36,30 @@ object MetricsFacade {
 
     private fun collectMetrics(content: String, language: Language): Map<String, Double> {
         val definition = LanguageRegistry.getLanguageDefinition(language)
+        definition.composer?.let { compose -> return composedMetrics(compose(content)) }
         val grammarLibrary = LanguageRegistry.getGrammarLibrary(language)
         val processedContent = definition.preprocessor?.invoke(content) ?: content
         return FfmSyntaxTree.parse(processedContent, NativeTreeSitter.grammar(grammarLibrary)).use { tree ->
             val metrics = MetricCollector(definition).collectMetrics(tree, processedContent)
             withComplexityOf(EmbeddedSourcesFacade.embeddedSources(tree, processedContent, definition), metrics)
         }
+    }
+
+    // A composed file declares no routines: its parts add their decisions and message chains, it counts its lines itself
+    private fun composedMetrics(source: ComposedSource): Map<String, Double> {
+        val partMetrics = source.codeParts.map { collectMetrics(it.content, it.language) }
+        val sumOverParts = { metric: AvailableFileMetrics -> partMetrics.sumOf { it.getValue(metric.metricName) } }
+        val logicComplexity = sumOverParts(AvailableFileMetrics.LOGIC_COMPLEXITY)
+        val metrics = AvailableFileMetrics.entries
+            .filterNot { it in AvailableFileMetrics.NODE_COUNTS }
+            .associateTo(mutableMapOf()) { it.metricName to 0.0 }
+        metrics[AvailableFileMetrics.COMPLEXITY.metricName] = logicComplexity
+        metrics[AvailableFileMetrics.LOGIC_COMPLEXITY.metricName] = logicComplexity
+        metrics[AvailableFileMetrics.MESSAGE_CHAINS.metricName] = sumOverParts(AvailableFileMetrics.MESSAGE_CHAINS)
+        metrics[AvailableFileMetrics.REAL_LINES_OF_CODE.metricName] = source.codeLines.toDouble()
+        metrics[AvailableFileMetrics.LINES_OF_CODE.metricName] = source.lines.toDouble()
+        source.counts.forEach { (metric, count) -> metrics[metric.metricName] = count.toDouble() }
+        return metrics
     }
 
     // An embedded source, such as an inline template, adds its decisions to the file; its lines are the file's already

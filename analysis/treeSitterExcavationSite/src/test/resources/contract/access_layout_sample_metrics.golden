@@ -1,0 +1,15 @@
+# File Metrics
+comment_lines=0.0
+comment_ratio=0.0
+complexity=2.0
+excessive_comments=0.0
+loc=48.0
+logic_complexity=2.0
+long_method=0.0
+long_parameter_list=0.0
+message_chains=0.0
+number_of_controls=5.0
+number_of_functions=0.0
+rloc=4.0
+
+# Per-Function Metrics
