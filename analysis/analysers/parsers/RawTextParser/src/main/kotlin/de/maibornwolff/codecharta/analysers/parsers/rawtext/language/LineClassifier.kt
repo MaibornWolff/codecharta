@@ -105,7 +105,7 @@ class LineClassifier(private val syntax: LanguageSyntax) {
     private fun scanRegion(scan: LineScan, region: OpenRegion) {
         val marker = region.marker
         when {
-            marker.region == Region.QUOTE && scan.current == ESCAPE -> scan.position += ESCAPE_LENGTH
+            marker.region == Region.QUOTE && syntax.isBackslashEscapeInQuotes && scan.current == ESCAPE -> scan.position += ESCAPE_LENGTH
             isEndAt(scan, marker) -> close(scan, region)
             marker.isNestable && scan.line.startsWith(marker.delimiters.start, scan.position) -> {
                 region.depth++

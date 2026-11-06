@@ -13,6 +13,7 @@ data class LanguageSyntax(
     val heredocOpeners: List<HeredocOpener> = emptyList(),
     val isLineCommentOnlyAtWordStart: Boolean = false,
     val isBackslashEscapeInCode: Boolean = false,
+    val isBackslashEscapeInQuotes: Boolean = true,
     val isLineCommentContinuedByBackslash: Boolean = false,
     val hasRegexLiterals: Boolean = false,
     val dataSectionMarker: String? = null,
