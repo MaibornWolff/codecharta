@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   `domainlanguageparser` reads their domain words, and `dependencyparser` draws the dependencies between their
   modules, the forms and reports with their layouts, the macros, and the Access queries exported as SQL, with the
   forms, queries, macros and VBA functions those name.
+- **Access export**: a macro you import into an Access application exports its modules, forms, reports, macros and
+  queries into a folder ccsh maps, as the new guide for Access and VBA applications describes.
 
 ### Changed
 

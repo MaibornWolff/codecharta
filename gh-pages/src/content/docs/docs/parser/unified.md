@@ -81,7 +81,8 @@ Some languages need a word of explanation:
   and its complexity adds to the complexity and logic complexity of the `.ts` file.
 - **SQL**: one grammar covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL, so no dialect has to be chosen.
 - **VBA and VB6**: the parser reads the modules and classes that Access, Excel and Word export, not the code inside an
-  `.accdb`, `.xlsm` or `.docm` file. A VB6 form (`.frm`) is measured behind its layout. Subs, functions and property
+  `.accdb`, `.xlsm` or `.docm` file; [Analyse an Access or VBA application](/docs/analysis/access-vba) shows how to
+  export them. A VB6 form (`.frm`) is measured behind its layout. Subs, functions and property
   procedures count as functions; branches, every `Case`, loops, `And`/`Or`/`Xor`/`Eqv`/`Imp`, `IIf` and an
   `On Error GoTo` handler add to the complexity. A file the VBA editor exported in the Windows code page (cp1252) reads
   as such, so its umlauts stay intact; so does an Access query in a `queries` folder.
