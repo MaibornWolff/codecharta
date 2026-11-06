@@ -7,14 +7,14 @@ import de.maibornwolff.treesitter.excavationsite.api.VbaNameKind
  * of the form or report named after its file, one leaf named after its file with the ending, its dots written as
  * underscores (`frmOrders_form`), as an Angular template is. The code module of a form is `Form_` plus its name.
  */
-internal object VbaLayoutFiles {
+internal object AccessObjectFiles {
     private const val FORM_SUFFIX = ".form"
     private const val REPORT_SUFFIX = ".report"
     private const val FORM_MODULE_PREFIX = "Form_"
     private const val REPORT_MODULE_PREFIX = "Report_"
     private val SEPARATORS = charArrayOf('/', '\\')
 
-    fun isLayout(file: String): Boolean = kindOf(file) != null
+    fun isObjectFile(file: String): Boolean = kindOf(file) != null
 
     /** [VbaNameKind.FORM] or [VbaNameKind.REPORT] for a layout file, null for any other file. */
     fun kindOf(file: String): VbaNameKind? = when {

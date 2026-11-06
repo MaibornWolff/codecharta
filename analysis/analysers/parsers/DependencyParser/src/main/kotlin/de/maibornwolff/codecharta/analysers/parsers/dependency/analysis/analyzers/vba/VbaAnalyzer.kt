@@ -38,8 +38,8 @@ class VbaAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
 
     // The code module of a form or report depends on its layout, as an Angular component on its template
     private fun layoutOf(module: VbaModuleFile): List<String>? {
-        val (objectName, kind) = VbaLayoutFiles.objectOfModule(module.name) ?: return null
-        return project.layoutNamed(objectName, kind)
+        val (objectName, kind) = AccessObjectFiles.objectOfModule(module.name) ?: return null
+        return project.objectNamed(objectName, kind)
     }
 
     private fun node(path: List<String>, nodeType: NodeType, resolvedUses: List<List<String>>): Node {
