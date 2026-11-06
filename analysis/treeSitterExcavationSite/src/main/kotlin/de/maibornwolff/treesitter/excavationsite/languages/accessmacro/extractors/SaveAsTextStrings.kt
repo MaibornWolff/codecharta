@@ -1,10 +1,10 @@
-package de.maibornwolff.treesitter.excavationsite.languages.accesslayout.extractors
+package de.maibornwolff.treesitter.excavationsite.languages.accessmacro.extractors
 
 /**
  * A string as `SaveAsText` writes it: in quotes, with a backslash in front of a quote or backslash and a line break as
  * octal codes (`\015\012`).
  */
-internal object LayoutStrings {
+internal object SaveAsTextStrings {
     private const val QUOTE = '"'
     private const val ESCAPE = '\\'
     private const val OCTAL_DIGITS = 3
