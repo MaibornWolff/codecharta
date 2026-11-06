@@ -357,4 +357,24 @@ class CppMetricsTest {
         assertThat(result.linesOfCode).isEqualTo(3.0)
         assertThat(result.realLinesOfCode).isEqualTo(3.0)
     }
+
+    @Test
+    fun `should not count a comment line as code when the parser inserts a missing semicolon there`() {
+        // Arrange
+        val code = """
+            BOOST_FIXTURE_TEST_SUITE(base58_tests, BasicTestingSetup)
+
+            // Goal: test encoding
+            BOOST_AUTO_TEST_CASE(base58_EncodeBase58)
+            {
+            }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.CPP)
+
+        // Assert
+        assertThat(result.realLinesOfCode).isEqualTo(4.0)
+        assertThat(result.commentLines).isEqualTo(1.0)
+    }
 }
