@@ -87,4 +87,40 @@ class AccessLayoutExtractionTest {
         // Assert
         assertThat(result.identifiers).containsExactly("lblInvoice2", "BoxShadow")
     }
+
+    @Test
+    fun `should extract the texts of an embedded macro`() {
+        // Arrange
+        val form = """
+            Begin Form
+                Begin
+                    Begin Section
+                        Begin
+                            Begin CommandButton
+                                Name ="cmdPrint"
+                                OnClickEmMacro = Begin
+                                    Version =196611
+                                    Begin
+                                        Action ="MsgBox"
+                                        Argument ="Printing the invoice"
+                                    End
+                                    Begin
+                                        Action ="OpenReport"
+                                        Argument ="rptInvoice"
+                                    End
+                                End
+                            End
+                        End
+                    End
+                End
+            End
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterExtraction.extract(form, Language.ACCESS_LAYOUT)
+
+        // Assert
+        assertThat(result.identifiers).containsExactly("cmdPrint", "rptInvoice")
+        assertThat(result.strings).containsExactly("Printing the invoice")
+    }
 }

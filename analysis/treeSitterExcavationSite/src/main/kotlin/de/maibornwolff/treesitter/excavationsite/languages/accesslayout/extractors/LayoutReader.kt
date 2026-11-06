@@ -13,19 +13,24 @@ internal data class LayoutBlock(val type: String, val isControl: Boolean, val is
     fun valueOf(name: String): String? = properties.firstOrNull { it.name.equals(name, ignoreCase = true) }?.value
 }
 
-/** The layout part of a form or report export, the code after `CodeBehindForm` left out; [lines] counts that part. */
-internal data class Layout(val blocks: List<LayoutBlock>, val lines: Int)
+/**
+ * The layout part of a form or report export, the code after `CodeBehindForm` left out; [lines] counts that part. Each
+ * of its [embeddedMacros] is the text of a macro an event runs, as a stand-alone macro is exported.
+ */
+internal data class Layout(val blocks: List<LayoutBlock>, val lines: Int, val embeddedMacros: List<String>)
 
 /**
  * Reads the text Access writes with `SaveAsText` for a form or report: nested `Begin <type>` … `End` blocks of
  * `Name =value` lines. A control is a block inside a section; the blocks outside one are the form and the default
- * styles of the control types. A binary property (`PrtMip = Begin` … `End`) and an embedded macro are skipped.
+ * styles of the control types. A binary property (`PrtMip = Begin` … `End`) is skipped, an embedded macro
+ * (`OnClickEmMacro = Begin` … `End`) read as a text of its own.
  */
 internal object LayoutReader {
     private val CODE_BEHIND = Regex("""^CodeBehind(Form|Report)\s*$""", RegexOption.IGNORE_CASE)
     private val BLOCK_START = Regex("""^Begin\s+(\w+)$""", RegexOption.IGNORE_CASE)
     private val PROPERTY = Regex("""^(\w+)\s*=(.*)$""")
     private val NESTED_START = Regex("""^Begin(\s+\w+)?$|=\s*Begin$""", RegexOption.IGNORE_CASE)
+    private val EMBEDDED_MACRO_START = Regex("""^\w+EmMacro\s*=\s*Begin$""", RegexOption.IGNORE_CASE)
     private const val ANONYMOUS_START = "begin"
     private const val END = "end"
     private const val QUOTE = '"'
@@ -36,7 +41,7 @@ internal object LayoutReader {
         val lines = content.lineSequence().map { it.trim() }.takeWhile { !CODE_BEHIND.matches(it) }.toList()
         val reading = Reading(lines)
         reading.readAll()
-        return Layout(reading.blocks, lines.size)
+        return Layout(reading.blocks, lines.size, reading.embeddedMacros)
     }
 
     private class OpenBlock(val type: String, val isControl: Boolean, val isSection: Boolean, val isStyle: Boolean) {
@@ -45,6 +50,7 @@ internal object LayoutReader {
 
     private class Reading(private val lines: List<String>) {
         val blocks = mutableListOf<LayoutBlock>()
+        val embeddedMacros = mutableListOf<String>()
         private val open = ArrayDeque<OpenBlock?>()
         private var index = 0
 
@@ -58,7 +64,8 @@ internal object LayoutReader {
                 blockType != null -> openBlock(blockType)
                 line.equals(ANONYMOUS_START, ignoreCase = true) -> open.addLast(null)
                 line.equals(END, ignoreCase = true) -> closeBlock()
-                NESTED_START.containsMatchIn(line) -> skipNested()
+                EMBEDDED_MACRO_START.matches(line) -> embeddedMacros.add(nestedLines().joinToString("\n"))
+                NESTED_START.containsMatchIn(line) -> nestedLines()
                 else -> PROPERTY.matchEntire(line)?.let { readProperty(it.groupValues[1], it.groupValues[2].trim()) }
             }
         }
@@ -75,7 +82,9 @@ internal object LayoutReader {
             blocks.add(LayoutBlock(block.type, block.isControl, block.isStyle, block.properties))
         }
 
-        private fun skipNested() {
+        // Returns the lines inside the nested block, its closing End left out
+        private fun nestedLines(): List<String> {
+            val start = index
             var depth = 1
             while (depth > 0 && index < lines.size) {
                 val line = lines[index++]
@@ -85,6 +94,7 @@ internal object LayoutReader {
                     depth++
                 }
             }
+            return lines.subList(start, if (depth == 0) index - 1 else index)
         }
 
         private fun readProperty(name: String, written: String) {

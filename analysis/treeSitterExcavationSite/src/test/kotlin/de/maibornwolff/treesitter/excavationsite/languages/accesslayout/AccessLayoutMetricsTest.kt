@@ -77,4 +77,41 @@ class AccessLayoutMetricsTest {
         assertThat(result.complexity).isEqualTo(0.0)
         assertThat(result.numberOfControls).isEqualTo(0.0)
     }
+
+    @Test
+    fun `should add the actions, conditions and decisions of an embedded macro`() {
+        // Arrange
+        val report = """
+            Begin Report
+                Begin
+                    Begin Section
+                        Begin
+                            Begin CommandButton
+                                OnClickEmMacro = Begin
+                                    Version =196611
+                                    Begin
+                                        Condition ="[Paid] Or [Shipped]"
+                                        Action ="OpenReport"
+                                        Argument ="rptInvoice"
+                                    End
+                                    Begin
+                                        Comment ="Prints the invoice"
+                                    End
+                                End
+                            End
+                        End
+                    End
+                End
+            End
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(report, Language.ACCESS_LAYOUT)
+
+        // Assert
+        assertThat(result.realLinesOfCode).isEqualTo(2.0)
+        assertThat(result.complexity).isEqualTo(2.0)
+        assertThat(result.commentLines).isEqualTo(1.0)
+        assertThat(result.numberOfControls).isEqualTo(1.0)
+    }
 }

@@ -1,11 +1,14 @@
 package de.maibornwolff.treesitter.excavationsite.languages.accesslayout.extractors
 
+import de.maibornwolff.treesitter.excavationsite.languages.accessmacro.extractors.Macro
+import de.maibornwolff.treesitter.excavationsite.languages.accessmacro.extractors.MacroReader
+
 /**
  * The logic of a form or report layout: the [expressions] its controls and events compute (`=Sum([Total])`, without
  * the `=`), the SQL of its record and row sources ([queries]), the tables and queries they name ([dataSources]), the
  * forms and reports of its subform controls, the [logicLines] all of these take up, and its [controls]; the [names]
  * of its controls, but for the names Access gives by default, and the fields they show, and the [captions] the user sees; whether it [bindsEventProcedure], an event
- * the code module of the form handles.
+ * the code module of the form handles; and the [macros] embedded in its events.
  */
 internal data class LayoutLogic(
     val expressions: List<String>,
@@ -18,7 +21,8 @@ internal data class LayoutLogic(
     val lines: Int,
     val names: List<String>,
     val captions: List<String>,
-    val bindsEventProcedure: Boolean
+    val bindsEventProcedure: Boolean,
+    val macros: List<Macro>
 )
 
 internal object LayoutLogicReader {
@@ -74,7 +78,8 @@ internal object LayoutLogicReader {
             layout.lines,
             collected.names,
             collected.captions,
-            collected.bindsEventProcedure
+            collected.bindsEventProcedure,
+            layout.embeddedMacros.map { MacroReader.read(it) }
         )
     }
 

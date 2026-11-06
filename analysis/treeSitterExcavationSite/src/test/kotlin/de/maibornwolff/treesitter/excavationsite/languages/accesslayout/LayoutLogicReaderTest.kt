@@ -1,6 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.accesslayout
 
 import de.maibornwolff.treesitter.excavationsite.languages.accesslayout.extractors.LayoutLogicReader
+import de.maibornwolff.treesitter.excavationsite.languages.accessmacro.extractors.Macro
+import de.maibornwolff.treesitter.excavationsite.languages.accessmacro.extractors.MacroAction
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -134,5 +136,14 @@ class LayoutLogicReaderTest {
         // Assert
         assertThat(logic.subreports).containsExactly("srptShipVia")
         assertThat(logic.dataSources).containsExactly("qryShippers")
+    }
+
+    @Test
+    fun `should read the macros embedded in the events`() {
+        // Act
+        val logic = LayoutLogicReader.read(form)
+
+        // Assert
+        assertThat(logic.macros).containsExactly(Macro(listOf(MacroAction("OpenReport", mapOf("ReportName" to "rptLearn"))), emptyList()))
     }
 }
