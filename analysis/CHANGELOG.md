@@ -34,6 +34,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Lines of code in Objective-C, PHP and Ruby**: `unifiedparser` no longer counts a blank line after an `#include`, or a
   line past the end of the file, as code.
+- **Comment lines in SQL**: `unifiedparser` counts a line of dashes without text, such as `--`, as a comment instead of
+  code.
 - **Dependencies into ignored folders**: the dependency parser no longer resolves an import or include to a file that
   `.gitignore` or the exclude patterns leave out, so the edge goes to the file on the map.
 - **Large HTML files**: the domain language parser no longer hangs on an HTML file with much text between its tags.
