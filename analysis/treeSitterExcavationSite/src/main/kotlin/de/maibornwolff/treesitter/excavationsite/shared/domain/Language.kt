@@ -26,7 +26,8 @@ enum class Language(val primaryExtension: String, val otherExtensions: Set<Strin
     SQL(primaryExtension = ".sql", otherExtensions = setOf(".pks", ".pkb", ".pls")),
     VBA(primaryExtension = ".bas", otherExtensions = setOf(".cls")),
     VB6(primaryExtension = ".frm"),
-    ACCESS_LAYOUT(primaryExtension = ".form", otherExtensions = setOf(".report"));
+    ACCESS_LAYOUT(primaryExtension = ".form", otherExtensions = setOf(".report")),
+    ACCESS_MACRO(primaryExtension = ".macro");
 
     companion object {
         private val extensionMap: Map<String, Language> by lazy {

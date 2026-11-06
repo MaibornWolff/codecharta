@@ -311,9 +311,9 @@ class ApiSignatureContractTest {
     @Nested
     inner class LanguageEnumContract {
         @Test
-        fun `should have exactly 23 language values`() {
+        fun `should have exactly 24 language values`() {
             // Assert
-            assertThat(Language.entries).hasSize(23)
+            assertThat(Language.entries).hasSize(24)
         }
 
         @Test

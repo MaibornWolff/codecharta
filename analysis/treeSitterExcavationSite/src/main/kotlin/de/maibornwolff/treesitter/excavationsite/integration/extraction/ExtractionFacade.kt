@@ -37,7 +37,7 @@ object ExtractionFacade {
         }
     }
 
-    private fun textsOf(composed: ComposedSource): List<ExtractedText> = composed.texts + textsOfParts(composed.codeParts)
+    private fun textsOf(composed: ComposedSource): List<ExtractedText> = composed.texts + textsOfParts(composed.allParts)
 
     private fun textsOfParts(parts: List<EmbeddedSource>): List<ExtractedText> =
         parts.flatMap { part -> extract(part.content, part.language).map { it.copy(language = part.language) } }
