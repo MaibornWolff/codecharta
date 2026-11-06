@@ -2,16 +2,9 @@ package de.maibornwolff.codecharta.analysers.parsers.rawtext.language
 
 class RegexLiteral(private val keywordsBeforeAValue: Set<String>) {
     fun lengthAt(line: String, position: Int): Int? {
-        if (line[position] != SLASH || !isValueExpectedBefore(line, position)) return null
+        if (line[position] != SLASH || !ValuePosition.isValueExpectedBefore(line, position, keywordsBeforeAValue)) return null
         val closingSlash = closingSlashAfter(line, position + 1) ?: return null
         return closingSlash - position + 1
-    }
-
-    private fun isValueExpectedBefore(line: String, position: Int): Boolean {
-        val before = line.substring(0, position).trimEnd()
-        val last = before.lastOrNull() ?: return true
-        if (last in OPERATORS_BEFORE_A_VALUE) return true
-        return before.takeLastWhile { it.isLetterOrDigit() || it == '_' || it == '$' } in keywordsBeforeAValue
     }
 
     private fun closingSlashAfter(line: String, start: Int): Int? {
@@ -32,6 +25,5 @@ class RegexLiteral(private val keywordsBeforeAValue: Set<String>) {
     companion object {
         private const val SLASH = '/'
         private const val ESCAPE = '\\'
-        private const val OPERATORS_BEFORE_A_VALUE = "(,=:[!&|?{};+-*%<>~^"
     }
 }
