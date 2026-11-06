@@ -3,6 +3,7 @@
 package de.maibornwolff.treesitter.excavationsite.api
 
 import de.maibornwolff.treesitter.excavationsite.languages.accesslayout.model.AccessLayout
+import de.maibornwolff.treesitter.excavationsite.languages.accessmacro.model.AccessMacro
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiDeclaration
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiDeclarationKind
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiName
@@ -88,6 +89,7 @@ typealias SqlMemberKind = SqlMemberKind
 typealias SqlStatements = SqlStatements
 typealias AccessQuery = AccessQuery
 typealias AccessLayout = AccessLayout
+typealias AccessMacro = AccessMacro
 typealias VbaModule = VbaModule
 typealias VbaModuleKind = VbaModuleKind
 typealias VbaDeclaration = VbaDeclaration

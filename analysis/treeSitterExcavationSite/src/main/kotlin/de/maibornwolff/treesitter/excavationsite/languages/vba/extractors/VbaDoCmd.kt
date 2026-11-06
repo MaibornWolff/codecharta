@@ -5,7 +5,7 @@ import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaNameKind
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
 /**
- * The object a `DoCmd` method names by a literal: `OpenForm`, `OpenReport` and `OpenQuery` by their first argument,
+ * The object a `DoCmd` method names by a literal: `OpenForm`, `OpenReport`, `OpenQuery` and `RunMacro` by their first argument,
  * and the methods that take an object type and a name (`DoCmd.Close acForm, "frmX"`, `OutputTo acOutputQuery, "qryX"`)
  * by the type their first argument is a constant of.
  */
@@ -21,7 +21,8 @@ internal object VbaDoCmd {
     private val OPENERS = mapOf(
         "openform" to Opener(VbaNameKind.FORM, "FormName"),
         "openreport" to Opener(VbaNameKind.REPORT, "ReportName"),
-        "openquery" to Opener(VbaNameKind.RELATION, "QueryName")
+        "openquery" to Opener(VbaNameKind.RELATION, "QueryName"),
+        "runmacro" to Opener(VbaNameKind.MACRO, "MacroName")
     )
     private val TYPED_OBJECT_METHODS = setOf("close", "outputto", "selectobject", "deleteobject", "sendobject", "save")
     private val TYPE_CONSTANT_PREFIXES = listOf("acoutput", "acsend", "ac")
@@ -29,7 +30,8 @@ internal object VbaDoCmd {
         "form" to VbaNameKind.FORM,
         "report" to VbaNameKind.REPORT,
         "query" to VbaNameKind.RELATION,
-        "table" to VbaNameKind.RELATION
+        "table" to VbaNameKind.RELATION,
+        "macro" to VbaNameKind.MACRO
     )
 
     /** The object the `DoCmd` call of the chain [callee] names with [arguments], null for any other call. */

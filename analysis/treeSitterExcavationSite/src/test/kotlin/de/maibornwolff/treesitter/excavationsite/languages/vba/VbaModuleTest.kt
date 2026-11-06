@@ -381,6 +381,26 @@ class VbaModuleTest {
     }
 
     @Test
+    fun `should read the macro DoCmd runs or names by its object type`() {
+        // Arrange
+        val body = """
+            DoCmd.RunMacro "mcrOrders.Print"
+            DoCmd.RunMacro MacroName:="mcrLog"
+            DoCmd.DeleteObject acMacro, "mcrOld"
+        """
+
+        // Act
+        val accessObjects = namesOfRoutine(body).filter { it.kind != VbaNameKind.CODE }
+
+        // Assert
+        assertThat(accessObjects).containsExactly(
+            VbaName(listOf("mcrOrders.Print"), VbaNameKind.MACRO),
+            VbaName(listOf("mcrLog"), VbaNameKind.MACRO),
+            VbaName(listOf("mcrOld"), VbaNameKind.MACRO)
+        )
+    }
+
+    @Test
     fun `should read the query or table a row or record source is set to, but no SQL text`() {
         // Arrange
         val body = """

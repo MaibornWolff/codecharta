@@ -4,6 +4,11 @@ import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
 import de.maibornwolff.treesitter.excavationsite.languages.accesslayout.AccessLayoutComposer
 import de.maibornwolff.treesitter.excavationsite.languages.accesslayout.extractors.LayoutLogicReader
 import de.maibornwolff.treesitter.excavationsite.languages.accesslayout.model.AccessLayout
+import de.maibornwolff.treesitter.excavationsite.languages.accessmacro.AccessMacroComposer
+import de.maibornwolff.treesitter.excavationsite.languages.accessmacro.extractors.Macro
+import de.maibornwolff.treesitter.excavationsite.languages.accessmacro.extractors.MacroObjects
+import de.maibornwolff.treesitter.excavationsite.languages.accessmacro.extractors.MacroReader
+import de.maibornwolff.treesitter.excavationsite.languages.accessmacro.model.AccessMacro
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors.UnitReader
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiUnit
 import de.maibornwolff.treesitter.excavationsite.languages.rust.extractors.ModuleReader
@@ -21,6 +26,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ComponentRegistration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DependencyResult
 import de.maibornwolff.treesitter.excavationsite.shared.domain.EmbeddedDeclarations
+import de.maibornwolff.treesitter.excavationsite.shared.domain.EmbeddedSource
 import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
@@ -93,26 +99,34 @@ object DependenciesFacade {
     }
 
     /**
-     * What an Access form or report layout names, for the name lookup of `vba.md`: its expressions read as one VBA
-     * routine, whose own name and variable are no names of the layout, nor is a name in brackets, a field or control
-     * (`[Total]`); and the SQL of its sources as Access queries.
+     * What an Access form or report layout names, for the name lookup of `vba.md`: its sources, subforms, the macros
+     * its events name, what its expressions and embedded macros name; and the SQL of its sources as Access queries.
      */
     fun accessLayout(content: String): AccessLayout {
         val logic = LayoutLogicReader.read(content)
-        val expressionNames = AccessLayoutComposer
-            .expressionRoutineOf(logic)
-            ?.let { routine -> vbaModule(routine.content, Language.VBA).declarations.flatMap { it.names } }
-            .orEmpty()
-            .filterNot { name -> isExpressionRoutine(name) || name.segments.first().startsWith(FIELD_OR_CONTROL_START) }
         val names = logic.dataSources.map { VbaName(listOf(it), VbaNameKind.RELATION) } +
             logic.subforms.map { VbaName(listOf(it), VbaNameKind.FORM) } +
             logic.subreports.map { VbaName(listOf(it), VbaNameKind.REPORT) } +
-            expressionNames
+            logic.macroNames.map { VbaName(listOf(it), VbaNameKind.MACRO) } +
+            AccessLayoutComposer.expressionRoutineOf(logic)?.let { expressionNamesOf(it) }.orEmpty() +
+            logic.macros.flatMap { macroNamesOf(it) }
         return AccessLayout(names, logic.queries.map { accessQuery(it) }, logic.bindsEventProcedure)
     }
 
+    /** What an Access macro names, for the name lookup of `vba.md`: the objects its actions name and what its expressions name. */
+    fun accessMacro(content: String): AccessMacro = AccessMacro(macroNamesOf(MacroReader.read(content)))
+
+    private fun macroNamesOf(macro: Macro): List<VbaName> =
+        MacroObjects.of(macro) + AccessMacroComposer.composedOf(macro, lines = 0).allParts.flatMap { expressionNamesOf(it) }
+
+    // The routine the expressions are read in and its variable are no names, nor is a name in brackets, a field or control
+    private fun expressionNamesOf(routine: EmbeddedSource): List<VbaName> = vbaModule(routine.content, Language.VBA)
+        .declarations
+        .flatMap { it.names }
+        .filterNot { name -> isExpressionRoutine(name) || name.segments.first().startsWith(FIELD_OR_CONTROL_START) }
+
     private fun isExpressionRoutine(name: VbaName): Boolean =
-        name.segments.first().equals(AccessLayoutComposer.EXPRESSION_ROUTINE, ignoreCase = true)
+        name.segments.first().equals(AccessMacroComposer.EXPRESSION_ROUTINE, ignoreCase = true)
 
     /** What a VBA or VB6 module declares and names, for the name lookup of `vba.md`. */
     fun vbaModule(content: String, language: Language): VbaModule {

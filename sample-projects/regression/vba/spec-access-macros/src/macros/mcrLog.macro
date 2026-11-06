@@ -1,0 +1,8 @@
+Version =196611
+ColumnsShown =8
+Begin
+    MacroName ="Write"
+    Action ="OpenForm"
+    Argument ="frmFilter"
+    Argument ="0"
+End

@@ -203,7 +203,7 @@ differ from the namespace levels in the logical layer — which are DependaChart
 ## Supported languages
 
 Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates, SQL and VBA
-(with VB6 forms and Access form and report layouts).
+(with VB6 forms, Access form and report layouts and Access macros).
 
 An Angular template (`.html`) depends on each component and directive whose selector matches one of its elements, as
 the Angular compiler matches them by tag, attribute and value, property, two-way and event binding, class and, for a
@@ -259,7 +259,13 @@ The layout of an Access form or report (`.form`, `.report`, written by `SaveAsTe
 its file (`frmOrders_form`), which the form's module uses, and a form without a module is its layout. It points at the
 query or table its record and row sources name, the forms and reports of its subform controls, the functions its
 expressions call (`=Rounded([Total])`), its own module for each event bound to `[Event Procedure]`, and what the SQL
-of a row source names, so a form with code is a cycle between module and layout.
+of a row source names, so a form with code is a cycle between module and layout. It also points at the macro an
+event names (`OnOpen ="mcrOrders.Open"`) and at what the macros embedded in its events name.
+
+An Access macro (`.macro`, written by `SaveAsText`) is a leaf of its own named after its file (`mcrOrders_macro`),
+which holds its submacros. It points at the forms, reports and queries its actions name (`OpenForm`, `OpenReport`,
+`OpenQuery`, the `ObjectName` of `CloseWindow`), the macros `RunMacro` runs, the VBA functions `RunCode` calls and
+the forms and functions its conditions and expressions name; `DoCmd.RunMacro "mcrX"` in VBA points at the macro.
 
 ## Usage and parameters
 

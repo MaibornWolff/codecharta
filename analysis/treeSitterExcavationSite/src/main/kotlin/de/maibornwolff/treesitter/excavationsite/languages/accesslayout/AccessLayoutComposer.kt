@@ -17,8 +17,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
  * macro has them.
  */
 internal object AccessLayoutComposer {
-    /** The routine and the variable of the expressions are named with one letter, which is no word of the domain. */
-    const val EXPRESSION_ROUTINE = "L"
+    private const val EXPRESSION_ROUTINE = AccessMacroComposer.EXPRESSION_ROUTINE
 
     fun compose(content: String): ComposedSource {
         val logic = LayoutLogicReader.read(content)

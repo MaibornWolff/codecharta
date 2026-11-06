@@ -42,15 +42,15 @@ internal class VbaProject private constructor(
     fun queryNamed(name: String): List<String>? = name.lowercase().takeIf { it in queryNames }?.let { listOf(it) }
 
     /**
-     * The leaf of the layout of the form or report [name] of [kind], written in any case, or null if the run has none;
-     * of the layouts of two exported applications the first by path.
+     * The leaf of the layout of the form or report, or of the macro, [name] of [kind], written in any case, or null if
+     * the run has none; of the files of two exported applications the first by path.
      */
     fun objectNamed(name: String, kind: VbaNameKind): List<String>? =
         objectsByName[name.lowercase() to kind]?.first()?.let { AccessObjectFiles.leafOf(it) }
 
-    /** The code module of the form or report a layout [file] holds, null for one without code. */
+    /** The code module of the form or report a layout [file] holds, null for one without code and for a macro. */
     fun codeModuleOfLayout(file: String): VbaModuleFile? {
-        val kind = AccessObjectFiles.kindOf(file) ?: return null
+        val kind = AccessObjectFiles.kindOf(file)?.takeIf { it != VbaNameKind.MACRO } ?: return null
         return modulesNamed(AccessObjectFiles.moduleNameOf(AccessObjectFiles.objectNameOf(file), kind)).firstOrNull { it.isClass }
     }
 

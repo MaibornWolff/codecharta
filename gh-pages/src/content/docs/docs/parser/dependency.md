@@ -274,7 +274,13 @@ The layout of an Access form or report (`.form`, `.report`, written by `SaveAsTe
 its file (`frmOrders_form`), which the form's module uses, and a form without a module is its layout. It points at the
 query or table its record and row sources name, the forms and reports of its subform controls, the functions its
 expressions call (`=Rounded([Total])`), its own module for each event bound to `[Event Procedure]`, and what the SQL
-of a row source names, so a form with code is a cycle between module and layout.
+of a row source names, so a form with code is a cycle between module and layout. It also points at the macro an
+event names (`OnOpen ="mcrOrders.Open"`) and at what the macros embedded in its events name.
+
+An Access macro (`.macro`, written by `SaveAsText`) is a leaf of its own named after its file (`mcrOrders_macro`),
+which holds its submacros. It points at the forms, reports and queries its actions name (`OpenForm`, `OpenReport`,
+`OpenQuery`, the `ObjectName` of `CloseWindow`), the macros `RunMacro` runs, the VBA functions `RunCode` calls and
+the forms and functions its conditions and expressions name; `DoCmd.RunMacro "mcrX"` in VBA points at the macro.
 
 ## Tests are excluded by default
 

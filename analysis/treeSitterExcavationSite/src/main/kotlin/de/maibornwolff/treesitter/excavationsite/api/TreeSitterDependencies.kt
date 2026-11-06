@@ -61,6 +61,9 @@ object TreeSitterDependencies {
     /** What the layout of an Access form or report names: its data sources, subforms, expressions and SQL, see [AccessLayout]. */
     fun accessLayout(content: String): AccessLayout = DependenciesFacade.accessLayout(content)
 
+    /** What an Access macro names: the objects its actions name and what its expressions name, see [AccessMacro]. */
+    fun accessMacro(content: String): AccessMacro = DependenciesFacade.accessMacro(content)
+
     /** What a VBA module or class, or a VB6 form, declares and names, see [VbaModule]. */
     fun vbaModule(content: String, language: Language): VbaModule = DependenciesFacade.vbaModule(content, language)
 

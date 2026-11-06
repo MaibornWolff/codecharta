@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.accesslayout.AccessLayoutAnalyzer
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.accessmacro.AccessMacroAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.angular.AngularTemplateAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.cpp.CppAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpAnalyzer
@@ -39,6 +40,7 @@ class LanguageAnalyzerFactory {
             SupportedLanguage.SQL -> SqlAnalyzer(fileInfo)
             SupportedLanguage.VBA -> VbaAnalyzer(fileInfo)
             SupportedLanguage.ACCESS_LAYOUT -> AccessLayoutAnalyzer(fileInfo)
+            SupportedLanguage.ACCESS_MACRO -> AccessMacroAnalyzer(fileInfo)
         }
     }
 }

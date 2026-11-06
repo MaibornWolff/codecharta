@@ -76,6 +76,25 @@ The layout of a form or report is the `.form` or `.report` file `SaveAsText` wri
   function's query and `[Forms]![x]` mean what they mean in VBA. A name in brackets is a field or control of the form.
 - The SQL of a record or row source names what an Access query names.
 - The code after `CodeBehindForm` is the module's, which its own export holds; the layout does not read it.
+- An event that names a macro (`OnOpen ="mcrOrders.Open"`) uses that macro; a macro embedded in an event
+  (`OnClickEmMacro = Begin`) names what a stand-alone macro names, for the layout (decision 9).
+
+## Access macros
+
+A stand-alone macro is the `.macro` file `SaveAsText` writes, named after the macro (decision 9):
+
+- It is one declaration named after its file as a layout is (`mcrOrders.macro` is `mcrOrders_macro`); its submacros
+  belong to it, so `mcrOrders.Print` means `mcrOrders_macro`, and the submacro an `OnError` jumps to draws no edge.
+- An action names a form, report, query or table by the argument that holds it (`FormName`, `ReportName`,
+  `QueryName`, `TableName`, `FilterName`), any object by the `ObjectType` and `ObjectName` of an action such as
+  `CloseWindow`, and a macro by the `MacroName` of `RunMacro`. A form or report means what it means in VBA, its module
+  or else its layout.
+- A condition and an expression (`WhereCondition`, `Expression`, `Value`, the `FunctionName` of `RunCode`, any
+  argument that starts with `=`) name what an Access query's expressions name: a public VBA function and `[Forms]![x]`;
+  a macro has no module of its own.
+- VBA names a macro with a literal in `DoCmd.RunMacro "mcrX"` (also `MacroName:=`) and `DoCmd.DeleteObject acMacro,
+  "mcrX"` and the other typed `DoCmd` methods.
+- A macro of Access 2010 or later is read from its XML, an older one from its action rows.
 
 ## Access queries
 
@@ -121,6 +140,7 @@ rule yet; `sample-projects/regression/vba/known-gaps.md` says how it deviates.
 | Access, decision 2: `DoCmd`, `Forms`, `Reports`, `AllForms`, `AllReports` | `spec-access-objects` | ok |
 | Access queries, decision 6: views, forms, VBA functions, `OpenQuery` | `spec-access-queries` | ok |
 | Access forms and reports, decisions 7 and 8: layouts, sources, subforms, expressions, event procedures | `spec-access-layouts` | ok |
+| Access macros, decision 9: actions, submacros, conditions, events naming a macro, embedded macros, `RunMacro` | `spec-access-macros` | ok |
 | Case, decision 5: another case | `spec-case` | ok |
 | Shared rule 2, copies | `spec-copies` | ok |
 
@@ -133,7 +153,7 @@ rule yet; `sample-projects/regression/vba/known-gaps.md` says how it deviates.
 - Names in strings passed to the project's own routines (`GetRandomPkValue("qryCustomers", …)`): only the routine's
   body tells what the string means.
 - Names in strings: `Application.Run "modX.Proc"`, `Eval("Func()")` and SQL text in VBA strings.
-- A macro an event names (`OnClick ="mcrOpenOrders"`) and an embedded macro of a layout.
+- Data macros of tables, which the export does not write yet.
 - A project name in front of a module (`VBAProject.modOrders.Total`) and references to other VBA projects.
 
 ## Decisions
@@ -160,3 +180,6 @@ rule yet; `sample-projects/regression/vba/known-gaps.md` says how it deviates.
    2026-11-06; the leaf name as an Angular template's, as a dot would split the path).
 8. A layout uses its own code module: for each event it binds to `[Event Procedure]` and each routine of the module an
    expression calls; with the module using its layout, a form with code is a cycle (decided by Christian, 2026-11-06).
+9. A stand-alone macro is a declaration of its own, as a layout, and holds its submacros; an embedded macro belongs to
+   its layout (decided by Christian, 2026-11-06). Its actions name objects as `DoCmd` does in VBA, its expressions as
+   an Access query's do (derived 2026-11-06, as decisions 2, 6 and 7).

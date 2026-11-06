@@ -74,4 +74,39 @@ class AccessLayoutDependencyTest {
         assertThat(layout.bindsEventProcedure).isFalse()
         assertThat(layout.names).containsExactly(VbaName(listOf("Start")))
     }
+
+    @Test
+    fun `should read the macro an event names and what an embedded macro names`() {
+        // Arrange
+        val report = """
+            Begin Report
+                OnOpen ="mcrReports.Open"
+                OnNoData ="[Embedded Macro]"
+                Begin
+                    Begin Section
+                        Begin
+                            Begin CommandButton
+                                OnClickEmMacro = Begin
+                                    Version =196611
+                                    Begin
+                                        Action ="OpenForm"
+                                        Argument ="frmOrders"
+                                    End
+                                End
+                            End
+                        End
+                    End
+                End
+            End
+        """.trimIndent()
+
+        // Act
+        val layout = TreeSitterDependencies.accessLayout(report)
+
+        // Assert
+        assertThat(layout.names).containsExactly(
+            VbaName(listOf("mcrReports.Open"), VbaNameKind.MACRO),
+            VbaName(listOf("frmOrders"), VbaNameKind.FORM)
+        )
+    }
 }
