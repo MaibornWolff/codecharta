@@ -1,8 +1,10 @@
 package de.maibornwolff.treesitter.excavationsite.integration.metrics
 
 import de.maibornwolff.treesitter.excavationsite.integration.embedded.EmbeddedSourcesFacade
+import de.maibornwolff.treesitter.excavationsite.integration.metrics.calculators.MetricPerFunctionCalc
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AvailableFileMetrics
+import de.maibornwolff.treesitter.excavationsite.shared.domain.AvailableFunctionMetrics
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ComposedSource
 import de.maibornwolff.treesitter.excavationsite.shared.domain.EmbeddedSource
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
@@ -59,6 +61,7 @@ object MetricsFacade {
         metrics[AvailableFileMetrics.REAL_LINES_OF_CODE.metricName] = source.codeLines.toDouble()
         metrics[AvailableFileMetrics.LINES_OF_CODE.metricName] = source.lines.toDouble()
         source.counts.forEach { (metric, count) -> metrics[metric.metricName] = count.toDouble() }
+        AvailableFunctionMetrics.entries.forEach { metrics.putAll(MetricPerFunctionCalc.measuresOf(it, emptyList())) }
         return metrics
     }
 
