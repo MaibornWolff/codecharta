@@ -4,7 +4,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.accesslayout.extract
  * The logic of a form or report layout: the [expressions] its controls and events compute (`=Sum([Total])`, without
  * the `=`), the SQL of its record and row sources ([queries]), the tables and queries they name ([dataSources]), the
  * forms and reports of its subform controls, the [logicLines] all of these take up, and its [controls]; the [names]
- * of its controls and the fields they show, and the [captions] the user sees; whether it [bindsEventProcedure], an event
+ * of its controls, but for the names Access gives by default, and the fields they show, and the [captions] the user sees; whether it [bindsEventProcedure], an event
  * the code module of the form handles.
  */
 internal data class LayoutLogic(
@@ -38,6 +38,14 @@ internal object LayoutLogicReader {
     private val EVENT_PREFIXES = listOf("on", "before", "after")
     private val SQL_START = Regex("""^[\s(]*(SELECT|TRANSFORM|PARAMETERS)\b""", RegexOption.IGNORE_CASE)
     private val SUB_OBJECT = Regex("""^(Form|Report|Table|Query)\.(.+)$""", RegexOption.IGNORE_CASE)
+
+    // The name Access gives a new control: its type and a number (`Label122`, `Text45`, `Auto_Header0`)
+    private val DEFAULT_CONTROL_NAME = Regex(
+        "^(Label|Text|Command|Combo|List|Check|Option|Toggle|Frame|Box|Line|Image|EmptyCell|Child|Page|TabCtl|OLEUnbound|" +
+            "OLEBound|Attachment|Chart|NavigationButton|NavigationSubform|NavigationControl|WebBrowser|EdgeBrowser|PageBreak|" +
+            "Auto_Header|Auto_Title|Auto_Logo|Auto_Date|Auto_Time|Auto_PageNumber)\\d+$",
+        RegexOption.IGNORE_CASE
+    )
 
     private class Collected {
         val expressions = mutableListOf<String>()
@@ -83,7 +91,14 @@ internal object LayoutLogicReader {
             isEventProperty(name) && value.equals(EVENT_PROCEDURE, ignoreCase = true) -> collected.bindsEventProcedure = true
             value.isEmpty() -> Unit
             name == CAPTION -> collected.captions.add(value)
-            name == CONTROL_SOURCE || (name == NAME && block.isControl) -> collected.names.add(value)
+            name == CONTROL_SOURCE ||
+                (
+                    name == NAME &&
+                        block.isControl &&
+                        !DEFAULT_CONTROL_NAME.matches(
+                            value
+                        )
+                ) -> collected.names.add(value)
         }
     }
 

@@ -51,4 +51,40 @@ class AccessLayoutExtractionTest {
         // Assert
         assertThat(result.strings).containsExactly("Sales by \"Region\"")
     }
+
+    @Test
+    fun `should leave out the names Access gives a control by default, a control type and a number`() {
+        // Arrange
+        val form = """
+            Begin Form
+                Begin
+                    Begin Section
+                        Begin
+                            Begin Label
+                                Name ="Label122"
+                            End
+                            Begin Image
+                                Name ="Auto_Header0"
+                            End
+                            Begin TextBox
+                                Name ="Text45"
+                            End
+                            Begin Label
+                                Name ="lblInvoice2"
+                            End
+                            Begin Rectangle
+                                Name ="BoxShadow"
+                            End
+                        End
+                    End
+                End
+            End
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterExtraction.extract(form, Language.ACCESS_LAYOUT)
+
+        // Assert
+        assertThat(result.identifiers).containsExactly("lblInvoice2", "BoxShadow")
+    }
 }
