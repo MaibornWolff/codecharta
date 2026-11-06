@@ -602,8 +602,14 @@ class RobustnessContractTest {
          * Returns a minimal but valid code sample for the given language
          * that includes a function, comment, and string literal.
          */
-        private fun getMinimalCodeSample(language: Language): String = when (language) {
-            Language.JAVA -> """
+        private fun getMinimalCodeSample(language: Language): String = MINIMAL_CODE_SAMPLES.getValue(language)
+
+        private val MINIMAL_CODE_SAMPLES: Map<Language, String> = buildMap {
+            fun sample(vararg languages: Language, code: String) = languages.forEach { put(it, code.trimIndent()) }
+
+            sample(
+                Language.JAVA,
+                code = """
                     // Comment
                     public class Test {
                         public void foo() {
@@ -611,67 +617,95 @@ class RobustnessContractTest {
                             if (true) {}
                         }
                     }
-            """.trimIndent()
-            Language.KOTLIN -> """
+            """
+            )
+            sample(
+                Language.KOTLIN,
+                code = """
                     // Comment
                     fun foo() {
                         val s = "hello"
                         if (true) {}
                     }
-            """.trimIndent()
-            Language.TYPESCRIPT, Language.JAVASCRIPT -> """
+            """
+            )
+            sample(
+                Language.TYPESCRIPT,
+                Language.JAVASCRIPT,
+                code = """
                     // Comment
                     function foo() {
                         let s = "hello";
                         if (true) {}
                     }
-            """.trimIndent()
-            Language.TSX -> """
+            """
+            )
+            sample(
+                Language.TSX,
+                code = """
                     // Comment
                     const Foo = () => {
                         const s = "hello";
                         return <div>{s}</div>;
                     };
-            """.trimIndent()
-            Language.PYTHON -> """
+            """
+            )
+            sample(
+                Language.PYTHON,
+                code = """
                     # Comment
                     def foo():
                         s = "hello"
                         if True:
                             pass
-            """.trimIndent()
-            Language.GO -> """
+            """
+            )
+            sample(
+                Language.GO,
+                code = """
                     // Comment
                     package main
                     func foo() {
                         s := "hello"
                         if true {}
                     }
-            """.trimIndent()
-            Language.PHP -> """
+            """
+            )
+            sample(
+                Language.PHP,
+                code = """
                     <?php
                     // Comment
                     function foo() {
                         ${"$"}s = "hello";
                         if (true) {}
                     }
-            """.trimIndent()
-            Language.RUBY -> """
+            """
+            )
+            sample(
+                Language.RUBY,
+                code = """
                     # Comment
                     def foo
                         s = "hello"
                         if true
                         end
                     end
-            """.trimIndent()
-            Language.SWIFT -> """
+            """
+            )
+            sample(
+                Language.SWIFT,
+                code = """
                     // Comment
                     func foo() {
                         let s = "hello"
                         if true {}
                     }
-            """.trimIndent()
-            Language.BASH -> """
+            """
+            )
+            sample(
+                Language.BASH,
+                code = """
                     # Comment
                     foo() {
                         s="hello"
@@ -679,8 +713,11 @@ class RobustnessContractTest {
                             :
                         fi
                     }
-            """.trimIndent()
-            Language.CSHARP -> """
+            """
+            )
+            sample(
+                Language.CSHARP,
+                code = """
                     // Comment
                     public class Test {
                         public void Foo() {
@@ -688,22 +725,32 @@ class RobustnessContractTest {
                             if (true) {}
                         }
                     }
-            """.trimIndent()
-            Language.CPP, Language.C -> """
+            """
+            )
+            sample(
+                Language.CPP,
+                Language.C,
+                code = """
                     // Comment
                     void foo() {
                         char* s = "hello";
                         if (1) {}
                     }
-            """.trimIndent()
-            Language.OBJECTIVE_C -> """
+            """
+            )
+            sample(
+                Language.OBJECTIVE_C,
+                code = """
                     // Comment
                     void foo() {
                         NSString* s = @"hello";
                         if (1) {}
                     }
-            """.trimIndent()
-            Language.VUE -> """
+            """
+            )
+            sample(
+                Language.VUE,
+                code = """
                     <script>
                     // Comment
                     function foo() {
@@ -711,35 +758,49 @@ class RobustnessContractTest {
                         if (true) {}
                     }
                     </script>
-            """.trimIndent()
-            Language.DELPHI -> "// Comment\nprocedure foo;\nbegin if True then WriteLn('hello'); end;"
-            Language.RUST -> """
+            """
+            )
+            sample(Language.DELPHI, code = "// Comment\nprocedure foo;\nbegin if True then WriteLn('hello'); end;")
+            sample(
+                Language.RUST,
+                code = """
                     // Comment
                     fn foo() {
                         let s = "hello";
                         if true {}
                     }
-            """.trimIndent()
-            Language.ANGULAR -> """
+            """
+            )
+            sample(
+                Language.ANGULAR,
+                code = """
                     <!-- Comment -->
                     @if (visible) {
                         <p title="hello">{{ name }}</p>
                     }
-            """.trimIndent()
-            Language.SQL -> """
+            """
+            )
+            sample(
+                Language.SQL,
+                code = """
                     -- Comment
                     CREATE PROCEDURE foo AS
                     BEGIN
                         SELECT 'hello';
                         IF 1 = 1 SELECT 1;
                     END
-            """.trimIndent()
-            Language.VBA, Language.VB6 -> """
+            """
+            )
+            sample(
+                Language.VBA,
+                Language.VB6,
+                code = """
                     ' Comment
                     Sub Foo()
                         If True Then MsgBox "hello"
                     End Sub
-            """.trimIndent()
+            """
+            )
         }
     }
 }
