@@ -53,7 +53,8 @@ class UnifiedParserTest {
             Arguments.of("sql", ".sql"),
             Arguments.of("vba", ".bas"),
             Arguments.of("vbaClass", ".cls"),
-            Arguments.of("vb6", ".frm")
+            Arguments.of("vb6", ".frm"),
+            Arguments.of("accessLayout", ".form")
         )
     }
 

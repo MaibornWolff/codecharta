@@ -16,7 +16,8 @@ The `domain` lens payload keys its entries under `nodes`:
 ## Supported Languages
 
 Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, Rust, Objective-C, Vue, shell,
-Angular templates (`.html`), SQL, VBA (`.bas`, `.cls`) and VB6 forms (`.frm`).
+Angular templates (`.html`), SQL, VBA (`.bas`, `.cls`), VB6 forms (`.frm`) and Access form and report layouts
+(`.form`, `.report`).
 
 An Angular template contributes the identifiers of its bindings, interpolations and control flow blocks, but not the
 names Angular gives (pipe names, `@defer` triggers, the `index` or `trackBy` of `*ngFor`), its HTML
@@ -44,7 +45,9 @@ In VBA and VB6 the keywords, types and built-in names are stop words, English on
 but not `open` and `close`. So are `id`, as in SQL, the naming prefixes of Access code (`tbl`, `qry`, `frm`, `txt`, `str`, `rs`) and the
 words of event handlers (`click`, `focus`, `unload`, `initialize`, `form` of `cmdSave_Click` or `Form_Load`). The event
 words that also name a domain stay: `report`, `current`, `change`, `key`. A `.sql` file in a folder named `queries`
-holds an Access query, so the stop words of SQL and of VBA both apply to it (`qryOrders` gives `orders`).
+holds an Access query, so the stop words of SQL and of VBA both apply to it (`qryOrders` gives `orders`). An Access
+form or report layout contributes the names of its controls and the fields they show as identifiers, its captions as
+strings and the words of the SQL of its record and row sources; the stop words of VBA apply.
 
 ## Usage and Parameters
 

@@ -6,7 +6,7 @@ A Kotlin library for calculating code metrics and extracting text from source co
 
 - **Code Metrics**: Complexity, lines of code, comment lines, function counts, code smells, per-function aggregations
 - **Text Extraction**: Identifiers, comments, and string literals with context
-- **22 Languages and Frameworks**: Java, Kotlin, TypeScript, TSX, JavaScript, Python, Go, PHP, Ruby, Swift, Bash, C#, C++, C, Objective-C, Vue, Delphi, Rust, Angular templates, SQL, VBA, VB6
+- **23 Languages and Frameworks**: Java, Kotlin, TypeScript, TSX, JavaScript, Python, Go, PHP, Ruby, Swift, Bash, C#, C++, C, Objective-C, Vue, Delphi, Rust, Angular templates, SQL, VBA, VB6, Access form and report layouts
 - **Zero External Dependencies**: Only the native tree-sitter libraries are required, loaded through Java's foreign function API
 
 ## Requirements
@@ -136,6 +136,7 @@ println(TreeSitterDependencies.getSupportedLanguages())                        /
 | SQL (ANSI, T-SQL, PL/SQL, PL/pgSQL, MySQL) | `.sql`, `.pks`, `.pkb`, `.pls` | Experimental | Experimental | Experimental |
 | VBA (Access, Excel, Word modules and classes) | `.bas`, `.cls` | Experimental | Experimental | — |
 | VB6 forms | `.frm` | Experimental | Experimental | — |
+| Access form and report layouts (`SaveAsText`) | `.form`, `.report` | Experimental | Experimental | — |
 
 SQL is parsed with CodeCharta's own island grammar, one grammar for all dialects, bundled as
 `libs/tree-sitter-sql-island-*.jar`; its sources are kept outside this repository.
@@ -165,6 +166,7 @@ which share one grammar core and so one language definition. They parse exported
 | `number_of_triggers` | SQL only: triggers the file creates |
 | `number_of_views` | SQL only: views the file defines, without temporary ones |
 | `number_of_tables` | SQL only: tables the file creates, without the temporary tables of a session |
+| `number_of_controls` | Access layouts only: controls on the sections of a form or report |
 
 ### Per-Function Metrics
 

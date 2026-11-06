@@ -53,4 +53,47 @@ class SourceTextTest {
         assertThat(texts[0]).isEqualTo("SELECT Bestätigung FROM Aufträge;")
         assertThat(texts.drop(1)).allMatch { it.contains('�') }
     }
+
+    @Test
+    fun `should read an Access form or report layout by its byte order mark, without the mark`(
+        @TempDir root: File
+    ) {
+        // Arrange
+        val layout = "Begin Form\n    Caption =\"Bestellübersicht\"\nEnd\n"
+        val littleEndian = root.resolve("frmBestellung.form").also {
+            it.writeBytes(
+                byteArrayOf(0xFF.toByte(), 0xFE.toByte()) + layout.toByteArray(Charsets.UTF_16LE)
+            )
+        }
+        val bigEndian = root.resolve("rptBestellung.report").also {
+            it.writeBytes(
+                byteArrayOf(0xFE.toByte(), 0xFF.toByte()) + layout.toByteArray(Charsets.UTF_16BE)
+            )
+        }
+        val utf8 = root.resolve("frmKunde.form").also {
+            it.writeBytes(
+                byteArrayOf(0xEF.toByte(), 0xBB.toByte(), 0xBF.toByte()) + layout.toByteArray()
+            )
+        }
+
+        // Act
+        val texts = listOf(littleEndian, bigEndian, utf8).map { SourceText.read(it) }
+
+        // Assert
+        assertThat(texts).containsOnly(layout)
+    }
+
+    @Test
+    fun `should read an Access layout without byte order mark like a VBA module`(
+        @TempDir root: File
+    ) {
+        // Arrange
+        val layout = root.resolve("frmBestellung.form").also { it.writeBytes("Caption =\"Bestellübersicht\"".toByteArray(windowsCodePage)) }
+
+        // Act
+        val text = SourceText.read(layout)
+
+        // Assert
+        assertThat(text).isEqualTo("Caption =\"Bestellübersicht\"")
+    }
 }

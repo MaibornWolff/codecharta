@@ -17,10 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   that day changed in each file to the map, with the commit's date and size.
 - **Code and comment lines for about 300 languages**: `rawtextparser` adds `rloc` and `comment_lines` to every file
   whose language the code counter tokei knows, counted the same way as in the Unified Parser.
-- **VBA and VB6**: `unifiedparser` measures exported VBA modules and classes from Access, Excel and Word, and VB6
-  forms, with complexity, functions, lines of code and comment lines; `domainlanguageparser` reads their domain
-  words, and `dependencyparser` draws the dependencies between their modules, the forms and reports they open, and the
-  Access queries exported as SQL, with the forms and VBA functions those name.
+- **VBA, VB6 and Access**: `unifiedparser` measures exported VBA modules and classes from Access, Excel and Word, VB6
+  forms, and the layouts of Access forms and reports with the logic and controls they hold; `domainlanguageparser`
+  reads their domain words, and `dependencyparser` draws the dependencies between their modules, the forms and reports
+  they open, and the Access queries exported as SQL, with the forms and VBA functions those name.
 
 ### Changed
 

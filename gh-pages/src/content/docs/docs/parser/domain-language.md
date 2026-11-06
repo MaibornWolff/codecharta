@@ -85,6 +85,7 @@ its entries by node id under `nodes`:
 | SQL               | .sql, .pks, .pkb, .pls                |
 | VBA               | .bas, .cls                            |
 | VB6 forms         | .frm                                  |
+| Access forms and reports | .form, .report                 |
 
 Every `.html` file is read as an Angular template, by this parser as by `unifiedparser` and `dependencyparser`.
 Exclude the `.html` files that are no templates of an Angular application, such as reports or documentation, with
@@ -129,6 +130,10 @@ but not `open` and `close`. So are `id`, as in SQL, the naming prefixes of Acces
 words of event handlers (`click`, `focus`, `unload`, `initialize`, `form` of `cmdSave_Click` or `Form_Load`). The event
 words that also name a domain stay: `report`, `current`, `change`, `key`. A `.sql` file in a folder named `queries`
 holds an Access query, so the stop words of SQL and of VBA both apply to it (`qryOrders` gives `orders`).
+
+An Access form or report layout (`.form`, `.report`) contributes the names of its controls and the fields they show as
+identifiers (`txtCarrier` gives `carrier`), its captions as strings, and the words of the SQL of its record and row
+sources; the stop words of VBA apply.
 
 ## Input and stop words
 
