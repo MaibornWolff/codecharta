@@ -33,6 +33,10 @@ sealed class MetricCondition {
         }
     }
 
+    data class TextMatches(val pattern: Regex) : MetricCondition() {
+        override fun matches(node: SyntaxNode): Boolean = pattern.matches(node.text)
+    }
+
     data class ParentMatches(val allowedTypes: Set<String>) : MetricCondition() {
         override fun matches(node: SyntaxNode): Boolean = node.parent.type in allowedTypes
     }

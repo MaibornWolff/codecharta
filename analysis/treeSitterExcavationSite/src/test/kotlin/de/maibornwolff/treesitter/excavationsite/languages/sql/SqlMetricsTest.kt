@@ -774,4 +774,22 @@ class SqlMetricsTest {
         assertThat(result.commentLines).isEqualTo(4.0)
         assertThat(result.realLinesOfCode).isEqualTo(1.0)
     }
+
+    @Test
+    fun `should count a line of dashes alone as comment`() {
+        // Arrange
+        val code = """
+            --
+            -- STRINGS
+            ---
+            SELECT 1;
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.commentLines).isEqualTo(3.0)
+        assertThat(result.realLinesOfCode).isEqualTo(1.0)
+    }
 }

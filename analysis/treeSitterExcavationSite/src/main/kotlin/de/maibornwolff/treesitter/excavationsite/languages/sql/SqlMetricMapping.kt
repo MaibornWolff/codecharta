@@ -15,6 +15,9 @@ object SqlMetricMapping : MetricMapping {
     private const val CREATE = "CREATE"
     private val PROCEDURE_KINDS = setOf("PROCEDURE", "PROC")
 
+    // The grammar reads a line comment without text, such as a row of dashes, as an operator
+    private val LINE_COMMENT_WITHOUT_TEXT = Regex("-{2,}")
+
     private val BRANCHES_AND_LOOPS = listOf(
         "if_statement",
         "elsif_clause",
@@ -74,5 +77,6 @@ object SqlMetricMapping : MetricMapping {
         put("parameter", setOf(Metric.Parameter))
 
         put("comment", setOf(Metric.CommentLine))
+        put("operator", setOf(Metric.CommentLineConditional(MetricCondition.TextMatches(LINE_COMMENT_WITHOUT_TEXT))))
     }
 }
