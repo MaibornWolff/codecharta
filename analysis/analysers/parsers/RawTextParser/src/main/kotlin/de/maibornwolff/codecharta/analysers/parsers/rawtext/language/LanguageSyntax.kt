@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.rawtext.language
 
-data class Delimiters(val start: String, val end: String)
-
 data class LanguageSyntax(
     val lineComments: List<String> = emptyList(),
     val blockComments: List<Delimiters> = emptyList(),
