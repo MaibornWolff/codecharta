@@ -43,6 +43,11 @@ VBA compiler runs here; each rule follows the specification. The rules shared by
    draws no edge.
 4. A library (`VBA`, `Access`, `DAO`, `Excel`, …): no edge.
 
+A routine named by a string literal is looked up as rule 3, as the application finds it at run time (decision 10):
+`Application.Run "modX.Proc"` (also a bare `Run`; a workbook in front, `'Book.xlsm'!Proc`, is left out), the procedure
+of `Application.OnTime` and `Application.OnKey`, a control's `.OnAction = "Proc"`, and each function an `Eval` literal
+calls (`Eval("Bonus() * 2")`). `CallByName(obj, "Area", …)` names a member of a value and draws no edge.
+
 Several modules offering `N` in rule 3 is the compiler's "Ambiguous name detected": the module nearest by folder to the
 using file wins, and a tie means nothing (decision 3). Two copies of one module, as in two exported applications, are
 one declaration with two copies (shared rule 2).
@@ -143,6 +148,7 @@ rule yet; `sample-projects/regression/vba/known-gaps.md` says how it deviates.
 | Access queries, decision 6: views, forms, VBA functions, `OpenQuery` | `spec-access-queries` | ok |
 | Access forms and reports, decisions 7 and 8: layouts, sources, subforms, expressions, event procedures | `spec-access-layouts` | ok |
 | Access macros, decision 9: actions, submacros, conditions, events naming a macro, embedded macros, `RunMacro` | `spec-access-macros` | ok |
+| Routines named by a string, decision 10: `Application.Run`, `OnAction`, `Eval`, not `CallByName` | `spec-string-procedures` | ok |
 | Case, decision 5: another case | `spec-case` | ok |
 | Shared rule 2, copies | `spec-copies` | ok |
 
@@ -154,8 +160,12 @@ rule yet; `sample-projects/regression/vba/known-gaps.md` says how it deviates.
   other, so it means a project declaration of that name.
 - Names in strings passed to the project's own routines (`GetRandomPkValue("qryCustomers", …)`): only the routine's
   body tells what the string means.
-- Names in strings: `Application.Run "modX.Proc"`, `Eval("Func()")` and SQL text in VBA strings.
-- Data macros of tables, which the export does not write yet.
+- SQL text in VBA strings, and the member `CallByName` names.
+- Excel sheets by caption (`Worksheets("Kunden")`): the export names a sheet module by its code name (`Tabelle1`) and
+  holds no mapping from caption to code name; only the code name draws an edge.
+- Tables and their relationships, and the data macros of tables: they hold no logic (decided by Christian, 2026-11-06).
+- VB6 projects (`.vbp`), user controls (`.ctl`) and designers (`.dsr`): no project scope, the modules of all VB6
+  projects of a run share one (decided by Christian, 2026-11-06).
 - A project name in front of a module (`VBAProject.modOrders.Total`) and references to other VBA projects.
 
 ## Decisions
@@ -185,3 +195,6 @@ rule yet; `sample-projects/regression/vba/known-gaps.md` says how it deviates.
 9. A stand-alone macro is a declaration of its own, as a layout, and holds its submacros; an embedded macro belongs to
    its layout (decided by Christian, 2026-11-06). Its actions name objects as `DoCmd` does in VBA, its expressions as
    an Access query's do (derived 2026-11-06, as decisions 2, 6 and 7).
+10. A routine named by a string literal draws an edge where the application runs it by that name: `Application.Run`,
+    `OnTime`, `OnKey`, `OnAction` and the calls inside an `Eval`; not `CallByName`, whose member belongs to a value
+    (decided by Christian, 2026-11-06).
