@@ -90,6 +90,78 @@ class LanguageRulesTest {
     }
 
     @Test
+    fun `should count a hash or quote inside a ruby regex literal as code`() {
+        // Arrange
+        val lines = arrayOf("match = text.match(/^#(?<iid>\\d+)\\z/)", "STRING = /\"(?:\\\\.|[^\"\\\\])*\"/", "# comment")
+
+        // Act
+        val kinds = classifyAll("finder.rb", *lines)
+
+        // Assert
+        assertThat(kinds).containsExactly(code, code, comment)
+    }
+
+    @Test
+    fun `should count an extended ruby regex as code across its lines`() {
+        // Arrange
+        val lines = arrayOf("IDENTIFIER = /", "  [[:alpha:]_] # first letter", "  [[:word:]]*  # more letters", "/x", "# comment")
+
+        // Act
+        val kinds = classifyAll("tracker.rb", *lines)
+
+        // Assert
+        assertThat(kinds).containsExactly(code, code, code, code, comment)
+    }
+
+    @Test
+    fun `should count a ruby percent literal as code across its lines`() {
+        // Arrange
+        val lines = arrayOf("@pattern ||= %r{", "  #{Regexp.escape(prefix)}(?<id>\\d+)", "}x", "html = %(<a href=\"#{url}\">)", "# comment")
+
+        // Act
+        val kinds = classifyAll("alert.rb", *lines)
+
+        // Assert
+        assertThat(kinds).containsExactly(code, code, code, code, comment)
+    }
+
+    @Test
+    fun `should open no ruby regex at a slash symbol`() {
+        // Arrange
+        val lines = arrayOf("super(:/, left, right)", "", "# comment")
+
+        // Act
+        val kinds = classifyAll("division.rb", *lines)
+
+        // Assert
+        assertThat(kinds).containsExactly(code, blank, comment)
+    }
+
+    @Test
+    fun `should count a ruby percent literal as the argument of a call without parentheses`() {
+        // Arrange
+        val lines = arrayOf("assert_equal %(<title></title>\\nHello\\n),", "  render(template: \"hello\")", "# comment")
+
+        // Act
+        val kinds = classifyAll("render_test.rb", *lines)
+
+        // Assert
+        assertThat(kinds).containsExactly(code, code, comment)
+    }
+
+    @Test
+    fun `should keep a ruby percent sign between values a remainder`() {
+        // Arrange
+        val lines = arrayOf("left = total % count # remainder", "# comment")
+
+        // Act
+        val kinds = classifyAll("math.rb", *lines)
+
+        // Assert
+        assertThat(kinds).containsExactly(codeAndComment, comment)
+    }
+
+    @Test
     fun `should count every row of a php heredoc and nowdoc as code`() {
         // Arrange
         val lines = arrayOf("\$a = <<<EOT", "  // not a comment", "  EOT;", "\$b = <<<'NOW'", "# text", "NOW;", "// comment")
