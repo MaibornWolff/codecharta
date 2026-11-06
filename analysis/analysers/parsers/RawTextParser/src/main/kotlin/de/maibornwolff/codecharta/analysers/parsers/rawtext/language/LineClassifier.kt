@@ -3,9 +3,9 @@ package de.maibornwolff.codecharta.analysers.parsers.rawtext.language
 data class LineKind(val hasCode: Boolean, val hasComment: Boolean)
 
 class LineClassifier(private val syntax: LanguageSyntax) {
-    private val markers = collectMarkers(syntax).sortedByDescending { it.delimiters.start.length }
+    private val markers = Marker.allOf(syntax)
     private val isSingleQuoteCharLiteral = markers.none { it.delimiters.start.startsWith(SINGLE_QUOTE) }
-    private val heredocTerminators = ArrayDeque<String>()
+    private val heredocs = HeredocTracker(syntax.heredocOpeners)
     private val measuredBlock = MeasuredBlockTracker(syntax.measuredBlock)
     private var openRegion: OpenRegion? = null
     private var isInDataSection = false
@@ -24,7 +24,7 @@ class LineClassifier(private val syntax: LanguageSyntax) {
     private fun classifyContent(line: String): LineKind = when {
         !measuredBlock.isMeasured(line) -> UNMEASURED_LINE
         isInDataSection -> CODE_LINE
-        heredocTerminators.isNotEmpty() -> classifyHeredocBody(line)
+        heredocs.isInBody -> classifyHeredocBody(line)
         isLineCommentContinued -> classifyContinuedLineComment(line)
         isDataSectionStart(line) -> startDataSection()
         else -> scanLine(line)
@@ -50,10 +50,7 @@ class LineClassifier(private val syntax: LanguageSyntax) {
     }
 
     private fun classifyHeredocBody(line: String): LineKind {
-        val terminator = heredocTerminators.first()
-        val content = line.trimStart()
-        val isTerminator = content.startsWith(terminator) && content.getOrNull(terminator.length)?.isWordCharacter() != true
-        if (isTerminator) heredocTerminators.removeFirst()
+        heredocs.readBodyLine(line)
         return CODE_LINE
     }
 
@@ -94,11 +91,9 @@ class LineClassifier(private val syntax: LanguageSyntax) {
     }
 
     private fun openHeredoc(scan: LineScan): Boolean {
-        if (scan.line.getOrNull(scan.position - 1) == HEREDOC_START) return false
-        val match = syntax.heredocOpeners.firstNotNullOfOrNull { it.terminatorAt(scan.line, scan.position) } ?: return false
-        heredocTerminators.addLast(match.terminator)
+        val openerLength = heredocs.openerLengthAt(scan.line, scan.position) ?: return false
         scan.hasCode = true
-        scan.position += match.openerLength
+        scan.position += openerLength
         return true
     }
 
@@ -119,7 +114,7 @@ class LineClassifier(private val syntax: LanguageSyntax) {
     }
 
     private fun isMarkerAt(scan: LineScan, marker: Marker): Boolean {
-        if (!scan.line.startsWith(marker.delimiters.start, scan.position)) return false
+        if (!scan.startsWith(marker.delimiters.start)) return false
         val isWordStartRequired = marker.region == Region.LINE_COMMENT && syntax.isLineCommentOnlyAtWordStart
         return !isWordStartRequired || scan.isAtWordStart
     }
@@ -162,8 +157,8 @@ class LineClassifier(private val syntax: LanguageSyntax) {
         when {
             marker.region.isQuote && syntax.isBackslashEscapeInQuotes && scan.current == ESCAPE -> scan.position += ESCAPE_LENGTH
             isPlaceholderStartAt(scan, marker) -> enterPlaceholder(scan, region)
-            isEndAt(scan, marker) -> close(scan, region)
-            marker.isNestable && scan.line.startsWith(marker.delimiters.start, scan.position) -> {
+            marker.endsAt(scan) -> close(scan, region)
+            marker.isNestable && scan.startsWith(marker.delimiters.start) -> {
                 region.depth++
                 scan.position += marker.delimiters.start.length
             }
@@ -173,7 +168,7 @@ class LineClassifier(private val syntax: LanguageSyntax) {
 
     private fun isPlaceholderStartAt(scan: LineScan, marker: Marker): Boolean {
         val template = syntax.templateLiteral ?: return false
-        return marker.delimiters.start == template.quote && scan.line.startsWith(template.placeholderStart, scan.position)
+        return marker.delimiters.start == template.quote && scan.startsWith(template.placeholderStart)
     }
 
     private fun enterPlaceholder(scan: LineScan, region: OpenRegion) {
@@ -182,56 +177,10 @@ class LineClassifier(private val syntax: LanguageSyntax) {
         scan.position += checkNotNull(syntax.templateLiteral).placeholderStart.length
     }
 
-    private fun isEndAt(scan: LineScan, marker: Marker): Boolean {
-        val end = marker.delimiters.end
-        if (!scan.line.startsWith(end, scan.position)) return false
-        val isFollowedByEndCharacter = scan.line.getOrNull(scan.position + end.length) == end.last()
-        return !(marker.closesAtLastOfRun && isFollowedByEndCharacter)
-    }
-
     private fun close(scan: LineScan, region: OpenRegion) {
         region.depth--
         if (region.depth == 0) openRegion = null
         scan.position += region.marker.delimiters.end.length
-    }
-
-    private class LineScan(val line: String, regionAtLineStart: Region?) {
-        var position = 0
-        var hasCode = false
-        var hasComment = false
-        var hasCommentBesideDocString = false
-        var isDocStringOpenedOnLine = false
-        val current: Char get() = line[position]
-        val isAtWordStart: Boolean get() = line.getOrNull(position - 1).let { it == null || it.isWhitespace() || it in WORD_SEPARATORS }
-
-        init {
-            regionAtLineStart?.let(::mark)
-        }
-
-        fun mark(region: Region) {
-            if (region.isComment) hasComment = true else hasCode = true
-            if (region.isComment && region != Region.DOC_QUOTE) hasCommentBesideDocString = true
-        }
-    }
-
-    private enum class Region(val isComment: Boolean, val isQuote: Boolean = false) {
-        LINE_COMMENT(true),
-        BLOCK_COMMENT(true),
-        DOC_QUOTE(true, isQuote = true),
-        QUOTE(false, isQuote = true),
-        VERBATIM_QUOTE(false),
-        CODE(false)
-    }
-
-    private data class Marker(val delimiters: Delimiters, val region: Region, val isNestable: Boolean = false) {
-        val closesAtLastOfRun: Boolean
-            get() = region != Region.BLOCK_COMMENT &&
-                delimiters.end.length >= MIN_QUOTE_RUN &&
-                delimiters.end.all { it == delimiters.end.first() }
-    }
-
-    private class OpenRegion(val marker: Marker) {
-        var depth = 1
     }
 
     companion object {
@@ -239,9 +188,6 @@ class LineClassifier(private val syntax: LanguageSyntax) {
         private const val BYTE_ORDER_MARK = "\uFEFF"
         private const val ESCAPE_LENGTH = 2
         private const val SINGLE_QUOTE = '\''
-        private const val HEREDOC_START = '<'
-        private const val MIN_QUOTE_RUN = 3
-        private const val WORD_SEPARATORS = ";|&()"
         private val REGEX_DELIMITERS = Delimiters("/", "/")
         private val CHAR_LITERAL = Regex("""'(\\.|[^'\\])'""")
 
@@ -249,18 +195,6 @@ class LineClassifier(private val syntax: LanguageSyntax) {
         private val COMMENT_LINE = LineKind(hasCode = false, hasComment = true)
         private val UNMEASURED_LINE = LineKind(hasCode = false, hasComment = false)
 
-        private fun Char.isWordCharacter() = isLetterOrDigit() || this == '_'
-
         private fun endsWithBackslash(line: String) = line.trimEnd().endsWith(ESCAPE)
-
-        private fun collectMarkers(syntax: LanguageSyntax): List<Marker> = buildList {
-            syntax.lineComments.forEach { add(Marker(Delimiters(it, ""), Region.LINE_COMMENT)) }
-            syntax.codeMarkers.forEach { add(Marker(Delimiters(it, ""), Region.CODE)) }
-            syntax.blockComments.forEach { add(Marker(it, Region.BLOCK_COMMENT)) }
-            syntax.nestedBlockComments.forEach { add(Marker(it, Region.BLOCK_COMMENT, isNestable = true)) }
-            syntax.docQuotes.forEach { add(Marker(it, Region.DOC_QUOTE)) }
-            syntax.quotes.forEach { add(Marker(it, Region.QUOTE)) }
-            syntax.verbatimQuotes.forEach { add(Marker(it, Region.VERBATIM_QUOTE)) }
-        }
     }
 }
