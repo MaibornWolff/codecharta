@@ -16,6 +16,7 @@ data class LanguageSyntax(
     val isBackslashEscapeInQuotes: Boolean = true,
     val isLineCommentContinuedByBackslash: Boolean = false,
     val regexLiteral: RegexLiteral? = null,
+    val percentLiteral: PercentLiteral? = null,
     val dataSectionMarker: String? = null,
     val measuredBlock: MeasuredBlock? = null
 )

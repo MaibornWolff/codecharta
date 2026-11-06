@@ -54,7 +54,7 @@ class LineClassifier(private val syntax: LanguageSyntax) {
             scan.position++
             return
         }
-        if (openHeredoc(scan)) return
+        if (openHeredoc(scan) || openPercentLiteral(scan) || openMultiLineRegex(scan)) return
         val marker = markers.firstOrNull { isMarkerAt(scan, it) }
         if (marker == null) {
             scan.hasCode = true
@@ -70,6 +70,22 @@ class LineClassifier(private val syntax: LanguageSyntax) {
         heredocTerminators.addLast(match.terminator)
         scan.hasCode = true
         scan.position += match.openerLength
+        return true
+    }
+
+    private fun openPercentLiteral(scan: LineScan): Boolean {
+        val opener = syntax.percentLiteral?.openerAt(scan.line, scan.position) ?: return false
+        openRegion = OpenRegion(Marker(opener.delimiters, Region.QUOTE, opener.isNestable))
+        scan.mark(Region.QUOTE)
+        scan.position += opener.openerLength
+        return true
+    }
+
+    private fun openMultiLineRegex(scan: LineScan): Boolean {
+        if (syntax.regexLiteral?.opensMultiLineAt(scan.line, scan.position) != true) return false
+        openRegion = OpenRegion(Marker(REGEX_DELIMITERS, Region.QUOTE))
+        scan.mark(Region.QUOTE)
+        scan.position += REGEX_DELIMITERS.start.length
         return true
     }
 
@@ -171,6 +187,7 @@ class LineClassifier(private val syntax: LanguageSyntax) {
         private const val HEREDOC_START = '<'
         private const val MIN_QUOTE_RUN = 3
         private const val WORD_SEPARATORS = ";|&()"
+        private val REGEX_DELIMITERS = Delimiters("/", "/")
         private val CHAR_LITERAL = Regex("""'(\\.|[^'\\])'""")
 
         private val CODE_LINE = LineKind(hasCode = true, hasComment = false)

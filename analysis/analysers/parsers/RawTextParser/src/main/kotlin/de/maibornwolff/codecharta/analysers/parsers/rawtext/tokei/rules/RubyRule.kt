@@ -2,6 +2,8 @@ package de.maibornwolff.codecharta.analysers.parsers.rawtext.tokei.rules
 
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.language.HeredocOpener
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.language.LanguageSyntax
+import de.maibornwolff.codecharta.analysers.parsers.rawtext.language.PercentLiteral
+import de.maibornwolff.codecharta.analysers.parsers.rawtext.language.RegexLiteral
 
 internal object RubyRule : LanguageRule {
     override val tokeiLanguages = setOf("Ruby")
@@ -13,8 +15,14 @@ internal object RubyRule : LanguageRule {
 
     private const val DATA_SECTION_MARKER = "__END__"
 
+    private val keywordsBeforeAValue = setOf(
+        "return", "when", "if", "unless", "elsif", "while", "until", "and", "or", "not", "then", "else", "do", "in", "yield"
+    )
+
     override fun applyTo(syntax: LanguageSyntax) = syntax.copy(
         heredocOpeners = listOf(squigglyOrDashHeredoc, bareHeredoc),
-        dataSectionMarker = DATA_SECTION_MARKER
+        dataSectionMarker = DATA_SECTION_MARKER,
+        regexLiteral = RegexLiteral(keywordsBeforeAValue, canSpanLines = true),
+        percentLiteral = PercentLiteral(keywordsBeforeAValue)
     )
 }
