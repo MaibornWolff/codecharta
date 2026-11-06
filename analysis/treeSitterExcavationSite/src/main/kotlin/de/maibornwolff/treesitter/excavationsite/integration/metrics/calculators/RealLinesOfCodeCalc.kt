@@ -36,7 +36,8 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) :
 
         if (nodeContext.shouldIgnoreNode(node, nodeType) ||
             NodeTypeMatcher.isNodeTypeAllowed(node, nodeType, nodeTypeProvider.commentLineNodeTypes) ||
-            isLineBreakToken(node)
+            isLineBreakToken(node) ||
+            isMissingToken(node)
         ) {
             return 0
         }
@@ -63,6 +64,9 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) :
     }
 
     private fun isLineBreakToken(node: SyntaxNode): Boolean = node.childCount == 0 && node.type.isBlank()
+
+    // The parser inserts a token it expected but did not find, such as the ; after a macro call, with no width
+    private fun isMissingToken(node: SyntaxNode): Boolean = node.childCount == 0 && node.startByte == node.endByte
 
     private fun addToRlocPerFunction(node: SyntaxNode, rlocForNode: Int, rlocForFunctionAdder: Int) {
         var additionalRlocForFunction = 0
