@@ -1,0 +1,7 @@
+# vba.md, routines named by a string: Application.Run (a workbook in front left out), OnAction, OnTime, OnKey and the calls in an Eval literal name a routine; CallByName names a member of a value, which names none
+file modMain.bas -> modMenu.bas
+file modMain.bas -> modReports.bas
+leaf modMain.bas#Start -> modMenu.bas#Bonus
+leaf modMain.bas#Start -> modMenu.bas#Go
+leaf modMain.bas#Start -> modReports.bas#PrintAll
+leaf modMain.bas#Start -> modReports.bas#RefreshPivots

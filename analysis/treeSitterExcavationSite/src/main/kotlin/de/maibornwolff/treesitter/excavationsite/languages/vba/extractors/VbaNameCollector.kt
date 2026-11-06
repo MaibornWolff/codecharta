@@ -10,7 +10,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
  * The names a subtree writes: identifiers, dotted chains and type names, and the forms and reports Access code names
  * by a literal, see [VbaAccessObjects]. The name a declaration gives (a routine, a parameter, a variable, a field, an
  * argument name), labels and a `With` member are no names; a chain ends where a call or a bang (`rs!Quantity`) makes
- * the rest a member of a value. The class of an `Implements` line is an implementation, the class `New` creates an
+ * the rest a member of a value; the routines a string names, see [VbaProcedureStrings]. The class of an `Implements` line is an implementation, the class `New` creates an
  * instantiation.
  */
 internal object VbaNameCollector {
@@ -102,7 +102,10 @@ internal object VbaNameCollector {
     private fun walkAssignment(assignment: SyntaxNode, locals: VbaLocalNames, out: MutableList<VbaName>) {
         val property = assignment.getChildByFieldName(LEFT_FIELD).orNull()?.let { assignedPropertyOf(it) }
         val value = assignment.getChildByFieldName(RIGHT_FIELD).orNull()
-        if (property != null && value != null) VbaAccessObjects.assignedTo(property, value)?.let { out.add(it) }
+        if (property != null && value != null) {
+            VbaAccessObjects.assignedTo(property, value)?.let { out.add(it) }
+            VbaProcedureStrings.assignedTo(property, value)?.let { out.add(it) }
+        }
         walkChildren(assignment, locals, out)
     }
 
@@ -115,8 +118,10 @@ internal object VbaNameCollector {
     private fun walkCall(call: SyntaxNode, calleeField: String, locals: VbaLocalNames, out: MutableList<VbaName>) {
         val callee = call.getChildByFieldName(calleeField).orNull()
         val arguments = call.getChildByFieldName(ARGUMENTS_FIELD).orNull()
-        val accessObject = callee?.let { VbaAccessObjects.openedBy(chainOf(it), arguments) }
+        val chain = callee?.let { chainOf(it) }.orEmpty()
+        val accessObject = callee?.let { VbaAccessObjects.openedBy(chain, arguments) }
         if (accessObject != null) out.add(accessObject) else callee?.let { walk(it, locals, out) }
+        out.addAll(VbaProcedureStrings.calledBy(chain, arguments))
         arguments?.let { walk(it, locals, out) }
     }
 

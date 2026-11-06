@@ -253,7 +253,10 @@ methods that name an object by its type (`DoCmd.Close acForm, "frmX"`, `DoCmd.Ou
 `.sql` file in a `queries` folder that creates nothing, is a view named after its file: other queries find it in `FROM`,
 `DoCmd.OpenQuery "qryX"`, `OpenRecordset("qryX")`, `QueryDefs("qryX")`, `DLookup("Field", "qryX")` and the other
 domain functions, and a `RowSource` or `RecordSource` set to its name point at it, and it points at the forms its
-`[Forms]![frmX]` names and at the public VBA functions it calls. A member of a value, a `With` member, a library name and a name in a string draw no edge.
+`[Forms]![frmX]` names and at the public VBA functions it calls. A routine named by a string points at that routine
+where the application runs it by its name: `Application.Run "modX.Proc"`, `OnTime`, `OnKey`, `.OnAction = "Proc"` and
+the calls inside an `Eval("Func()")`. A member of a value (also the one `CallByName` names), a `With` member, a
+library name and any other name in a string draw no edge.
 
 The layout of an Access form or report (`.form`, `.report`, written by `SaveAsText`) is a leaf of its own named after
 its file (`frmOrders_form`), which the form's module uses, and a form without a module is its layout. It points at the

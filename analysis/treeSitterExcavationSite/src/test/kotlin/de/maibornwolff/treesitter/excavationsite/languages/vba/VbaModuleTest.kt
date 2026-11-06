@@ -402,6 +402,35 @@ class VbaModuleTest {
     }
 
     @Test
+    fun `should read the routines code runs by a string, but not a member CallByName names`() {
+        // Arrange
+        val body = """
+            Application.Run "modReports.PrintAll", 2026
+            Run "'Sales.xlsm'!RefreshPivots"
+            Application.OnTime Now + TimeValue("00:01:00"), "SaveBackup"
+            Application.OnKey "^q", Procedure:="QuitApp"
+            Me.cmdGo.OnAction = "modMenu.Go"
+            total = Eval("modMath.Rounded(1.5) + Bonus()")
+            x = CallByName(amount, "Area", VbMethod)
+        """
+        val namesInCode = setOf("Application", "Run", "Now", "TimeValue", "Me", "total", "Eval", "x", "CallByName", "VbMethod")
+
+        // Act
+        val names = namesOfRoutine(body).filterNot { it.segments.first() in namesInCode }
+
+        // Assert
+        assertThat(names).containsExactly(
+            code("modReports", "PrintAll"),
+            code("RefreshPivots"),
+            code("SaveBackup"),
+            code("QuitApp"),
+            code("modMenu", "Go"),
+            code("modMath", "Rounded"),
+            code("Bonus")
+        )
+    }
+
+    @Test
     fun `should read the query or table a row or record source is set to, but no SQL text`() {
         // Arrange
         val body = """
