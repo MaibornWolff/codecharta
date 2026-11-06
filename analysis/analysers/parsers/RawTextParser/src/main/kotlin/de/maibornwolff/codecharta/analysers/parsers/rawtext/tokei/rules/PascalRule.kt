@@ -7,5 +7,5 @@ internal object PascalRule : LanguageRule {
 
     private val compilerDirectiveStarts = listOf("{\$", "(*\$")
 
-    override fun applyTo(syntax: LanguageSyntax) = syntax.copy(codeMarkers = compilerDirectiveStarts)
+    override fun applyTo(syntax: LanguageSyntax) = syntax.copy(codeMarkers = compilerDirectiveStarts, isBackslashEscapeInQuotes = false)
 }

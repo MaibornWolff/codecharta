@@ -10,6 +10,7 @@ internal object SqlRule : LanguageRule {
 
     override fun applyTo(syntax: LanguageSyntax) = syntax.copy(
         lineComments = syntax.lineComments + MYSQL_LINE_COMMENT,
-        codeMarkers = listOf(POSTGRES_JSON_PATH_OPERATOR)
+        codeMarkers = listOf(POSTGRES_JSON_PATH_OPERATOR),
+        isBackslashEscapeInQuotes = false
     )
 }

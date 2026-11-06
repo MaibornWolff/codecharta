@@ -152,6 +152,30 @@ class LanguageRulesTest {
     }
 
     @Test
+    fun `should end a pascal string at the quote after a backslash`() {
+        // Arrange
+        val lines = arrayOf("if FLine[Run] = '\\' then", "{ comment }", "'{': BraceOpenProc;")
+
+        // Act
+        val kinds = classifyAll("Lair.pas", *lines)
+
+        // Assert
+        assertThat(kinds).containsExactly(code, comment, code)
+    }
+
+    @Test
+    fun `should end a sql string at the quote after a backslash`() {
+        // Arrange
+        val lines = arrayOf("SELECT '\\' AS delimiter; -- backslash", "-- comment")
+
+        // Act
+        val kinds = classifyAll("query.sql", *lines)
+
+        // Assert
+        assertThat(kinds).containsExactly(codeAndComment, comment)
+    }
+
+    @Test
     fun `should count a mysql hash comment but keep the postgres json operator as code`() {
         // Arrange
         val lines = arrayOf("# MySQL comment", "SELECT data #> '{a,b}' FROM t", "SELECT 1 -- comment")
