@@ -1,13 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.rawtext.language
 
-internal object RegexLiteral {
-    private const val SLASH = '/'
-    private const val ESCAPE = '\\'
-    private const val OPERATORS_BEFORE_A_VALUE = "(,=:[!&|?{};+-*%<>~^"
-    private val KEYWORDS_BEFORE_A_VALUE = setOf(
-        "return", "typeof", "instanceof", "in", "of", "new", "delete", "void", "throw", "case", "do", "else", "yield", "await"
-    )
-
+class RegexLiteral(private val keywordsBeforeAValue: Set<String>) {
     fun lengthAt(line: String, position: Int): Int? {
         if (line[position] != SLASH || !isValueExpectedBefore(line, position)) return null
         val closingSlash = closingSlashAfter(line, position + 1) ?: return null
@@ -18,7 +11,7 @@ internal object RegexLiteral {
         val before = line.substring(0, position).trimEnd()
         val last = before.lastOrNull() ?: return true
         if (last in OPERATORS_BEFORE_A_VALUE) return true
-        return before.takeLastWhile { it.isLetterOrDigit() || it == '_' || it == '$' } in KEYWORDS_BEFORE_A_VALUE
+        return before.takeLastWhile { it.isLetterOrDigit() || it == '_' || it == '$' } in keywordsBeforeAValue
     }
 
     private fun closingSlashAfter(line: String, start: Int): Int? {
@@ -34,5 +27,11 @@ internal object RegexLiteral {
             index++
         }
         return null
+    }
+
+    companion object {
+        private const val SLASH = '/'
+        private const val ESCAPE = '\\'
+        private const val OPERATORS_BEFORE_A_VALUE = "(,=:[!&|?{};+-*%<>~^"
     }
 }
