@@ -26,7 +26,9 @@ VBA compiler runs here; each rule follows the specification. The rules shared by
   nothing, as it only hides the module from other projects.
 - The uses of a declaration are the names it writes: types after `As`, `New`, `TypeOf … Is` and `Implements`, calls of
   routines and reads of variables and constants. A class module's names, also those outside every routine
-  (`Implements`, event parameters), are uses of the class.
+  (`Implements`, event parameters), are uses of the class. The class an `Implements` line names is an implementation,
+  the class `New` creates (`Set x = New clsX`, `Dim x As New clsX`) an instantiation, as in Java and C#; every other
+  name is a plain use. `New` with a library name in front (`New Lib.clsX`) the grammar does not read.
 - Every branch of an `#If` counts, as both are in the source.
 
 ## A simple name `N`
