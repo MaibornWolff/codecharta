@@ -1,5 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.vba.model
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TypeUsage
+
 /**
  * What a VBA or VB6 module declares, for the name lookup of the dependency parser (`vba.md`). [name] is the module's
  * `VB_Name`, empty when the file has none. [names] are what the module writes outside every declaration, such as an
@@ -59,5 +61,8 @@ enum class VbaNameKind {
     MACRO
 }
 
-/** A name as written, `modOrders.OrderTotal` as `[modOrders, OrderTotal]`, or the name of a form or report. */
-data class VbaName(val segments: List<String>, val kind: VbaNameKind = VbaNameKind.CODE)
+/**
+ * A name as written, `modOrders.OrderTotal` as `[modOrders, OrderTotal]`, or the name of a form or report; its [usage]
+ * tells a class an `Implements` line names or `New` creates from any other use.
+ */
+data class VbaName(val segments: List<String>, val kind: VbaNameKind = VbaNameKind.CODE, val usage: TypeUsage = TypeUsage.USAGE)

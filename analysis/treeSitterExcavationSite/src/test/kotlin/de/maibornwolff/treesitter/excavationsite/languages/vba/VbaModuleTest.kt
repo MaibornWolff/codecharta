@@ -2,6 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.vba
 
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
+import de.maibornwolff.treesitter.excavationsite.api.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.api.VbaDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.VbaDeclarationKind
 import de.maibornwolff.treesitter.excavationsite.api.VbaModuleKind
@@ -205,7 +206,7 @@ class VbaModuleTest {
         // Assert
         assertThat(names).containsExactly(
             code("modTypes", "TPoint"),
-            code("clsCustomer"),
+            VbaName(listOf("clsCustomer"), usage = TypeUsage.INSTANTIATION),
             code("modHelpers", "LogMessage"),
             code("LogMessage"),
             code("total"),
@@ -437,8 +438,28 @@ class VbaModuleTest {
         val module = TreeSitterDependencies.vbaModule(code, Language.VBA)
 
         // Assert
-        assertThat(module.names).containsExactly(code("IShape"), code("clsShape"))
+        assertThat(module.names).containsExactly(VbaName(listOf("IShape"), usage = TypeUsage.IMPLEMENTATION), code("clsShape"))
         assertThat(module.declarations).isEmpty()
+    }
+
+    @Test
+    fun `should read the classes New creates as instantiations, the declared types as usages`() {
+        // Arrange
+        val body = """
+            Dim shape As clsShape
+            Dim cache As New clsCache
+            Set shape = New clsSquare
+        """
+
+        // Act
+        val names = namesOfRoutine(body)
+
+        // Assert
+        assertThat(names).containsExactly(
+            code("clsShape"),
+            VbaName(listOf("clsCache"), usage = TypeUsage.INSTANTIATION),
+            VbaName(listOf("clsSquare"), usage = TypeUsage.INSTANTIATION)
+        )
     }
 
     @Test

@@ -6,6 +6,6 @@ file modUse.bas -> modShapes.bas
 leaf clsBox.cls#clsBox -> modShapes.bas#EColor
 leaf clsBox.cls#clsBox -> modShapes.bas#TPoint
 leaf modSettings.bas#Level -> modSettings.bas#mLevel
-leaf modUse.bas#Run -> clsBox.cls#clsBox
+leaf modUse.bas#Run -> clsBox.cls#clsBox usage=instantiation
 leaf modUse.bas#Run -> modSettings.bas#Level
 leaf modUse.bas#Run -> modShapes.bas#EColor

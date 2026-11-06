@@ -3,13 +3,15 @@ package de.maibornwolff.treesitter.excavationsite.languages.vba.extractors
 import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaName
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 
 /**
  * The names a subtree writes: identifiers, dotted chains and type names, and the forms and reports Access code names
  * by a literal, see [VbaAccessObjects]. The name a declaration gives (a routine, a parameter, a variable, a field, an
  * argument name), labels and a `With` member are no names; a chain ends where a call or a bang (`rs!Quantity`) makes
- * the rest a member of a value.
+ * the rest a member of a value. The class of an `Implements` line is an implementation, the class `New` creates an
+ * instantiation.
  */
 internal object VbaNameCollector {
     private const val IDENTIFIER = "identifier"
@@ -32,6 +34,12 @@ internal object VbaNameCollector {
     private const val BANG = "!"
 
     private val TYPE_NAMES = setOf(TYPE_EXPRESSION, DOTTED_TYPE_EXPRESSION)
+    private const val IMPLEMENTS_STATEMENT = "implements_statement"
+    private const val NEW_EXPRESSION = "new_expression"
+    private const val AS_TYPE_CLAUSE = "as_type_clause"
+
+    // The grammar keeps the `New` of `Dim x As New clsX` out of the tree
+    private val AS_NEW = Regex("""^As\s+New\b""", RegexOption.IGNORE_CASE)
     private val ASSIGNMENTS = setOf("assignment_statement", "let_statement")
     private val NOT_WALKED = setOf(
         "comment", "string_literal", "attribute_statement", "option_statement", "def_type_statement", "frm_version_statement",
@@ -56,17 +64,31 @@ internal object VbaNameCollector {
     }
 
     private fun walk(node: SyntaxNode, locals: VbaLocalNames, out: MutableList<VbaName>) {
+        val usage = usageOf(node)
         when {
             node.type == IDENTIFIER -> add(listOf(node.text), locals, out)
             node.type == QUALIFIED_MEMBER -> walkChain(node, locals, out)
             node.type == CALL_EXPRESSION -> walkCall(node, FUNCTION_FIELD, locals, out)
             node.type == CALL_STATEMENT -> walkCall(node, CALLEE_FIELD, locals, out)
             node.type in ASSIGNMENTS -> walkAssignment(node, locals, out)
+            usage != TypeUsage.USAGE -> walkWithUsage(node, usage, locals, out)
             node.type in TYPE_NAMES -> add(TreeTraversal.findAllDescendantsOfType(node, IDENTIFIER).map { it.text }, locals, out)
             node.type in NOT_WALKED -> Unit
             VbaConditionalCode.isConditional(node) -> VbaConditionalCode.codeOf(node).forEach { walk(it, locals, out) }
             else -> walkChildren(node, locals, out)
         }
+    }
+
+    private fun usageOf(node: SyntaxNode): TypeUsage = when {
+        node.type == IMPLEMENTS_STATEMENT -> TypeUsage.IMPLEMENTATION
+        node.type == NEW_EXPRESSION || (node.type == AS_TYPE_CLAUSE && AS_NEW.containsMatchIn(node.text)) -> TypeUsage.INSTANTIATION
+        else -> TypeUsage.USAGE
+    }
+
+    private fun walkWithUsage(node: SyntaxNode, usage: TypeUsage, locals: VbaLocalNames, out: MutableList<VbaName>) {
+        val names = mutableListOf<VbaName>()
+        walkChildren(node, locals, names)
+        out.addAll(names.map { it.copy(usage = usage) })
     }
 
     private fun walkChildren(node: SyntaxNode, locals: VbaLocalNames, out: MutableList<VbaName>) {
