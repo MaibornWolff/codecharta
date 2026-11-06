@@ -19,6 +19,15 @@ describe("highlightSource", () => {
         expect(html).toContain("&lt;img src=x onerror=alert(1)>")
     })
 
+    it("should tell a VBA comment from an apostrophe in a string", () => {
+        // Act
+        const html = highlightSource(`MsgBox "Don't save" ' asks first`, "visual-basic")
+
+        // Assert
+        expect(html).toContain('<span class="token string">"Don\'t save"</span>')
+        expect(html).toContain('<span class="token comment">\' asks first</span>')
+    })
+
     it.each([
         "kotlin",
         "java",
@@ -38,6 +47,7 @@ describe("highlightSource", () => {
         "rust",
         "bash",
         "sql",
+        "visual-basic",
         "markup",
         "css",
         "scss",

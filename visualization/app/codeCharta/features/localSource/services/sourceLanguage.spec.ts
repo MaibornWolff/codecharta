@@ -20,6 +20,12 @@ describe("sourceLanguageOf", () => {
         ["lib.rs", "rust"],
         ["deploy.sh", "bash"],
         ["schema.sql", "sql"],
+        ["vba/modOrders.bas", "visual-basic"],
+        ["vba/clsCustomer.cls", "visual-basic"],
+        ["frmMain.FRM", "visual-basic"],
+        ["forms/frmOrders.form", "visual-basic"],
+        ["reports/rptInvoice.report", "visual-basic"],
+        ["macros/AutoExec.macro", "visual-basic"],
         ["page.html", "markup"],
         ["App.vue", "markup"],
         ["theme.scss", "scss"],
@@ -37,6 +43,11 @@ describe("sourceLanguageOf", () => {
         ["Service.cs", "C#"],
         ["src/engine.hpp", "C++"],
         ["App.vue", "Vue"],
+        ["vba/modOrders.bas", "VBA"],
+        ["frmMain.frm", "VB form"],
+        ["forms/frmOrders.form", "Access form"],
+        ["reports/rptInvoice.report", "Access report"],
+        ["macros/AutoExec.macro", "Access macro"],
         ["src/Makefile", "Plain text"]
     ])("should name the language of %s %s", (filePath, label) => {
         // Act
