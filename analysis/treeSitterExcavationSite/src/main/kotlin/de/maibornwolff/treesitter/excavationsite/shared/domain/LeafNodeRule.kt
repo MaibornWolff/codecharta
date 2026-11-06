@@ -13,4 +13,7 @@ sealed class LeafNodeRule {
      * (strings that are NOT docstrings).
      */
     data class WhenParentHasMultipleChildren(val nodeType: String) : LeafNodeRule()
+
+    /** Count node as leaf always, such as a Rust raw string, whose closing delimiter is no token of its own. */
+    data class OfType(val nodeType: String) : LeafNodeRule()
 }

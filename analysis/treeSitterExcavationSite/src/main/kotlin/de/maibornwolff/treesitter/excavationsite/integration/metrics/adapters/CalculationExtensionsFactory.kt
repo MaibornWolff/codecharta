@@ -70,6 +70,7 @@ object CalculationExtensionsFactory {
                 is LeafNodeRule.WhenParentHasMultipleChildren -> {
                     node.type == rule.nodeType && node.parent.childCount != 1
                 }
+                is LeafNodeRule.OfType -> node.type == rule.nodeType
             }
         }
     }

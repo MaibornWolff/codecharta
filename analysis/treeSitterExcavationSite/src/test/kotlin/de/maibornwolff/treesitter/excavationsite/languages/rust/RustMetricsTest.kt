@@ -585,4 +585,22 @@ class RustMetricsTest {
             assertThat(result.messageChains).isEqualTo(0.0)
         }
     }
+
+    @Test
+    fun `should count the line that closes a raw string as code`() {
+        // Arrange
+        val code = """
+            fn usage() -> &'static str {
+                r#"
+            Waits for a message.
+            "#
+            }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.RUST)
+
+        // Assert
+        assertThat(result.realLinesOfCode).isEqualTo(5.0)
+    }
 }

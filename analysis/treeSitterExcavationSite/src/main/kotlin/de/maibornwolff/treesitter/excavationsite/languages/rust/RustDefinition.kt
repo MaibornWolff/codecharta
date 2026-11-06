@@ -5,6 +5,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.Extract
 import de.maibornwolff.treesitter.excavationsite.shared.domain.IgnoreRule
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDependencyMapping
+import de.maibornwolff.treesitter.excavationsite.shared.domain.LeafNodeRule
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Metric
 
 /**
@@ -13,6 +14,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.Metric
  * Rust supports code metrics, text extraction, and dependency analysis.
  */
 object RustDefinition : LanguageDefinition {
+    private const val RAW_STRING = "raw_string_literal"
+
     override val nodeMetrics: Map<String, Set<Metric>> = RustMetricMapping.nodeMetrics
     override val nodeExtractions: Map<String, Extract> = RustExtractionMapping.nodeExtractions
     override val dependencyMapping: LanguageDependencyMapping = RustDependencyMapping.dependencyMapping
@@ -42,6 +45,7 @@ object RustDefinition : LanguageDefinition {
             IgnoreRule.TypeInSet(commentTokenTypes),
             IgnoreRule.TypeWithParentType("!", "inner_doc_comment_marker"),
             IgnoreRule.TypeWithParentType("/", "outer_doc_comment_marker")
-        )
+        ),
+        countAsLeafNode = LeafNodeRule.OfType(RAW_STRING)
     )
 }
