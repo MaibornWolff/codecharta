@@ -37,6 +37,9 @@ enum class Language(
     // The names of a form's controls carry the prefixes of VBA code (`txtOrderDate`, `cboCustomer`)
     ACCESS_LAYOUT(LibraryLanguage.ACCESS_LAYOUT, suffixesOf(FileExtension.ACCESS_LAYOUT), listOf("keywords/vba-keywords.txt")),
 
+    // A macro names the forms and reports it opens, with the same prefixes (`frmOrders`, `rptInvoice`)
+    ACCESS_MACRO(LibraryLanguage.ACCESS_MACRO, suffixesOf(FileExtension.ACCESS_MACRO), listOf("keywords/vba-keywords.txt")),
+
     // The SQL of an Access query names its objects with the prefixes of VBA code (`qryOrders`, `tblCustomers`)
     ACCESS_QUERY(LibraryLanguage.SQL, emptySet(), listOf("keywords/sql-keywords.txt", "keywords/vba-keywords.txt"))
     ;

@@ -201,6 +201,16 @@ class LanguageTest {
     }
 
     @Test
+    fun `should return the Access macro for macros, with the VBA keywords for the objects they open`() {
+        // Arrange & Act
+        val languages = listOf("macro", "MACRO").map { Language.fromExtension(it) }
+
+        // Assert
+        assertEquals(listOf(Language.ACCESS_MACRO, Language.ACCESS_MACRO), languages)
+        assertEquals(Language.VBA.keywords.getKeywords(), Language.ACCESS_MACRO.keywords.getKeywords())
+    }
+
+    @Test
     fun `should share the VBA keywords with VB6`() {
         // Arrange & Act
         val vb6Keywords = Language.VB6.keywords.getKeywords()

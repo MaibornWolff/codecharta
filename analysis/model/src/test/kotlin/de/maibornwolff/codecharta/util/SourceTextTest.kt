@@ -96,4 +96,21 @@ class SourceTextTest {
         // Assert
         assertThat(text).isEqualTo("Caption =\"Bestellübersicht\"")
     }
+
+    @Test
+    fun `should read an Access macro by its byte order mark, without the mark`(
+        @TempDir root: File
+    ) {
+        // Arrange
+        val macro = "Begin\n    Action =\"MsgBox\"\n    Argument =\"Bestellung gedruckt\"\nEnd\n"
+        val file = root.resolve("mcrDrucken.macro").also {
+            it.writeBytes(byteArrayOf(0xFF.toByte(), 0xFE.toByte()) + macro.toByteArray(Charsets.UTF_16LE))
+        }
+
+        // Act
+        val text = SourceText.read(file)
+
+        // Assert
+        assertThat(text).isEqualTo(macro)
+    }
 }

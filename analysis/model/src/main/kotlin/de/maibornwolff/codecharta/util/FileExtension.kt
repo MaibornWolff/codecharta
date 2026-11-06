@@ -37,5 +37,6 @@ enum class FileExtension(
     SQL(".sql", setOf(".pks", ".pkb", ".pls")),
     VBA(".bas", setOf(".cls")),
     VB6(".frm"),
-    ACCESS_LAYOUT(".form", setOf(".report"))
+    ACCESS_LAYOUT(".form", setOf(".report")),
+    ACCESS_MACRO(".macro")
 }
