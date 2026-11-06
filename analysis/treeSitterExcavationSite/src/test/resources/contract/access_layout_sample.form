@@ -1,0 +1,55 @@
+Version =21
+VersionRequired =20
+Checksum =1234567
+Begin Form
+    Caption ="Order List"
+    RecordSource ="qryOrderList"
+    OnOpen ="[Event Procedure]"
+    PrtMip = Begin
+        0xa0050000a0050000a0050000a005000000000000201c0000e010000001000000 ,
+        0x0100000068010000
+    End
+    Begin
+        Begin TextBox
+            FontSize =11
+        End
+        Begin FormHeader
+            Begin
+                Begin CommandButton
+                    Name ="cmdNewOrder"
+                    Caption ="New Order"
+                    OnClick ="=OpenForm_frmOrderDetails()"
+                End
+            End
+        End
+        Begin Section
+            Begin
+                Begin ComboBox
+                    Name ="cboCustomer"
+                    RowSource ="SELECT Companies.CompanyID, Companies.CompanyName FROM Companies WHERE Companies"
+                        ".IsCustomer = True ORDER BY Companies.CompanyName;"
+                    AfterUpdate ="[Event Procedure]"
+                End
+                Begin TextBox
+                    Name ="txtStatus"
+                    ControlSource ="=IIf([ShippedDate] Is Null And [Paid],\"Paid\",\"Open\")"
+                End
+                Begin TextBox
+                    Name ="txtOrderDate"
+                    ControlSource ="OrderDate"
+                End
+                Begin Subform
+                    Name ="sfrmOrderLines"
+                    SourceObject ="Form.sfrmOrderLineItems"
+                End
+            End
+        End
+    End
+End
+CodeBehindForm
+Attribute VB_GlobalNameSpace = False
+Option Compare Database
+
+Private Sub Form_Open(Cancel As Integer)
+    Me.Requery
+End Sub

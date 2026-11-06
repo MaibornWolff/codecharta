@@ -16,11 +16,12 @@ enum class AvailableFileMetrics(val metricName: String) {
     NUMBER_OF_TRIGGERS("number_of_triggers"),
     NUMBER_OF_VIEWS("number_of_views"),
     NUMBER_OF_TABLES("number_of_tables"),
+    NUMBER_OF_CONTROLS("number_of_controls"),
     LINES_OF_CODE("loc");
 
     companion object {
-        /** Counts of objects such as tables, which only a language that marks them with [Metric.Counted] reports. */
-        val NODE_COUNTS = listOf(NUMBER_OF_STORED_PROCEDURES, NUMBER_OF_TRIGGERS, NUMBER_OF_VIEWS, NUMBER_OF_TABLES)
+        /** Counts of objects such as tables, which only a language that marks them with [Metric.Counted] or counts them in a [ComposedSource] reports. */
+        val NODE_COUNTS = listOf(NUMBER_OF_STORED_PROCEDURES, NUMBER_OF_TRIGGERS, NUMBER_OF_VIEWS, NUMBER_OF_TABLES, NUMBER_OF_CONTROLS)
     }
 }
 

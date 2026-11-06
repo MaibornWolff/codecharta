@@ -1,0 +1,17 @@
+# Identifiers
+Companies
+L
+OrderDate
+cboCustomer
+cmdNewOrder
+sfrmOrderLines
+txtOrderDate
+txtStatus
+
+# Comments
+
+# Strings
+New Order
+Open
+Order List
+Paid

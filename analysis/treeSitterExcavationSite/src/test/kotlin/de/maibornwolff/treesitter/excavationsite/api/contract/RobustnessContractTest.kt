@@ -801,6 +801,22 @@ class RobustnessContractTest {
                     End Sub
             """
             )
+            sample(
+                Language.ACCESS_LAYOUT,
+                code = """
+                    Begin Form
+                        Begin
+                            Begin Section
+                                Begin
+                                    Begin TextBox
+                                        ControlSource ="=IIf([Paid],\"hello\",\"\")"
+                                    End
+                                End
+                            End
+                        End
+                    End
+            """
+            )
         }
     }
 }

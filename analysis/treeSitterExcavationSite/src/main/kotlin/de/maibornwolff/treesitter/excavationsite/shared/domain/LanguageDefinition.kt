@@ -14,4 +14,8 @@ interface LanguageDefinition :
     /** Other-language sources inside a file, such as Angular inline templates; their complexity and texts count for the file. */
     val embeddedSources: EmbeddedSourceMapping?
         get() = null
+
+    /** Takes apart a file that no grammar reads as a whole; metrics and text extraction then read only its parts. */
+    val composer: ((String) -> ComposedSource)?
+        get() = null
 }

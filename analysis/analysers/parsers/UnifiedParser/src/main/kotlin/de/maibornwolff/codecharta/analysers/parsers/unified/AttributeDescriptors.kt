@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.treesitter.excavationsite.api.AvailableFileMetrics
 
-// Counts of database objects, which only the languages that have them report
+// Counts of database objects and form controls, which only the languages that have them report
 private val ATTRIBUTES_OF_SOME_LANGUAGES = AvailableFileMetrics.NODE_COUNTS.map { it.metricName }.toSet()
 
 internal fun getAttributeDescriptorsOfMeasured(measuredAttributes: Set<String>): Map<String, AttributeDescriptor> =
@@ -202,6 +202,13 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
         AvailableFileMetrics.NUMBER_OF_TABLES.metricName to AttributeDescriptor(
             title = "Number of tables",
             description = "The number of SQL tables the file creates, without temporary tables of a session and tables a routine creates.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        AvailableFileMetrics.NUMBER_OF_CONTROLS.metricName to AttributeDescriptor(
+            title = "Number of controls",
+            description = "The number of controls an Access form or report layout places on its sections, labels included.",
             link = ghLink,
             direction = -1,
             analyzers = analyzerName
