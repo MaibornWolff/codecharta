@@ -81,7 +81,7 @@ class LineClassifier(private val syntax: LanguageSyntax) {
 
     private fun plainCodeLengthAt(scan: LineScan): Int = when {
         syntax.isBackslashEscapeInCode && scan.current == ESCAPE -> ESCAPE_LENGTH
-        syntax.hasRegexLiterals -> RegexLiteral.lengthAt(scan.line, scan.position)
+        syntax.regexLiteral != null -> syntax.regexLiteral.lengthAt(scan.line, scan.position)
         isSingleQuoteCharLiteral && scan.current == SINGLE_QUOTE -> CHAR_LITERAL.matchAt(scan.line, scan.position)?.value?.length
         else -> null
     } ?: 1
