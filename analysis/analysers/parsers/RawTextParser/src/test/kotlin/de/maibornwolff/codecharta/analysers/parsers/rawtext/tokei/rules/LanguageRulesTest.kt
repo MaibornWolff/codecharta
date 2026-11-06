@@ -200,6 +200,23 @@ class LanguageRulesTest {
     }
 
     @Test
+    fun `should end a javascript template literal after a nested one in its placeholder`() {
+        // Arrange
+        val lines = arrayOf(
+            "url += `project\${route.replace(new RegExp(`^\${root}/`), '/')}`;",
+            "label = `a \${ { x: 1 }.x } b`;",
+            "",
+            "// comment"
+        )
+
+        // Act
+        val kinds = classifyAll("url.js", *lines)
+
+        // Assert
+        assertThat(kinds).containsExactly(code, code, blank, comment)
+    }
+
+    @Test
     fun `should keep a slash after a value a division`() {
         // Arrange
         val lines = arrayOf("const half = total / 2 // comment", "const rate = (a) / (b) /* note */")
