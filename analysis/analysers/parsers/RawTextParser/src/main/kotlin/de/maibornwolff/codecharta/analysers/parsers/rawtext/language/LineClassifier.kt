@@ -10,6 +10,7 @@ class LineClassifier(private val syntax: LanguageSyntax) {
     private var openRegion: OpenRegion? = null
     private var isInDataSection = false
     private var isLineCommentContinued = false
+    private val statement = if (syntax.isDocStringAStatement) StatementTracker() else null
 
     fun classify(line: String): LineKind = when {
         !measuredBlock.isMeasured(line) -> UNMEASURED_LINE
@@ -22,11 +23,21 @@ class LineClassifier(private val syntax: LanguageSyntax) {
 
     private fun scanLine(line: String): LineKind {
         val scan = LineScan(line, openRegion?.marker?.region)
+        statement?.startLine()
         while (scan.position < line.length) {
             val region = openRegion
             if (region == null) scanCode(scan) else scanRegion(scan, region)
         }
-        return LineKind(scan.hasCode, scan.hasComment)
+        statement?.endLine(isInsideRegion = openRegion != null)
+        val isDocStringFollowedByCode = scan.isDocStringOpenedOnLine && scan.hasCode
+        return if (isDocStringFollowedByCode) {
+            LineKind(
+                hasCode = true,
+                hasComment = scan.hasCommentBesideDocString
+            )
+        } else {
+            LineKind(scan.hasCode, scan.hasComment)
+        }
     }
 
     private fun classifyHeredocBody(line: String): LineKind {
@@ -58,6 +69,7 @@ class LineClassifier(private val syntax: LanguageSyntax) {
         val marker = markers.firstOrNull { isMarkerAt(scan, it) }
         if (marker == null) {
             scan.hasCode = true
+            statement?.trackCode(scan.current)
             scan.position += plainCodeLengthAt(scan)
             return
         }
@@ -103,7 +115,8 @@ class LineClassifier(private val syntax: LanguageSyntax) {
     } ?: 1
 
     private fun open(scan: LineScan, marker: Marker) {
-        val region = if (marker.region == Region.DOC_QUOTE && scan.hasCode) Region.QUOTE else marker.region
+        val region = regionOpenedBy(scan, marker)
+        if (region == Region.DOC_QUOTE) scan.isDocStringOpenedOnLine = true
         scan.mark(region)
         when (region) {
             Region.LINE_COMMENT -> {
@@ -118,10 +131,19 @@ class LineClassifier(private val syntax: LanguageSyntax) {
         }
     }
 
+    private fun regionOpenedBy(scan: LineScan, marker: Marker): Region {
+        val isAtStatementStart = !scan.hasCode && statement?.isAtStatementStart != false
+        return when {
+            marker.region == Region.DOC_QUOTE && !isAtStatementStart -> Region.QUOTE
+            marker.region == Region.QUOTE && statement != null && isAtStatementStart -> Region.DOC_QUOTE
+            else -> marker.region
+        }
+    }
+
     private fun scanRegion(scan: LineScan, region: OpenRegion) {
         val marker = region.marker
         when {
-            marker.region == Region.QUOTE && syntax.isBackslashEscapeInQuotes && scan.current == ESCAPE -> scan.position += ESCAPE_LENGTH
+            marker.region.isQuote && syntax.isBackslashEscapeInQuotes && scan.current == ESCAPE -> scan.position += ESCAPE_LENGTH
             isEndAt(scan, marker) -> close(scan, region)
             marker.isNestable && scan.line.startsWith(marker.delimiters.start, scan.position) -> {
                 region.depth++
@@ -148,6 +170,8 @@ class LineClassifier(private val syntax: LanguageSyntax) {
         var position = 0
         var hasCode = false
         var hasComment = false
+        var hasCommentBesideDocString = false
+        var isDocStringOpenedOnLine = false
         val current: Char get() = line[position]
         val isAtWordStart: Boolean get() = line.getOrNull(position - 1).let { it == null || it.isWhitespace() || it in WORD_SEPARATORS }
 
@@ -157,14 +181,15 @@ class LineClassifier(private val syntax: LanguageSyntax) {
 
         fun mark(region: Region) {
             if (region.isComment) hasComment = true else hasCode = true
+            if (region.isComment && region != Region.DOC_QUOTE) hasCommentBesideDocString = true
         }
     }
 
-    private enum class Region(val isComment: Boolean) {
+    private enum class Region(val isComment: Boolean, val isQuote: Boolean = false) {
         LINE_COMMENT(true),
         BLOCK_COMMENT(true),
-        DOC_QUOTE(true),
-        QUOTE(false),
+        DOC_QUOTE(true, isQuote = true),
+        QUOTE(false, isQuote = true),
         VERBATIM_QUOTE(false),
         CODE(false)
     }

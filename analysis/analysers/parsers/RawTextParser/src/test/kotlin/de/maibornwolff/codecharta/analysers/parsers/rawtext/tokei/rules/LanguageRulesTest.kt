@@ -298,6 +298,54 @@ class LanguageRulesTest {
     }
 
     @Test
+    fun `should count a python triple-quoted string inside brackets as code`() {
+        // Arrange
+        val lines = arrayOf("cursor.execute(", "    \"\"\"", "    SELECT 1", "    \"\"\",", "    (name,),", ")")
+
+        // Act
+        val kinds = classifyAll("introspection.py", *lines)
+
+        // Assert
+        assertThat(kinds).containsExactly(code, code, code, code, code, code)
+    }
+
+    @Test
+    fun `should count a python string after a backslash continuation as code`() {
+        // Arrange
+        val lines = arrayOf("message = prefix + \\", "    \"\"\"rest\"\"\"")
+
+        // Act
+        val kinds = classifyAll("message.py", *lines)
+
+        // Assert
+        assertThat(kinds).containsExactly(code, code)
+    }
+
+    @Test
+    fun `should count a python docstring in plain quotes as comment`() {
+        // Arrange
+        val lines = arrayOf("def name(self):", "    \"Return the name.\"", "    return self._name", "def t_NUMBER(t):", "    r'\\d+'")
+
+        // Act
+        val kinds = classifyAll("model.py", *lines)
+
+        // Assert
+        assertThat(kinds).containsExactly(code, comment, code, code, comment)
+    }
+
+    @Test
+    fun `should count a python string statement that goes on with code as code`() {
+        // Arrange
+        val lines = arrayOf("\", \".join(names)  # joined", "'yes' if flag else 'no'")
+
+        // Act
+        val kinds = classifyAll("join.py", *lines)
+
+        // Assert
+        assertThat(kinds).containsExactly(codeAndComment, code)
+    }
+
+    @Test
     fun `should count every line from ruby's data section marker on as code`() {
         // Arrange
         val lines = arrayOf("x = 1 # note", "__END__", "def phantom", "", "# data, not a comment")
