@@ -217,6 +217,18 @@ class LanguageRulesTest {
     }
 
     @Test
+    fun `should count a swift multi-line string as code up to its closing quotes`() {
+        // Arrange
+        val lines = arrayOf("let payload = \"\"\"", "data: { \\\"id\\\": 50 }\\r\\n\"", "\"\"\".data(using: .utf8)!", "// comment")
+
+        // Act
+        val kinds = classifyAll("Parser.swift", *lines)
+
+        // Assert
+        assertThat(kinds).containsExactly(code, code, code, comment)
+    }
+
+    @Test
     fun `should keep a slash after a value a division`() {
         // Arrange
         val lines = arrayOf("const half = total / 2 // comment", "const rate = (a) / (b) /* note */")
