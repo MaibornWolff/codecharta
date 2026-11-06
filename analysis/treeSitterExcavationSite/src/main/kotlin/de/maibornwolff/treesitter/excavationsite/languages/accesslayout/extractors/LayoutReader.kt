@@ -1,5 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.accesslayout.extractors
 
+import de.maibornwolff.treesitter.excavationsite.languages.accessmacro.extractors.SaveAsTextStrings
+
 /** A property as Access writes it, its string value unescaped and joined across the lines it spans. */
 internal data class LayoutProperty(val name: String, val value: String, val lines: Int)
 
@@ -93,7 +95,7 @@ internal object LayoutReader {
             }
             val parts = mutableListOf(written)
             while (index < lines.size && lines[index].startsWith(QUOTE)) parts.add(lines[index++])
-            block.properties.add(LayoutProperty(name, parts.joinToString("") { LayoutStrings.unquote(it) }, parts.size))
+            block.properties.add(LayoutProperty(name, parts.joinToString("") { SaveAsTextStrings.unquote(it) }, parts.size))
         }
     }
 }
