@@ -817,6 +817,17 @@ class RobustnessContractTest {
                     End
             """
             )
+            sample(
+                Language.ACCESS_MACRO,
+                code = """
+                    Version =196611
+                    Begin
+                        Condition ="[Paid]"
+                        Action ="MsgBox"
+                        Argument ="hello"
+                    End
+            """
+            )
         }
     }
 }

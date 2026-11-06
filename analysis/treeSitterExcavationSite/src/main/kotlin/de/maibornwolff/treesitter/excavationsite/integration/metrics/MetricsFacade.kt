@@ -47,22 +47,43 @@ object MetricsFacade {
         }
     }
 
-    // A composed file declares no routines: its parts add their decisions and message chains, it counts its lines itself
+    // A composed file adds the decisions and message chains of its parts, it counts its lines and routines itself
     private fun composedMetrics(source: ComposedSource): Map<String, Double> {
-        val partMetrics = source.codeParts.map { collectMetrics(it.content, it.language) }
+        val routineMetrics = source.routines.map { collectMetrics(it.part.content, it.part.language) }
+        val partMetrics = source.codeParts.map { collectMetrics(it.content, it.language) } + routineMetrics
         val sumOverParts = { metric: AvailableFileMetrics -> partMetrics.sumOf { it.getValue(metric.metricName) } }
         val logicComplexity = sumOverParts(AvailableFileMetrics.LOGIC_COMPLEXITY)
         val metrics = AvailableFileMetrics.entries
             .filterNot { it in AvailableFileMetrics.NODE_COUNTS }
             .associateTo(mutableMapOf()) { it.metricName to 0.0 }
-        metrics[AvailableFileMetrics.COMPLEXITY.metricName] = logicComplexity
+        metrics[AvailableFileMetrics.COMPLEXITY.metricName] = logicComplexity + source.routines.size
         metrics[AvailableFileMetrics.LOGIC_COMPLEXITY.metricName] = logicComplexity
         metrics[AvailableFileMetrics.MESSAGE_CHAINS.metricName] = sumOverParts(AvailableFileMetrics.MESSAGE_CHAINS)
         metrics[AvailableFileMetrics.REAL_LINES_OF_CODE.metricName] = source.codeLines.toDouble()
         metrics[AvailableFileMetrics.LINES_OF_CODE.metricName] = source.lines.toDouble()
+        metrics[AvailableFileMetrics.COMMENT_LINES.metricName] = source.commentLines.toDouble()
+        metrics[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName] = source.routines.size.toDouble()
         source.counts.forEach { (metric, count) -> metrics[metric.metricName] = count.toDouble() }
-        AvailableFunctionMetrics.entries.forEach { metrics.putAll(MetricPerFunctionCalc.measuresOf(it, emptyList())) }
+        val complexityPerRoutine = routineMetrics.map { it.getValue(AvailableFileMetrics.LOGIC_COMPLEXITY.metricName).toInt() }
+        metrics.putAll(perRoutineMetrics(source, complexityPerRoutine))
         return metrics
+    }
+
+    private fun perRoutineMetrics(source: ComposedSource, complexityPerRoutine: List<Int>): Map<String, Double> {
+        val rlocPerRoutine = source.routines.map { it.codeLines }
+        val valuesPerRoutine = mapOf(
+            AvailableFunctionMetrics.PARAMETERS to source.routines.map { 0 },
+            AvailableFunctionMetrics.COMPLEXITY to complexityPerRoutine,
+            AvailableFunctionMetrics.RLOC to rlocPerRoutine
+        )
+        return valuesPerRoutine
+            .flatMap { (metric, values) -> MetricPerFunctionCalc.measuresOf(metric, values).entries }
+            .associate { it.key to it.value } +
+            mapOf(
+                AvailableFileMetrics.LONG_METHOD.metricName to CodeSmells.countLongMethods(rlocPerRoutine).toDouble(),
+                AvailableFileMetrics.EXCESSIVE_COMMENTS.metricName to CodeSmells.excessiveComments(source.commentLines),
+                AvailableFileMetrics.COMMENT_RATIO.metricName to CodeSmells.commentRatio(source.commentLines, source.codeLines)
+            )
     }
 
     // An embedded source, such as an inline template, adds its decisions to the file; its lines are the file's already

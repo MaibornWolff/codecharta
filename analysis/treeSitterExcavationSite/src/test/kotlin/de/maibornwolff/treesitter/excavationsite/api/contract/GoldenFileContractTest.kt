@@ -47,7 +47,8 @@ class GoldenFileContractTest {
             Language.SQL to "sql_sample.sql",
             Language.VBA to "vba_sample.bas",
             Language.VB6 to "vb6_sample.frm",
-            Language.ACCESS_LAYOUT to "access_layout_sample.form"
+            Language.ACCESS_LAYOUT to "access_layout_sample.form",
+            Language.ACCESS_MACRO to "access_macro_sample.macro"
         )
 
         private val GOLDEN_BASE_NAMES = mapOf(
@@ -73,7 +74,8 @@ class GoldenFileContractTest {
             Language.SQL to "sql_sample",
             Language.VBA to "vba_sample",
             Language.VB6 to "vb6_sample",
-            Language.ACCESS_LAYOUT to "access_layout_sample"
+            Language.ACCESS_LAYOUT to "access_layout_sample",
+            Language.ACCESS_MACRO to "access_macro_sample"
         )
     }
 

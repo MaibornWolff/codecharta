@@ -1,6 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages
 
 import de.maibornwolff.treesitter.excavationsite.languages.accesslayout.AccessLayoutDefinition
+import de.maibornwolff.treesitter.excavationsite.languages.accessmacro.AccessMacroDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.angular.AngularDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.bash.BashDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.c.CDefinition
@@ -51,7 +52,9 @@ object LanguageRegistry {
         Language.VBA to Registration(GrammarLibrary("vba"), VbaDefinition),
         Language.VB6 to Registration(GrammarLibrary("vb6"), VbaDefinition),
         // The grammar of its expressions: no grammar reads a layout as a whole, see AccessLayoutDefinition.composer
-        Language.ACCESS_LAYOUT to Registration(GrammarLibrary("vba"), AccessLayoutDefinition)
+        Language.ACCESS_LAYOUT to Registration(GrammarLibrary("vba"), AccessLayoutDefinition),
+        // Like a layout: no grammar reads a macro as a whole, its expressions are VBA
+        Language.ACCESS_MACRO to Registration(GrammarLibrary("vba"), AccessMacroDefinition)
     )
 
     fun getGrammarLibrary(language: Language): GrammarLibrary = registrationOf(language).grammarLibrary
