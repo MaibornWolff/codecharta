@@ -388,6 +388,35 @@ class FileAnalyzerTest {
     }
 
     @Test
+    fun `should read the objects and messages of an Access macro without the prefixes of their names`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val macro = File(tempDirPath.toFile(), "mcrShipping.macro")
+        macro.writeText(
+            """
+            Version =196611
+            Begin
+                Action ="OpenForm"
+                Argument ="frmCarrier"
+                Argument ="2"
+            End
+            Begin
+                Action ="MsgBox"
+                Argument ="Parcel Tracking"
+            End
+            """.trimIndent()
+        )
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(macro, macro.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(setOf("carrier", "parcel", "tracking"), words.keys)
+    }
+
+    @Test
     fun `should drop the Access naming prefixes of a query in a queries folder, but not of other SQL`(
         @TempDir tempDirPath: Path
     ) {

@@ -86,6 +86,7 @@ its entries by node id under `nodes`:
 | VBA               | .bas, .cls                            |
 | VB6 forms         | .frm                                  |
 | Access forms and reports | .form, .report                 |
+| Access macros     | .macro                                |
 
 Every `.html` file is read as an Angular template, by this parser as by `unifiedparser` and `dependencyparser`.
 Exclude the `.html` files that are no templates of an Angular application, such as reports or documentation, with
@@ -135,6 +136,11 @@ An Access form or report layout (`.form`, `.report`) contributes the names of it
 identifiers (`txtCarrier` gives `carrier`), its captions as strings, and the words of the SQL of its record and row
 sources; the stop words of VBA apply. The names Access gives a control by default, its type and a number (`Label122`,
 `Text45`, `Auto_Header0`), give no word.
+
+An Access macro (`.macro`), like a macro embedded in a form or report, contributes the names of its submacros and
+groups and of the objects its actions name (`frmCarrier` gives `carrier`) as identifiers, its messages and their
+titles as strings, and its comments; options of an action such as the view a form opens in give no word. The stop
+words of VBA apply.
 
 ## Input and stop words
 

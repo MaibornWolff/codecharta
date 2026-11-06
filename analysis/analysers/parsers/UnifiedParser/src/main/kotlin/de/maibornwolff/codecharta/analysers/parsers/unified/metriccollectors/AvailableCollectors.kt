@@ -32,7 +32,8 @@ enum class AvailableCollectors(
     SQL(FileExtension.SQL, { TreeSitterLibraryCollector(Language.SQL) }),
     VBA(FileExtension.VBA, { TreeSitterLibraryCollector(Language.VBA) }),
     VB6(FileExtension.VB6, { TreeSitterLibraryCollector(Language.VB6) }),
-    ACCESS_LAYOUT(FileExtension.ACCESS_LAYOUT, { TreeSitterLibraryCollector(Language.ACCESS_LAYOUT) });
+    ACCESS_LAYOUT(FileExtension.ACCESS_LAYOUT, { TreeSitterLibraryCollector(Language.ACCESS_LAYOUT) }),
+    ACCESS_MACRO(FileExtension.ACCESS_MACRO, { TreeSitterLibraryCollector(Language.ACCESS_MACRO) });
 
     companion object {
         /** The collector of the language a file ending such as `kt` belongs to, null for an unsupported one. */

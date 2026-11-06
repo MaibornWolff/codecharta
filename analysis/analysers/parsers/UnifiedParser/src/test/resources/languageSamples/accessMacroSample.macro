@@ -1,0 +1,36 @@
+Version =196611
+ColumnsShown =8
+Begin
+    Comment ="_AXL:<?xml version=\"1.0\" encoding=\"UTF-16\" standalone=\"no\"?>\015\012<UserInterf"
+        "aceMacro MinimumClientDesignVersion=\"14.0.0000.0000\" xmlns=\"http://schemas.mi"
+        "crosoft.com/office/accessservices/2009/11/application\"><Statements><Comment>Ope"
+        "ns the order list for the user who signs in</Comment><Action Name=\"OnError\"><A"
+End
+Begin
+    Comment ="_AXL:rgument Name=\"Goto\">Macro Name</Argument><Argument Name=\"MacroName\">ErrorHan"
+        "dler</Argument></Action><Group Name=\"SignIn\"><Statements><ConditionalBlock><If"
+        "><Condition>IsNull([TempVars]![EmployeeID])</Condition><Statements><Action Name="
+        "\"OpenForm\"><Argument Name=\"FormName\">frmLogin</Argument><Argument Name=\"Win"
+End
+Begin
+    Comment ="_AXL:dowMode\">Dialog</Argument></Action></Statements></If><ElseIf><Condition>[TempVa"
+        "rs]![IsAdmin] And Not [TempVars]![IsGuest]</Condition><Statements><Action Name="
+        "\"OpenForm\"><Argument Name=\"FormName\">frmAdmin</Argument></Action></Statement"
+        "s></ElseIf><Else><Statements><Action Name=\"OpenForm\"><Argument Name=\"FormName"
+End
+Begin
+    Comment ="_AXL:\">frmOrderList</Argument><Argument Name=\"WhereCondition\">[EmployeeID]=[TempVa"
+        "rs]![EmployeeID]</Argument></Action></Statements></Else></ConditionalBlock></Sta"
+        "tements></Group><Action Name=\"RunCode\"><Argument Name=\"FunctionName\">LogSign"
+        "In()</Argument></Action></Statements><Sub Name=\"ErrorHandler\"><Statements><Act"
+End
+Begin
+    Comment ="_AXL:ion Name=\"MessageBox\"><Argument Name=\"Message\">=IIf([MacroError].[Number]=25"
+        "01,\"Cancelled\",\"Sign-in failed\")</Argument><Argument Name=\"Title\">Northwin"
+        "d</Argument></Action><Action Name=\"ClearMacroError\"/></Statements></Sub><Sub N"
+        "ame=\"SignOut\"><Statements><Action Name=\"RemoveAllTempVars\"/><Action Name=\"C"
+End
+Begin
+    Comment ="_AXL:loseWindow\"><Argument Name=\"ObjectType\">Form</Argument><Argument Name=\"Objec"
+        "tName\">frmOrderList</Argument></Action></Statements></Sub></UserInterfaceMacro>"
+End

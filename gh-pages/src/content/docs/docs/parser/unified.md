@@ -69,6 +69,7 @@ Usage: ccsh unifiedparser [-h] [--bypass-gitignore] [--commit=<ref>] [-ibf]
 | VBA          | .bas, .cls                             |
 | VB6 forms    | .frm                                   |
 | Access forms and reports | .form, .report             |
+| Access macros | .macro                                |
 
 Some languages need a word of explanation:
 
@@ -88,8 +89,14 @@ Some languages need a word of explanation:
   `rloc` counts only the lines that hold logic: the expressions of controls and events (`=Sum([Total])`,
   `=OpenOrder()`) and the SQL of a record or row source; positions, colours and the code after `CodeBehindForm`,
   which the exported class module holds, count for nothing. The expressions add to the complexity like VBA, the SQL
-  like SQL, and `number_of_controls` counts the controls of its sections. A layout reads in the encoding its byte
-  order mark names, UTF-16 as Access writes it.
+  like SQL, and `number_of_controls` counts the controls of its sections. A macro embedded in an event counts for the
+  layout as a stand-alone macro counts. A layout reads in the encoding its byte order mark names, UTF-16 as Access
+  writes it.
+- **Access macros**: a `.macro` file holds a stand-alone macro as Access writes it with `SaveAsText`. Its actions and
+  conditions count as `rloc`, its comments as `comment_lines`; `If` and `Else If`, `And`/`Or` and `IIf` in its
+  expressions and an `OnError` that jumps to a submacro add to the complexity, and every submacro counts as a
+  function. A macro of Access 2010 or later is read from the XML Access writes into the export, an older one from its
+  action rows.
 
 ## Metrics
 
