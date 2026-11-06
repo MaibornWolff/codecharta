@@ -276,6 +276,24 @@ class VbaModuleTest {
     }
 
     @Test
+    fun `should read the forms and reports the collections name in brackets`() {
+        // Arrange
+        val body = """
+            [Forms]![frmMain]![txtName] = "a"
+            [Reports]![rptInvoice].Visible = True
+        """
+
+        // Act
+        val names = namesOfRoutine(body)
+
+        // Assert
+        assertThat(names).containsExactly(
+            VbaName(listOf("frmMain"), VbaNameKind.FORM),
+            VbaName(listOf("rptInvoice"), VbaNameKind.REPORT)
+        )
+    }
+
+    @Test
     fun `should read the forms and reports the AllForms and AllReports of a project name`() {
         // Arrange
         val body = """
