@@ -47,7 +47,8 @@ words of event handlers (`click`, `focus`, `unload`, `initialize`, `form` of `cm
 words that also name a domain stay: `report`, `current`, `change`, `key`. A `.sql` file in a folder named `queries`
 holds an Access query, so the stop words of SQL and of VBA both apply to it (`qryOrders` gives `orders`). An Access
 form or report layout contributes the names of its controls and the fields they show as identifiers, its captions as
-strings and the words of the SQL of its record and row sources; the stop words of VBA apply.
+strings and the words of the SQL of its record and row sources; the stop words of VBA apply. The names Access gives a
+control by default (`Label122`, `Text45`) give no word.
 
 ## Usage and Parameters
 

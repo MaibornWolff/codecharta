@@ -133,7 +133,8 @@ holds an Access query, so the stop words of SQL and of VBA both apply to it (`qr
 
 An Access form or report layout (`.form`, `.report`) contributes the names of its controls and the fields they show as
 identifiers (`txtCarrier` gives `carrier`), its captions as strings, and the words of the SQL of its record and row
-sources; the stop words of VBA apply.
+sources; the stop words of VBA apply. The names Access gives a control by default, its type and a number (`Label122`,
+`Text45`, `Auto_Header0`), give no word.
 
 ## Input and stop words
 
