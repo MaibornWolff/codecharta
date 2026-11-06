@@ -137,6 +137,8 @@ identifiers (`txtCarrier` gives `carrier`), its captions as strings, and the wor
 sources; the stop words of VBA apply. The names Access gives a control by default, its type and a number (`Label122`,
 `Text45`, `Auto_Header0`), give no word.
 
+[Analyse an Access or VBA application](/docs/analysis/access-vba) shows how to export an Access application.
+
 An Access macro (`.macro`), like a macro embedded in a form or report, contributes the names of its submacros and
 groups and of the objects its actions name (`frmCarrier` gives `carrier`) as identifiers, its messages and their
 titles as strings, and its comments; options of an action such as the view a form opens in give no word. The stop

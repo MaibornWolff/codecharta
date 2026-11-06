@@ -280,6 +280,9 @@ expressions call (`=Rounded([Total])`), its own module for each event bound to `
 of a row source names, so a form with code is a cycle between module and layout. It also points at the macro an
 event names (`OnOpen ="mcrOrders.Open"`) and at what the macros embedded in its events name.
 
+[Analyse an Access or VBA application](/docs/analysis/access-vba) shows how to export an application for these
+parsers.
+
 An Access macro (`.macro`, written by `SaveAsText`) is a leaf of its own named after its file (`mcrOrders_macro`),
 which holds its submacros. It points at the forms, reports and queries its actions name (`OpenForm`, `OpenReport`,
 `OpenQuery`, the `ObjectName` of `CloseWindow`), the macros `RunMacro` runs, the VBA functions `RunCode` calls and
