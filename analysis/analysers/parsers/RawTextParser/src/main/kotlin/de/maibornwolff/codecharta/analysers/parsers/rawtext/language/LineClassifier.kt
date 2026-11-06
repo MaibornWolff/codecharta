@@ -10,10 +10,18 @@ class LineClassifier(private val syntax: LanguageSyntax) {
     private var openRegion: OpenRegion? = null
     private var isInDataSection = false
     private var isLineCommentContinued = false
+    private var isFirstLine = true
     private val statement = if (syntax.isDocStringAStatement) StatementTracker() else null
     private val placeholders = TemplatePlaceholders<OpenRegion>()
 
-    fun classify(line: String): LineKind = when {
+    fun classify(line: String): LineKind = classifyContent(if (isFirstLine) withoutByteOrderMark(line) else line)
+
+    private fun withoutByteOrderMark(line: String): String {
+        isFirstLine = false
+        return line.removePrefix(BYTE_ORDER_MARK)
+    }
+
+    private fun classifyContent(line: String): LineKind = when {
         !measuredBlock.isMeasured(line) -> UNMEASURED_LINE
         isInDataSection -> CODE_LINE
         heredocTerminators.isNotEmpty() -> classifyHeredocBody(line)
@@ -228,6 +236,7 @@ class LineClassifier(private val syntax: LanguageSyntax) {
 
     companion object {
         private const val ESCAPE = '\\'
+        private const val BYTE_ORDER_MARK = "\uFEFF"
         private const val ESCAPE_LENGTH = 2
         private const val SINGLE_QUOTE = '\''
         private const val HEREDOC_START = '<'

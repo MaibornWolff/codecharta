@@ -33,6 +33,18 @@ class LineClassifierTest {
     }
 
     @Test
+    fun `should not count the byte order mark at the start of a file as code`() {
+        // Arrange
+        val lines = arrayOf("﻿// generated", "﻿")
+
+        // Act
+        val kinds = classifyAll(cStyleSyntax, *lines)
+
+        // Assert
+        assertThat(kinds).containsExactly(comment, code)
+    }
+
+    @Test
     fun `should count a line with code and a trailing comment as both`() {
         // Arrange
         val lines = arrayOf("val x = 1 // note", "val y = 2 /* note */")
