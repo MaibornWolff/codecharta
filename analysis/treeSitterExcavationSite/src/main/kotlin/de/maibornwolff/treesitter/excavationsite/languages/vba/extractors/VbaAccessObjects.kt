@@ -13,6 +13,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 internal object VbaAccessObjects {
     private const val DOMAIN_PARAMETER = "Domain"
     private const val DOMAIN_ARGUMENT_INDEX = 1
+    private const val BRACKET_OPEN = "["
+    private const val BRACKET_CLOSE = "]"
 
     private val COLLECTIONS = mapOf("forms" to VbaNameKind.FORM, "reports" to VbaNameKind.REPORT)
     private val PROJECT_COLLECTIONS = mapOf(
@@ -24,8 +26,11 @@ internal object VbaAccessObjects {
     private val DOMAIN_FUNCTIONS = setOf("dlookup", "dcount", "dsum", "dmax", "dmin", "davg", "dfirst", "dlast")
     private val SOURCE_PROPERTIES = setOf("rowsource", "recordsource")
 
-    /** The object `Forms!member` or `Reports!member` names, null for any other [collection]. */
-    fun namedBy(collection: String, member: String): VbaName? = COLLECTIONS[collection.lowercase()]?.let { VbaName(listOf(member), it) }
+    /** The object `Forms!member` or `Reports!member` names, also written in brackets (`[Forms]![member]`), null for any other [collection]. */
+    fun namedBy(collection: String, member: String): VbaName? =
+        COLLECTIONS[unbracketed(collection).lowercase()]?.let { VbaName(listOf(unbracketed(member)), it) }
+
+    private fun unbracketed(name: String): String = name.removeSurrounding(BRACKET_OPEN, BRACKET_CLOSE)
 
     /** The object a call of the plain chain [callee] opens or names with [arguments], null for any other call. */
     fun openedBy(callee: List<String>, arguments: SyntaxNode?): VbaName? {

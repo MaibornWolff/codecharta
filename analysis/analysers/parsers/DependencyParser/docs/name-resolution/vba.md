@@ -58,7 +58,7 @@ one declaration with two copies (shared rule 2).
 ## Access forms and reports
 
 A form or report named by a literal means its module (decision 2): `DoCmd.OpenForm "frmX"`,
-`DoCmd.OpenForm FormName:="frmX"`, `Forms!frmX` and `Forms("frmX")` mean `Form_frmX`; `DoCmd.OpenReport "rptX"`,
+`DoCmd.OpenForm FormName:="frmX"`, `Forms!frmX` (also `[Forms]![frmX]`) and `Forms("frmX")` mean `Form_frmX`; `DoCmd.OpenReport "rptX"`,
 `Reports!rptX` and `Reports("rptX")` mean `Report_rptX`, and so do a project's `AllForms("frmX")` and
 `AllReports("rptX")` (`CurrentProject.AllForms("frmX").IsLoaded`). A form without code has no module and draws no
 edge. A name in a variable (`DoCmd.OpenForm strName`) draws none.
