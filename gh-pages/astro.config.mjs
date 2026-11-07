@@ -134,6 +134,7 @@ export default defineConfig({
 								'docs/analysis/metrics',
 								'docs/analysis/example-sonar-qube',
 								'docs/analysis/local-changes',
+								'docs/analysis/access-vba',
 								'docs/analysis/commit-analysis',
 							],
 						},

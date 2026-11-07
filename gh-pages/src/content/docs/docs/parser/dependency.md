@@ -133,7 +133,7 @@ gzipped; output is gzipped by default.
 
 ## Supported languages
 
-Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates and SQL, with
+Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates, SQL and VBA, with
 the same file extensions as the [Unified Parser](/docs/parser/unified#supported-languages). C files (`.c`, `.h`) are
 read as C++.
 
@@ -254,6 +254,39 @@ the last of these files, the latest migration: paths are ordered folder by folde
 in them compared as numbers, so `V10__orders.sql` comes after `V9__orders.sql`, and a later folder wins over an
 earlier one whatever the file names. Flyway's repeatable migrations (`R__views.sql`) come after the versioned ones of
 their folder, as Flyway runs them last. Statements in strings, `USE` and `DROP` are not read.
+
+VBA and VB6 have no imports either: the modules of the analysed folder (`.bas`, `.cls`, `.frm`) are read as one
+project, each named by its `VB_Name`. Every routine, property, `Declare`, module-level variable and constant, `Type` and
+`Enum` of a standard module is a leaf at the module name plus its own (`modOrders.OrderTotal`); a class, form or report
+module is one leaf. A name means a parameter or local declaration first, then a declaration of the own module, then a
+module or a `Public` declaration of a standard module, with the values of public enums; of several modules offering a
+name the nearest by folder wins, and a tie, which the compiler rejects as ambiguous, draws no edge. `modOrders.Total`
+means `Total` of that module. Names compare without regard to case. `DoCmd.OpenForm "frmX"`, `Forms!frmX` and
+`Forms("frmX")` point at the form module `Form_frmX`, `DoCmd.OpenReport`, `Reports!rptX` and `Reports("rptX")` at the
+report module `Report_rptX`, and so do `CurrentProject.AllForms("frmX")`, `AllReports("rptX")` and the `DoCmd`
+methods that name an object by its type (`DoCmd.Close acForm, "frmX"`, `DoCmd.OutputTo acOutputReport, "rptX"`). An Access query, a
+`.sql` file in a `queries` folder that creates nothing, is a view named after its file: other queries find it in `FROM`,
+`DoCmd.OpenQuery "qryX"`, `OpenRecordset("qryX")`, `QueryDefs("qryX")`, `DLookup("Field", "qryX")` and the other
+domain functions, and a `RowSource` or `RecordSource` set to its name point at it, and it points at the forms its
+`[Forms]![frmX]` names and at the public VBA functions it calls. A routine named by a string points at that routine
+where the application runs it by its name: `Application.Run "modX.Proc"`, `OnTime`, `OnKey`, `.OnAction = "Proc"` and
+the calls inside an `Eval("Func()")`. A member of a value (also the one `CallByName` names), a `With` member, a
+library name and any other name in a string draw no edge.
+
+The layout of an Access form or report (`.form`, `.report`, written by `SaveAsText`) is a leaf of its own named after
+its file (`frmOrders_form`), which the form's module uses, and a form without a module is its layout. It points at the
+query or table its record and row sources name, the forms and reports of its subform controls, the functions its
+expressions call (`=Rounded([Total])`), its own module for each event bound to `[Event Procedure]`, and what the SQL
+of a row source names, so a form with code is a cycle between module and layout. It also points at the macro an
+event names (`OnOpen ="mcrOrders.Open"`) and at what the macros embedded in its events name.
+
+[Analyse an Access or VBA application](/docs/analysis/access-vba) shows how to export an application for these
+parsers.
+
+An Access macro (`.macro`, written by `SaveAsText`) is a leaf of its own named after its file (`mcrOrders_macro`),
+which holds its submacros. It points at the forms, reports and queries its actions name (`OpenForm`, `OpenReport`,
+`OpenQuery`, the `ObjectName` of `CloseWindow`), the macros `RunMacro` runs, the VBA functions `RunCode` calls and
+the forms and functions its conditions and expressions name; `DoCmd.RunMacro "mcrX"` in VBA points at the macro.
 
 ## Tests are excluded by default
 

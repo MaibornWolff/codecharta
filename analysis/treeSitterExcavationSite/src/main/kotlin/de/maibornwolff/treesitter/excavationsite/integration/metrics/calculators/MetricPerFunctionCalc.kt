@@ -14,7 +14,11 @@ abstract class MetricPerFunctionCalc {
         var isInBody = false
         var body: FunctionBodyBounds? = null
 
-        fun hasEndedBefore(node: SyntaxNode): Boolean = node.startRow > endRow || (node.startRow == endRow && node.startColumn > endColumn)
+        fun hasEndedBefore(node: SyntaxNode): Boolean = node.startRow > endRow || (node.startRow == endRow && startsAfterEndOnSameRow(node))
+
+        private fun startsAfterEndOnSameRow(node: SyntaxNode): Boolean = node.startColumn > endColumn || endsAtLineStart
+
+        private val endsAtLineStart: Boolean get() = endColumn == 0
     }
 
     protected class FunctionBodyBounds(body: SyntaxNode, val isDelimited: Boolean) {
@@ -84,35 +88,38 @@ abstract class MetricPerFunctionCalc {
         metricPerFunction[index] += value
     }
 
-    fun getMeasureMetricsForMetricType(): Map<String, Double> {
-        val metricName = metric.metricName
-        val metrics = getMetricPerFunction()
-
-        return mapOf(
-            "max_${metricName}_per_function" to (metrics.maxOrNull() ?: 0).toDouble(),
-            "min_${metricName}_per_function" to (metrics.minOrNull() ?: 0).toDouble(),
-            "mean_${metricName}_per_function" to calculateMean(metrics),
-            "median_${metricName}_per_function" to calculateMedian(metrics)
-        )
-    }
+    fun getMeasureMetricsForMetricType(): Map<String, Double> = measuresOf(metric, getMetricPerFunction())
 
     fun getMetricPerFunction(): List<Int> = metricPerFunction
 
-    private fun calculateMean(metrics: List<Int>): Double {
-        if (metrics.isEmpty()) return 0.0
-        val mean = metrics.sum().toDouble() / metrics.size
-        return (round(mean * 100) / 100)
-    }
-
-    private fun calculateMedian(metrics: List<Int>): Double {
-        if (metrics.isEmpty()) return 0.0
-        val sorted = metrics.sorted()
-        val size = sorted.size
-        val median = if (size % 2 == 1) {
-            sorted[size / 2].toDouble()
-        } else {
-            (sorted[size / 2 - 1] + sorted[size / 2]) / 2.0
+    companion object {
+        /** The maximum, minimum, mean and median of [metric] over the functions of a file, all 0 for a file without any. */
+        fun measuresOf(metric: AvailableFunctionMetrics, metricPerFunction: List<Int>): Map<String, Double> {
+            val metricName = metric.metricName
+            return mapOf(
+                "max_${metricName}_per_function" to (metricPerFunction.maxOrNull() ?: 0).toDouble(),
+                "min_${metricName}_per_function" to (metricPerFunction.minOrNull() ?: 0).toDouble(),
+                "mean_${metricName}_per_function" to calculateMean(metricPerFunction),
+                "median_${metricName}_per_function" to calculateMedian(metricPerFunction)
+            )
         }
-        return (round(median * 100) / 100)
+
+        private fun calculateMean(metrics: List<Int>): Double {
+            if (metrics.isEmpty()) return 0.0
+            val mean = metrics.sum().toDouble() / metrics.size
+            return (round(mean * 100) / 100)
+        }
+
+        private fun calculateMedian(metrics: List<Int>): Double {
+            if (metrics.isEmpty()) return 0.0
+            val sorted = metrics.sorted()
+            val size = sorted.size
+            val median = if (size % 2 == 1) {
+                sorted[size / 2].toDouble()
+            } else {
+                (sorted[size / 2 - 1] + sorted[size / 2]) / 2.0
+            }
+            return (round(median * 100) / 100)
+        }
     }
 }

@@ -1,0 +1,5 @@
+# vba.md, declarations: Implements, New, TypeOf and event parameters are uses of the class; Implements implements it, New instantiates it
+file clsCircle.cls -> IShape.cls
+file clsCircle.cls -> clsPoint.cls
+leaf clsCircle.cls#clsCircle -> IShape.cls#IShape usage=implementation
+leaf clsCircle.cls#clsCircle -> clsPoint.cls#clsPoint

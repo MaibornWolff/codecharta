@@ -289,6 +289,18 @@ class LanguageRulesTest {
     }
 
     @Test
+    fun `should count a vba rem comment and keep an apostrophe inside a string as code`() {
+        // Arrange
+        val lines = arrayOf("Rem old note", "REM upper case", "x = 1 ' note", "TotalRem = 1", "MsgBox \"it's\"", "Remove x", "' only")
+
+        // Act
+        val kinds = classifyAll("modOrders.bas", *lines)
+
+        // Assert
+        assertThat(kinds).containsExactly(comment, comment, codeAndComment, code, code, code, comment)
+    }
+
+    @Test
     fun `should count a mysql hash comment but keep the postgres json operator as code`() {
         // Arrange
         val lines = arrayOf("# MySQL comment", "SELECT data #> '{a,b}' FROM t", "SELECT 1 -- comment")

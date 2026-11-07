@@ -1,0 +1,6 @@
+# sql.md, declarations: each table of a join in parentheses, also of joins nested in each other, as Access writes them
+file views.sql -> tables.sql
+leaf views.sql#open_orders -> tables.sql#customers
+leaf views.sql#open_orders -> tables.sql#orders
+leaf views.sql#open_orders -> tables.sql#status
+leaf views.sql#open_orders -> tables.sql#totals

@@ -5,7 +5,9 @@ import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiUnit
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.JavascriptDependencyMapping
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustModule
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.AccessQuery
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlScript
+import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaModule
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ComponentRegistration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DependencyResult
@@ -52,6 +54,18 @@ object TreeSitterDependencies {
      * kind of object they ask for, and the names of the statements outside every object with their default schema.
      */
     fun sqlScript(content: String): SqlScript = DependenciesFacade.sqlScript(content)
+
+    /** What an Access query names: its tables, queries and functions, and the forms and reports of its bang chains. */
+    fun accessQuery(content: String): AccessQuery = DependenciesFacade.accessQuery(content)
+
+    /** What the layout of an Access form or report names: its data sources, subforms, expressions and SQL, see [AccessLayout]. */
+    fun accessLayout(content: String): AccessLayout = DependenciesFacade.accessLayout(content)
+
+    /** What an Access macro names: the objects its actions name and what its expressions name, see [AccessMacro]. */
+    fun accessMacro(content: String): AccessMacro = DependenciesFacade.accessMacro(content)
+
+    /** What a VBA module or class, or a VB6 form, declares and names, see [VbaModule]. */
+    fun vbaModule(content: String, language: Language): VbaModule = DependenciesFacade.vbaModule(content, language)
 
     fun isDependencyAnalysisSupported(language: Language): Boolean {
         val definition = LanguageRegistry.getLanguageDefinition(language)

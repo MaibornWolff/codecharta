@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.CopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.DeclaringCopy
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FilePath
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NearestCopy
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.nearestCopy
 
 /**
  * Decision 2 of `csharp.md`: one project cannot declare a type twice, so a use points at every file of the nearest
@@ -17,7 +17,7 @@ internal class CSharpCopyRules(private val projects: CSharpProjects) : CopyRules
         val files = copies.map { it.file }
         val inOwnProject = files.filter { projects.projectOf(it) == projects.projectOf(usingFile) }
         if (inOwnProject.isNotEmpty()) return inOwnProject
-        val nearestProject = projects.projectOf(NearestCopy.filesFor(copies, usingFile).first())
+        val nearestProject = projects.projectOf(nearestCopy.filesFor(copies, usingFile).first())
         return files.filter { projects.projectOf(it) == nearestProject }
     }
 }

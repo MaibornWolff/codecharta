@@ -28,6 +28,10 @@ The Unified Parser is parser to generate code metrics from a source code file or
 | Rust         | .rs                                    |
 | Angular/HTML | .html                                  |
 | SQL          | .sql, .pks, .pkb, .pls                 |
+| VBA          | .bas, .cls                             |
+| VB6 forms    | .frm                                   |
+| Access forms and reports | .form, .report             |
+| Access macros | .macro                                |
 
 Every `.html` file is read as an Angular template, by this parser as by `dependencyparser` and
 `domainlanguageparser`; exclude the `.html` files that are no templates of an Angular application, such as
@@ -38,6 +42,22 @@ functions and triggers with a body count as functions, MySQL's single-statement 
 the `WHEN`s of a `CASE`, `IIF`, `EXIT WHEN`, `CONTINUE WHEN`, exception handlers and `AND`/`OR` add to the
 complexity. The `END` line of a routine, and in PostgreSQL the line with the closing `$$`, counts for its rloc no more
 than a closing brace does.
+
+VBA covers the modules and classes that Access, Excel and Word export, form and report code included; VB6 forms
+(`.frm`) are measured behind their layout. Subs, functions and property procedures count as functions; branches, every
+`Case`, loops, `And`/`Or`/`Xor`/`Eqv`/`Imp`, `IIf` and an `On Error GoTo` handler add to the complexity. The parser
+reads exported source files, not the code inside `.accdb`, `.xlsm` or `.docm` files.
+
+An Access form or report layout (`.form`, `.report`, written by `SaveAsText`) counts as `rloc` only the lines that
+hold logic: the expressions of controls and events and the SQL of record and row sources. The expressions add to the
+complexity like VBA, the SQL like SQL, and `number_of_controls` counts the controls of its sections; the code after
+`CodeBehindForm` belongs to the exported class module and counts there. A macro embedded in an event counts for the
+layout as a stand-alone macro counts.
+
+An Access macro (`.macro`, written by `SaveAsText`) counts its actions and conditions as `rloc` and its comments as
+`comment_lines`; `If` and `Else If`, `And`/`Or` and `IIf` in its expressions and an `OnError` that jumps to a
+submacro add to the complexity, and every submacro counts as a function. A macro of Access 2010 or later is read from
+the XML Access writes into the export, an older one from its action rows.
 
 ## Supported Metrics
 

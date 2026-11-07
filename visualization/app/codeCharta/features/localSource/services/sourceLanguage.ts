@@ -17,6 +17,7 @@ const PHP = { grammar: "php", label: "PHP" }
 const RUBY = { grammar: "ruby", label: "Ruby" }
 const SHELL = { grammar: "bash", label: "Shell" }
 const YAML = { grammar: "yaml", label: "YAML" }
+const VBA = { grammar: "visual-basic", label: "VBA" }
 
 const LANGUAGE_BY_EXTENSION: Readonly<Record<string, SourceLanguage>> = {
     kt: KOTLIN,
@@ -55,6 +56,12 @@ const LANGUAGE_BY_EXTENSION: Readonly<Record<string, SourceLanguage>> = {
     bash: SHELL,
     zsh: SHELL,
     sql: { grammar: "sql", label: "SQL" },
+    bas: VBA,
+    cls: VBA,
+    frm: { grammar: "visual-basic", label: "VB form" },
+    form: { grammar: "visual-basic", label: "Access form" },
+    report: { grammar: "visual-basic", label: "Access report" },
+    macro: { grammar: "visual-basic", label: "Access macro" },
     html: { grammar: "markup", label: "HTML" },
     vue: { grammar: "markup", label: "Vue" },
     xml: { grammar: "markup", label: "XML" },

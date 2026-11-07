@@ -29,7 +29,11 @@ enum class AvailableCollectors(
     DELPHI(FileExtension.DELPHI, { TreeSitterLibraryCollector(Language.DELPHI) }),
     RUST(FileExtension.RUST, { TreeSitterLibraryCollector(Language.RUST) }),
     ANGULAR(FileExtension.HTML, { TreeSitterLibraryCollector(Language.ANGULAR) }),
-    SQL(FileExtension.SQL, { TreeSitterLibraryCollector(Language.SQL) });
+    SQL(FileExtension.SQL, { TreeSitterLibraryCollector(Language.SQL) }),
+    VBA(FileExtension.VBA, { TreeSitterLibraryCollector(Language.VBA) }),
+    VB6(FileExtension.VB6, { TreeSitterLibraryCollector(Language.VB6) }),
+    ACCESS_LAYOUT(FileExtension.ACCESS_LAYOUT, { TreeSitterLibraryCollector(Language.ACCESS_LAYOUT) }),
+    ACCESS_MACRO(FileExtension.ACCESS_MACRO, { TreeSitterLibraryCollector(Language.ACCESS_MACRO) });
 
     companion object {
         /** The collector of the language a file ending such as `kt` belongs to, null for an unsupported one. */

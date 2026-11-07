@@ -1,0 +1,25 @@
+# vba.md, Access queries: a query in a queries folder is a view of its file's name, which names forms, VBA functions and other queries, and which VBA opens by name; DLookup, RowSource and DoCmd.OutputTo and Close name a query or form too
+file forms/frmMainMenu.cls -> forms/frmDialog.cls
+file forms/frmMainMenu.cls -> queries/qryEmployees.sql
+file forms/frmMainMenu.cls -> queries/qryOrderTotal.sql
+file modules/modNav.bas -> queries/qryArchive.sql
+file modules/modNav.bas -> queries/qryEmployees.sql
+file modules/modNav.bas -> queries/qryOrderTotal.sql
+file modules/modNav.bas -> queries/qryOrders.sql
+file queries/qryArchive.sql -> queries/qryOrders.sql
+file queries/qryOrders.sql -> forms/frmMainMenu.cls upward
+file queries/qryOrders.sql -> modules/modDates.bas upward
+file queries/qryOrders.sql -> queries/qryOrderTotal.sql
+file scripts/qryOrders.sql -> queries/qryOrders.sql
+leaf forms/frmMainMenu.cls#Form_frmMainMenu -> forms/frmDialog.cls#Form_frmDialog
+leaf forms/frmMainMenu.cls#Form_frmMainMenu -> queries/qryEmployees.sql#qryemployees
+leaf forms/frmMainMenu.cls#Form_frmMainMenu -> queries/qryOrderTotal.sql#qryordertotal
+leaf modules/modNav.bas#ArchiveOrders -> queries/qryArchive.sql#qryarchive
+leaf modules/modNav.bas#ArchiveOrders -> queries/qryOrderTotal.sql#qryordertotal
+leaf modules/modNav.bas#ArchiveOrders -> queries/qryOrders.sql#qryorders
+leaf modules/modNav.bas#EmployeeName -> queries/qryEmployees.sql#qryemployees
+leaf queries/qryArchive.sql#qryarchive -> queries/qryOrders.sql#qryorders
+leaf queries/qryOrders.sql#qryorders -> forms/frmMainMenu.cls#Form_frmMainMenu
+leaf queries/qryOrders.sql#qryorders -> modules/modDates.bas#ToAccessDate
+leaf queries/qryOrders.sql#qryorders -> queries/qryOrderTotal.sql#qryordertotal
+leaf scripts/qryOrders.sql#qryOrders_script -> queries/qryOrders.sql#qryorders

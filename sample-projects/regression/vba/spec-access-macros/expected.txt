@@ -1,0 +1,25 @@
+# vba.md, Access macros: a macro is a leaf named after its file, its submacros a part of it; it uses the forms, reports, queries and macros its actions name and the forms and functions its expressions name; a layout uses the macro an event names and what its embedded macros name; VBA uses the macro DoCmd.RunMacro runs
+file forms/frmOrders.form -> macros/mcrOrders.macro cyclic upward
+file forms/frmOrders.form -> queries/qryOrders.sql
+file forms/frmOrders.form -> reports/rptInvoice.report
+file macros/mcrLog.macro -> forms/frmFilter.form
+file macros/mcrOrders.macro -> forms/frmFilter.form
+file macros/mcrOrders.macro -> forms/frmOrders.form cyclic
+file macros/mcrOrders.macro -> macros/mcrLog.macro
+file macros/mcrOrders.macro -> modules/modMath.bas upward
+file macros/mcrOrders.macro -> queries/qryOrders.sql
+file macros/mcrOrders.macro -> reports/rptInvoice.report
+file modules/modMath.bas -> macros/mcrLog.macro
+file reports/rptInvoice.report -> queries/qryOrders.sql
+leaf forms/frmOrders.form#frmOrders_form -> macros/mcrOrders.macro#mcrOrders_macro cyclic upward
+leaf forms/frmOrders.form#frmOrders_form -> queries/qryOrders.sql#qryorders
+leaf forms/frmOrders.form#frmOrders_form -> reports/rptInvoice.report#rptInvoice_report
+leaf macros/mcrLog.macro#mcrLog_macro -> forms/frmFilter.form#frmFilter_form
+leaf macros/mcrOrders.macro#mcrOrders_macro -> forms/frmFilter.form#frmFilter_form
+leaf macros/mcrOrders.macro#mcrOrders_macro -> forms/frmOrders.form#frmOrders_form cyclic
+leaf macros/mcrOrders.macro#mcrOrders_macro -> macros/mcrLog.macro#mcrLog_macro
+leaf macros/mcrOrders.macro#mcrOrders_macro -> modules/modMath.bas#LogOpen
+leaf macros/mcrOrders.macro#mcrOrders_macro -> queries/qryOrders.sql#qryorders
+leaf macros/mcrOrders.macro#mcrOrders_macro -> reports/rptInvoice.report#rptInvoice_report
+leaf modules/modMath.bas#LogOpen -> macros/mcrLog.macro#mcrLog_macro
+leaf reports/rptInvoice.report#rptInvoice_report -> queries/qryOrders.sql#qryorders

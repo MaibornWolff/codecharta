@@ -73,7 +73,7 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
 - **`namespaces`** lists the packages with their level and their `parent`, the package containing them.
   The hierarchy comes from `parent`, never from the dots of a key.
 - **`language`** is the language the declaration is written in, lower case: `java`, `kotlin`, `csharp`,
-  `cpp`, `go`, `php`, `python`, `typescript`, `javascript`, `vue`, `delphi`, `rust`, `angular` or `sql`.
+  `cpp`, `go`, `php`, `python`, `typescript`, `javascript`, `vue`, `delphi`, `rust`, `angular`, `sql` or `vba`.
 - **`usage`** names how the source declaration uses the target: `usage`, `inheritance`,
   `implementation`, `instantiation`, `argument`, `return_value`, `constant_access`, `friend` for the class a C++
   `friend` declaration names, and `part_of` from an
@@ -165,6 +165,9 @@ edges on common project layouts; every item below is a bug in DependaCharta that
   own schema, the default schema and the schema `SET search_path` sets, the kind of object its place asks for;
   sequences, types, domains and package members are leaves of their own, package bodies and changes of a table in
   another file implementation parts.
+- A VBA name is resolved as the compiler does, through the modules of the run by their `VB_Name`: the own module, then
+  the modules and the public declarations of the standard modules, the nearest by folder of several; the declarations
+  of a standard module are leaves of their own, a class, form or report module one leaf.
 - A Module Federation producer is looked up in name order, preferring a federation-name match over a
   directory-name match, so the result does not depend on how the file system lists directories.
 - A file that fails to parse or exceeds `--file-timeout` is reported in a warning per cause naming the files;
@@ -177,7 +180,7 @@ edges on common project layouts; every item below is a bug in DependaCharta that
    aliases, bundler aliases (webpack, vite, vue.config), Module Federation remotes, workspace packages and
    `package.json` entry files, Go's `go.mod` files and `vendor/` folders, the folders above Python's top-level
    packages, Rust's `Cargo.toml` files and `mod` declarations, the unit names of Delphi's files, and the schemas,
-   packages and changed objects of SQL files. TypeScript,
+   packages and changed objects of SQL files, and the module names of VBA files. TypeScript,
    JavaScript and Vue write every name as the full path of what its binding names, so the resolve step only looks that
    path up.
 2. **Resolve.** Used types are matched against the declarations the whole project offers, with a
@@ -199,7 +202,8 @@ differ from the namespace levels in the logical layer — which are DependaChart
 
 ## Supported languages
 
-Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates and SQL.
+Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates, SQL and VBA
+(with VB6 forms, Access form and report layouts and Access macros).
 
 An Angular template (`.html`) depends on each component and directive whose selector matches one of its elements, as
 the Angular compiler matches them by tag, attribute and value, property, two-way and event binding, class and, for a
@@ -235,6 +239,36 @@ the last of these files, the latest migration: paths are ordered folder by folde
 in them compared as numbers, so `V10__orders.sql` comes after `V9__orders.sql`, and a later folder wins over an
 earlier one whatever the file names. Flyway's repeatable migrations (`R__views.sql`) come after the versioned ones of
 their folder, as Flyway runs them last. Statements in strings, `USE` and `DROP` are not read.
+
+VBA and VB6 have no imports either: the modules of the analysed folder (`.bas`, `.cls`, `.frm`) are read as one
+project, each named by its `VB_Name`. Every routine, property, `Declare`, module-level variable and constant, `Type` and
+`Enum` of a standard module is a leaf at the module name plus its own (`modOrders.OrderTotal`); a class, form or report
+module is one leaf. A name means a parameter or local declaration first, then a declaration of the own module, then a
+module or a `Public` declaration of a standard module, with the values of public enums; of several modules offering a
+name the nearest by folder wins, and a tie, which the compiler rejects as ambiguous, draws no edge. `modOrders.Total`
+means `Total` of that module. Names compare without regard to case. `DoCmd.OpenForm "frmX"`, `Forms!frmX` and
+`Forms("frmX")` point at the form module `Form_frmX`, `DoCmd.OpenReport`, `Reports!rptX` and `Reports("rptX")` at the
+report module `Report_rptX`, and so do `CurrentProject.AllForms("frmX")`, `AllReports("rptX")` and the `DoCmd`
+methods that name an object by its type (`DoCmd.Close acForm, "frmX"`, `DoCmd.OutputTo acOutputReport, "rptX"`). An Access query, a
+`.sql` file in a `queries` folder that creates nothing, is a view named after its file: other queries find it in `FROM`,
+`DoCmd.OpenQuery "qryX"`, `OpenRecordset("qryX")`, `QueryDefs("qryX")`, `DLookup("Field", "qryX")` and the other
+domain functions, and a `RowSource` or `RecordSource` set to its name point at it, and it points at the forms its
+`[Forms]![frmX]` names and at the public VBA functions it calls. A routine named by a string points at that routine
+where the application runs it by its name: `Application.Run "modX.Proc"`, `OnTime`, `OnKey`, `.OnAction = "Proc"` and
+the calls inside an `Eval("Func()")`. A member of a value (also the one `CallByName` names), a `With` member, a
+library name and any other name in a string draw no edge.
+
+The layout of an Access form or report (`.form`, `.report`, written by `SaveAsText`) is a leaf of its own named after
+its file (`frmOrders_form`), which the form's module uses, and a form without a module is its layout. It points at the
+query or table its record and row sources name, the forms and reports of its subform controls, the functions its
+expressions call (`=Rounded([Total])`), its own module for each event bound to `[Event Procedure]`, and what the SQL
+of a row source names, so a form with code is a cycle between module and layout. It also points at the macro an
+event names (`OnOpen ="mcrOrders.Open"`) and at what the macros embedded in its events name.
+
+An Access macro (`.macro`, written by `SaveAsText`) is a leaf of its own named after its file (`mcrOrders_macro`),
+which holds its submacros. It points at the forms, reports and queries its actions name (`OpenForm`, `OpenReport`,
+`OpenQuery`, the `ObjectName` of `CloseWindow`), the macros `RunMacro` runs, the VBA functions `RunCode` calls and
+the forms and functions its conditions and expressions name; `DoCmd.RunMacro "mcrX"` in VBA points at the macro.
 
 ## Usage and parameters
 

@@ -6,7 +6,7 @@ A Kotlin library for calculating code metrics and extracting text from source co
 
 - **Code Metrics**: Complexity, lines of code, comment lines, function counts, code smells, per-function aggregations
 - **Text Extraction**: Identifiers, comments, and string literals with context
-- **20 Languages and Frameworks**: Java, Kotlin, TypeScript, TSX, JavaScript, Python, Go, PHP, Ruby, Swift, Bash, C#, C++, C, Objective-C, Vue, Delphi, Rust, Angular templates, SQL
+- **24 Languages and Frameworks**: Java, Kotlin, TypeScript, TSX, JavaScript, Python, Go, PHP, Ruby, Swift, Bash, C#, C++, C, Objective-C, Vue, Delphi, Rust, Angular templates, SQL, VBA, VB6, Access form and report layouts, Access macros
 - **Zero External Dependencies**: Only the native tree-sitter libraries are required, loaded through Java's foreign function API
 
 ## Requirements
@@ -134,9 +134,17 @@ println(TreeSitterDependencies.getSupportedLanguages())                        /
 | Rust | `.rs` | Stable | Stable | Experimental |
 | Angular templates (and plain HTML) | `.html` | Experimental | Experimental | Experimental |
 | SQL (ANSI, T-SQL, PL/SQL, PL/pgSQL, MySQL) | `.sql`, `.pks`, `.pkb`, `.pls` | Experimental | Experimental | Experimental |
+| VBA (Access, Excel, Word modules and classes) | `.bas`, `.cls` | Experimental | Experimental | — |
+| VB6 forms | `.frm` | Experimental | Experimental | — |
+| Access form and report layouts (`SaveAsText`) | `.form`, `.report` | Experimental | Experimental | — |
+| Access macros (`SaveAsText`) | `.macro` | Experimental | Experimental | — |
 
 SQL is parsed with CodeCharta's own island grammar, one grammar for all dialects, bundled as
 `libs/tree-sitter-sql-island-*.jar`; its sources are kept outside this repository.
+
+VBA and VB6 use the `vba` and `vb6` grammars of [tree-sitter-vba](https://github.com/harumiWeb/tree-sitter-vba),
+which share one grammar core and so one language definition. They parse exported source files, not code inside
+`.accdb`, `.xlsm` or `.docm` files.
 
 ## Available Metrics
 
@@ -159,6 +167,7 @@ SQL is parsed with CodeCharta's own island grammar, one grammar for all dialects
 | `number_of_triggers` | SQL only: triggers the file creates |
 | `number_of_views` | SQL only: views the file defines, without temporary ones |
 | `number_of_tables` | SQL only: tables the file creates, without the temporary tables of a session |
+| `number_of_controls` | Access layouts only: controls on the sections of a form or report |
 
 ### Per-Function Metrics
 
@@ -203,7 +212,7 @@ src/main/kotlin/de/maibornwolff/treesitter/excavationsite/
 │   │   ├── adapters/              # Language definition adapters
 │   │   └── extractors/common/     # Shared extractors
 │   └── dependencies/              # Dependencies feature (facade and collector, no ports or adapters)
-├── languages/                     # Language definitions (21 languages and frameworks)
+├── languages/                     # Language definitions (22 languages and frameworks)
 │   └── <lang>/                    # Per-language directory
 │       ├── *Definition.kt         # Combines metric and extraction mappings
 │       ├── *MetricMapping.kt      # Metric node mappings

@@ -1,0 +1,5 @@
+# vba.md, modules: a module is named by its VB_Name, else by its file name
+file Main.bas -> Plain.bas
+file Main.bas -> a/Helpers.bas
+leaf Main.bas#Run -> Plain.bas#Twice
+leaf Main.bas#Run -> a/Helpers.bas#Log

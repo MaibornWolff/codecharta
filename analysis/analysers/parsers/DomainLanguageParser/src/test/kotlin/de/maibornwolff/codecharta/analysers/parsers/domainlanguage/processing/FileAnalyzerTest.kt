@@ -304,6 +304,138 @@ class FileAnalyzerTest {
     }
 
     @Test
+    fun `should drop the keywords, naming prefixes and event words of a VBA form module`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val formModule = File(tempDirPath.toFile(), "Form_frmOrders.cls")
+        formModule.writeText(
+            """
+            VERSION 1.0 CLASS
+            BEGIN
+              MultiUse = -1  'True
+            END
+            Attribute VB_Name = "Form_frmOrders"
+            Option Compare Database
+
+            Private Sub cmdInvoice_Click()
+                Dim strCustomerCity As String
+                ' Dim lngOldInvoice As Long
+            End Sub
+            """.trimIndent()
+        )
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(formModule, formModule.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(setOf("invoice", "customer", "city", "old"), words.keys)
+    }
+
+    @Test
+    fun `should drop the VBA keywords of a VB6 form`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val form = File(tempDirPath.toFile(), "frmShipping.frm")
+        form.writeText(
+            """
+            Private Sub cmdShip_Click()
+                Dim lngParcels As Long
+            End Sub
+            """.trimIndent()
+        )
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(form, form.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(setOf("ship", "parcels"), words.keys)
+    }
+
+    @Test
+    fun `should read the controls, fields and captions of an Access form without the prefixes of their names`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val form = File(tempDirPath.toFile(), "frmShipping.form")
+        form.writeText(
+            """
+            Begin Form
+                Caption ="Parcel Tracking"
+                Begin
+                    Begin Section
+                        Begin
+                            Begin TextBox
+                                Name ="txtCarrier"
+                                ControlSource ="CarrierCompany"
+                            End
+                        End
+                    End
+                End
+            End
+            """.trimIndent()
+        )
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(form, form.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(setOf("parcel", "tracking", "carrier", "company"), words.keys)
+    }
+
+    @Test
+    fun `should read the objects and messages of an Access macro without the prefixes of their names`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val macro = File(tempDirPath.toFile(), "mcrShipping.macro")
+        macro.writeText(
+            """
+            Version =196611
+            Begin
+                Action ="OpenForm"
+                Argument ="frmCarrier"
+                Argument ="2"
+            End
+            Begin
+                Action ="MsgBox"
+                Argument ="Parcel Tracking"
+            End
+            """.trimIndent()
+        )
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(macro, macro.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(setOf("carrier", "parcel", "tracking"), words.keys)
+    }
+
+    @Test
+    fun `should drop the Access naming prefixes of a query in a queries folder, but not of other SQL`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val sql = "CREATE VIEW qryInvoices AS SELECT * FROM qrycboCustomers;"
+        val query = File(tempDirPath.toFile(), "queries").also { it.mkdirs() }.resolve("qryInvoices.sql").also { it.writeText(sql) }
+        val script = File(tempDirPath.toFile(), "migrations").also { it.mkdirs() }.resolve("V1__views.sql").also { it.writeText(sql) }
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val queryWords = analyzer.extractWordsFromFile(query, sql).wordsOrEmpty()
+        val scriptWords = analyzer.extractWordsFromFile(script, sql).wordsOrEmpty()
+
+        // Assert
+        assertEquals(setOf("invoices", "customers"), queryWords.keys)
+        assertTrue(scriptWords.containsKey("qry"))
+    }
+
+    @Test
     fun `should return empty map when file has no extractable words`(
         @TempDir tempDirPath: Path
     ) {

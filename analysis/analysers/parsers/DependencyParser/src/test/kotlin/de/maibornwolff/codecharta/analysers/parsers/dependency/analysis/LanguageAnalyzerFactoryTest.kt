@@ -14,6 +14,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.rust.RustAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.TypescriptAnalyzer
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.vba.VbaAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.vue.VueAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
@@ -97,6 +98,11 @@ class LanguageAnalyzerFactoryTest {
                 physicalPath = "",
                 content = ""
             )
+            val vbaFileInfo = FileInfo(
+                language = SupportedLanguage.VBA,
+                physicalPath = "",
+                content = ""
+            )
             return listOf(
                 Arguments.of(javaFileInfo, JavaAnalyzer(javaFileInfo)),
                 Arguments.of(cSharpFileInfo, CSharpAnalyzer(cSharpFileInfo)),
@@ -111,6 +117,7 @@ class LanguageAnalyzerFactoryTest {
                 Arguments.of(delphiFileInfo, DelphiAnalyzer(delphiFileInfo)),
                 Arguments.of(rustFileInfo, RustAnalyzer(rustFileInfo)),
                 Arguments.of(angularFileInfo, AngularTemplateAnalyzer(angularFileInfo)),
+                Arguments.of(vbaFileInfo, VbaAnalyzer(vbaFileInfo)),
                 Arguments.of(sqlFileInfo, SqlAnalyzer(sqlFileInfo))
             )
         }

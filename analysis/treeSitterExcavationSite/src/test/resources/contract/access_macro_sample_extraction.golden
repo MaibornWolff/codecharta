@@ -1,0 +1,20 @@
+# Identifiers
+ErrorHandler
+ErrorHandler
+L
+L
+L
+SignIn
+SignOut
+frmAdmin
+frmLogin
+frmOrderList
+frmOrderList
+
+# Comments
+Opens the order list for the user who signs in
+
+# Strings
+Cancelled
+Northwind
+Sign-in failed

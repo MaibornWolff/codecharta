@@ -22,4 +22,5 @@ data class MetricsResult(val metrics: Map<String, Double>, val perFunctionMetric
     val numberOfTriggers: Double get() = metrics[AvailableFileMetrics.NUMBER_OF_TRIGGERS.metricName] ?: 0.0
     val numberOfViews: Double get() = metrics[AvailableFileMetrics.NUMBER_OF_VIEWS.metricName] ?: 0.0
     val numberOfTables: Double get() = metrics[AvailableFileMetrics.NUMBER_OF_TABLES.metricName] ?: 0.0
+    val numberOfControls: Double get() = metrics[AvailableFileMetrics.NUMBER_OF_CONTROLS.metricName] ?: 0.0
 }

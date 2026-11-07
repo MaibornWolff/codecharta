@@ -16,7 +16,8 @@ The `domain` lens payload keys its entries under `nodes`:
 ## Supported Languages
 
 Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, Rust, Objective-C, Vue, shell,
-Angular templates (`.html`) and SQL.
+Angular templates (`.html`), SQL, VBA (`.bas`, `.cls`), VB6 forms (`.frm`), Access form and report layouts
+(`.form`, `.report`) and Access macros (`.macro`).
 
 An Angular template contributes the identifiers of its bindings, interpolations and control flow blocks, but not the
 names Angular gives (pipe names, `@defer` triggers, the `index` or `trackBy` of `*ngFor`), its HTML
@@ -39,6 +40,17 @@ In SQL the types, built-in functions and system schemas of every dialect are sto
 `dbo`), and so are the names of the dialects and database products (`postgres`, `oracle`, `mariadb`, `sqlserver`)
 and `id`. Its keywords are not: a keyword never comes out as a word, and one that is an English word (`order`,
 `group`, `transaction`) names the domain in a name or a comment.
+
+In VBA and VB6 the keywords, types and built-in names are stop words, English ones such as `date` or `currency` too,
+but not `open` and `close`. So are `id`, as in SQL, the naming prefixes of Access code (`tbl`, `qry`, `frm`, `txt`, `str`, `rs`) and the
+words of event handlers (`click`, `focus`, `unload`, `initialize`, `form` of `cmdSave_Click` or `Form_Load`). The event
+words that also name a domain stay: `report`, `current`, `change`, `key`. A `.sql` file in a folder named `queries`
+holds an Access query, so the stop words of SQL and of VBA both apply to it (`qryOrders` gives `orders`). An Access
+form or report layout contributes the names of its controls and the fields they show as identifiers, its captions as
+strings and the words of the SQL of its record and row sources; the stop words of VBA apply. The names Access gives a
+control by default (`Label122`, `Text45`) give no word. An Access macro, stand-alone or embedded in a form or report,
+contributes the names of its submacros and groups and of the objects its actions name as identifiers, its messages
+and their titles as strings, and its comments; options of an action, such as the view a form opens in, give no word.
 
 ## Usage and Parameters
 

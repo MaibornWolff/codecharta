@@ -3,6 +3,8 @@ package de.maibornwolff.treesitter.excavationsite.integration.extraction
 import de.maibornwolff.treesitter.excavationsite.integration.embedded.EmbeddedSourcesFacade
 import de.maibornwolff.treesitter.excavationsite.integration.extraction.adapters.LanguageDefinitionExtractionAdapter
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ComposedSource
+import de.maibornwolff.treesitter.excavationsite.shared.domain.EmbeddedSource
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractedText
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmSyntaxTree
@@ -25,15 +27,18 @@ object ExtractionFacade {
      */
     fun extract(content: String, language: Language): List<ExtractedText> {
         val definition = LanguageRegistry.getLanguageDefinition(language)
+        definition.composer?.let { compose -> return textsOf(compose(content)) }
         val grammarLibrary = LanguageRegistry.getGrammarLibrary(language)
         val processedContent = definition.preprocessor?.invoke(content) ?: content
         if (processedContent.isBlank()) return emptyList()
         val extractor = DirectTextExtractor(LanguageDefinitionExtractionAdapter(definition))
         return FfmSyntaxTree.parse(processedContent, NativeTreeSitter.grammar(grammarLibrary)).use { tree ->
-            val embeddedTexts = EmbeddedSourcesFacade.embeddedSources(tree, processedContent, definition).flatMap { embedded ->
-                extract(embedded.content, embedded.language).map { it.copy(language = embedded.language) }
-            }
-            extractor.extract(tree) + embeddedTexts
+            extractor.extract(tree) + textsOfParts(EmbeddedSourcesFacade.embeddedSources(tree, processedContent, definition))
         }
     }
+
+    private fun textsOf(composed: ComposedSource): List<ExtractedText> = composed.texts + textsOfParts(composed.allParts)
+
+    private fun textsOfParts(parts: List<EmbeddedSource>): List<ExtractedText> =
+        parts.flatMap { part -> extract(part.content, part.language).map { it.copy(language = part.language) } }
 }

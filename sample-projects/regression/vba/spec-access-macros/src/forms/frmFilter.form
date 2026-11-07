@@ -1,0 +1,15 @@
+Version =21
+VersionRequired =20
+Begin Form
+    Begin
+        Begin Section
+            Begin
+                Begin ComboBox
+                    Name ="cboType"
+                    RowSourceType ="Value List"
+                    RowSource ="1;2"
+                End
+            End
+        End
+    End
+End

@@ -1,0 +1,30 @@
+Version =196611
+ColumnsShown =8
+Begin
+    Comment ="_AXL:<?xml version=\"1.0\" encoding=\"UTF-16\" standalone=\"no\"?>\015\012<UserInterf"
+        "aceMacro MinimumClientDesignVersion=\"14.0.0000.0000\" xmlns=\"http://schemas.mi"
+        "crosoft.com/office/accessservices/2009/11/application\"><Statements><Comment>Ope"
+        "ns the orders of the chosen type</Comment><Action Name=\"OnError\"><Argument Nam"
+End
+Begin
+    Comment ="_AXL:e=\"Goto\">Macro Name</Argument><Argument Name=\"MacroName\">ErrorHandler</Argum"
+        "ent></Action><ConditionalBlock><If><Condition>[Forms]![frmFilter]![cboType] &gt;"
+        " 0</Condition><Statements><Action Name=\"OpenForm\"><Argument Name=\"FormName\">"
+        "frmOrders</Argument><Argument Name=\"WhereCondition\">[TypeID]=[Forms]![frmFilte"
+End
+Begin
+    Comment ="_AXL:r]![cboType]</Argument></Action></Statements></If><Else><Statements><Action Name"
+        "=\"OpenReport\"><Argument Name=\"ReportName\">rptInvoice</Argument><Argument Nam"
+        "e=\"View\">Print Preview</Argument></Action></Statements></Else></ConditionalBlo"
+        "ck><Action Name=\"OpenQuery\"><Argument Name=\"QueryName\">qryOrders</Argument><"
+End
+Begin
+    Comment ="_AXL:/Action><Action Name=\"RunCode\"><Argument Name=\"FunctionName\">LogOpen()</Argu"
+        "ment></Action></Statements><Sub Name=\"Open\"><Statements><Action Name=\"RunMacr"
+        "o\"><Argument Name=\"MacroName\">mcrLog.Write</Argument></Action></Statements></"
+        "Sub><Sub Name=\"ErrorHandler\"><Statements><Action Name=\"MessageBox\"><Argument"
+End
+Begin
+    Comment ="_AXL: Name=\"Message\">Opening the orders failed</Argument></Action></Statements></Su"
+        "b></UserInterfaceMacro>"
+End

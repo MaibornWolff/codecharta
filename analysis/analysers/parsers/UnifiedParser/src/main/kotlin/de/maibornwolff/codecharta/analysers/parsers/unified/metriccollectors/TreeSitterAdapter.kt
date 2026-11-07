@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 import de.maibornwolff.codecharta.model.ChecksumCalculator
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
+import de.maibornwolff.codecharta.util.SourceText
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.MetricsResult
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterMetrics
@@ -16,7 +17,7 @@ object TreeSitterAdapter {
      * Collects metrics for a file using TreesitterLibrary.
      */
     fun collectMetricsForFile(file: File): MutableNode {
-        val fileContent = file.readText()
+        val fileContent = SourceText.read(file)
         return collectMetricsForFile(file, fileContent)
     }
 

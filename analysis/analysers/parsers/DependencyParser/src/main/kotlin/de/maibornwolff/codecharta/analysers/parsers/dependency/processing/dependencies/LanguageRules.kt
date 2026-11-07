@@ -17,10 +17,11 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlCopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.TypescriptNameRules
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.vba.VbaNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.CopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.DefaultNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NameRules
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NearestCopy
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.nearestCopy
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import java.io.File
 
@@ -36,6 +37,7 @@ internal object LanguageRules {
         SupportedLanguage.PYTHON -> PythonNameRules
         SupportedLanguage.RUST -> RustNameRules
         SupportedLanguage.SQL -> SqlNameRules
+        SupportedLanguage.VBA, SupportedLanguage.ACCESS_LAYOUT, SupportedLanguage.ACCESS_MACRO -> VbaNameRules
         SupportedLanguage.TYPESCRIPT, SupportedLanguage.JAVASCRIPT, SupportedLanguage.VUE -> TypescriptNameRules
         else -> DefaultNameRules
     }
@@ -46,6 +48,6 @@ internal object LanguageRules {
         SupportedLanguage.GO -> goCopyRules
         SupportedLanguage.CPP -> CppCopyRules(analysisRoot?.let { CppIncludes.of(it) })
         SupportedLanguage.RUST -> rustCopyRules
-        else -> NearestCopy
+        else -> nearestCopy
     }
 }

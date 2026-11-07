@@ -1,5 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages
 
+import de.maibornwolff.treesitter.excavationsite.languages.accesslayout.AccessLayoutDefinition
+import de.maibornwolff.treesitter.excavationsite.languages.accessmacro.AccessMacroDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.angular.AngularDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.bash.BashDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.c.CDefinition
@@ -19,6 +21,7 @@ import de.maibornwolff.treesitter.excavationsite.languages.rust.RustDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.sql.SqlDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.swift.SwiftDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.tsx.TsxDefinition
+import de.maibornwolff.treesitter.excavationsite.languages.vba.VbaDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.vue.VueDefinition
 import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
@@ -45,7 +48,13 @@ object LanguageRegistry {
         Language.DELPHI to Registration(GrammarLibrary("pascal"), DelphiDefinition),
         Language.RUST to Registration(GrammarLibrary("rust"), RustDefinition),
         Language.ANGULAR to Registration(GrammarLibrary("angular"), AngularDefinition),
-        Language.SQL to Registration(GrammarLibrary("sql-island", "sql_island"), SqlDefinition)
+        Language.SQL to Registration(GrammarLibrary("sql-island", "sql_island"), SqlDefinition),
+        Language.VBA to Registration(GrammarLibrary("vba"), VbaDefinition),
+        Language.VB6 to Registration(GrammarLibrary("vb6"), VbaDefinition),
+        // The grammar of its expressions: no grammar reads a layout as a whole, see AccessLayoutDefinition.composer
+        Language.ACCESS_LAYOUT to Registration(GrammarLibrary("vba"), AccessLayoutDefinition),
+        // Like a layout: no grammar reads a macro as a whole, its expressions are VBA
+        Language.ACCESS_MACRO to Registration(GrammarLibrary("vba"), AccessMacroDefinition)
     )
 
     fun getGrammarLibrary(language: Language): GrammarLibrary = registrationOf(language).grammarLibrary

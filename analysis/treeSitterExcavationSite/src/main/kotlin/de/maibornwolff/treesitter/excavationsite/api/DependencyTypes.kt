@@ -2,6 +2,8 @@
 
 package de.maibornwolff.treesitter.excavationsite.api
 
+import de.maibornwolff.treesitter.excavationsite.languages.accesslayout.model.AccessLayout
+import de.maibornwolff.treesitter.excavationsite.languages.accessmacro.model.AccessMacro
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiDeclaration
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiDeclarationKind
 import de.maibornwolff.treesitter.excavationsite.languages.delphi.model.DelphiName
@@ -19,6 +21,7 @@ import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustNamesp
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustPath
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustUse
 import de.maibornwolff.treesitter.excavationsite.languages.rust.model.RustVisibility
+import de.maibornwolff.treesitter.excavationsite.languages.sql.model.AccessQuery
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlMember
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlMemberKind
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlName
@@ -27,6 +30,12 @@ import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlObject
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlObjectKind
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlScript
 import de.maibornwolff.treesitter.excavationsite.languages.sql.model.SqlStatements
+import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaDeclaration
+import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaDeclarationKind
+import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaModule
+import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaModuleKind
+import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaName
+import de.maibornwolff.treesitter.excavationsite.languages.vba.model.VbaNameKind
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AliasPathStart
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularDeclaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularSelector
@@ -78,5 +87,14 @@ typealias SqlObjectKind = SqlObjectKind
 typealias SqlMember = SqlMember
 typealias SqlMemberKind = SqlMemberKind
 typealias SqlStatements = SqlStatements
+typealias AccessQuery = AccessQuery
+typealias AccessLayout = AccessLayout
+typealias AccessMacro = AccessMacro
+typealias VbaModule = VbaModule
+typealias VbaModuleKind = VbaModuleKind
+typealias VbaDeclaration = VbaDeclaration
+typealias VbaDeclarationKind = VbaDeclarationKind
+typealias VbaName = VbaName
+typealias VbaNameKind = VbaNameKind
 typealias SqlName = SqlName
 typealias SqlNameKind = SqlNameKind

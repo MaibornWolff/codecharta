@@ -182,6 +182,95 @@ class LanguageTest {
     }
 
     @Test
+    fun `should return VBA for modules and classes and VB6 for forms`() {
+        // Arrange & Act
+        val languages = listOf("bas", "cls", "frm", "BAS", "CLS", "FRM").map { Language.fromExtension(it) }
+
+        // Assert
+        assertEquals(listOf(Language.VBA, Language.VBA, Language.VB6, Language.VBA, Language.VBA, Language.VB6), languages)
+    }
+
+    @Test
+    fun `should return the Access layout for forms and reports, with the VBA keywords for the names of their controls`() {
+        // Arrange & Act
+        val languages = listOf("form", "report", "FORM").map { Language.fromExtension(it) }
+
+        // Assert
+        assertEquals(listOf(Language.ACCESS_LAYOUT, Language.ACCESS_LAYOUT, Language.ACCESS_LAYOUT), languages)
+        assertEquals(Language.VBA.keywords.getKeywords(), Language.ACCESS_LAYOUT.keywords.getKeywords())
+    }
+
+    @Test
+    fun `should return the Access macro for macros, with the VBA keywords for the objects they open`() {
+        // Arrange & Act
+        val languages = listOf("macro", "MACRO").map { Language.fromExtension(it) }
+
+        // Assert
+        assertEquals(listOf(Language.ACCESS_MACRO, Language.ACCESS_MACRO), languages)
+        assertEquals(Language.VBA.keywords.getKeywords(), Language.ACCESS_MACRO.keywords.getKeywords())
+    }
+
+    @Test
+    fun `should share the VBA keywords with VB6`() {
+        // Arrange & Act
+        val vb6Keywords = Language.VB6.keywords.getKeywords()
+
+        // Assert
+        assertEquals(Language.VBA.keywords.getKeywords(), vb6Keywords)
+    }
+
+    @Test
+    fun `should have ResourceKeywords for VBA with its keywords, English ones too`() {
+        // Arrange
+        val words =
+            listOf("dim", "byval", "byref", "wend", "redim", "elseif", "paramarray", "date", "currency", "property", "event", "true")
+
+        // Act
+        val keywords = ResourceKeywords("keywords/vba-keywords.txt").getKeywords()
+
+        // Assert
+        assertEquals(words, words.filter { it in keywords })
+    }
+
+    @Test
+    fun `should have ResourceKeywords for VBA with the naming prefixes and event handler words of Access`() {
+        // Arrange
+        val words = listOf(
+            "tbl", "qry", "frm", "rpt", "txt", "cbo", "cmd", "str", "lng", "rs", "qdf", "ary", "td", "click", "dbl", "unload", "form"
+        )
+
+        // Act
+        val keywords = ResourceKeywords("keywords/vba-keywords.txt").getKeywords()
+
+        // Assert
+        assertEquals(words, words.filter { it in keywords })
+    }
+
+    @Test
+    fun `should have ResourceKeywords for VBA with the built-in names of Access and id, as in SQL`() {
+        // Arrange
+        val words = listOf("requery", "openargs", "args", "docmd", "recordset", "id")
+
+        // Act
+        val keywords = ResourceKeywords("keywords/vba-keywords.txt").getKeywords()
+
+        // Assert
+        assertEquals(words, words.filter { it in keywords })
+    }
+
+    @Test
+    fun `should keep the words of a domain that VBA also uses for keywords and events out of the VBA stop words`() {
+        // Arrange
+        val domainWords = listOf("open", "close", "report", "current", "change", "key", "order", "invoice", "customer")
+
+        // Act
+        val keywords = ResourceKeywords("keywords/vba-keywords.txt").getKeywords()
+
+        // Assert
+        assertEquals(emptyList<String>(), domainWords.filter { it in keywords })
+    }
+
+    @Test
     fun `should handle uppercase extensions`() {
         // Arrange & Act
         val language = Language.fromExtension("KT")

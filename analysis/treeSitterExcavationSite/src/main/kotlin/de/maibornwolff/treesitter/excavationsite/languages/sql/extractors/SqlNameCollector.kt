@@ -7,9 +7,14 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 
 /**
  * The names a definition or statement writes, each with the kind of object its position asks for (`sql.md`, kinds),
- * without those its [locals] hide. Inside a package ([inPackage]) a plain identifier may be a member of the package.
+ * without those its [locals] hide and the nodes at the [skipped] positions. Inside a package ([inPackage]) a plain
+ * identifier may be a member of the package.
  */
-internal class SqlNameCollector(private val locals: Set<String>, private val inPackage: Boolean) {
+internal class SqlNameCollector(
+    private val locals: Set<String>,
+    private val inPackage: Boolean,
+    private val skipped: Set<Pair<Int, Int>> = emptySet()
+) {
     private val names = linkedSetOf<SqlName>()
     private val typePositions = HashSet<Pair<Int, Int>>()
 
@@ -37,9 +42,25 @@ internal class SqlNameCollector(private val locals: Set<String>, private val inP
                 index = sequence.second
                 continue
             }
-            if (positionOf(child) != ownName && !isForeignBody(parent, child)) visitChild(parent, children, index)
+            when {
+                positionOf(child) in skipped -> Unit
+                isJoinedInParentheses(children, index) -> recordJoinedTable(child)
+                positionOf(child) != ownName && !isForeignBody(parent, child) -> visitChild(parent, children, index)
+            }
             index++
         }
+    }
+
+    // FROM (customers INNER JOIN (orders LEFT JOIN totals ...: the grammar marks only the first table after the keyword
+    private fun isJoinedInParentheses(children: List<SyntaxNode>, index: Int): Boolean {
+        if (children[index].type != OBJECT_NAME) return false
+        var before = index - 1
+        while (before >= 0 && children[before].type == OPENING_PARENTHESIS) before--
+        return before < index - 1 && before >= 0 && NameTokens.wordOf(children[before]) in RELATION_KEYWORDS
+    }
+
+    private fun recordJoinedTable(table: SyntaxNode) {
+        usedParts(table, SqlNames.comparablePartsOf(table))?.let { record(it, SqlNameKind.RELATION) }
     }
 
     private fun isForeignBody(parent: SyntaxNode?, child: SyntaxNode): Boolean =

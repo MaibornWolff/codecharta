@@ -1,6 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm
 
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
+import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -44,6 +45,21 @@ class GrammarLoadingTest {
 
         // Assert
         assertThat(rootType).isEqualTo(expectedRootType)
+    }
+
+    @ParameterizedTest
+    @CsvSource("vba", "vb6")
+    fun `should load the bundled Visual Basic grammar and parse a procedure with it`(libraryName: String) {
+        // Arrange
+        val grammar = NativeTreeSitter.grammar(GrammarLibrary(libraryName))
+
+        // Act
+        val topLevelTypes = FfmSyntaxTree.parse("Sub Main()\nEnd Sub\n", grammar).use { tree ->
+            tree.rootNode.namedChildren().map { it.type }.toList()
+        }
+
+        // Assert
+        assertThat(topLevelTypes).isEqualTo(listOf("sub_declaration", "newline"))
     }
 
     @Test

@@ -37,7 +37,9 @@ class LanguageSupportContractTest {
             ".pas, DELPHI",
             ".rs, RUST",
             ".html, ANGULAR",
-            ".sql, SQL"
+            ".sql, SQL",
+            ".bas, VBA",
+            ".frm, VB6"
         )
         fun `should map primary extension to correct language`(extension: String, expectedLanguage: String) {
             // Act
@@ -126,6 +128,12 @@ class LanguageSupportContractTest {
         fun `should map dpr extension to DELPHI`() {
             // Assert
             assertThat(Language.fromExtension(".dpr")).isEqualTo(Language.DELPHI)
+        }
+
+        @Test
+        fun `should map cls extension to VBA`() {
+            // Assert
+            assertThat(Language.fromExtension(".cls")).isEqualTo(Language.VBA)
         }
     }
 

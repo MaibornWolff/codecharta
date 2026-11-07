@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.vba.VbaAccessQueryUses
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
@@ -8,6 +9,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.No
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
+import de.maibornwolff.treesitter.excavationsite.api.AccessQuery
 import de.maibornwolff.treesitter.excavationsite.api.SqlMemberKind
 import de.maibornwolff.treesitter.excavationsite.api.SqlName
 import de.maibornwolff.treesitter.excavationsite.api.SqlNameKind
@@ -20,7 +22,8 @@ import de.maibornwolff.treesitter.excavationsite.api.SqlObjectKind
  * [SqlNameRules] takes only as written. What a package specification declares are leaves below the package; a package
  * body's routines that the specification declares, an object type body and a statement that changes an object another
  * file creates are implementation parts (decisions 1, 2, 5 and 8). What the statements outside every object name is the
- * file's script leaf.
+ * file's script leaf. An Access query is the view of its file's name, which also uses the forms, reports and VBA
+ * functions it names (`vba.md`, Access queries).
  */
 class SqlAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     private val project by lazy {
@@ -52,8 +55,10 @@ class SqlAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
             SqlObjectKind.TYPE_BODY -> addTypeBody(created)
             in NODE_TYPES -> {
                 val path = SqlProject.pathOf(created)
-                draft(path, NODE_TYPES.getValue(created.kind), SqlLookup.kindOf(created.kind)).uses +=
-                    resolved(created.names, SqlLookup(project, schemaOf(path), null))
+                val lookup = SqlLookup(project, schemaOf(path), null)
+                val draft = draft(path, NODE_TYPES.getValue(created.kind), SqlLookup.kindOf(created.kind))
+                draft.uses += resolved(created.names, lookup)
+                project.accessQueryOf(fileInfo.physicalPath)?.let { draft.uses += accessQueryUsesOf(it, lookup) }
             }
             else -> Unit
         }
@@ -106,6 +111,12 @@ class SqlAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         val draft = nodes[target.path] ?: draftOfPart(target.path, NodeType.CLASS, null, isPart = true)
         draft.uses += resolved(change.names, SqlLookup(project, schemaOf(target.path), null))
     }
+
+    // The forms, reports and VBA functions an Access query names belong to its VBA project
+    private fun accessQueryUsesOf(query: AccessQuery, lookup: SqlLookup): List<SqlLookup.Found> = VbaAccessQueryUses
+        .of(fileInfo)
+        .of(query) { name -> lookup.resolve(name) == null }
+        .map { SqlLookup.Found(it, emptySet()) }
 
     private fun draft(path: List<String>, nodeType: NodeType, kind: String?): NodeDraft =
         nodes.getOrPut(path) { NodeDraft(nodeType, kind, isPart = false, isFileScoped = false) }

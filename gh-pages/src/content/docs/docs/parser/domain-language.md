@@ -83,6 +83,10 @@ its entries by node id under `nodes`:
 | Rust              | .rs                                   |
 | Angular templates | .html                                 |
 | SQL               | .sql, .pks, .pkb, .pls                |
+| VBA               | .bas, .cls                            |
+| VB6 forms         | .frm                                  |
+| Access forms and reports | .form, .report                 |
+| Access macros     | .macro                                |
 
 Every `.html` file is read as an Angular template, by this parser as by `unifiedparser` and `dependencyparser`.
 Exclude the `.html` files that are no templates of an Angular application, such as reports or documentation, with
@@ -119,6 +123,26 @@ In SQL the types, built-in functions and system schemas of every dialect are sto
 `dbo`), and so are the names of the dialects and database products (`postgres`, `oracle`, `mariadb`, `sqlserver`)
 and `id`. Its keywords are not: a keyword never comes out as a word, and one that is an English word (`order`,
 `group`, `transaction`) names the domain in a name or a comment.
+
+### VBA and VB6
+
+In VBA and VB6 the keywords, types and built-in names are stop words, English ones such as `date` or `currency` too,
+but not `open` and `close`. So are `id`, as in SQL, the naming prefixes of Access code (`tbl`, `qry`, `frm`, `txt`, `str`, `rs`) and the
+words of event handlers (`click`, `focus`, `unload`, `initialize`, `form` of `cmdSave_Click` or `Form_Load`). The event
+words that also name a domain stay: `report`, `current`, `change`, `key`. A `.sql` file in a folder named `queries`
+holds an Access query, so the stop words of SQL and of VBA both apply to it (`qryOrders` gives `orders`).
+
+An Access form or report layout (`.form`, `.report`) contributes the names of its controls and the fields they show as
+identifiers (`txtCarrier` gives `carrier`), its captions as strings, and the words of the SQL of its record and row
+sources; the stop words of VBA apply. The names Access gives a control by default, its type and a number (`Label122`,
+`Text45`, `Auto_Header0`), give no word.
+
+[Analyse an Access or VBA application](/docs/analysis/access-vba) shows how to export an Access application.
+
+An Access macro (`.macro`), like a macro embedded in a form or report, contributes the names of its submacros and
+groups and of the objects its actions name (`frmCarrier` gives `carrier`) as identifiers, its messages and their
+titles as strings, and its comments; options of an action such as the view a form opens in give no word. The stop
+words of VBA apply.
 
 ## Input and stop words
 

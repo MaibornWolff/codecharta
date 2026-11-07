@@ -17,6 +17,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   that day changed in each file to the map, with the commit's date and size.
 - **Code and comment lines for about 300 languages**: `rawtextparser` adds `rloc` and `comment_lines` to every file
   whose language the code counter tokei knows, counted the same way as in the Unified Parser.
+- **VBA, VB6 and Access**: `unifiedparser` measures exported VBA modules and classes from Access, Excel and Word, VB6
+  forms, the layouts of Access forms and reports with the logic and controls they hold, and Access macros;
+  `domainlanguageparser` reads their domain words, and `dependencyparser` draws the dependencies between their
+  modules, the forms and reports with their layouts, the macros, and the Access queries exported as SQL, with the
+  forms, queries, macros and VBA functions those name.
+- **Access export**: a macro you import into an Access application exports its modules, forms, reports, macros and
+  queries into a folder ccsh maps, as the new guide for Access and VBA applications describes.
 
 ### Changed
 
@@ -44,6 +51,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Large HTML files**: the domain language parser no longer hangs on an HTML file with much text between its tags.
 - **Long dependency cycles**: the dependency parser no longer crashes on a cycle that runs through thousands of files
   or packages.
+- **SQL joins in parentheses**: the dependency parser links a query to every table of a join written in parentheses,
+  not only to the first and the last.
 
 ## [2.3.0] - 2026-10-28
 

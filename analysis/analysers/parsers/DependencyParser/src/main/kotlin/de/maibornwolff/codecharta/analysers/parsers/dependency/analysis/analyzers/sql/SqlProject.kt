@@ -2,6 +2,9 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.ProjectListing
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.readInParallel
+import de.maibornwolff.codecharta.util.AccessQueryFiles
+import de.maibornwolff.codecharta.util.SourceText
+import de.maibornwolff.treesitter.excavationsite.api.AccessQuery
 import de.maibornwolff.treesitter.excavationsite.api.SqlMember
 import de.maibornwolff.treesitter.excavationsite.api.SqlMemberKind
 import de.maibornwolff.treesitter.excavationsite.api.SqlObject
@@ -13,10 +16,11 @@ import java.util.concurrent.ConcurrentHashMap
 
 /**
  * The SQL files of a run as one database (`sql.md`), read once: the objects they create by name, and what each package
- * declares. Which file a path means is the copy rule's choice.
+ * declares. Which file a path means is the copy rule's choice. An Access query creates the view named after its file.
  */
 internal class SqlProject private constructor(private val files: Set<String>, private val sourceOf: (String) -> String) {
     private val scripts = ConcurrentHashMap<String, SqlScript>()
+    private val accessQueries = ConcurrentHashMap<String, AccessQuery>()
 
     // The indexes read every file one after the other, while the other files of the run wait for them
     private val createdObjects: List<SqlObject> by lazy {
@@ -31,7 +35,26 @@ internal class SqlProject private constructor(private val files: Set<String>, pr
     data class Declared(val path: List<String>, val kind: SqlObjectKind)
 
     /** What a file creates, changes and names, read once. */
-    fun scriptOf(file: String): SqlScript = scripts.computeIfAbsent(file) { TreeSitterDependencies.sqlScript(sourceOf(it)) }
+    fun scriptOf(file: String): SqlScript = scripts.computeIfAbsent(file) { readScript(it) }
+
+    /** What the Access query of [file] names, or null for a file that is no Access query. */
+    fun accessQueryOf(file: String): AccessQuery? {
+        scriptOf(file)
+        return accessQueries[file]
+    }
+
+    // A file of a queries folder that creates nothing holds the SQL of one Access query
+    private fun readScript(file: String): SqlScript {
+        val source = sourceOf(file)
+        val script = TreeSitterDependencies.sqlScript(source)
+        if (!AccessQueryFiles.isQueryFile(file) || script.objects.isNotEmpty()) return script
+        val query = TreeSitterDependencies.accessQuery(source)
+        accessQueries[file] = query
+        return SqlScript(
+            listOf(SqlObject(SqlObjectKind.VIEW, listOf(AccessQueryFiles.queryNameOf(file)), names = query.names)),
+            emptyList()
+        )
+    }
 
     /** The objects of [name] in any schema; a package body counts as its package, an object type body as its type. */
     fun objectsNamed(name: String): List<Declared> = objectsByName[name].orEmpty()
@@ -94,7 +117,7 @@ internal class SqlProject private constructor(private val files: Set<String>, pr
             analysisRoot.absolutePath to analysedFiles
         ) {
             val files = analysedFiles.ifEmpty { filesBelow(analysisRoot) }.filterTo(HashSet()) { isSql(it) }
-            SqlProject(files) { file -> analysisRoot.resolve(file).readText() }
+            SqlProject(files) { file -> SourceText.read(analysisRoot.resolve(file)) }
         }
 
         /** A file analysed without a root: a project of its own. */

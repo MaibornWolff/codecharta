@@ -32,7 +32,7 @@ object TreeSitterExtraction {
 
     fun isExtractionSupported(language: Language): Boolean {
         val definition = LanguageRegistry.getLanguageDefinition(language)
-        return definition.nodeExtractions.isNotEmpty()
+        return definition.nodeExtractions.isNotEmpty() || definition.composer != null
     }
 
     /** @param extension including the dot, e.g. ".kt" */

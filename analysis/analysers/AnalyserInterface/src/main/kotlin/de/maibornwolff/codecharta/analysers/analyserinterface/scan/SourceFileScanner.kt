@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.analyserinterface.scan
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.gitignore.GitignoreHandler
 import de.maibornwolff.codecharta.util.Logger
+import de.maibornwolff.codecharta.util.SourceText
 import java.io.File
 import java.nio.charset.Charset
 
@@ -88,7 +89,8 @@ class SourceFileScanner(
     fun readContent(file: File, charset: Charset = Charsets.UTF_8): String {
         require(file.exists()) { "File does not exist: ${file.absolutePath}" }
         require(file.isFile) { "Path is not a file: ${file.absolutePath}" }
-        return file.readText(charset).withoutByteOrderMarks()
+        val text = if (charset == Charsets.UTF_8) SourceText.read(file) else file.readText(charset)
+        return text.withoutByteOrderMarks()
     }
 
     // TreeSitter treats a byte order mark as source text and mis-tokenizes the identifiers around it.

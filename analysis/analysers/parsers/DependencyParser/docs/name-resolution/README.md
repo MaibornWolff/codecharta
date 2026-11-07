@@ -14,7 +14,8 @@ where a written name is looked up; the first place that holds a declaration of t
 ## Rules shared by every language
 
 1. **Name scope.** A name only means declarations of a language that can refer to it by name: Java with Kotlin,
-   TypeScript with JavaScript, Vue and Angular templates, C with C++; every other language alone.
+   TypeScript with JavaScript, Vue and Angular templates, C with C++, SQL with VBA (Access queries, vba.md decision 6);
+   every other language alone.
 2. **Copies.** A logical path that several files declare (two projects with the same package) means the copy in the
    file that shares the longest folder path with the using file, the first of equally near ones; SQL takes the using file's
    own copy, else the latest migration, a declaration before an implementation part (sql.md), C# every file of the nearest project that declares it, as a partial class is one class over several

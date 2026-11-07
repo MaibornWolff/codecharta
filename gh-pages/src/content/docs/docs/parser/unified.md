@@ -66,6 +66,10 @@ Usage: ccsh unifiedparser [-h] [--bypass-gitignore] [--commit=<ref>] [-ibf]
 | Rust         | .rs                                    |
 | Angular/HTML | .html                                  |
 | SQL          | .sql, .pks, .pkb, .pls                 |
+| VBA          | .bas, .cls                             |
+| VB6 forms    | .frm                                   |
+| Access forms and reports | .form, .report             |
+| Access macros | .macro                                |
 
 Some languages need a word of explanation:
 
@@ -76,6 +80,24 @@ Some languages need a word of explanation:
   reports or documentation, with `-e`. The inline `template` of a `@Component` in a `.ts` file is measured as well,
   and its complexity adds to the complexity and logic complexity of the `.ts` file.
 - **SQL**: one grammar covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL, so no dialect has to be chosen.
+- **VBA and VB6**: the parser reads the modules and classes that Access, Excel and Word export, not the code inside an
+  `.accdb`, `.xlsm` or `.docm` file; [Analyse an Access or VBA application](/docs/analysis/access-vba) shows how to
+  export them. A VB6 form (`.frm`) is measured behind its layout. Subs, functions and property
+  procedures count as functions; branches, every `Case`, loops, `And`/`Or`/`Xor`/`Eqv`/`Imp`, `IIf` and an
+  `On Error GoTo` handler add to the complexity. A file the VBA editor exported in the Windows code page (cp1252) reads
+  as such, so its umlauts stay intact; so does an Access query in a `queries` folder.
+- **Access forms and reports**: a `.form` or `.report` file holds the layout Access writes with `SaveAsText`. Its
+  `rloc` counts only the lines that hold logic: the expressions of controls and events (`=Sum([Total])`,
+  `=OpenOrder()`) and the SQL of a record or row source; positions, colours and the code after `CodeBehindForm`,
+  which the exported class module holds, count for nothing. The expressions add to the complexity like VBA, the SQL
+  like SQL, and `number_of_controls` counts the controls of its sections. A macro embedded in an event counts for the
+  layout as a stand-alone macro counts. A layout reads in the encoding its byte order mark names, UTF-16 as Access
+  writes it.
+- **Access macros**: a `.macro` file holds a stand-alone macro as Access writes it with `SaveAsText`. Its actions and
+  conditions count as `rloc`, its comments as `comment_lines`; `If` and `Else If`, `And`/`Or` and `IIf` in its
+  expressions and an `OnError` that jumps to a submacro add to the complexity, and every submacro counts as a
+  function. A macro of Access 2010 or later is read from the XML Access writes into the export, an older one from its
+  action rows.
 
 ## Metrics
 
@@ -96,6 +118,7 @@ Some languages need a word of explanation:
 | number_of_triggers        | Only in SQL files: the triggers the file creates, with a body or calling a function                                                                                                                                     |
 | number_of_views           | Only in SQL files: the views the file defines, materialized ones included, temporary ones (`TEMP VIEW`) not                                                                                                                                               |
 | number_of_tables          | Only in SQL files: the tables the file creates, Oracle's global temporary tables included, without the temporary tables of a session (`#name`, `TEMP`, `GLOBAL TEMP`, `PRIVATE TEMPORARY`)                                                                                                                                |
+| number_of_controls        | Only in Access form and report layouts: the controls on its sections, labels included, without the default style of each control type |
 
 Some metrics are calculated per function. For each of them, a file gets the maximum, minimum, mean and median over
 its functions, as `max_`, `min_`, `mean_` and `median_` metrics, such as `max_complexity_per_function`.

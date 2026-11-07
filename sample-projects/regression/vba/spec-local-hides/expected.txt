@@ -1,0 +1,3 @@
+# vba.md, simple name 1: parameters, local variables and constants hide the names of the project
+file modUse.bas -> modData.bas
+leaf modUse.bas#Other -> modData.bas#total

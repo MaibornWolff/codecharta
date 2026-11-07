@@ -13,6 +13,12 @@ sealed class IgnoreRule {
 
     data class TypeWhenParentTypeIsNot(val nodeType: String, val requiredParentType: String) : IgnoreRule()
 
+    /**
+     * For grammars that name their line breaks and hide closing keywords, such as VBA's `Loop`: a [lineBreakType] node
+     * counts only when it ends a line of code, that is, when its previous sibling is code that ends on the same line.
+     */
+    data class LineBreakAfterNoCode(val lineBreakType: String, val nonCodeTypes: Set<String>) : IgnoreRule()
+
     /** Matches when the first child is an expression_statement with exactly one child, as a Python docstring is. */
     data object FirstChildIsDocstring : IgnoreRule()
 }

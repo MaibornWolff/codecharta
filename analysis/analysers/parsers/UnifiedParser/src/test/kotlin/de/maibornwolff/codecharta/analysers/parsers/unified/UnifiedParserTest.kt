@@ -50,7 +50,12 @@ class UnifiedParserTest {
             Arguments.of("vue", ".vue"),
             Arguments.of("rust", ".rs"),
             Arguments.of("angular", ".html"),
-            Arguments.of("sql", ".sql")
+            Arguments.of("sql", ".sql"),
+            Arguments.of("vba", ".bas"),
+            Arguments.of("vbaClass", ".cls"),
+            Arguments.of("vb6", ".frm"),
+            Arguments.of("accessLayout", ".form"),
+            Arguments.of("accessMacro", ".macro")
         )
     }
 

@@ -8,7 +8,6 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinitio
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmSyntaxTree
 import kotlin.collections.iterator
-import kotlin.math.round
 
 /**
  * Collects code metrics by delegating to individual calculators.
@@ -16,12 +15,6 @@ import kotlin.math.round
  * Uses the restored calculator architecture with MetricsToCalculatorsMap.
  */
 internal class MetricCollector(private val definition: LanguageDefinition) {
-    companion object {
-        private const val LONG_METHOD_THRESHOLD = 10
-        private const val LONG_PARAMETER_LIST_THRESHOLD = 4
-        private const val EXCESSIVE_COMMENTS_THRESHOLD = 10
-    }
-
     private val nodeTypeProvider: MetricNodeTypes = LanguageDefinitionMetricsAdapter(definition)
     private val calculatorsMap = MetricsToCalculatorsMap(
         nodeTypeProvider,
@@ -104,28 +97,15 @@ internal class MetricCollector(private val definition: LanguageDefinition) {
         val commentLines = metricValues[AvailableFileMetrics.COMMENT_LINES] ?: 0
         val rloc = metricValues[AvailableFileMetrics.REAL_LINES_OF_CODE] ?: 0
 
-        result[AvailableFileMetrics.LONG_METHOD.metricName] = countLongMethods(rlocPerFunction).toDouble()
+        result[AvailableFileMetrics.LONG_METHOD.metricName] = CodeSmells.countLongMethods(rlocPerFunction).toDouble()
         result[AvailableFileMetrics.LONG_PARAMETER_LIST.metricName] =
-            countLongParameterLists(parametersPerFunction).toDouble()
-        result[AvailableFileMetrics.EXCESSIVE_COMMENTS.metricName] = calculateExcessiveComments(commentLines)
-        result[AvailableFileMetrics.COMMENT_RATIO.metricName] = calculateCommentRatio(commentLines, rloc)
+            CodeSmells.countLongParameterLists(parametersPerFunction).toDouble()
+        result[AvailableFileMetrics.EXCESSIVE_COMMENTS.metricName] = CodeSmells.excessiveComments(commentLines)
+        result[AvailableFileMetrics.COMMENT_RATIO.metricName] = CodeSmells.commentRatio(commentLines, rloc)
 
         // Per-function metrics
         result.putAll(calculatorsMap.getMeasuresOfPerFunctionMetrics())
 
         return result
-    }
-
-    private fun countLongMethods(rlocPerFunction: List<Int>): Int = rlocPerFunction.count { rloc -> rloc > LONG_METHOD_THRESHOLD }
-
-    private fun countLongParameterLists(parametersPerFunction: List<Int>): Int =
-        parametersPerFunction.count { params -> params > LONG_PARAMETER_LIST_THRESHOLD }
-
-    private fun calculateExcessiveComments(commentLines: Int): Double = if (commentLines > EXCESSIVE_COMMENTS_THRESHOLD) 1.0 else 0.0
-
-    private fun calculateCommentRatio(commentLines: Int, rloc: Int): Double {
-        if (rloc <= 0) return 0.0
-        val ratio = commentLines.toDouble() / rloc.toDouble()
-        return round(ratio * 100) / 100
     }
 }

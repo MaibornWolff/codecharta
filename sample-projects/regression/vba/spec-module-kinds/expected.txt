@@ -1,0 +1,4 @@
+# vba.md, modules: each declaration of a standard module is a leaf, a class module is one
+file clsCustomer.cls -> modOrders.bas
+leaf clsCustomer.cls#clsCustomer -> modOrders.bas#Total
+leaf modOrders.bas#Total -> modOrders.bas#TaxOf
