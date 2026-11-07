@@ -5,6 +5,9 @@ import de.maibornwolff.codecharta.util.FileExtension
 import java.io.File
 import de.maibornwolff.treesitter.excavationsite.api.Language as LibraryLanguage
 
+private const val VBA_KEYWORDS = "keywords/vba-keywords.txt"
+private const val SQL_KEYWORDS = "keywords/sql-keywords.txt"
+
 private fun suffixesOf(fileExtension: FileExtension): Set<String> =
     (setOf(fileExtension.primaryExtension) + fileExtension.otherValidExtensions).map { it.removePrefix(".") }.toSet()
 
@@ -30,18 +33,18 @@ enum class Language(
     VUE(LibraryLanguage.VUE, setOf("vue"), listOf("keywords/vue-keywords.txt")),
     RUST(LibraryLanguage.RUST, setOf("rs"), listOf("keywords/rust-keywords.txt")),
     ANGULAR(LibraryLanguage.ANGULAR, setOf("html"), listOf("keywords/angular-template-keywords.txt")),
-    SQL(LibraryLanguage.SQL, suffixesOf(FileExtension.SQL), listOf("keywords/sql-keywords.txt")),
-    VBA(LibraryLanguage.VBA, suffixesOf(FileExtension.VBA), listOf("keywords/vba-keywords.txt")),
-    VB6(LibraryLanguage.VB6, suffixesOf(FileExtension.VB6), listOf("keywords/vba-keywords.txt")),
+    SQL(LibraryLanguage.SQL, suffixesOf(FileExtension.SQL), listOf(SQL_KEYWORDS)),
+    VBA(LibraryLanguage.VBA, suffixesOf(FileExtension.VBA), listOf(VBA_KEYWORDS)),
+    VB6(LibraryLanguage.VB6, suffixesOf(FileExtension.VB6), listOf(VBA_KEYWORDS)),
 
     // The names of a form's controls carry the prefixes of VBA code (`txtOrderDate`, `cboCustomer`)
-    ACCESS_LAYOUT(LibraryLanguage.ACCESS_LAYOUT, suffixesOf(FileExtension.ACCESS_LAYOUT), listOf("keywords/vba-keywords.txt")),
+    ACCESS_LAYOUT(LibraryLanguage.ACCESS_LAYOUT, suffixesOf(FileExtension.ACCESS_LAYOUT), listOf(VBA_KEYWORDS)),
 
     // A macro names the forms and reports it opens, with the same prefixes (`frmOrders`, `rptInvoice`)
-    ACCESS_MACRO(LibraryLanguage.ACCESS_MACRO, suffixesOf(FileExtension.ACCESS_MACRO), listOf("keywords/vba-keywords.txt")),
+    ACCESS_MACRO(LibraryLanguage.ACCESS_MACRO, suffixesOf(FileExtension.ACCESS_MACRO), listOf(VBA_KEYWORDS)),
 
     // The SQL of an Access query names its objects with the prefixes of VBA code (`qryOrders`, `tblCustomers`)
-    ACCESS_QUERY(LibraryLanguage.SQL, emptySet(), listOf("keywords/sql-keywords.txt", "keywords/vba-keywords.txt"))
+    ACCESS_QUERY(LibraryLanguage.SQL, emptySet(), listOf(SQL_KEYWORDS, VBA_KEYWORDS))
     ;
 
     // Scoped per language rather than merged into one global set: a Kotlin file must not lose `func`
