@@ -47,12 +47,13 @@ internal object LayoutLogicReader {
     private val SUB_OBJECT = Regex("""^(Form|Report|Table|Query)\.(.+)$""", RegexOption.IGNORE_CASE)
 
     // The name Access gives a new control: its type and a number (`Label122`, `Text45`, `Auto_Header0`)
-    private val DEFAULT_CONTROL_NAME = Regex(
-        "^(Label|Text|Command|Combo|List|Check|Option|Toggle|Frame|Box|Line|Image|EmptyCell|Child|Page|TabCtl|OLEUnbound|" +
-            "OLEBound|Attachment|Chart|NavigationButton|NavigationSubform|NavigationControl|WebBrowser|EdgeBrowser|PageBreak|" +
-            "Auto_Header|Auto_Title|Auto_Logo|Auto_Date|Auto_Time|Auto_PageNumber)\\d+$",
-        RegexOption.IGNORE_CASE
-    )
+    private val NUMBERED_NAME = Regex("""^(\D+)\d+$""")
+    private val DEFAULT_CONTROL_TYPES = setOf(
+        "Label", "Text", "Command", "Combo", "List", "Check", "Option", "Toggle", "Frame", "Box", "Line", "Image",
+        "EmptyCell", "Child", "Page", "TabCtl", "OLEUnbound", "OLEBound", "Attachment", "Chart", "NavigationButton",
+        "NavigationSubform", "NavigationControl", "WebBrowser", "EdgeBrowser", "PageBreak", "Auto_Header", "Auto_Title",
+        "Auto_Logo", "Auto_Date", "Auto_Time", "Auto_PageNumber"
+    ).map { it.lowercase() }.toSet()
 
     private class Collected {
         val expressions = mutableListOf<String>()
@@ -102,16 +103,12 @@ internal object LayoutLogicReader {
             isEventProperty(name) && value.isNotEmpty() && !value.startsWith(BRACKET) -> collected.macroNames.add(value)
             value.isEmpty() -> Unit
             name == CAPTION -> collected.captions.add(value)
-            name == CONTROL_SOURCE ||
-                (
-                    name == NAME &&
-                        block.isControl &&
-                        !DEFAULT_CONTROL_NAME.matches(
-                            value
-                        )
-                ) -> collected.names.add(value)
+            name == CONTROL_SOURCE || (name == NAME && block.isControl && !isDefaultControlName(value)) -> collected.names.add(value)
         }
     }
+
+    private fun isDefaultControlName(value: String): Boolean =
+        NUMBERED_NAME.matchEntire(value)?.groupValues?.get(1)?.lowercase() in DEFAULT_CONTROL_TYPES
 
     private fun isExpressionProperty(name: String): Boolean = name in EXPRESSION_PROPERTIES || isEventProperty(name)
 
