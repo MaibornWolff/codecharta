@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.CopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.DeclaringCopy
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FilePath
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NearestCopy
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.nearestCopy
 
 /**
  * "Which file" of `cpp.md`: a use points at the copy the include closure of the using file holds, the first in include
@@ -13,9 +13,9 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Ne
 internal class CppCopyRules(private val includes: CppIncludes?) : CopyRules {
     override fun filesFor(allCopies: List<DeclaringCopy>, usingFile: FilePath): List<FilePath> {
         val copies = allCopies.filterNot { it.isFileScoped }.ifEmpty { allCopies }
-        val closure = includes?.closureOf(usingFile.segments) ?: return NearestCopy.filesFor(copies, usingFile)
+        val closure = includes?.closureOf(usingFile.segments) ?: return nearestCopy.filesFor(copies, usingFile)
         val copyFiles = copies.mapTo(HashSet()) { it.file.segments }
-        val firstIncluded = closure.firstOrNull { it in copyFiles } ?: return NearestCopy.filesFor(copies, usingFile)
+        val firstIncluded = closure.firstOrNull { it in copyFiles } ?: return nearestCopy.filesFor(copies, usingFile)
         return listOf(FilePath(firstIncluded))
     }
 }
