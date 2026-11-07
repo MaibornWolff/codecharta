@@ -21,7 +21,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.CopyRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.DefaultNameRules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NameRules
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NearestCopy
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.nearestCopy
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import java.io.File
 
@@ -48,6 +48,6 @@ internal object LanguageRules {
         SupportedLanguage.GO -> goCopyRules
         SupportedLanguage.CPP -> CppCopyRules(analysisRoot?.let { CppIncludes.of(it) })
         SupportedLanguage.RUST -> rustCopyRules
-        else -> NearestCopy
+        else -> nearestCopy
     }
 }
