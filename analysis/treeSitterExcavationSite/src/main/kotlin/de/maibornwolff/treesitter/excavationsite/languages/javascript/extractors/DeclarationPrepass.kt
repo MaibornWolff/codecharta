@@ -50,14 +50,8 @@ internal object DeclarationPrepass {
             return clause
                 .children()
                 .filter { it.type == EXPORT_SPECIFIER }
-                .mapNotNull { specifier ->
-                    specifier
-                        .children()
-                        .filter { it.type == IDENTIFIER }
-                        .firstOrNull()
-                        ?.text
-                        ?.trim()
-                }.toList()
+                .mapNotNull { specifier -> specifierNames(specifier).firstOrNull() }
+                .toList()
         }
         return node
             .children()
