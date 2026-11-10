@@ -1,0 +1,3 @@
+# typescript.md, binding: import { default as D } binds D to the default export, as import D does
+file page.ts -> button.ts
+leaf page.ts#Page -> button.ts#Button
