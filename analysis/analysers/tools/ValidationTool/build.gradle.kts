@@ -5,6 +5,9 @@ dependencies {
 
     implementation(libs.gson)
     implementation(libs.json.schema)
+    constraints {
+        implementation(libs.json)
+    }
     implementation(libs.picocli)
     implementation(libs.kotter)
     implementation(libs.kotter.test)

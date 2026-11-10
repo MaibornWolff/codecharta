@@ -16,6 +16,13 @@ dependencies {
     testImplementation(libs.junit.jupiter.api)
 
     testImplementation(libs.wiremock)
+    testImplementation(platform(libs.jackson.bom))
+    constraints {
+        testImplementation(libs.guava)
+        testImplementation(libs.httpclient5)
+        testImplementation(libs.httpcore5)
+        testImplementation(libs.httpcore5.h2)
+    }
 }
 
 tasks.test {

@@ -53,6 +53,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   or packages.
 - **SQL joins in parentheses**: the dependency parser links a query to every table of a join written in parentheses,
   not only to the first and the last.
+- **Crafted JSON files**: ccsh no longer stalls on a JSON file that holds an extremely long number.
 
 ## [2.3.0] - 2026-10-28
 
