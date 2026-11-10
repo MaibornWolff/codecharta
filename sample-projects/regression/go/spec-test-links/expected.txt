@@ -1,0 +1,8 @@
+# Test links: cart_test.go names Cart and uses the fake in fake_test.go, a test too
+file shop/cart.go -> shop/price.go
+file shop/cart_test.go -> shop/cart.go
+file shop/cart_test.go -> shop/fake_test.go
+leaf shop/cart.go#Cart -> shop/price.go#Pricer
+leaf shop/cart_test.go#TestTotal -> shop/cart.go#Cart
+leaf shop/cart_test.go#TestTotal -> shop/fake_test.go#fakePricer
+test shop/cart_test.go -> shop/cart.go

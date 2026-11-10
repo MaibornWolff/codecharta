@@ -21,7 +21,8 @@ Open the map in the [Web Studio](https://codecharta.com/visualization/app/index.
 
 - The [Raw Text Parser](/docs/parser/raw-text), [Unified Parser](/docs/parser/unified),
   [Dependency Parser](/docs/parser/dependency) and [Domain Language Parser](/docs/parser/domain-language), each when
-  it applies to the folder.
+  it applies to the folder. The Dependency Parser links the tests to the code they name (`--link-tests`), which the
+  Clusters tab shows as tests.
 - The [Git Log Parser](/docs/parser/git-log) (`repo-scan`) when the folder is the root of a git repository.
 - The [SVN Log Parser](/docs/parser/svn-log) when the folder is the root of an svn working copy. `ccsh analyse` runs
   `svn log --verbose --non-interactive` itself, so `svn` has to be on the `PATH`.

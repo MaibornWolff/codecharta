@@ -51,7 +51,11 @@ class CodebaseAnalysis(
         if (applicable.isEmpty()) throw AnalysisException("No parser applies to ${request.projectFolder.path}, so there is nothing to map.")
         val arguments = excludePatternsFor(request).map { "--exclude=$it" } + listOfNotNull(LOCAL_CHANGES.takeIf { request.localChanges })
         val configured = applicable.map { parser ->
-            ConfiguredAnalyser(parser, arguments, whenDone = { sharedFileLoop?.leave(parser.name) })
+            ConfiguredAnalyser(
+                parser,
+                arguments + CodeParsers.ownArguments[parser.name].orEmpty(),
+                whenDone = { sharedFileLoop?.leave(parser.name) }
+            )
         }
         return ParserSelection(configured, skipped)
     }

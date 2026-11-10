@@ -159,6 +159,28 @@ class ClustersLensTest {
     }
 
     @Test
+    fun `should move a cluster id that is a node id along with its file when re-keying, and keep any other id`() {
+        // Arrange
+        val test = Node("PlanTest.kt", NodeType.File)
+        val code = Node("Plan.kt", NodeType.File)
+        val before = Node("root", NodeType.Folder, children = setOf(Node("old", NodeType.Folder, children = setOf(test, code))))
+        val after = Node("root", NodeType.Folder, children = setOf(Node("new", NodeType.Folder, children = setOf(test, code))))
+        val oldTestId = NodeId.fromSegments(listOf("old", "PlanTest.kt"))
+        val lens = lensOf(
+            Cluster(oldTestId, "PlanTest.kt", listOf(ClusterMember(NodeId.fromSegments(listOf("old", "Plan.kt"))))),
+            Cluster("commit-1", "Commit", listOf(ClusterMember(NodeId.fromSegments(listOf("old", "Plan.kt")))), parentId = oldTestId)
+        )
+        val remap: SegmentRemapping = { segments -> if (segments.firstOrNull() == "old") listOf("new") + segments.drop(1) else segments }
+
+        // Act
+        val rekeyed = lens.rekeyed(before, after, remap)
+
+        // Assert
+        val newTestId = NodeId.fromSegments(listOf("new", "PlanTest.kt"))
+        assertThat(rekeyed.clusters().map { it.id to it.parentId }).containsExactly(newTestId to null, "commit-1" to newTestId)
+    }
+
+    @Test
     fun `should read a missing weight as a full share`() {
         // Arrange
         val member = ClusterMember("n1")

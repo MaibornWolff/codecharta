@@ -11,7 +11,6 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLa
 import de.maibornwolff.treesitter.excavationsite.api.RustImpl
 import de.maibornwolff.treesitter.excavationsite.api.RustItem
 import de.maibornwolff.treesitter.excavationsite.api.RustItemKind
-import de.maibornwolff.treesitter.excavationsite.api.RustModule
 import de.maibornwolff.treesitter.excavationsite.api.RustNamespace
 import de.maibornwolff.treesitter.excavationsite.api.RustPath
 import de.maibornwolff.treesitter.excavationsite.api.RustUse
@@ -31,34 +30,32 @@ class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     private val lookup by lazy { RustLookup(project.tree, project.crates) }
 
     override fun analyze(): FileReport {
-        val fileScope = scopeOf(emptyList())
-        if (fileScope == null || !project.tree.isCounted(fileScope, false)) return FileReport(emptyList())
-        val facts = countedFacts(fileScope)
-        val implsByOwner = facts.impls.mapNotNull { impl -> ownerOf(impl)?.let { it to impl } }.groupBy({ it.first }, { it.second })
-        val ownImpls = implsByOwner.filterKeys { it.isInThisFile }.mapKeys { it.key.path }
+        val fileScope = scopeOf(emptyList()) ?: return FileReport(emptyList())
+        val facts = project.factsOf(file)
+        val (testImpls, codeImpls) = facts.impls.partition { isTest(it.isTest, it.inlinePath) }
+        val codeImplsByOwner = byOwner(codeImpls)
+        val ownImpls = codeImplsByOwner.filterKeys { it.isInThisFile }.mapKeys { it.key.path }
         val items = facts.items.mapNotNull { item -> scopeOf(item.inlinePath)?.let { itemNode(item, it, ownImpls) } }
-        val implParts = implsByOwner.filterKeys { !it.isInThisFile }.map { (owner, impls) -> implPart(owner, impls) }
+        val implParts = codeImplsByOwner.filterKeys { !it.isInThisFile }.map { (owner, impls) -> implPart(owner, impls) } +
+            byOwner(testImpls).map { (owner, impls) -> implPart(owner, impls).copy(isTest = true) }
         val reexports = facts.uses.filter { it.visibility != RustVisibility.PRIVATE }.flatMap { reexportNodes(it) }
-        return FileReport(items + implParts + reexports)
+        val nodes = items + implParts + reexports
+        return FileReport(if (fileScope.isTest) nodes.map { it.copy(isTest = true) } else nodes)
     }
 
     private fun scopeOf(inlinePath: List<String>): RustModuleScope? = project.tree.scopeOf(file, inlinePath)
 
-    // What `#[cfg(test)]` marks counts only in a run with tests (decision 6)
-    private fun countedFacts(fileScope: RustModuleScope): RustModule {
-        val all = project.factsOf(file)
-        return all.copy(
-            items = all.items.filter { project.tree.isCounted(fileScope, it.isTest) },
-            impls = all.impls.filter { project.tree.isCounted(fileScope, it.isTest) },
-            uses = all.uses.filter { project.tree.isCounted(fileScope, it.isTest) }
-        )
-    }
+    // What `#[cfg(test)]` marks, or what a module it marks holds, is test code (decision 6)
+    private fun isTest(isMarked: Boolean, inlinePath: List<String>): Boolean = isMarked || scopeOf(inlinePath)?.isTest == true
+
+    private fun byOwner(impls: List<RustImpl>): Map<ImplOwner, List<RustImpl>> =
+        impls.mapNotNull { impl -> ownerOf(impl)?.let { it to impl } }.groupBy({ it.first }, { it.second })
 
     private fun itemNode(item: RustItem, scope: RustModuleScope, ownImpls: Map<List<String>, List<RustImpl>>): Node {
         val path = scope.pathOf(item.name)
         val ownName = typeOf(path)
         val uses = usesOf(item.paths, scope) + ownImpls[path].orEmpty().flatMap { implUses(it) }
-        return node(path, nodeTypeOf(item.kind), uses.filterNot { it == ownName })
+        return node(path, nodeTypeOf(item.kind), uses.filterNot { it == ownName }).copy(isTest = isTest(item.isTest, item.inlinePath))
     }
 
     // Decision 3: a leaf at its owner's path in this file, which uses the owner and what the impls write
@@ -95,7 +92,9 @@ class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         val name = use.binding ?: return emptyList()
         val targets = REEXPORTED_NAMESPACES.flatMap { lookup.resolveUse(use, it, scope) }.mapNotNull { it.declarationPath }.distinct()
         if (targets.isEmpty()) return emptyList()
-        return listOf(node(scope.pathOf(name), NodeType.REEXPORT, targets.map { typeOf(it) }))
+        return listOf(
+            node(scope.pathOf(name), NodeType.REEXPORT, targets.map { typeOf(it) }).copy(isTest = isTest(use.isTest, use.inlinePath))
+        )
     }
 
     // One re-export per item the module offers that the re-exporting module does not bind itself
@@ -103,11 +102,16 @@ class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         val source =
             lookup.resolveUse(use, RustNamespace.TYPE, scope).firstNotNullOfOrNull { (it as? Meaning.Module)?.scope } ?: return emptyList()
         val ownNames = scope.items.keys + scope.uses.mapNotNull { it.binding } + scope.modules.keys
+        val isTestUse = isTest(use.isTest, use.inlinePath)
         return source.items
-            .filter { (name, items) -> name !in ownNames && items.any { source.isVisibleTo(scope, it.visibility) } }
+            .filter { (name, items) -> name !in ownNames && items.any { isReexported(it, source, scope, isTestUse) } }
             .keys
-            .map { name -> node(scope.pathOf(name), NodeType.REEXPORT, listOf(typeOf(source.pathOf(name)))) }
+            .map { name -> node(scope.pathOf(name), NodeType.REEXPORT, listOf(typeOf(source.pathOf(name)))).copy(isTest = isTestUse) }
     }
+
+    // Code re-exports no test item, as a run without tests has none to re-export
+    private fun isReexported(item: RustItem, source: RustModuleScope, scope: RustModuleScope, isTestUse: Boolean): Boolean =
+        source.isVisibleTo(scope, item.visibility) && (isTestUse || !(item.isTest || source.isTest))
 
     private fun usesOf(paths: List<RustPath>, scope: RustModuleScope): List<Type> = paths
         .flatMap { path -> lookup.resolve(path, scope).mapNotNull { seenFrom(it, scope).declarationPath } }

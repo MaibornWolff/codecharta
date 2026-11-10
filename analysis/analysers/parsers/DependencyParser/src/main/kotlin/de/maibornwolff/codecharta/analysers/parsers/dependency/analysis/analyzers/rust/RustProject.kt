@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.rust
 
-import de.maibornwolff.codecharta.analysers.analyserinterface.scan.TestFileDetector
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.ProjectListing
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.readInParallel
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.common.splitNameToParts
@@ -16,7 +15,6 @@ import java.util.concurrent.ConcurrentHashMap
 internal class RustProject private constructor(
     rustFiles: Set<List<String>>,
     val crates: RustCrates,
-    val includesTests: Boolean,
     private val sourceOf: (List<String>) -> String
 ) {
     private val facts = ConcurrentHashMap<List<String>, RustModule>()
@@ -26,7 +24,7 @@ internal class RustProject private constructor(
         readInParallel(rustFiles) { factsOf(it) }
     }
 
-    val tree = RustModuleTree(crates, rustFiles, includesTests, ::factsOf)
+    val tree = RustModuleTree(crates, rustFiles, ::factsOf)
 
     /** What a file declares and writes, read once. */
     fun factsOf(file: List<String>): RustModule = facts.computeIfAbsent(file) { TreeSitterDependencies.rustModule(sourceOf(it)) }
@@ -49,7 +47,7 @@ internal class RustProject private constructor(
                     )
                 }.filter { it.endsWith(RUST_SUFFIX) }
                 .mapTo(HashSet()) { segmentsOf(it) }
-            RustProject(rustFiles, RustCrates(analysisRoot, rustFiles), includesTests(analysisRoot, analysedFiles)) { file ->
+            RustProject(rustFiles, RustCrates(analysisRoot, rustFiles)) { file ->
                 analysisRoot.resolve(file.joinToString(File.separator)).readText()
             }
         }
@@ -57,15 +55,7 @@ internal class RustProject private constructor(
         /** A file analysed without a root: a module tree of its own, without `Cargo.toml`. */
         fun ofSingleFile(file: List<String>, content: String): RustProject {
             val rustFiles = setOf(file).filterTo(HashSet()) { it.isNotEmpty() }
-            return RustProject(rustFiles, RustCrates(null, rustFiles), includesTests = true) { content }
-        }
-
-        // Decision 6: only the scanner knows whether the run includes tests, so a run that analyses a Rust file in a
-        // test folder counts as one that does (Christian chose this over a field of the shared file info)
-        private fun includesTests(analysisRoot: File, analysedFiles: Set<String>): Boolean {
-            if (analysedFiles.isEmpty()) return true
-            val testFiles = TestFileDetector(analysisRoot)
-            return analysedFiles.any { it.endsWith(RUST_SUFFIX) && testFiles.isTestFile(File(analysisRoot, it)) }
+            return RustProject(rustFiles, RustCrates(null, rustFiles)) { content }
         }
 
         fun segmentsOf(physicalPath: String): List<String> = splitNameToParts(physicalPath).filter { it != CURRENT_FOLDER }

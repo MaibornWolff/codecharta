@@ -120,6 +120,7 @@ function mapClusterings(file: CcJson2, idToPath: Record<string, string>): Cluste
             id: cluster.id,
             name: cluster.name,
             members: mapClusterMembers(cluster.members, idToPath),
+            ...(idToPath[cluster.id] === undefined ? {} : { path: idToPath[cluster.id] }),
             ...shownAttributesOf(cluster.attributes)
         }))
         clusterings[key] = {

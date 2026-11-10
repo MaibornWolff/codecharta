@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLa
  *   depends on the declaration of its own path (`cpp.md` and `rust.md`, decision 3)
  * @property kind what kind of declaration it is, for a language whose names mean declarations of some kinds only (SQL's
  *   tables and routines, `sql.md` decision 6); null for the other languages
+ * @property isTest whether it is test code inside a code file, as Rust's `#[cfg(test)]` (`rust.md`, decision 6)
  */
 data class Node(
     val pathWithName: Path,
@@ -21,7 +22,8 @@ data class Node(
     val angular: AngularMetadata? = null,
     val isFileScoped: Boolean = false,
     val isImplementationPart: Boolean = false,
-    val kind: String? = null
+    val kind: String? = null,
+    val isTest: Boolean = false
 ) {
     fun name() = pathWithName.parts.last()
 

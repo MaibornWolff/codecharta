@@ -179,6 +179,7 @@ describe("codeMapRenderService", () => {
             clearArrows: jest.fn(),
             addEdgeArrows: jest.fn(),
             addEdgePreview: jest.fn(),
+            showClusterSource: jest.fn(),
             addEdgeMapBasedOnNodes: jest.fn(),
             arrows: [new Object3D()],
             threeSceneService

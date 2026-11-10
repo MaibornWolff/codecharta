@@ -36,6 +36,7 @@ This writes `dependencies.cc.json.gz`.
 | `--commit=<ref>`                          | analyze the codebase at a specific git commit/tag/branch (creates a temporary worktree) |
 | `--verbose`                               | verbose mode                                                                            |
 | `--include-tests`                         | analyse test files too (excluded by default)                                            |
+| `--link-tests`                            | link each test file to the code it names, the code's dependencies unchanged             |
 | `--max-file-size=<kb>`                    | skip files of at least this size in KB (default: no limit)                              |
 | `--file-timeout=<seconds>`                | give up on a file after this many seconds (default: no timeout)                         |
 | `--omit-graph-analysis`                   | emit dependencies only, skipping cycle detection and both levelizations                 |
@@ -205,7 +206,8 @@ nothing), another crate of the project by its name, or nothing for the prelude a
 it points at, an `impl` block in another file than its type a leaf of that file, and a path into a type or enum, such
 as `Creature::new()` or `SpeedType::Walking`, is a use of the type. Function bodies, calls, constants and macros count,
 the arguments of a macro read as the expressions they almost always are; a method called on a variable draws no edge.
-Code under `#[cfg(test)]` counts only in a run that analyses a Rust file in a test folder, so with `--include-tests`.
+Code under `#[cfg(test)]` is test code: it counts only with `--include-tests`, and `--link-tests` links it as the tests
+inside its file.
 
 Delphi resolves a name as the compiler does, through the units of the analysed folder by their unit name, wherever the
 file lies. A name means a local declaration, a parameter or `Result` first, then a member of its class, of the class's
@@ -292,8 +294,22 @@ the forms and functions its conditions and expressions name; `DoCmd.RunMacro "mc
 
 A test depends on everything it exercises and nothing depends on it, so including tests shifts every
 level and every cycle. `--include-tests` opts back in. Test files are recognized by directory (`test`,
-`tests`, `__tests__`, `spec`, `specs`, matched on the path *inside* the project) and by each language's
-naming convention (`FooTest.java`, `foo_test.go`, `foo.spec.ts`, `test_foo.py`, …).
+`tests`, `__tests__`, `__mocks__`, `spec`, `specs`, `e2e`, matched on the path *inside* the project) and by each
+language's naming convention (`FooTest.java`, `foo_test.go`, `foo.spec.ts`, `foo.e2e.ts`, `foo.mocks.ts`,
+`test_foo.py`, `foo_test.cc`, `FooTest.cpp`, …), and Rust's `#[cfg(test)]` code is test code too.
+
+## Which code the tests name
+
+`--link-tests` reads the tests as well and links each test file to the code files it names directly, without following
+them further; the dependencies of the code stay as without tests. The links go into a clustering "Tests" with one
+cluster per test file, plus one per Rust file with `#[cfg(test)]` code, named `<file> (tests inside)`, which tests its
+own file too. A cluster is named by the test's file name and takes the test's node id as its id, so the visualization
+finds the test on the map. Every file the run read carries the metric `test_file`: 1 for a test, 0 for code.
+
+A link means that a test names a file, not that it runs it: a mocked class is named too, while an end-to-end test, a
+test a framework wires up or a mock given by a string (`mock.patch("shop.price")`, `jest.mock("./price")`) names
+nothing. In C and C++, a test written as free functions or `TEST(…)` blocks links only through the classes it declares.
+`--include-tests` and `--link-tests` exclude each other.
 
 ## When the analysis does not finish
 
@@ -317,6 +333,12 @@ away in the type it hands back, so the distinction is lost before this parser se
 the same gap.
 
 ## Examples
+
+Link the tests to the code they name:
+
+```bash
+ccsh dependencyparser foo/bar/project --link-tests -o out.cc.json
+```
 
 Include the tests, and give up on any file that takes more than ten seconds:
 

@@ -366,4 +366,29 @@ describe("codeMapMesh", () => {
             }
         })
     })
+
+    describe("markBuilding", () => {
+        const colorOf = (mesh: CodeMapMesh, id: number) => {
+            const colors = mesh.getThreeMesh().geometry.getAttribute("color")
+            return [colors.getX(id), colors.getY(id), colors.getZ(id)]
+        }
+
+        it("should keep the marked building in its colour through a highlight, and give it back once unmarked", () => {
+            // Arrange
+            const mesh = new CodeMapMesh([TEST_NODE_ROOT], STATE, false)
+            const marked = mesh.getMeshDescription().buildings[0]
+            const ownColor = colorOf(mesh, marked.id)
+
+            // Act
+            mesh.markBuilding(marked.node.path, "#ff0000")
+            mesh.highlightBuilding(new Set(), null, null, STATE, new Map())
+            const whileMarked = colorOf(mesh, marked.id)
+            mesh.markBuilding(null, "#ff0000")
+            const afterwards = colorOf(mesh, marked.id)
+
+            // Assert
+            expect(whileMarked).toEqual([1, 0, 0])
+            expect(afterwards).toEqual(ownColor)
+        })
+    })
 })

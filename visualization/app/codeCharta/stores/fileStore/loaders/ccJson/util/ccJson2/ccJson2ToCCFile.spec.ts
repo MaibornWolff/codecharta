@@ -131,6 +131,28 @@ describe("mapCcJson2ToCCFile", () => {
         warn.mockRestore()
     })
 
+    it("should give a cluster whose id is a node id the path of that node", () => {
+        // Arrange
+        ;(file.lenses as Record<string, unknown>).clusters = {
+            clusterings: {
+                tests: {
+                    title: "Tests",
+                    membership: "overlay",
+                    analyzers: ["dependencyParser"],
+                    clusters: [{ id: "/root/big.ts", name: "big.ts", members: [{ nodeId: "/root" }] }]
+                }
+            }
+        }
+
+        // Act
+        const result = mapCcJson2ToCCFile(file, nameDataPair(file))
+
+        // Assert
+        expect(result.settings.fileSettings.clusterings.tests.clusters).toEqual([
+            { id: "/root/big.ts", name: "big.ts", path: "/root/big.ts", members: { "/root": 1 } }
+        ])
+    })
+
     it("should keep the text and number attributes of a cluster, titled by the clustering's descriptors", () => {
         // Arrange
         ;(file.lenses as Record<string, unknown>).clusters = {

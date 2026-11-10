@@ -24,6 +24,8 @@ export interface ClusterData {
     name: string
     /** Weight by file path, re-keyed from node id when the file loads, like the other lenses' per-node data. */
     members: Record<string, number>
+    /** The file the cluster is about, when its id is that file's node id, as a test cluster's test. */
+    path?: string
     attributes?: ClusterAttributes
 }
 

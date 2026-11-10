@@ -1,0 +1,14 @@
+# Test links: CartTest names Cart, mocks Price (a mock counts as a link) and calls the helper TestData, a test too
+file src/main/java/shop/Cart.java -> src/main/java/shop/Price.java
+file src/test/java/shop/CartTest.java -> src/main/java/shop/Cart.java
+file src/test/java/shop/CartTest.java -> src/main/java/shop/Price.java
+file src/test/java/shop/CartTest.java -> src/test/java/shop/TestData.java
+file src/test/java/shop/TestData.java -> src/main/java/shop/Cart.java
+leaf src/main/java/shop/Cart.java#Cart -> src/main/java/shop/Price.java#Price
+leaf src/test/java/shop/CartTest.java#CartTest -> src/main/java/shop/Cart.java#Cart
+leaf src/test/java/shop/CartTest.java#CartTest -> src/main/java/shop/Price.java#Price
+leaf src/test/java/shop/CartTest.java#CartTest -> src/test/java/shop/TestData.java#TestData
+leaf src/test/java/shop/TestData.java#TestData -> src/main/java/shop/Cart.java#Cart
+test src/test/java/shop/CartTest.java -> src/main/java/shop/Cart.java
+test src/test/java/shop/CartTest.java -> src/main/java/shop/Price.java
+test src/test/java/shop/TestData.java -> src/main/java/shop/Cart.java

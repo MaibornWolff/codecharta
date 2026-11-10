@@ -282,6 +282,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
         this.codeMapArrowService.clearArrows()
         this.codeMapArrowService.addEdgeMapBasedOnNodes(sortedNodes)
         this.codeMapArrowService.addEdgePreview()
+        this.codeMapArrowService.showClusterSource()
         const selectedBuilding = this.threeSceneService.getSelectedBuilding()
         if (selectedBuilding) {
             this.codeMapArrowService.onBuildingSelected({ building: selectedBuilding })

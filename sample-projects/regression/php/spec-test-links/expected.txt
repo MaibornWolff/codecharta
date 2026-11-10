@@ -1,0 +1,14 @@
+# Test links: CartTest names Cart, mocks Price (a mock counts as a link) and calls the helper TestData, a test too
+file src/Cart.php -> src/Price.php
+file tests/CartTest.php -> src/Cart.php
+file tests/CartTest.php -> src/Price.php
+file tests/CartTest.php -> tests/TestData.php
+file tests/TestData.php -> src/Cart.php
+leaf src/Cart.php#Cart -> src/Price.php#Price usage=argument
+leaf tests/CartTest.php#CartTest -> src/Cart.php#Cart usage=instantiation
+leaf tests/CartTest.php#CartTest -> src/Price.php#Price usage=constant_access
+leaf tests/CartTest.php#CartTest -> tests/TestData.php#TestData
+leaf tests/TestData.php#TestData -> src/Cart.php#Cart usage=return_value
+test tests/CartTest.php -> src/Cart.php
+test tests/CartTest.php -> src/Price.php
+test tests/TestData.php -> src/Cart.php

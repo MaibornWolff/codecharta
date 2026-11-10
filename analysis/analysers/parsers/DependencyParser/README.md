@@ -284,6 +284,7 @@ the forms and functions its conditions and expressions name; `DoCmd.RunMacro "mc
 | `--commit=<ref>`                          | analyze the codebase at a specific git commit/tag/branch (creates a temporary worktree)              |
 | `--verbose`                               | verbose mode                                                                                         |
 | `--include-tests`                         | analyse test files too (excluded by default)                                                         |
+| `--link-tests`                            | link each test file to the code it names in a "Tests" clustering, the code's dependencies unchanged |
 | `--max-file-size=<kb>`                    | skip files of at least this size in KB (default: no limit)                                           |
 | `--file-timeout=<seconds>`                | give up on a file after this many seconds (default: no timeout)                                      |
 | `--omit-graph-analysis`                   | emit dependencies only, skipping cycle detection and both levelizations                              |
@@ -299,8 +300,18 @@ and the exclude patterns only apply to a directory walk.
 A test depends on everything it exercises and nothing depends on it, so including tests shifts every
 level and every cycle. DependaCharta's results are calibrated on production code, and this parser keeps
 that default; `--include-tests` opts back in. Test files are recognized by directory (`test`, `tests`,
-`__tests__`, `spec`, `specs`, matched on the path *inside* the project) and by each language's naming
-convention (`FooTest.java`, `foo_test.go`, `foo.spec.ts`, `test_foo.py`, …).
+`__tests__`, `__mocks__`, `spec`, `specs`, `e2e`, matched on the path *inside* the project) and by each language's
+naming convention (`FooTest.java`, `foo_test.go`, `foo.spec.ts`, `foo.e2e.ts`, `foo.mocks.ts`, `test_foo.py`,
+`foo_test.cc`, `FooTest.cpp`, …).
+
+### Which code the tests name
+
+`--link-tests` reads the test files as well and links each of them to the code files it names directly, without
+following those further. The dependencies of the code stay as a run without tests draws them; the links go into an
+overlay clustering "Tests", one cluster per test file, named by the file name with the test's node id as its id, and every file the run read carries the metric `test_file`
+(1 for a test, 0 for code), so a test that names no code still counts. A link says that a test names a file, not that
+it runs it: a mocked type is named too, while an end-to-end test or one a framework wires up names nothing.
+`--include-tests` and `--link-tests` exclude each other.
 
 ### When the analysis does not finish
 

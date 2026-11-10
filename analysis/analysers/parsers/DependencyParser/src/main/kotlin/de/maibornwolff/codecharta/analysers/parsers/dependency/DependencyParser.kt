@@ -8,15 +8,19 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailureRe
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.RunExitCode
 import de.maibornwolff.codecharta.analysers.analyserinterface.scan.FileLoop
 import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileScanner
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.TestFileDetector
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ExtractionPipeline
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.LanguageAnalyzerFactory
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FilePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.output.DependencyProjectGenerator
 import de.maibornwolff.codecharta.analysers.parsers.dependency.output.dependencyAttributeDescriptors
+import de.maibornwolff.codecharta.analysers.parsers.dependency.output.testFileAttributeDescriptors
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.ProcessingPipeline
+import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.TestLinks
 import de.maibornwolff.codecharta.analysers.parsers.dependency.progress.ProgressReporterFactory
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
@@ -58,6 +62,15 @@ class DependencyParser(
     private var includeTests = false
 
     @CommandLine.Option(
+        names = [LINK_TESTS],
+        description = [
+            "read test files too and write which code files each test names into a \"Tests\" clustering and a " +
+                "test_file metric, leaving the dependencies of the code as without tests"
+        ]
+    )
+    private var linkTests = false
+
+    @CommandLine.Option(
         names = ["--max-file-size"],
         description = ["skip files of at least this size in KB (default: no limit)"]
     )
@@ -87,6 +100,7 @@ class DependencyParser(
 
     companion object {
         const val NAME = "dependencyparser"
+        const val LINK_TESTS = "--link-tests"
         const val DESCRIPTION = "[experimental] generates cc.json with a file- and declaration-level dependency lens from source code"
     }
 
@@ -101,6 +115,11 @@ class DependencyParser(
         require(baseFile == null && !localChanges) {
             "--base-file and --local-changes are not supported by the DependencyParser: " +
                 "the dependency graph needs every file of the project, stopping execution..."
+        }
+
+        require(!(includeTests && linkTests)) {
+            "--include-tests and --link-tests exclude each other: tests go either into the dependencies or into the " +
+                "\"Tests\" clustering, stopping execution..."
         }
 
         val context = resolveEffectiveInput(inputFile)
@@ -131,7 +150,7 @@ class DependencyParser(
                 allowedExtensions = fileExtensionsToAnalyse.ifEmpty { SupportedLanguage.allSuffixes() },
                 excludePatterns = determineExclusionPatterns(ExtractionPipeline.analysisRootOf(input), !bypassGitignore),
                 maxFileSizeKb = maxFileSizeKb,
-                excludeTests = !includeTests
+                excludeTests = !includeTests && !linkTests
             )
 
         return ProgressReporterFactory.create(quiet = false).use { progressReporter ->
@@ -147,9 +166,25 @@ class DependencyParser(
                 runExitCode.failWith(FailureReport.nothingAnalysed(extraction.failures))
                 return null
             }
-            val fileReports = extraction.reports
-            val graph = ProcessingPipeline.run(fileReports, omitGraphAnalysis, ExtractionPipeline.analysisRootOf(input))
-            DependencyProjectGenerator().generate(graph, analysedFilePaths(fileReports), resolvePipedProject())
+            generate(extraction.reports, ExtractionPipeline.analysisRootOf(input))
+        }
+    }
+
+    // Test code inside a code file, as Rust's `#[cfg(test)]`, goes with the tests: dropped unless tests are included
+    private fun generate(fileReports: List<FileReport>, analysisRoot: File): Project {
+        val testFileDetector = TestFileDetector(analysisRoot)
+        val isTestFile = { filePath: FilePath -> testFileDetector.isTestFile(analysisRoot.resolve(filePath.segments.joinToString("/"))) }
+        val codeReports = if (includeTests) fileReports else TestLinks.codeReportsOf(fileReports, isTestFile)
+        val graph = ProcessingPipeline.run(codeReports, omitGraphAnalysis, analysisRoot)
+        val testLinks = if (linkTests) TestLinks.of(fileReports, isTestFile, analysisRoot).also(::logLinked) else null
+        return DependencyProjectGenerator().generate(graph, analysedFilePaths(codeReports), resolvePipedProject(), testLinks)
+    }
+
+    private fun logLinked(testLinks: TestLinks) {
+        val linkedFiles = testLinks.links.count { !it.isInline }
+        val inline = testLinks.links.count { it.isInline }
+        Logger.info {
+            "Linked $linkedFiles of ${testLinks.testFiles.size} test files, and the tests inside $inline code files, to the code"
         }
     }
 
@@ -175,7 +210,8 @@ class DependencyParser(
 
     override fun getDialog(): AnalyserDialogInterface = Dialog
 
-    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> = dependencyAttributeDescriptors()
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> =
+        dependencyAttributeDescriptors() + testFileAttributeDescriptors()
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
         if (resourceToBeParsed.isBlank()) return false
