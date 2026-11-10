@@ -1,3 +1,4 @@
 # rust.md, crates, decision 1: a crate is named by Cargo.toml, `-` written `_`
 file tests/arena.rs -> src/model.rs
 leaf tests/arena.rs#spawn -> src/model.rs#Creature
+test tests/arena.rs -> src/model.rs

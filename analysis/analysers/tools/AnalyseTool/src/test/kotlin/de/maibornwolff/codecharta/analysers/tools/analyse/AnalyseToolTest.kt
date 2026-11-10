@@ -333,6 +333,27 @@ class AnalyseToolTest {
     }
 
     @Test
+    fun `should link the tests to the code they name with the default parsers`() {
+        // Arrange
+        writeSource("src/main/kotlin/App.kt", "package app\n\nclass App\n")
+        writeSource("src/test/kotlin/AppTest.kt", "package app\n\nclass AppTest {\n    fun starts() {\n        App()\n    }\n}\n")
+        val tool = AnalyseTool(PrintStream(output), workingFolder, SvnLogWriter(listOf(MISSING_COMMAND)))
+
+        // Act
+        CommandLine(tool).execute("--quiet", projectFolder.path, "--output-file=${mapFile.path}")
+
+        // Assert
+        val map = readMap(mapFile)
+        assertThat(filesOf(map).getValue("src/test/kotlin/AppTest.kt")).containsEntry("test_file", 1L)
+        assertThat(filesOf(map).getValue("src/main/kotlin/App.kt")).containsEntry("test_file", 0L)
+        assertThat(
+            map.lenses.clusters.clusterings["tests"]
+                ?.clusters
+                ?.map { it.name }
+        ).containsExactly("AppTest.kt")
+    }
+
+    @Test
     fun `should say at the end why the git history is missing also when the analysers print their output`() {
         // Arrange
         writeSource("module/src/App.kt", APP_SOURCE)

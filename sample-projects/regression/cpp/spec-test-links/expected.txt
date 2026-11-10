@@ -1,0 +1,11 @@
+# Test links: cart_test.cpp includes cart.h and mocks Price (a mock counts as a link)
+file src/cart.cpp -> src/cart.h
+file src/cart.cpp -> src/price.h
+file src/cart.h -> src/price.h
+file test/cart_test.cpp -> src/price.h
+leaf src/cart.cpp#Cart -> src/cart.h#Cart usage=part_of
+leaf src/cart.cpp#Cart -> src/price.h#Price
+leaf src/cart.h#Cart -> src/price.h#Price
+leaf test/cart_test.cpp#MockPrice -> src/price.h#Price usage=inheritance
+test test/cart_test.cpp -> src/cart.h
+test test/cart_test.cpp -> src/price.h

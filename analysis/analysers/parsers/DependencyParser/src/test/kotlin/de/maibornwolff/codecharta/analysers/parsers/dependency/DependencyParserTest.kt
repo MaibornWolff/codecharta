@@ -2,6 +2,10 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.NodeId
+import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.treesitter.excavationsite.api.GrammarUnavailableException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -171,6 +175,133 @@ class DependencyParserTest {
 
         // Assert
         assertThat(output).contains("InventoryServiceTest.kt")
+    }
+
+    @Test
+    fun `should link each test file by its node id and file name to the code files it names, without links to other tests`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = codeWithTests(tempDir)
+
+        // Act
+        val clusters = projectOf(runParser(projectDir, "--link-tests")).lenses.clusters.clusterings["tests"]?.clusters
+
+        // Assert
+        assertThat(clusters?.map { Triple(it.id, it.name, it.members.map { member -> member.nodeId }) }).containsExactly(
+            Triple(
+                NodeId.fromSegments(listOf("test", "shop", "InventoryServiceTest.kt")),
+                "InventoryServiceTest.kt",
+                listOf(NodeId.fromSegments(listOf("src", "shop", "InventoryService.kt")))
+            )
+        )
+    }
+
+    @Test
+    fun `should leave the dependencies of the code as a run without tests draws them`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = codeWithTests(tempDir)
+
+        // Act
+        val withoutTests = fileEdgeNames(runParser(projectDir))
+        val withLinkedTests = fileEdgeNames(runParser(projectDir, "--link-tests"))
+
+        // Assert
+        assertThat(withLinkedTests).containsExactlyInAnyOrderElementsOf(withoutTests).isNotEmpty()
+    }
+
+    @Test
+    fun `should mark test files with 1 and the code with 0, a test naming no code included`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = codeWithTests(tempDir)
+
+        // Act
+        val testFileByName = testFileMetricByName(projectOf(runParser(projectDir, "--link-tests")).rootNode)
+
+        // Assert
+        assertThat(testFileByName).containsExactlyInAnyOrderEntriesOf(
+            mapOf(
+                "InventoryItem.kt" to 0,
+                "InventoryService.kt" to 0,
+                "InventoryServiceTest.kt" to 1,
+                "TestShelf.kt" to 1,
+                "IdleTest.kt" to 1
+            )
+        )
+    }
+
+    @Test
+    fun `should write neither test metric nor test clustering without linking tests`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = codeWithTests(tempDir)
+
+        // Act
+        val project = projectOf(runParser(projectDir))
+
+        // Assert
+        assertThat(testFileMetricByName(project.rootNode)).isEmpty()
+        assertThat(project.lenses.clusters.clusterings).isEmpty()
+    }
+
+    @Test
+    fun `should refuse to include tests and link them in one run`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = codeWithTests(tempDir)
+        val parser = DependencyParser(ByteArrayInputStream(ByteArray(0)), PrintStream(ByteArrayOutputStream()))
+
+        // Act
+        val exitCode = CommandLine(parser).execute(projectDir, "-nc", "--include-tests", "--link-tests")
+
+        // Assert
+        assertThat(exitCode).isNotZero()
+    }
+
+    @Test
+    fun `should draw the dependencies of Rust test code inside a code file only when tests are included`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = rustCrateWithInlineTests(tempDir)
+
+        // Act
+        val withoutTests = fileEdgeNames(runParser(projectDir))
+        val withLinkedTests = fileEdgeNames(runParser(projectDir, "--link-tests"))
+        val withTests = fileEdgeNames(runParser(projectDir, "--include-tests"))
+
+        // Assert
+        assertThat(withoutTests).doesNotContain("model.rs" to "shelf.rs")
+        assertThat(withLinkedTests).containsExactlyInAnyOrderElementsOf(withoutTests)
+        assertThat(withTests).contains("model.rs" to "shelf.rs")
+    }
+
+    @Test
+    fun `should link the tests inside a code file to that file and the code they name`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = rustCrateWithInlineTests(tempDir)
+
+        // Act
+        val project = projectOf(runParser(projectDir, "--link-tests"))
+
+        // Assert
+        val clusters = project.lenses.clusters.clusterings["tests"]?.clusters
+        assertThat(clusters?.map { Triple(it.id, it.name, it.members.map { member -> member.nodeId }) }).containsExactly(
+            Triple(
+                NodeId.fromSegments(listOf("src", "model.rs")),
+                "model.rs (tests inside)",
+                listOf(NodeId.fromSegments(listOf("src", "model.rs")), NodeId.fromSegments(listOf("src", "shelf.rs")))
+            )
+        )
+        assertThat(testFileMetricByName(project.rootNode)).containsEntry("model.rs", 0)
     }
 
     @Test
@@ -614,6 +745,41 @@ class DependencyParserTest {
             """.trimIndent()
         )
         return tempDir.toString()
+    }
+
+    private fun codeWithTests(tempDir: Path): String {
+        val code = tempDir.resolve("src/shop").createDirectories()
+        code.resolve("InventoryItem.kt").writeText("package shop\n\nclass InventoryItem")
+        code
+            .resolve(
+                "InventoryService.kt"
+            ).writeText("package shop\n\nclass InventoryService {\n    fun reserve(): InventoryItem = InventoryItem()\n}")
+        val tests = tempDir.resolve("test/shop").createDirectories()
+        tests.resolve("TestShelf.kt").writeText("package shop\n\nclass TestShelf")
+        tests.resolve("InventoryServiceTest.kt").writeText(
+            "package shop\n\nclass InventoryServiceTest {\n    fun reserves() {\n        InventoryService().reserve()\n        TestShelf()\n    }\n}"
+        )
+        tests.resolve("IdleTest.kt").writeText("package shop\n\nclass IdleTest {\n    fun waits() {}\n}")
+        return tempDir.toString()
+    }
+
+    private fun rustCrateWithInlineTests(tempDir: Path): String {
+        tempDir.resolve("Cargo.toml").writeText("[package]\nname = \"zoo\"\nedition = \"2021\"\n")
+        val sources = tempDir.resolve("src").createDirectories()
+        sources.resolve("lib.rs").writeText("pub mod model;\npub mod shelf;")
+        sources.resolve("shelf.rs").writeText("pub struct Shelf;")
+        sources.resolve("model.rs").writeText(
+            "pub struct Creature;\n\n#[cfg(test)]\nmod tests {\n    struct Probe {\n        shelf: crate::shelf::Shelf,\n" +
+                "        creature: super::Creature,\n    }\n}"
+        )
+        return tempDir.toString()
+    }
+
+    private fun projectOf(output: String): Project = ProjectDeserializer.deserializeProject(output)
+
+    private fun testFileMetricByName(node: Node): Map<String, Int> {
+        val own = node.attributes["test_file"]?.let { mapOf(node.name to (it as Number).toInt()) }.orEmpty()
+        return node.children.fold(own) { found, child -> found + testFileMetricByName(child) }
     }
 
     private fun runParser(projectDir: String, vararg options: String): String {

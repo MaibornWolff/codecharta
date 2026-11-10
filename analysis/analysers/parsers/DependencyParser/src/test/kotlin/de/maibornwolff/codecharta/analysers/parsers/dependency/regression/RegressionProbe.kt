@@ -1,11 +1,15 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.regression
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileScanner
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.TestFileDetector
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ExtractionPipeline
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FilePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.DeclarationEdge
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.FileDependencyEdge
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.ProcessingPipeline
+import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.TestLink
+import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.TestLinks
 import de.maibornwolff.codecharta.analysers.parsers.dependency.progress.SilentProgressReporter
 import de.maibornwolff.codecharta.util.CodeChartaConstants
 import java.io.File
@@ -16,7 +20,8 @@ import java.io.File
  * it (see [KnownGaps]),
  * and lines starting with `#` say why. The sources lie in `src`, analysed like
  * `ccsh dependencyparser --include-tests --bypass-gitignore` does, build folders excluded unless `src` has a
- * `.gitignore`; a file that fails to analyse is a `failed` line.
+ * `.gitignore`; a file that fails to analyse is a `failed` line, and each code file a test names a `test` line, as
+ * `--link-tests` links them.
  */
 internal class RegressionProbe(private val directory: File) {
     /** What keeps this folder from being a probe; empty for a probe. */
@@ -53,7 +58,18 @@ internal class RegressionProbe(private val directory: File) {
         val extraction = ExtractionPipeline(scanner, SilentProgressReporter).run(sources, bypassGitignore = true)
         val graph = ProcessingPipeline.run(extraction.reports, omitGraphAnalysis = false, analysisRoot = sources)
         val failures = extraction.failures.map { "$FAILED_PREFIX${it.path}: ${it.cause}" }
-        return (graph.edges.map { fileLine(it) } + graph.declarationEdges.map { leafLine(it) } + failures).sorted()
+        val testLines = TestLinks.of(extraction.reports, isTestFileBelow(sources), sources).links.flatMap { testLines(it) }
+        return (graph.edges.map { fileLine(it) } + graph.declarationEdges.map { leafLine(it) } + testLines + failures).sorted()
+    }
+
+    private fun isTestFileBelow(sources: File): (FilePath) -> Boolean {
+        val detector = TestFileDetector(sources)
+        return { filePath -> detector.isTestFile(sources.resolve(filePath.segments.joinToString("/"))) }
+    }
+
+    private fun testLines(link: TestLink): List<String> {
+        val test = link.test.segments.joinToString("/") + if (link.isInline) INLINE_TESTS else ""
+        return link.codeFiles.map { "test $test -> ${it.segments.joinToString("/")}" }
     }
 
     private fun fileLine(edge: FileDependencyEdge): String =
@@ -77,6 +93,7 @@ internal class RegressionProbe(private val directory: File) {
         private const val COMMENT_PREFIX = "#"
         private const val FAILED_PREFIX = "failed "
         private const val GITIGNORE_FILE = ".gitignore"
+        private const val INLINE_TESTS = " (tests inside)"
 
         /** The known gaps of every probe of a language folder, by probe folder name. */
         fun gapsOfLanguage(languageFolder: File): Map<String, KnownGaps> {

@@ -89,7 +89,7 @@ export class ClusterExplorerComponent implements OnDestroy {
     titleOf(row: ClusterShareRow): string {
         const fileCount = row.filePaths.length === 1 ? "1 file" : `${row.filePaths.length} files`
         const placement = this.clusterIdsOffTheMap().has(row.id) ? `${fileCount}, none of them on the map` : fileCount
-        return [row.name, placement, this.summaryOf(row)].filter(Boolean).join("\n")
+        return [row.path ?? row.name, placement, this.summaryOf(row)].filter(Boolean).join("\n")
     }
 
     ngOnDestroy(): void {
@@ -117,7 +117,7 @@ export class ClusterExplorerComponent implements OnDestroy {
     }
 
     hover(row: ClusterShareRow): void {
-        this.highlight.hover(row.filePaths)
+        this.highlight.hover(row.filePaths, row.path)
     }
 
     endHover(): void {
@@ -125,6 +125,6 @@ export class ClusterExplorerComponent implements OnDestroy {
     }
 
     togglePin(row: ClusterShareRow): void {
-        this.highlight.togglePin(row.id, row.filePaths)
+        this.highlight.togglePin(row.id, row.filePaths, row.path)
     }
 }

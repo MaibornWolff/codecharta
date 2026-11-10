@@ -5,8 +5,9 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 const val DEPENDENCIES = "dependencies"
 const val OUTGOING_DEPENDENCIES = "outgoing_dependencies"
 const val INCOMING_DEPENDENCIES = "incoming_dependencies"
+const val TEST_FILE = "test_file"
 
-private val ANALYSER_NAME = setOf("dependencyParser")
+internal val ANALYSER_NAME = setOf("dependencyParser")
 
 fun dependencyAttributeDescriptors(): Map<String, AttributeDescriptor> = mapOf(
     DEPENDENCIES to
@@ -37,6 +38,20 @@ fun dependencyAttributeDescriptors(): Map<String, AttributeDescriptor> = mapOf(
             hintHighValue = "Many files depend on this file",
             link = "",
             direction = -1,
+            analyzers = ANALYSER_NAME
+        )
+)
+
+/** Only a run that links tests writes the metric, so only such a run describes it. */
+fun testFileAttributeDescriptors(): Map<String, AttributeDescriptor> = mapOf(
+    TEST_FILE to
+        AttributeDescriptor(
+            title = "Test File",
+            description = "1 for a test file, 0 for any other file the dependency parser read",
+            hintLowValue = "Code",
+            hintHighValue = "A test",
+            link = "",
+            direction = 1,
             analyzers = ANALYSER_NAME
         )
 )

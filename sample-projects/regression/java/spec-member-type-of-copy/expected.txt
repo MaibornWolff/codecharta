@@ -3,5 +3,5 @@ file android/guava/src/com/g/c/RegularImmutableMultiset.java -> android/guava/sr
 file guava/src/com/g/c/RegularImmutableMultiset.java -> guava/src/com/g/c/ImmutableMultiset.java
 leaf android/guava/src/com/g/c/RegularImmutableMultiset.java#RegularImmutableMultiset -> android/guava/src/com/g/c/ImmutableMultiset.java#ImmutableMultiset usage=inheritance
 leaf android/guava/src/com/g/c/RegularImmutableMultiset.java#RegularImmutableMultiset -> android/guava/src/com/g/c/RegularImmutableMultiset.java#ElementSet
-leaf guava/src/com/g/c/RegularImmutableMultiset.java#RegularImmutableMultiset -> guava/src/com/g/c/ImmutableMultiset.java#ImmutableMultiset usage=inheritance
 leaf guava/src/com/g/c/RegularImmutableMultiset.java#RegularImmutableMultiset -> guava/src/com/g/c/ImmutableMultiset.java#ElementSet
+leaf guava/src/com/g/c/RegularImmutableMultiset.java#RegularImmutableMultiset -> guava/src/com/g/c/ImmutableMultiset.java#ImmutableMultiset usage=inheritance

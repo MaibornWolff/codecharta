@@ -24,6 +24,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   forms, queries, macros and VBA functions those name.
 - **Access export**: a macro you import into an Access application exports its modules, forms, reports, macros and
   queries into a folder ccsh maps, as the new guide for Access and VBA applications describes.
+- **Tests linked to the code**: `--link-tests` on `dependencyparser`, and `ccsh analyse` always, links each test to the
+  code files it names and marks every file it read as test or code, while the dependencies of the code stay as without
+  tests.
 
 ### Changed
 
@@ -32,6 +35,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   in Docker.
 - **Faster analysis of large projects**: `ccsh analyse` maps a project with tens of thousands of files in a fraction of
   the time and with less memory, most of all one with many packages.
+- **More tests recognised**: C and C++ tests such as `parser_test.cc`, end-to-end tests and mock helpers such as
+  `cart.mocks.ts` count as tests, so the parsers that leave tests out leave them out too.
 
 ### Removed
 
@@ -53,6 +58,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   or packages.
 - **SQL joins in parentheses**: the dependency parser links a query to every table of a join written in parentheses,
   not only to the first and the last.
+- **Rust tests without a test folder**: `dependencyparser --include-tests` keeps the `#[cfg(test)]` code of a crate that
+  has no `tests` folder.
 
 ## [2.3.0] - 2026-10-28
 

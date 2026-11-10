@@ -25,7 +25,10 @@ class TestFileDetector(private val analysisRoot: File) {
             matchesAnyExtension(fileName, TYPE_NAME_SUFFIX_EXTENSIONS) ->
                 nameWithoutExtension.endsWith("Test") || nameWithoutExtension.endsWith("Tests")
 
-            matchesAnyExtension(fileName, INFIX_MARKER_EXTENSIONS) -> fileName.contains(".test.") || fileName.contains(".spec.")
+            matchesAnyExtension(fileName, INFIX_MARKER_EXTENSIONS) -> INFIX_MARKERS.any { fileName.contains(it) }
+
+            matchesAnyExtension(fileName, C_FAMILY_EXTENSIONS) ->
+                nameWithoutExtension.startsWith("test_") || C_FAMILY_SUFFIXES.any { nameWithoutExtension.endsWith(it) }
 
             matchesAnyExtension(fileName, PYTHON_EXTENSIONS) ->
                 nameWithoutExtension.startsWith("test_") || nameWithoutExtension.endsWith("_test")
@@ -40,10 +43,13 @@ class TestFileDetector(private val analysisRoot: File) {
     }
 
     companion object {
-        private val TEST_DIRECTORIES = setOf("test", "tests", "__tests__", "spec", "specs")
+        private val TEST_DIRECTORIES = setOf("test", "tests", "__tests__", "__mocks__", "spec", "specs", "e2e")
 
         private val TYPE_NAME_SUFFIX_EXTENSIONS = setOf("kt", "kts", "java", "cs", "php")
         private val INFIX_MARKER_EXTENSIONS = setOf("ts", "tsx", "cts", "mts", "js", "jsx", "cjs", "mjs", "vue")
+        private val INFIX_MARKERS = listOf(".test.", ".spec.", ".e2e.", ".mock.", ".mocks.")
+        private val C_FAMILY_EXTENSIONS = setOf("c", "h", "cc", "cpp", "cxx", "c++", "hh", "hpp", "hxx")
+        private val C_FAMILY_SUFFIXES = listOf("_test", "_tests", "_unittest", "Test", "Tests")
         private val PYTHON_EXTENSIONS = setOf("py", "pyw")
         private val GO_EXTENSIONS = setOf("go")
         private val RUBY_EXTENSIONS = setOf("rb")

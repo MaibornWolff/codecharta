@@ -37,6 +37,43 @@ describe("ThreeSceneService", () => {
         Object.defineProperty(threeSceneService, "constantHighlight", { value: CONSTANT_HIGHLIGHT, writable: true, configurable: true })
     })
 
+    describe("markBuilding", () => {
+        it("should mark a building once and repaint the highlight only while there is one", () => {
+            // Arrange
+            const path = threeSceneService["mapMesh"].getMeshDescription().buildings[0].node.path
+            const mark = jest.spyOn(threeSceneService["mapMesh"], "markBuilding")
+            const applyHighlights = jest.spyOn(threeSceneService, "applyHighlights")
+
+            // Act
+            threeSceneService.markBuilding(path, "#ff0000")
+            threeSceneService.markBuilding(path, "#ff0000")
+            Object.defineProperty(threeSceneService, "constantHighlight", { value: new Map(), writable: true, configurable: true })
+            threeSceneService.markBuilding(null, "#ff0000")
+
+            // Assert
+            expect(mark.mock.calls).toEqual([
+                [path, "#ff0000"],
+                [null, "#ff0000"]
+            ])
+            expect(applyHighlights).toHaveBeenCalledTimes(1)
+        })
+    })
+
+    describe("setClusterSource", () => {
+        it("should tell whoever draws arrows which file leads to which", () => {
+            // Arrange
+            const heard = jest.fn()
+            threeSceneService.subscribe("onClusterSourceChanged", heard)
+            const link = { sourcePath: "/root/a.spec.ts", targetPaths: new Set(["/root/a.ts"]) }
+
+            // Act
+            threeSceneService.setClusterSource(link)
+
+            // Assert
+            expect(heard).toHaveBeenCalledWith(link)
+        })
+    })
+
     describe("setKeptHighlightFocus", () => {
         it("should repaint a kept highlight at once with the rest grey", () => {
             // Arrange

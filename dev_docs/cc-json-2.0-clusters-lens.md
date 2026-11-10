@@ -1,7 +1,8 @@
 # cc.json 2.0 — the `clusters` lens
 
-> Status: **implemented.** `gitlogparser` produces author ownership and commit changes, and the visualization's metrics
-> view shows any clustering in a Clusters tab of the explorer and a section of the inspector.
+> Status: **implemented.** `gitlogparser` produces author ownership and commit changes, `dependencyparser` the tests,
+> and the visualization's metrics view shows any clustering in a Clusters tab of the explorer and a section of the
+> inspector.
 > Design discussion: [#4411](https://github.com/MaibornWolff/codecharta/issues/4411).
 > Format context: [cc-json-2.0-format.md](cc-json-2.0-format.md).
 
@@ -107,7 +108,7 @@ attribute conflicts). `analyzers` merge by union. Unresolvable member ids are dr
 warning.
 
 A filter that re-paths the tree (`ccsh modify`, `merge --large`) re-keys the members and drops those of
-removed nodes; a cluster left without members goes too, unless a surviving cluster names it as its parent.
+removed nodes, and moves a cluster `id` or `parentId` that is a node id, as a test's is; a cluster left without members goes too, unless a surviving cluster names it as its parent.
 
 `ccsh check` fails on a member with an unknown node id and warns when the weights of a node in a
 `weighted` clustering sum to more than 1.
@@ -185,6 +186,33 @@ removed nodes; a cluster left without members goes too, unless a surviving clust
   left is not written, and merge commits never are.
 - **The attributes** describe the whole commit, including files gone today, so they survive filters unchanged.
 - **Personal data**: subjects are free text and a hash leads to its author, so the map may still be personal data.
+
+## Producer: tests
+
+`ccsh dependencyparser --link-tests` writes:
+
+```json
+"clusters": { "clusterings": { "tests": {
+  "title": "Tests",
+  "membership": "overlay",
+  "analyzers": ["dependencyParser"],
+  "clusters": [
+    { "id": "<test file node id>", "name": "PriceTest.kt",
+      "members": [ { "nodeId": "<code file node id>" } ] },
+    { "id": "<code file node id>", "name": "price.rs (tests inside)",
+      "members": [ { "nodeId": "<code file node id>" } ] }
+  ]
+} } }
+```
+
+- **One cluster per test file** that names code, its members the code files it names directly, without weights. A
+  test file that names nothing has no cluster. A file with tests inside (Rust's `#[cfg(test)]`) gets a cluster named
+  `<file> (tests inside)` that holds its own file too.
+- **The id is the node id of the file holding the tests**, so a view finds the test on the map like a member. Clusters
+  follow the tests' paths.
+- **The metric `test_file`** goes with the clustering, in `lenses.metrics`: 1 on each test file, 0 on every other file
+  the run read, so a test that names nothing still counts. A run without `--link-tests` writes neither.
+- A link means a test names a file, not that it runs it.
 
 Further producers could be a cluster filter running community detection over co-change data, an
 issue importer or a coverage importer, the last two as `overlay`.

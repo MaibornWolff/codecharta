@@ -8,6 +8,8 @@ import { NodeInteraction } from "../../../stores/sharedView/sharedView.write.fac
 interface ClusterPin {
     clusterId: string
     filePaths: string[]
+    /** The file the cluster is about, as a test cluster's test; null for most clusters. */
+    sourcePath: string | null
     /** Only what the pin lit itself, so that unpinning leaves files kept by other means alone. */
     pathsLitByPin: string[]
 }
@@ -21,6 +23,7 @@ export class ClusterHighlightService {
 
     private readonly pin = signal<ClusterPin | null>(null)
     private readonly hoveredPaths = signal<string[] | null>(null)
+    private hoveredSourcePath: string | null = null
     /** A hover shows its cluster alone, so what is kept waits here until the hover ends. */
     private keptBeforeHover: string[] = []
 
@@ -54,10 +57,11 @@ export class ClusterHighlightService {
         })
     }
 
-    hover(filePaths: string[]): void {
+    hover(filePaths: string[], sourcePath: string | null = null): void {
         if (this.hoveredPaths() === null) {
             this.keptBeforeHover = this.keptHighlightPaths()
         }
+        this.hoveredSourcePath = sourcePath
         this.hoveredPaths.set(filePaths)
         this.showActiveClusterOnMap()
         this.nodeInteraction.replaceKeptHighlight(filePaths)
@@ -68,18 +72,19 @@ export class ClusterHighlightService {
             return
         }
         this.hoveredPaths.set(null)
+        this.hoveredSourcePath = null
         this.nodeInteraction.replaceKeptHighlight(this.keptBeforeHover)
         this.showActiveClusterOnMap()
     }
 
-    togglePin(clusterId: string, filePaths: string[]): void {
+    togglePin(clusterId: string, filePaths: string[], sourcePath: string | null = null): void {
         const isPinned = this.pinnedClusterId() === clusterId
         this.releasePin()
         if (!isPinned) {
             const restingPaths = new Set(this.restingKeptPaths())
             const pathsLitByPin = filePaths.filter(path => !restingPaths.has(path))
             this.writeRestingKeptPaths([...restingPaths, ...pathsLitByPin])
-            this.pin.set({ clusterId, filePaths, pathsLitByPin })
+            this.pin.set({ clusterId, filePaths, sourcePath, pathsLitByPin })
         }
         this.showActiveClusterOnMap()
     }
@@ -97,9 +102,14 @@ export class ClusterHighlightService {
     }
 
     private showActiveClusterOnMap(): void {
-        const pinnedPaths = this.pinnedClusterId() === null ? null : (this.pin()?.filePaths ?? null)
-        const shownPaths = this.hoveredPaths() ?? pinnedPaths
+        const pinned = this.pinnedClusterId() === null ? null : this.pin()
+        const hoveredPaths = this.hoveredPaths()
+        const shownPaths = hoveredPaths ?? pinned?.filePaths ?? null
+        const sourcePath = hoveredPaths === null ? (pinned?.sourcePath ?? null) : this.hoveredSourcePath
         this.threeSceneService.setKeptHighlightFocus(shownPaths === null ? null : new Set(shownPaths))
+        this.threeSceneService.setClusterSource(
+            shownPaths === null || sourcePath === null ? null : { sourcePath, targetPaths: new Set(shownPaths) }
+        )
     }
 
     private releasePin(): void {

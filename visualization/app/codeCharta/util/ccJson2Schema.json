@@ -239,7 +239,7 @@
       }
     },
     "ClustersLens": {
-      "description": "Named clusterings of nodes, joined to `files` by id. Structurally a cross-cutting relation like edges, not a per-node metric. Produced by `gitlogparser` for author ownership and commit changes and shown by the visualization; see dev_docs/cc-json-2.0-clusters-lens.md.",
+      "description": "Named clusterings of nodes, joined to `files` by id. Structurally a cross-cutting relation like edges, not a per-node metric. Produced by `gitlogparser` for author ownership and commit changes and by `dependencyparser --link-tests` for tests, and shown by the visualization; see dev_docs/cc-json-2.0-clusters-lens.md.",
       "type": "object",
       "additionalProperties": false,
       "required": ["clusterings"],
@@ -293,7 +293,10 @@
       "additionalProperties": false,
       "required": ["id", "name", "members"],
       "properties": {
-        "id": { "type": "string" },
+        "id": {
+          "description": "Unique within its clustering. A cluster about one file takes that file's node id (a test file of the `tests` clustering), so a filter that re-paths the tree moves it, and a `parentId`, along with the members.",
+          "type": "string"
+        },
         "name": { "type": "string" },
         "parentId": { "type": ["string", "null"] },
         "attributes": { "type": "object" },

@@ -1,0 +1,14 @@
+# Test links: CartTests names Cart, mocks Price (a mock counts as a link) and calls the helper TestData, a test too
+file src/Shop/Cart.cs -> src/Shop/Price.cs
+file tests/Shop.Tests/CartTests.cs -> src/Shop/Cart.cs
+file tests/Shop.Tests/CartTests.cs -> src/Shop/Price.cs
+file tests/Shop.Tests/CartTests.cs -> tests/Shop.Tests/TestData.cs
+file tests/Shop.Tests/TestData.cs -> src/Shop/Cart.cs
+leaf src/Shop/Cart.cs#Cart -> src/Shop/Price.cs#Price
+leaf tests/Shop.Tests/CartTests.cs#CartTests -> src/Shop/Cart.cs#Cart
+leaf tests/Shop.Tests/CartTests.cs#CartTests -> src/Shop/Price.cs#Price
+leaf tests/Shop.Tests/CartTests.cs#CartTests -> tests/Shop.Tests/TestData.cs#TestData
+leaf tests/Shop.Tests/TestData.cs#TestData -> src/Shop/Cart.cs#Cart
+test tests/Shop.Tests/CartTests.cs -> src/Shop/Cart.cs
+test tests/Shop.Tests/CartTests.cs -> src/Shop/Price.cs
+test tests/Shop.Tests/TestData.cs -> src/Shop/Cart.cs

@@ -2,7 +2,8 @@ package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.util.Logger
 
-// Members reference node ids, so a filter that re-paths the tree has to re-key the lens along with it, see [rekeyed]
+// Members reference node ids, and a cluster about one file may take that file's node id as its own, so a filter that
+// re-paths the tree has to re-key the lens along with it, see [rekeyed]
 data class ClustersLens(val clusterings: Map<String, Clustering> = emptyMap()) : Lens {
     val carriesData: Boolean get() = clusterings.values.any { it.clusters.isNotEmpty() }
 
@@ -15,8 +16,14 @@ data class ClustersLens(val clusterings: Map<String, Clustering> = emptyMap()) :
     fun rekeyed(treeBeforeRestructuring: Node, treeAfterRestructuring: Node, remapSegments: SegmentRemapping): ClustersLens {
         if (!carriesData) return this
         val newIdByOldId = nodeIdRemapping(treeBeforeRestructuring, treeAfterRestructuring, remapSegments)
-        return withMembersMappedBy { newIdByOldId[it] }
+        return withMembersMappedBy { newIdByOldId[it] }.withClusterIdsMovedBy(newIdByOldId)
     }
+
+    private fun withClusterIdsMovedBy(newIdByOldId: Map<String, String>): ClustersLens = ClustersLens(
+        clusterings.mapValues { (_, clustering) ->
+            clustering.copy(clusters = clustering.clusters.map { it.withIdsMovedBy(newIdByOldId) })
+        }
+    )
 
     fun keepingMembersOf(nodeIds: Set<String>): ClustersLens = withMembersMappedBy { nodeId -> nodeId.takeIf { it in nodeIds } }
 
@@ -113,6 +120,9 @@ data class Cluster(
                 other.attributes + attributes
         )
     }
+
+    internal fun withIdsMovedBy(newIdByOldId: Map<String, String>): Cluster =
+        copy(id = newIdByOldId[id] ?: id, parentId = parentId?.let { newIdByOldId[it] ?: it })
 
     // Two old ids landing on one new id means a move onto an occupied path; the tree keeps one node, so one member stays
     internal fun withMembersMappedBy(newIdOf: (String) -> String?): Cluster = copy(
