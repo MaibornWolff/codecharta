@@ -75,11 +75,7 @@ internal object ImportExtractor {
             .children()
             .filter { it.type == IMPORT_SPECIFIER }
             .mapNotNull { specifier ->
-                val identifiers = specifier
-                    .children()
-                    .filter { it.type == IDENTIFIER }
-                    .map { it.text.trim() }
-                    .toList()
+                val identifiers = specifierNames(specifier).toList()
                 when (identifiers.size) {
                     1 -> ImportDeclaration(
                         path = basePath + identifiers[0],
@@ -143,12 +139,7 @@ internal object ImportExtractor {
                 .children()
                 .filter { it.type == EXPORT_SPECIFIER }
                 .mapNotNull { specifier ->
-                    val rawName = specifier
-                        .children()
-                        .firstOrNull { it.type == IDENTIFIER }
-                        ?.text
-                        ?.trim()
-                        ?: return@mapNotNull null
+                    val rawName = specifierNames(specifier).firstOrNull() ?: return@mapNotNull null
                     val name = normalizeDefaultKeyword(rawName)
                     ImportDeclaration(path = basePath + name, isWildcard = false, kind = ImportKind.REEXPORT)
                 }.toList()

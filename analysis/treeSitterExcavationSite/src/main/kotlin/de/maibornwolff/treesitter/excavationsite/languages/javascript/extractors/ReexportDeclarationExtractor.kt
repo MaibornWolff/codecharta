@@ -38,11 +38,7 @@ internal object ReexportDeclarationExtractor {
         .orEmpty()
 
     private fun reexportFromSpecifier(specifier: SyntaxNode, modulePath: List<String>): Declaration? {
-        val identifiers = specifier
-            .children()
-            .filter { it.type == IDENTIFIER }
-            .map { it.text.trim() }
-            .toList()
+        val identifiers = specifierNames(specifier).toList()
         if (identifiers.size != PLAIN_SPECIFIER_SIZE && identifiers.size != ALIASED_SPECIFIER_SIZE) return null
         val originalName = normalizeDefaultKeyword(identifiers.first())
         // The default export of another module is named by that module, as no name of this file means it

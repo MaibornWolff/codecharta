@@ -43,7 +43,7 @@ internal class ExportedNames private constructor(private val names: Set<String>,
         private fun localNamesOf(clause: SyntaxNode): List<String> = clause
             .children()
             .filter { it.type == EXPORT_SPECIFIER }
-            .mapNotNull { specifier -> specifier.children().firstOrNull { it.type == IDENTIFIER }?.text?.trim() }
+            .mapNotNull { specifier -> specifierNames(specifier).firstOrNull() }
             .toList()
 
         private fun declaredNames(declaration: SyntaxNode): List<String> {
