@@ -87,6 +87,7 @@ object ProjectToCcJsonV2Mapper {
                 attributeDescriptors = project.lenses.dependency.attributeDescriptors,
                 nodes = project.lenses.dependency.nodes.takeIf { it.isNotEmpty() },
                 namespaces = project.lenses.dependency.namespaces.takeIf { it.isNotEmpty() },
+                externalImports = project.lenses.dependency.externalImports.takeIf { it.isNotEmpty() },
                 leaves =
                     project.lenses.dependency.leaves
                         .takeIf { it.isNotEmpty() }
@@ -113,6 +114,7 @@ object ProjectToCcJsonV2Mapper {
                 dependency = dependencyLens,
                 domain = project.lenses.domain,
                 clusters = project.lenses.clusters.takeIf { it.carriesData }?.toDto(),
+                security = project.lenses.security,
                 opaqueLenses = project.lenses.opaqueLenses
             )
     }
@@ -150,7 +152,7 @@ object ProjectToCcJsonV2Mapper {
 
     private fun buildMeta(project: Project, checksum: String, commitHash: String?): MetaDto = MetaDto(
         projectName = project.projectName,
-        apiVersion = ApiVersion.TWO_ONE.versionString,
+        apiVersion = ApiVersion.TWO.versionString,
         checksum = checksum,
         commitHash = commitHash
     )

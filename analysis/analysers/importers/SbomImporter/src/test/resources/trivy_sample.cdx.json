@@ -1,0 +1,51 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "version": 1,
+  "metadata": {
+    "tools": { "components": [{ "type": "application", "group": "aquasecurity", "name": "trivy", "version": "0.76.1" }] },
+    "component": { "bom-ref": "root", "type": "application", "name": "shop" }
+  },
+  "components": [
+    {
+      "bom-ref": "frontend-lock",
+      "type": "application",
+      "name": "frontend/package-lock.json",
+      "properties": [{ "name": "aquasecurity:trivy:Type", "value": "npm" }]
+    },
+    {
+      "bom-ref": "backend-lock",
+      "type": "application",
+      "name": "backend/package-lock.json",
+      "properties": [{ "name": "aquasecurity:trivy:Type", "value": "npm" }]
+    },
+    { "bom-ref": "express-ref", "type": "library", "name": "express", "version": "4.17.1", "purl": "pkg:npm/express@4.17.1" },
+    { "bom-ref": "qs-ref", "type": "library", "name": "qs", "version": "6.5.2", "purl": "pkg:npm/qs@6.5.2" },
+    { "bom-ref": "router-ref", "type": "library", "group": "@acme", "name": "router", "version": "2.0.0", "purl": "pkg:npm/%40acme/router@2.0.0" },
+    { "bom-ref": "qs-backend-ref", "type": "library", "name": "qs", "version": "6.5.2", "purl": "pkg:npm/qs@6.5.2" }
+  ],
+  "dependencies": [
+    { "ref": "root", "dependsOn": ["frontend-lock", "backend-lock"] },
+    { "ref": "frontend-lock", "dependsOn": ["express-ref", "router-ref"] },
+    { "ref": "express-ref", "dependsOn": ["qs-ref"] },
+    { "ref": "qs-ref", "dependsOn": [] },
+    { "ref": "router-ref", "dependsOn": [] },
+    { "ref": "backend-lock", "dependsOn": ["qs-backend-ref"] }
+  ],
+  "vulnerabilities": [
+    {
+      "id": "CVE-2022-24999",
+      "source": { "name": "ghsa" },
+      "ratings": [
+        { "source": { "name": "ghsa" }, "score": 7.5, "severity": "high", "method": "CVSSv31", "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H" },
+        { "source": { "name": "ghsa" }, "score": 8.7, "severity": "high", "method": "CVSSv4", "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N" }
+      ],
+      "recommendation": "Upgrade qs to version 6.5.3, 6.10.3",
+      "affects": [
+        { "ref": "qs-ref", "versions": [{ "version": "6.5.2", "status": "affected" }] },
+        { "ref": "qs-backend-ref", "versions": [{ "version": "6.5.2", "status": "affected" }] }
+      ]
+    }
+  ]
+}

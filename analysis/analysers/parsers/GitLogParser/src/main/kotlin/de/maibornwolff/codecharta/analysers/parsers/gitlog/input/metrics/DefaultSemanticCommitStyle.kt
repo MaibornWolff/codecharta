@@ -41,4 +41,6 @@ object DefaultSemanticCommitStyle {
     )
 
     fun getAllTypes(): List<SemanticCommitType> = defaultCommitTypes
+
+    fun typeOf(message: String): SemanticCommitType? = defaultCommitTypes.firstOrNull { it.matchPattern.matches(message) }
 }

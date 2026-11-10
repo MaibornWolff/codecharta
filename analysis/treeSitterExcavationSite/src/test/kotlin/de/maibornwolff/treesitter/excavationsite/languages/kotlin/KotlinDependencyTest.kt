@@ -1325,4 +1325,58 @@ class KotlinDependencyTest {
             assertThat(result.declarations.single().usedTypes).containsExactly(UsedType("Repository", usage = TypeUsage.INHERITANCE))
         }
     }
+
+    @Nested
+    inner class ClassesAfterAnnotationsWithArguments {
+        // tree-sitter-kotlin reads these as an infix call `class Arena { … }` inside prefix expressions
+        private val code = """
+            package zoo
+
+            @Timeout(120)
+            @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+            class ArenaTest {
+                fun opens() {
+                    Keeper()
+                }
+
+                class Ticket {
+                    val gate: Gate? = null
+                }
+            }
+
+            @Retry(3)
+            @Tag
+            interface Port {
+                fun open(): Gate
+            }
+        """.trimIndent()
+
+        @Test
+        fun `should read a class after annotations with arguments as a class using its annotations and body`() {
+            // Act
+            val declarations = declarationsByName(code)
+
+            // Assert
+            val arena = declarations.getValue("ArenaTest")
+            assertThat(arena.type).isEqualTo(DeclarationType.CLASS)
+            val usedNames = arena.usedTypes.map { it.name }
+            assertThat(usedNames).containsExactlyInAnyOrder("Timeout", "TestInstance", "TestInstance.Lifecycle", "Keeper")
+        }
+
+        @Test
+        fun `should keep a class nested in such a class below it, and read an interface there as an interface`() {
+            // Act
+            val declarations = declarationsByName(code)
+
+            // Assert
+            val ticket = declarations.getValue("Ticket")
+            assertThat(ticket.parentPath).containsExactly("ArenaTest")
+            assertThat(ticket.usedTypes.map { it.name }).containsExactly("Gate")
+            assertThat(declarations.getValue("Port").type).isEqualTo(DeclarationType.INTERFACE)
+            assertThat(declarations.getValue("Port").usedTypes.map { it.name }).containsExactlyInAnyOrder("Retry", "Tag", "Gate")
+        }
+    }
+
+    private fun declarationsByName(code: String): Map<String, Declaration> =
+        TreeSitterDependencies.analyze(code, Language.KOTLIN).declarations.associateBy { it.name }
 }

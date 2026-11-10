@@ -88,13 +88,13 @@ class LargeMergeTest {
     @Test
     fun `should preserve empty reserved opaque slots when wrapping`() {
         // Arrange
-        val project = rootProject(lenses = LensSet(opaqueLenses = mapOf("security" to JsonParser.parseString("{}"))))
+        val project = rootProject(lenses = LensSet(opaqueLenses = mapOf("vendorFindings" to JsonParser.parseString("{}"))))
 
         // Act
         val wrapped = LargeMerge.wrapProjectInFolder(project, "alpha")
 
         // Assert
-        assertEquals(JsonParser.parseString("{}"), wrapped.lenses.opaqueLenses["security"])
+        assertEquals(JsonParser.parseString("{}"), wrapped.lenses.opaqueLenses["vendorFindings"])
     }
 
     @Test
@@ -113,7 +113,7 @@ class LargeMergeTest {
     fun `should fail loudly when a data-bearing opaque lens cannot be re-pathed`() {
         // Arrange
         val project = rootProject(
-            lenses = LensSet(opaqueLenses = mapOf("security" to JsonParser.parseString("""{"nodeId":"/root/file.kt"}""")))
+            lenses = LensSet(opaqueLenses = mapOf("vendorFindings" to JsonParser.parseString("""{"nodeId":"/root/file.kt"}""")))
         )
 
         // Act & Assert

@@ -20,6 +20,9 @@ object CodeParsers {
         )
     )
 
+    /** What a parser is asked for on top of the common arguments. */
+    val ownArguments = mapOf(DependencyParser.NAME to listOf(DependencyParser.LINK_TESTS))
+
     val needingEveryFile = mapOf(
         DependencyParser.NAME to "its dependency graph needs every file of the project",
         DomainLanguageParser.NAME to "its TF-IDF scores compare every file of the project"

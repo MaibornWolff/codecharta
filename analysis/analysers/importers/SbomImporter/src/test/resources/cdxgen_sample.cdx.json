@@ -1,0 +1,33 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "version": 1,
+  "metadata": {
+    "tools": [{ "vendor": "cyclonedx", "name": "cdxgen", "version": "11.0.0" }],
+    "component": { "bom-ref": "pkg:npm/shop@1.0.0", "type": "application", "name": "shop", "version": "1.0.0", "purl": "pkg:npm/shop@1.0.0" }
+  },
+  "components": [
+    {
+      "bom-ref": "pkg:npm/express@4.17.1",
+      "type": "library",
+      "name": "express",
+      "version": "4.17.1",
+      "purl": "pkg:npm/express@4.17.1",
+      "properties": [{ "name": "SrcFile", "value": "/build/shop/package-lock.json" }],
+      "components": [
+        {
+          "bom-ref": "pkg:npm/qs@6.5.2",
+          "type": "library",
+          "name": "qs",
+          "version": "6.5.2",
+          "purl": "pkg:npm/qs@6.5.2",
+          "properties": [{ "name": "SrcFile", "value": "/build/shop/package-lock.json" }]
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    { "ref": "pkg:npm/shop@1.0.0", "dependsOn": ["pkg:npm/express@4.17.1"] },
+    { "ref": "pkg:npm/express@4.17.1", "dependsOn": ["pkg:npm/qs@6.5.2"] }
+  ]
+}

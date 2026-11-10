@@ -168,3 +168,35 @@ export interface Fixed {
 ```
 
 See [`dev_docs/cc-json-2.0-format.md`](dev_docs/cc-json-2.0-format.md#the-dependency-graph-in-the-dependency-lens).
+
+## 2.2
+
+- The reserved `security` lens is defined: the third-party packages a project ships, keyed by purl, and the
+  lockfiles that declare them. A package carries its known vulnerabilities and, when versions were looked up,
+  how far it is behind its newest stable version. Every field is optional and an absent field means not
+  measured, so a 2.1 file is a valid 2.2 file.
+
+```json
+"security": {
+  "vulnerabilitySources": ["trivy 0.76.1"],
+  "vulnerabilitiesMeasured": true,
+  "versionsLookup": { "source": "deps.dev", "date": "2026-11-09" },
+  "packages": {
+    "pkg:npm/qs@6.5.2": {
+      "name": "qs", "version": "6.5.2", "ecosystem": "npm", "dependsOn": ["pkg:npm/side-channel@1.0.4"],
+      "newestVersion": "6.13.0", "newerVersions": 12, "daysOutdated": 1400, "libyears": 4.5,
+      "vulnerabilities": [{ "id": "CVE-2022-24999", "severity": "high", "score": 7.5, "fixedVersions": ["6.5.3"], "source": "ghsa" }]
+    }
+  },
+  "nodes": { "<id>": { "declares": ["pkg:npm/qs@6.5.2"], "dependsOn": ["pkg:npm/qs@6.5.2"] } }
+}
+```
+
+- The `dependency` lens gains `externalImports`: per file node id, the third-party packages that file imports, by
+  ecosystem and name, so the packages of the security lens can be placed on the code that uses them.
+
+```json
+"externalImports": { "<id>": [{ "ecosystem": "npm", "name": "@angular/core" }, { "ecosystem": "golang", "name": "github.com/google/uuid" }] }
+```
+
+See [`dev_docs/cc-json-2.0-format.md`](dev_docs/cc-json-2.0-format.md#the-security-lens).

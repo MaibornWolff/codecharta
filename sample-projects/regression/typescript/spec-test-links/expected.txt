@@ -1,0 +1,15 @@
+# Test links: cart.spec.ts names Cart and Price, mocks ./price by a module string (no name, so no link of its own) and
+# uses the helper cart.mocks.ts, a test too
+file src/cart.mocks.ts -> src/cart.ts
+file src/cart.spec.ts -> src/cart.mocks.ts
+file src/cart.spec.ts -> src/cart.ts
+file src/cart.spec.ts -> src/price.ts
+file src/cart.ts -> src/price.ts
+leaf src/cart.mocks.ts#cartWithNothing -> src/cart.ts#Cart
+leaf src/cart.spec.ts#cart_spec_script -> src/cart.mocks.ts#cartWithNothing
+leaf src/cart.spec.ts#cart_spec_script -> src/cart.ts#Cart
+leaf src/cart.spec.ts#cart_spec_script -> src/price.ts#Price
+leaf src/cart.ts#Cart -> src/price.ts#Price
+test src/cart.mocks.ts -> src/cart.ts
+test src/cart.spec.ts -> src/cart.ts
+test src/cart.spec.ts -> src/price.ts

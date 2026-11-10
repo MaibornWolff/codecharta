@@ -3,6 +3,11 @@ package de.maibornwolff.codecharta.analysers.tools.analyse
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeResolverStrategy
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.ProjectMerger
+import de.maibornwolff.codecharta.analysers.importers.sbom.SbomImport
+import de.maibornwolff.codecharta.analysers.importers.sbom.SbomImportResult
+import de.maibornwolff.codecharta.analysers.importers.sbom.SbomImporter
+import de.maibornwolff.codecharta.analysers.importers.sbom.http.JavaHttpGateway
+import de.maibornwolff.codecharta.analysers.importers.sbom.http.RetryingHttpGateway
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.commitchanges.CommitChangesScan
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.model.NodeType
@@ -19,21 +24,27 @@ private data class MappedCodebase(val project: Project, val mappedHistories: Lis
 class CodebaseAnalysis(
     private val console: AnalysisConsole,
     private val svnLogWriter: SvnLogWriter,
-    private val createParsers: (SharedFileLoop?) -> List<AnalyserInterface>
+    private val createParsers: (SharedFileLoop?) -> List<AnalyserInterface>,
+    private val importSbom: (SbomSource, File) -> SbomImportResult = ::importWithLookupsOnline
 ) {
     fun run(request: AnalyseRequest) {
         val workFolder = createTempDirectory(WORK_FOLDER_PREFIX).toFile()
         try {
             val selection = console.whileAnalysing { selectParsers(request) }
             val search = console.whileAnalysing { HistoryFinder(svnLogWriter).find(request, workFolder) }
-            val sources = (selection.parsers.map { it.analyser.name } + search.histories.map { it.versionControl.sourceName })
-                .joinToString()
+            val sources = (
+                selection.parsers.map { it.analyser.name } + search.histories.map { it.versionControl.sourceName } +
+                    listOfNotNull(SbomImporter.NAME.takeIf { request.sbom != null })
+            ).joinToString()
             console.printInPlaceOfAnalyserOutput("Analysing ${request.projectFolder.path} with $sources ...")
             val mapped = console.whileAnalysing { analyse(request, selection.parsers, search.histories) }
-            writeMap(mapped.project, request)
-            console.printSeparated("Analysis done: ${countedFiles(mapped.project)} with $sources")
+            val sbomImport = request.sbom?.let { console.whileAnalysing { importSbom(it, request.analysedFolder) } }
+            val project = sbomImport?.let { merge(listOf(mapped.project, it.project)) } ?: mapped.project
+            writeMap(project, request)
+            console.printSeparated("Analysis done: ${countedFiles(project)} with $sources")
             console.println("Map: ${request.outputFile.path}")
             printSkipped(selection.skipped + inHistoryOrder(search.skipped + mapped.failedHistories))
+            sbomImport?.let { printSbomHints(it.hints) }
             if (request.authorOwnership && mapped.project.lenses.clusters.carriesData) printOwnershipHints(request, mapped.project)
             request.commitChangesSince?.let { printCommitChangesHints(request, it, mapped) }
         } finally {
@@ -51,7 +62,11 @@ class CodebaseAnalysis(
         if (applicable.isEmpty()) throw AnalysisException("No parser applies to ${request.projectFolder.path}, so there is nothing to map.")
         val arguments = excludePatternsFor(request).map { "--exclude=$it" } + listOfNotNull(LOCAL_CHANGES.takeIf { request.localChanges })
         val configured = applicable.map { parser ->
-            ConfiguredAnalyser(parser, arguments, whenDone = { sharedFileLoop?.leave(parser.name) })
+            ConfiguredAnalyser(
+                parser,
+                arguments + CodeParsers.ownArguments[parser.name].orEmpty(),
+                whenDone = { sharedFileLoop?.leave(parser.name) }
+            )
         }
         return ParserSelection(configured, skipped)
     }
@@ -109,6 +124,12 @@ class CodebaseAnalysis(
         skipped.forEach { console.println("  ${it.name}: ${it.reason}") }
     }
 
+    private fun printSbomHints(hints: List<String>) {
+        if (hints.isEmpty()) return
+        console.println("From the SBOM:")
+        hints.forEach { console.println("  $it") }
+    }
+
     private fun printOwnershipHints(request: AnalyseRequest, project: Project) {
         if (AuthorOwnershipScan(request.analysedFolder).isShallowClone()) console.println(AuthorOwnershipScan.SHALLOW_CLONE_WARNING)
         val carriesRealNames = AuthorOwnershipScan.carriesRealNames(project.lenses.clusters)
@@ -137,3 +158,6 @@ class CodebaseAnalysis(
         private const val LOCAL_CHANGES = "--local-changes"
     }
 }
+
+private fun importWithLookupsOnline(source: SbomSource, projectFolder: File): SbomImportResult =
+    SbomImport.withLookups(projectFolder, source.lookups, { RetryingHttpGateway(JavaHttpGateway()) }).run(source.bom)

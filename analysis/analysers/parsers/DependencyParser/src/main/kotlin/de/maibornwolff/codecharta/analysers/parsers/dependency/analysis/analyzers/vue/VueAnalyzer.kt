@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.TypescriptAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
@@ -51,8 +52,12 @@ class VueAnalyzer(fileInfo: FileInfo) : TypescriptAnalyzer(fileInfo) {
         return super.nodesOf(declaration, node, embedded)
     }
 
-    override fun declaredNodes(): List<Node> {
-        val nodes = super.declaredNodes()
+    override fun declaredReport(): FileReport {
+        val report = super.declaredReport()
+        return report.copy(nodes = withOneComponent(report.nodes))
+    }
+
+    private fun withOneComponent(nodes: List<Node>): List<Node> {
         val componentName = declarationExportedAsDefault(nodes)
         val (components, others) = nodes.partition { it.pathWithName == physicalFilePath || isOwn(it) && it.name() == componentName }
         val plainNames = others.filter { isOwn(it) }.mapTo(HashSet()) { it.name() }

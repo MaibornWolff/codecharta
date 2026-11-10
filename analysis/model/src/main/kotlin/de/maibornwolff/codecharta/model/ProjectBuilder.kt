@@ -44,6 +44,8 @@ open class ProjectBuilder(
 
     private var clustersLens: ClustersLens = ClustersLens()
 
+    private var securityLens: SecurityLens? = null
+
     // Only the tables the builder itself fills; edges, attribute types and descriptors come from the
     // legacy fields above and are joined onto this in build().
     private var dependencyTables: DependencyLens = DependencyLens()
@@ -60,6 +62,11 @@ open class ProjectBuilder(
         return this
     }
 
+    fun withSecurityLens(securityLens: SecurityLens?): ProjectBuilder {
+        this.securityLens = securityLens
+        return this
+    }
+
     fun withClustersLens(clustersLens: ClustersLens): ProjectBuilder {
         this.clustersLens = clustersLens
         return this
@@ -69,9 +76,17 @@ open class ProjectBuilder(
         nodes: Map<String, DependencyNode>,
         namespaces: Map<String, DependencyNamespace> = emptyMap(),
         leaves: Map<String, Map<String, DependencyLeaf>> = emptyMap(),
-        leafEdges: List<LeafEdge> = emptyList()
+        leafEdges: List<LeafEdge> = emptyList(),
+        externalImports: Map<String, List<ExternalImport>> = emptyMap()
     ): ProjectBuilder {
-        this.dependencyTables = DependencyLens(nodes = nodes, namespaces = namespaces, leaves = leaves, leafEdges = leafEdges)
+        this.dependencyTables =
+            DependencyLens(
+                nodes = nodes,
+                namespaces = namespaces,
+                leaves = leaves,
+                leafEdges = leafEdges,
+                externalImports = externalImports
+            )
         return this
     }
 
@@ -109,10 +124,12 @@ open class ProjectBuilder(
                         nodes = dependencyTables.nodes,
                         namespaces = dependencyTables.namespaces,
                         leaves = dependencyTables.leaves,
-                        leafEdges = dependencyTables.leafEdges
+                        leafEdges = dependencyTables.leafEdges,
+                        externalImports = dependencyTables.externalImports
                     ),
                 domain = domainLens,
                 clusters = clustersLens,
+                security = securityLens,
                 opaqueLenses = opaqueLenses
             )
         )
@@ -357,12 +374,14 @@ open class ProjectBuilder(
                     blacklist
                 ).withOpaqueLenses(lenses.opaqueLenses)
                     .withClustersLens(lenses.clusters)
+                    .withSecurityLens(lenses.security)
                     .withCommitHash(commitHash)
                     .withDependencyLens(
                         lenses.dependency.nodes,
                         lenses.dependency.namespaces,
                         lenses.dependency.leaves,
-                        lenses.dependency.leafEdges
+                        lenses.dependency.leafEdges,
+                        lenses.dependency.externalImports
                     )
             return lenses.domain?.let { builder.withDomainLens(it) } ?: builder
         }

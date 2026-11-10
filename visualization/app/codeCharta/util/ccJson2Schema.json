@@ -58,14 +58,14 @@
       "type": "string"
     },
     "Lenses": {
-      "description": "Additive overlays joined to `files` by id. `metrics`, `dependency`, `clusters` and `domain` are concrete; `security` is reserved; any unknown top-level lens is preserved verbatim on round-trip (hence no additionalProperties:false here).",
+      "description": "Additive overlays joined to `files` by id. `metrics`, `dependency`, `clusters`, `domain` and `security` are concrete; any unknown top-level lens is preserved verbatim on round-trip (hence no additionalProperties:false here).",
       "type": "object",
       "properties": {
         "metrics": { "$ref": "#/definitions/MetricsLens" },
         "dependency": { "$ref": "#/definitions/DependencyLens" },
         "clusters": { "$ref": "#/definitions/ClustersLens" },
         "domain": { "$ref": "#/definitions/DomainLens" },
-        "security": { "type": "object" }
+        "security": { "$ref": "#/definitions/SecurityLens" }
       }
     },
     "MetricsLens": {
@@ -119,6 +119,14 @@
           "description": "The dependencies between declarations — the signal the file-collapsed `edges` cannot carry, because an edge between two declarations of one file disappears there.",
           "type": "array",
           "items": { "$ref": "#/definitions/LeafEdge" }
+        },
+        "externalImports": {
+          "description": "Map of file node id -> the third-party packages that file imports. Only names a file's code writes, never resolved against a lockfile; the security lens says which versions a lockfile resolves them to.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/ExternalImport" }
+          }
         },
         "attributeDescriptors": {
           "type": "object",
@@ -239,7 +247,7 @@
       }
     },
     "ClustersLens": {
-      "description": "Named clusterings of nodes, joined to `files` by id. Structurally a cross-cutting relation like edges, not a per-node metric. Produced by `gitlogparser` for author ownership and commit changes and shown by the visualization; see dev_docs/cc-json-2.0-clusters-lens.md.",
+      "description": "Named clusterings of nodes, joined to `files` by id. Structurally a cross-cutting relation like edges, not a per-node metric. Produced by `gitlogparser` for author ownership and commit changes and by `dependencyparser --link-tests` for tests, and shown by the visualization; see dev_docs/cc-json-2.0-clusters-lens.md.",
       "type": "object",
       "additionalProperties": false,
       "required": ["clusterings"],
@@ -293,10 +301,16 @@
       "additionalProperties": false,
       "required": ["id", "name", "members"],
       "properties": {
-        "id": { "type": "string" },
+        "id": {
+          "description": "Unique within its clustering. A cluster about one file takes that file's node id (a test file of the `tests` clustering), so a filter that re-paths the tree moves it, and a `parentId`, along with the members.",
+          "type": "string"
+        },
         "name": { "type": "string" },
         "parentId": { "type": ["string", "null"] },
-        "attributes": { "type": "object" },
+        "attributes": {
+          "description": "Values are numbers or strings, keyed like the clustering's `attributeDescriptors`; `attributeTypes` describes the numbers only. Commit changes write `date`, `author`, `co_authors`, `changed_files`, `changed_lines`, `commit_type` and `hotfix`.",
+          "type": "object"
+        },
         "members": {
           "type": "array",
           "items": { "$ref": "#/definitions/ClusterMember" }
@@ -314,7 +328,7 @@
       }
     },
     "DomainLens": {
-      "description": "Domain vocabulary extracted from the source. `nodes` maps a node id to that node's entry; lens-wide data (corpus weights, producer provenance) belongs beside `nodes`, never inside it. `nodes` is optional so an unused lens slot stays `{}` — the form `carriesData()` treats as carrying nothing, like `security`.",
+      "description": "Domain vocabulary extracted from the source. `nodes` maps a node id to that node's entry; lens-wide data (corpus weights, producer provenance) belongs beside `nodes`, never inside it. `nodes` is optional so an unused lens slot stays `{}` — the form `carriesData()` treats as carrying nothing.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -347,6 +361,93 @@
         "text": { "type": "string" },
         "frequency": { "type": "number" },
         "tfidf": { "type": "number" }
+      }
+    },
+    "ExternalImport": {
+      "description": "A third-party package by its ecosystem (a purl type: npm, pypi, golang, cargo) and the name the code imports it under — for Go the whole import path, which begins with the module's.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ecosystem", "name"],
+      "properties": {
+        "ecosystem": { "type": "string" },
+        "name": { "type": "string" }
+      }
+    },
+    "SecurityLens": {
+      "description": "The third-party packages the project ships, keyed by purl (or `name@version` without one), and the lockfiles that declare them. Every field is optional and an absent one means not measured; an unused lens slot stays `{}`.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "vulnerabilitySources": {
+          "description": "Where the vulnerabilities came from, e.g. the scanner that wrote the SBOM (`trivy 0.76.1`) or `osv`.",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "vulnerabilitiesMeasured": {
+          "description": "True when every package was checked for known vulnerabilities; a package the check missed says so with `vulnerabilitiesUnknown`.",
+          "type": "boolean"
+        },
+        "versionsLookup": { "$ref": "#/definitions/VersionsLookup" },
+        "packages": {
+          "description": "Map of purl -> package.",
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/SecurityPackage" }
+        },
+        "nodes": {
+          "description": "Map of lockfile node id -> the packages it declares.",
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/SecurityNode" }
+        }
+      }
+    },
+    "VersionsLookup": {
+      "description": "Where the newer versions came from and the day they were looked up; `daysOutdated` counts to that day.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "date"],
+      "properties": {
+        "source": { "type": "string" },
+        "date": { "type": "string", "format": "date" }
+      }
+    },
+    "SecurityPackage": {
+      "description": "One package in one version. The version fields are present only when the lookup found the package: `newerVersions` counts the stable versions above `version`, `daysOutdated` the days since the first of them was released (0 when up to date) and `libyears` the release distance from `version` to `newestVersion`. `vulnerabilities` is omitted when none are known.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "ecosystem": { "type": "string" },
+        "dependsOn": { "type": "array", "items": { "type": "string" } },
+        "newestVersion": { "type": "string" },
+        "newerVersions": { "type": "integer", "minimum": 0 },
+        "daysOutdated": { "type": "integer", "minimum": 0 },
+        "libyears": { "type": "number", "minimum": 0 },
+        "vulnerabilities": { "type": "array", "items": { "$ref": "#/definitions/SecurityVulnerability" } },
+        "vulnerabilitiesUnknown": { "type": "boolean" }
+      }
+    },
+    "SecurityVulnerability": {
+      "description": "One known vulnerability. `severity` is critical, high, medium, low or unknown, bucketed from the highest CVSS v3 score; `fixedVersions` lists the versions that fix it.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "severity"],
+      "properties": {
+        "id": { "type": "string" },
+        "severity": { "enum": ["critical", "high", "medium", "low", "unknown"] },
+        "score": { "type": "number", "minimum": 0, "maximum": 10 },
+        "fixedVersions": { "type": "array", "items": { "type": "string" } },
+        "source": { "type": "string" }
+      }
+    },
+    "SecurityNode": {
+      "description": "A lockfile: `declares` lists every package it resolves, `dependsOn` the direct ones among them.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "declares": { "type": "array", "items": { "type": "string" } },
+        "dependsOn": { "type": "array", "items": { "type": "string" } }
       }
     },
     "AttributeDescriptor": {

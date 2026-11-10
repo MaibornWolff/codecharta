@@ -1,0 +1,8 @@
+# A class written after annotations of which one takes arguments, without constructor, supertype or modifier,
+# which tree-sitter-kotlin reads as an expression: it is still a class using its annotations and body
+file zoo/Watch.kt -> zoo/Keeper.kt
+file zoo/Watch.kt -> zoo/Shift.kt
+leaf zoo/Watch.kt#Round -> zoo/Keeper.kt#Keeper
+leaf zoo/Watch.kt#Watch -> zoo/Keeper.kt#Keeper
+leaf zoo/Watch.kt#Watch -> zoo/Shift.kt#Night
+leaf zoo/Watch.kt#Watch -> zoo/Shift.kt#Shift

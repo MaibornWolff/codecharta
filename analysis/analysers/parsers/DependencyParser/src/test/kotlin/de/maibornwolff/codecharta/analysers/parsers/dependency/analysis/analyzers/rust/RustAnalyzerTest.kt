@@ -324,14 +324,16 @@ class RustAnalyzerTest {
     }
 
     @Test
-    fun `should leave out cfg test code in a run that analyses no Rust test file`(
+    fun `should mark cfg test code and the modules it loads as tests, whether or not the run reads a test file`(
         @TempDir root: File
     ) {
         // Arrange
         root.withFiles(
             "Cargo.toml" to "[package]\nname = \"demo\"\nedition = \"2021\"\n",
             "src/lib.rs" to "pub mod model;\n#[cfg(test)]\nmod fixtures;",
-            "src/model.rs" to "pub struct Creature;\n#[cfg(test)]\nmod tests { pub struct Fake { boss: super::Creature } }",
+            "src/model.rs" to
+                "pub struct Creature;\n#[cfg(test)]\nmod tests { pub struct Fake { boss: super::Creature } }\n" +
+                "#[cfg(test)]\nimpl Creature { fn sample() -> Creature { Creature } }",
             "src/fixtures.rs" to "pub struct Fixture;",
             "tests/smoke.rs" to ""
         )
@@ -340,19 +342,21 @@ class RustAnalyzerTest {
         fun analyzeRun(file: String, analysedFiles: Set<String>) =
             RustAnalyzer(FileInfo(SupportedLanguage.RUST, file, root.resolve(file).readText(), root, analysedFiles)).analyze()
 
+        fun testMarks(report: FileReport) = report.nodes.map { it.pathWithName.withDots() to it.isTest }
+
         // Act
-        val model = analyzeRun("src/model.rs", withoutTests)
-        val fixtures = analyzeRun("src/fixtures.rs", withoutTests)
-        val modelWithTests = analyzeRun("src/model.rs", withoutTests + "tests/smoke.rs")
+        val model = testMarks(analyzeRun("src/model.rs", withoutTests))
+        val fixtures = testMarks(analyzeRun("src/fixtures.rs", withoutTests))
+        val modelWithTests = testMarks(analyzeRun("src/model.rs", withoutTests + "tests/smoke.rs"))
 
         // Assert
-        assertThat(model.nodes.map { it.pathWithName.withDots() }).containsExactly("demo.model.Creature")
-        assertThat(fixtures.nodes).isEmpty()
-        assertThat(
-            modelWithTests.nodes.map {
-                it.pathWithName.withDots()
-            }
-        ).containsExactlyInAnyOrder("demo.model.Creature", "demo.model.tests.Fake")
+        assertThat(model).containsExactlyInAnyOrder(
+            "demo.model.Creature" to false,
+            "demo.model.tests.Fake" to true,
+            "demo.model.Creature" to true
+        )
+        assertThat(fixtures).containsExactly("demo.fixtures.Fixture" to true)
+        assertThat(modelWithTests).isEqualTo(model)
     }
 
     @Test

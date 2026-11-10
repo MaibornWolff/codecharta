@@ -5,6 +5,8 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.commit.CommitAnalysisContext
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
+import de.maibornwolff.codecharta.analysers.importers.sbom.SbomLookups
+import de.maibornwolff.codecharta.analysers.importers.sbom.cyclonedx.CycloneDxReader
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.commitchanges.CommitChangesScan
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.serialization.OutputFileHandler
@@ -77,7 +79,10 @@ class AnalyseTool(
 
     @CommandLine.Option(
         names = [AuthorOwnershipScan.NAMES_FLAG],
-        description = ["writes the real names of the authors into the map instead (personal data, needs --author-ownership)"]
+        description = [
+            "writes the real names of the authors into the map instead, also for commit changes " +
+                "(personal data, needs --author-ownership)"
+        ]
     )
     private var withAuthorNames = false
 
@@ -87,6 +92,22 @@ class AnalyseTool(
         description = [CommitChangesScan.OPTION_DESCRIPTION]
     )
     private var commitChangesSince: LocalDate? = null
+
+    @CommandLine.Option(
+        names = [SBOM_FLAG],
+        paramLabel = "FILE",
+        description = ["adds the third-party packages of this CycloneDX SBOM to the map, see ccsh sbomimport"]
+    )
+    private var sbomFile: File? = null
+
+    @CommandLine.Option(names = ["--osv"], description = ["with --sbom: asks OSV.dev for vulnerabilities of packages no scanner checked"])
+    private var isOsvAsked = false
+
+    @CommandLine.Option(
+        names = ["--deps-dev"],
+        description = ["with --sbom: asks deps.dev for newer versions to measure the dependency lag"]
+    )
+    private var isDepsDevAsked = false
 
     @CommandLine.Option(names = ["-p", "--parallel"], description = ["runs the analysers at the same time"])
     private var parallel = false
@@ -118,11 +139,12 @@ class AnalyseTool(
         if (commitChangesSince != null && VersionControl.GIT.label in leftOutSources) {
             throw AnalysisException("${CommitChangesScan.FLAG} needs the git history, which --without leaves out.")
         }
+        val sbom = sbomSource()
         val console = AnalysisConsole(output, quiet)
         val commitRef = commitRef()
         val checkout = console.whileAnalysing { CommitAnalysisContext.at(folder, commitRef) }
         try {
-            CodebaseAnalysis(console, svnLogWriter, createParsers).run(requestFor(folder, checkout, leftOutSources))
+            CodebaseAnalysis(console, svnLogWriter, createParsers).run(requestFor(folder, checkout, leftOutSources).copy(sbom = sbom))
         } finally {
             checkout.worktreeManager?.cleanup()
         }
@@ -143,6 +165,19 @@ class AnalyseTool(
         withAuthorNames = withAuthorNames,
         commitChangesSince = commitChangesSince
     )
+
+    private fun sbomSource(): SbomSource? {
+        val file = sbomFile
+        if (file == null) {
+            if (isOsvAsked || isDepsDevAsked) throw AnalysisException("--osv and --deps-dev need $SBOM_FLAG.")
+            return null
+        }
+        if (!file.isFile) throw AnalysisException("The SBOM ${file.path} does not exist.")
+        val bom = runCatching {
+            CycloneDxReader.read(file)
+        }.getOrElse { throw AnalysisException("Cannot read the SBOM ${file.path}: ${it.message}") }
+        return SbomSource(bom, SbomLookups(isOsvAsked, isDepsDevAsked))
+    }
 
     private fun commitRef(): String? {
         val commitRef = commit?.trim()?.ifEmpty { null }
@@ -188,6 +223,7 @@ class AnalyseTool(
         const val NAME = "analyse"
         const val DESCRIPTION = "maps a codebase with every applicable parser and its git or svn history"
         private const val DEFAULT_MAP_NAME = "project"
+        private const val SBOM_FLAG = "--sbom"
         private const val SUCCESS = 0
         private const val FAILURE = 1
     }

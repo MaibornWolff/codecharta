@@ -1,6 +1,6 @@
 {
   "meta": {
-    "projectName": "sampleProjectWithSecurity",
+    "projectName": "sampleProjectWithOpaqueLens",
     "apiVersion": "2.0"
   },
   "files": [
@@ -39,7 +39,7 @@
       "attributeTypes": {},
       "attributeDescriptors": {}
     },
-    "security": {
+    "vendorFindings": {
       "nodes": {
         "2f6cb0760e30e5d6": {
           "findings": 3

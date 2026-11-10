@@ -9,12 +9,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- **SBOM import**: `ccsh sbomimport`, and `ccsh analyse --sbom`, read a CycloneDX SBOM and add the project's third-party
+  packages to the map, on the lockfiles that declare them, with their known vulnerabilities and, with `--deps-dev`, how
+  far each is behind its newest stable version. `dependencyparser` names the packages each JavaScript, TypeScript, Python, Go and Rust file
+  imports, so the packages show on the code that uses them.
 - **Author ownership**: `--author-ownership` on `ccsh analyse` and `gitlogparser repo-scan` adds each person's share of
   each file's lines to the map, under an invented colour and animal name, with co-authors sharing a line equally.
-- **Real author names**: `--with-author-names` writes real names instead of invented ones into author ownership, and warns
-  clearly that the map now holds personal data.
+- **Real author names**: `--with-author-names` writes real names instead of invented ones into author ownership and
+  commit changes, and warns clearly that the map now holds personal data.
 - **Commit changes**: `--commit-changes-since` on `ccsh analyse` and `gitlogparser repo-scan` adds what each commit since
-  that day changed in each file to the map, with the commit's date and size.
+  that day changed in each file to the map, with the commit's date, size, type, hotfix flag, author and co-authors under
+  the same invented names as in author ownership.
 - **Code and comment lines for about 300 languages**: `rawtextparser` adds `rloc` and `comment_lines` to every file
   whose language the code counter tokei knows, counted the same way as in the Unified Parser.
 - **VBA, VB6 and Access**: `unifiedparser` measures exported VBA modules and classes from Access, Excel and Word, VB6
@@ -24,6 +29,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   forms, queries, macros and VBA functions those name.
 - **Access export**: a macro you import into an Access application exports its modules, forms, reports, macros and
   queries into a folder ccsh maps, as the new guide for Access and VBA applications describes.
+- **Tests linked to the code**: `--link-tests` on `dependencyparser`, and `ccsh analyse` always, links each test to the
+  code files it names and marks every file it read as test or code, while the dependencies of the code stay as without
+  tests.
 
 ### Changed
 
@@ -32,6 +40,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   in Docker.
 - **Faster analysis of large projects**: `ccsh analyse` maps a project with tens of thousands of files in a fraction of
   the time and with less memory, most of all one with many packages.
+- **More tests recognised**: C and C++ tests such as `parser_test.cc`, end-to-end tests and mock helpers such as
+  `cart.mocks.ts` count as tests, so the parsers that leave tests out leave them out too.
 
 ### Removed
 
@@ -53,6 +63,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   or packages.
 - **SQL joins in parentheses**: the dependency parser links a query to every table of a join written in parentheses,
   not only to the first and the last.
+- **Kotlin classes after annotations with arguments**: `dependencyparser` reads a class written after several
+  annotations, one of them with arguments such as `@Timeout(120)`, as the class it is instead of losing it.
+- **Rust tests without a test folder**: `dependencyparser --include-tests` keeps the `#[cfg(test)]` code of a crate that
+  has no `tests` folder.
 
 ## [2.3.0] - 2026-10-28
 

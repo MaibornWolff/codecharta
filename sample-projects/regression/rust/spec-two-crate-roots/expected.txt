@@ -3,3 +3,4 @@ file src/main.rs -> src/shared.rs
 file tests/check.rs -> src/shared.rs
 leaf src/main.rs#main -> src/shared.rs#Thing
 leaf tests/check.rs#check -> src/shared.rs#Thing
+test tests/check.rs -> src/shared.rs

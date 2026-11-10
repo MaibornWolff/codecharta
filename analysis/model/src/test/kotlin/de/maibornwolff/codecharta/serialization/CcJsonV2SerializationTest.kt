@@ -15,12 +15,18 @@ import de.maibornwolff.codecharta.model.DomainLens
 import de.maibornwolff.codecharta.model.DomainNode
 import de.maibornwolff.codecharta.model.DomainWord
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.ExternalImport
 import de.maibornwolff.codecharta.model.LeafEdge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.SecurityLens
+import de.maibornwolff.codecharta.model.SecurityNode
+import de.maibornwolff.codecharta.model.SecurityPackage
+import de.maibornwolff.codecharta.model.SecurityVulnerability
+import de.maibornwolff.codecharta.model.VersionsLookup
 import de.maibornwolff.codecharta.serialization.dto.CcJsonV2
 import de.maibornwolff.codecharta.serialization.dto.DependencyLensDto
 import de.maibornwolff.codecharta.serialization.dto.EdgeDto
@@ -155,7 +161,7 @@ class CcJsonV2SerializationTest {
         val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject())).asJsonObject
 
         assertFalse(json.has("data"))
-        assertEquals("2.1", json.getAsJsonObject("meta").get("apiVersion").asString)
+        assertEquals("2.2", json.getAsJsonObject("meta").get("apiVersion").asString)
         assertTrue(json.getAsJsonObject("meta").has("checksum"))
         assertTrue(json.has("files"))
         assertTrue(json.getAsJsonObject("lenses").has("metrics"))
@@ -194,6 +200,77 @@ class CcJsonV2SerializationTest {
         // A word without a score stays without one rather than gaining a null.
         assertFalse(emittedWords[1].asJsonObject.has("tfidf"))
         assertEquals(domainLens, roundTripped.lenses.domain)
+    }
+
+    @Test
+    fun `should preserve a populated security lens through a round-trip without emitting unset fields`() {
+        // Arrange
+        val securityLens =
+            SecurityLens(
+                vulnerabilitySources = listOf("trivy 0.76.1"),
+                vulnerabilitiesMeasured = true,
+                versionsLookup = VersionsLookup("deps.dev", "2026-11-09"),
+                packages =
+                    mapOf(
+                        "pkg:npm/qs@6.5.2" to
+                            SecurityPackage(
+                                name = "qs",
+                                version = "6.5.2",
+                                ecosystem = "npm",
+                                newestVersion = "6.13.0",
+                                newerVersions = 12,
+                                daysOutdated = 1400,
+                                libyears = 4.5,
+                                vulnerabilities = listOf(SecurityVulnerability("CVE-2022-24999", "high", 7.5, listOf("6.5.3"), "ghsa"))
+                            )
+                    ),
+                nodes = mapOf("lock-id" to SecurityNode(declares = listOf("pkg:npm/qs@6.5.2")))
+            )
+        val project = Project("p", listOf(Node("root", NodeType.Folder)), Project.API_VERSION, LensSet(security = securityLens))
+
+        // Act
+        val serialized = ProjectSerializer.serializeToString(project)
+        val roundTripped = ProjectDeserializer.deserializeProject(serialized)
+
+        // Assert
+        val emittedPackage =
+            JsonParser
+                .parseString(serialized)
+                .asJsonObject
+                .getAsJsonObject("lenses")
+                .getAsJsonObject("security")
+                .getAsJsonObject("packages")
+                .getAsJsonObject("pkg:npm/qs@6.5.2")
+        assertFalse(emittedPackage.has("dependsOn"))
+        assertFalse(emittedPackage.has("vulnerabilitiesUnknown"))
+        assertEquals(securityLens, roundTripped.lenses.security)
+    }
+
+    @Test
+    fun `should keep the packages a file imports through a round-trip and drop those of an unknown file`() {
+        // Arrange
+        val fileId = NodeId.fromSegments(listOf("app.ts"), NodeType.File)
+        val imports = mapOf(fileId to listOf(ExternalImport("npm", "lodash")), "ghost-id" to listOf(ExternalImport("npm", "express")))
+        val root = Node("root", NodeType.Folder, children = setOf(Node("app.ts", NodeType.File)))
+        val project = Project("p", listOf(root), Project.API_VERSION, LensSet(dependency = DependencyLens(externalImports = imports)))
+
+        // Act
+        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project))
+
+        // Assert
+        assertEquals(mapOf(fileId to listOf(ExternalImport("npm", "lodash"))), roundTripped.lenses.dependency.externalImports)
+    }
+
+    @Test
+    fun `should keep an empty security lens as the reserved empty form`() {
+        // Arrange
+        val project = Project("p", listOf(Node("root", NodeType.Folder)), Project.API_VERSION, LensSet(security = SecurityLens()))
+
+        // Act
+        val json = JsonParser.parseString(ProjectSerializer.serializeToString(project)).asJsonObject
+
+        // Assert
+        assertEquals(JsonObject(), json.getAsJsonObject("lenses").getAsJsonObject("security"))
     }
 
     @Test
@@ -753,7 +830,7 @@ class CcJsonV2SerializationTest {
         // Assert: the legacy file reports its own 1.x version, the re-read reports the written 2.1, and the data
         // is identical once both render as 2.0 (lossless 1.x read + convert).
         assertEquals("1.3", from1x.apiVersion)
-        assertEquals("2.1", from20.apiVersion)
+        assertEquals("2.2", from20.apiVersion)
         assertEquals(serialized(from1x), serialized(from20))
     }
 
@@ -772,7 +849,7 @@ class CcJsonV2SerializationTest {
 
         val readBack = FileInputStream(tempFile).use { ProjectDeserializer.deserializeProject(it) }
 
-        assertEquals("2.1", readBack.apiVersion)
+        assertEquals("2.2", readBack.apiVersion)
         assertEquals(serialized(sampleProject()), serialized(readBack))
     }
 
@@ -783,7 +860,7 @@ class CcJsonV2SerializationTest {
 
         val readBack = ProjectDeserializer.deserializeProject(ByteArrayInputStream(pipedPayload.toByteArray()))
 
-        assertEquals("2.1", readBack?.apiVersion)
+        assertEquals("2.2", readBack?.apiVersion)
     }
 
     @Test
@@ -1080,6 +1157,6 @@ class CcJsonV2SerializationTest {
         ProjectSerializer.serializeProject(sampleProject(), out, compress = false, isOutputFileSpecified = false)
 
         val readBack = ProjectDeserializer.deserializeProject(out.toString())
-        assertEquals("2.1", readBack.apiVersion)
+        assertEquals("2.2", readBack.apiVersion)
     }
 }

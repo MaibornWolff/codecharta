@@ -51,6 +51,6 @@ internal object ImportedModules {
 
     private fun canonicalOf(file: File): File = canonicalFileByPath.computeIfAbsent(file.absolutePath) { file.canonicalFile }
 
-    private fun specifierOf(import: ImportDeclaration): List<String> =
+    fun specifierOf(import: ImportDeclaration): List<String> =
         (if (namesMember(import)) import.path.dropLast(1) else import.path).filter { it.isNotEmpty() }
 }

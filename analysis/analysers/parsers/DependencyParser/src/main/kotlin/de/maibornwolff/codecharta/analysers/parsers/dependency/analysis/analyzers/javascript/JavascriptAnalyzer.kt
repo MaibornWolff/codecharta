@@ -10,6 +10,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ImportedModules
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.MemberImports
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ModuleScriptUses
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.NpmImports
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.OwnNames
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.ScriptLeaf
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.StarExports
@@ -18,6 +19,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Fi
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
+import de.maibornwolff.codecharta.model.ExternalImport
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
@@ -40,10 +42,13 @@ class JavascriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         GlobalUses.of(ModuleScriptUses.of(DefaultExportUses.of(declaration.usedTypes, fileInfo), fileInfo), fileInfo.analysisRoot)
 
     override fun analyze(): FileReport {
-        val declaredNodes = super.analyze().nodes.let { memberImports?.rewrite(it) ?: it }
+        val declaredReport = super.analyze()
+        val declaredNodes = declaredReport.nodes.let { memberImports?.rewrite(it) ?: it }
         val nodes = OwnNames.writtenInFull(DefaultExports.withoutOwnNames(declaredNodes), modulePath)
-        return FileReport(starExports?.expandedIn(nodes, modulePath) ?: nodes)
+        return declaredReport.copy(nodes = starExports?.expandedIn(nodes, modulePath) ?: nodes)
     }
+
+    override fun externalImportsOf(imports: List<ImportDeclaration>): Set<ExternalImport> = NpmImports.of(imports, fileInfo)
 
     override fun convertImport(import: ImportDeclaration): Set<Dependency> {
         val analysisRoot = fileInfo.analysisRoot

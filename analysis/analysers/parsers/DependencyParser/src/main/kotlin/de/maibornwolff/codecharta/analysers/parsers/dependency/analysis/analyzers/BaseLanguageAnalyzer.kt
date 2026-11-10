@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Fi
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
+import de.maibornwolff.codecharta.model.ExternalImport
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.EmbeddedDeclarations
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
@@ -33,8 +34,11 @@ abstract class BaseLanguageAnalyzer(protected val fileInfo: FileInfo) : Language
             val embedded = result.embedded.filter { it.owner == declaration.name }
             nodesOf(declaration, toNode(result.packagePath, dependencies, declaration, result.imports), embedded)
         }
-        return FileReport(nodes)
+        return FileReport(nodes, externalImportsOf(result.imports))
     }
+
+    /** The third-party packages among the file's imports; none for a language whose packages the map does not track. */
+    protected open fun externalImportsOf(imports: List<ImportDeclaration>): Set<ExternalImport> = emptySet()
 
     protected open fun selectImports(declaration: Declaration, imports: List<ImportDeclaration>): List<ImportDeclaration> = imports
 

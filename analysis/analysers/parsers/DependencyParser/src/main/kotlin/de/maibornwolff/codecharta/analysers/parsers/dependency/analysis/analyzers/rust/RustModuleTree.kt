@@ -9,13 +9,11 @@ import de.maibornwolff.treesitter.excavationsite.api.RustModule
  * The module tree the compiler builds (`rust.md`, "Modules", decision 2): from each crate root along the `mod`
  * declarations, `#[path]` included; a file that two crates load belongs to the first (decision 12), and a file no `mod`
  * reaches keeps the module path of the file system. Every module of a file, inline ones included, is a
- * [RustModuleScope] holding what it declares, imports and re-exports; test code binds nothing in a run without tests
- * (decision 6).
+ * [RustModuleScope] holding what it declares, imports and re-exports, test code included (decision 6).
  */
 internal class RustModuleTree(
     private val crates: RustCrates,
     private val rustFiles: Set<List<String>>,
-    private val includesTests: Boolean = true,
     private val factsOf: (List<String>) -> RustModule
 ) {
     private val scopesByFile = LinkedHashMap<List<String>, MutableMap<List<String>, RustModuleScope>>()
@@ -51,7 +49,7 @@ internal class RustModuleTree(
         val facts = factsOf(scope.file)
         val enclosing = (0..scope.inlinePath.size).mapTo(HashSet()) { scope.inlinePath.take(it) }
         val defined = facts.items
-            .filter { it.kind == RustItemKind.MACRO && it.inlinePath in enclosing && it.offset < offset && isCounted(scope, it.isTest) }
+            .filter { it.kind == RustItemKind.MACRO && it.inlinePath in enclosing && it.offset < offset }
             .map { it.offset to MacroBinding(it.name, (scopeOf(scope.file, it.inlinePath)?.path ?: scope.path) + it.name) }
         val fromMacroUse = facts.modDeclarations
             .filter { it.isMacroUse && it.inlinePath in enclosing && it.offset < offset }
@@ -108,7 +106,7 @@ internal class RustModuleTree(
 
     private fun bind(facts: RustModule, scopes: Map<List<String>, RustModuleScope>) {
         facts.items.forEach { item ->
-            val scope = scopes[item.inlinePath]?.takeIf { isCounted(it, item.isTest) } ?: return@forEach
+            val scope = scopes[item.inlinePath] ?: return@forEach
             scope.items.getOrPut(item.name) { mutableListOf() }.add(item)
             if (item.isMacroExport) {
                 val root = scopesByPath[scope.crateRootPath] ?: scope
@@ -116,7 +114,7 @@ internal class RustModuleTree(
             }
         }
         facts.uses.forEach { use ->
-            val scope = scopes[use.inlinePath]?.takeIf { isCounted(it, use.isTest) } ?: return@forEach
+            val scope = scopes[use.inlinePath] ?: return@forEach
             if (use.isGlob) {
                 scope.globs.add(use)
             } else if (use.binding != null) {
@@ -124,9 +122,6 @@ internal class RustModuleTree(
             }
         }
     }
-
-    /** Whether code that [isTest] marks, in [scope], counts in this run. */
-    fun isCounted(scope: RustModuleScope, isTest: Boolean): Boolean = includesTests || !(isTest || scope.isTest)
 
     // A `mod.rs` and a file `#[path]` loads own their folder, any other `a.rs` the folder `a/` next to it
     private fun fileModule(declaration: RustModDeclaration, parent: RustModuleScope, file: List<String>): RustModuleScope {

@@ -241,12 +241,12 @@ class ProjectMergerTest {
         val projectA =
             Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("custom" to custom)), commitHash = "aaa111")
         val projectB =
-            Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("security" to security)), commitHash = "bbb222")
+            Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("vendorFindings" to security)), commitHash = "bbb222")
 
         val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
 
         assertTrue(merged.lenses.opaqueLenses.containsKey("custom"))
-        assertTrue(merged.lenses.opaqueLenses.containsKey("security"))
+        assertTrue(merged.lenses.opaqueLenses.containsKey("vendorFindings"))
         assertEquals("aaa111", merged.commitHash)
     }
 
@@ -378,8 +378,8 @@ class ProjectMergerTest {
     fun `should fail loudly when an opaque lens has conflicting payloads across inputs`() {
         val firstSecurity = JsonParser.parseString("""{"layer":"first"}""")
         val secondSecurity = JsonParser.parseString("""{"layer":"second"}""")
-        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("security" to firstSecurity)))
-        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("security" to secondSecurity)))
+        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("vendorFindings" to firstSecurity)))
+        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("vendorFindings" to secondSecurity)))
 
         assertFailsWith(MergeException::class) {
             ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
@@ -389,24 +389,24 @@ class ProjectMergerTest {
     @Test
     fun `should preserve a single copy of an identical opaque lens present in multiple inputs`() {
         val security = JsonParser.parseString("""{"layer":"backend"}""")
-        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("security" to security)))
-        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("security" to security)))
+        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("vendorFindings" to security)))
+        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("vendorFindings" to security)))
 
         val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
 
-        assertEquals(security, merged.lenses.opaqueLenses["security"])
+        assertEquals(security, merged.lenses.opaqueLenses["vendorFindings"])
     }
 
     @Test
     fun `should let a data-bearing opaque lens win over an empty reserved slot of the same name`() {
         val emptySecurity = JsonParser.parseString("{}")
         val populatedSecurity = JsonParser.parseString("""{"layer":"backend"}""")
-        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("security" to emptySecurity)))
-        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("security" to populatedSecurity)))
+        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("vendorFindings" to emptySecurity)))
+        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("vendorFindings" to populatedSecurity)))
 
         val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
 
-        assertEquals(populatedSecurity, merged.lenses.opaqueLenses["security"])
+        assertEquals(populatedSecurity, merged.lenses.opaqueLenses["vendorFindings"])
     }
 
     @Test

@@ -1,0 +1,12 @@
+# Test links: test_cart.py names Cart, patches Price by a string (no name, so no link) and uses the helper in
+# conftest.py, a test too
+file src/shop/cart.py -> src/shop/price.py
+file tests/conftest.py -> src/shop/cart.py
+file tests/test_cart.py -> src/shop/cart.py
+file tests/test_cart.py -> tests/conftest.py
+leaf src/shop/cart.py#Cart -> src/shop/price.py#Price
+leaf tests/conftest.py#empty_cart -> src/shop/cart.py#Cart
+leaf tests/test_cart.py#test_total -> src/shop/cart.py#Cart
+leaf tests/test_cart.py#test_total -> tests/conftest.py#empty_cart
+test tests/conftest.py -> src/shop/cart.py
+test tests/test_cart.py -> src/shop/cart.py

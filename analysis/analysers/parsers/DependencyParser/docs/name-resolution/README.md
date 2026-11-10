@@ -2,7 +2,9 @@
 
 How the dependency parser decides which declaration a name in the code means. One page per language says, in order,
 where a written name is looked up; the first place that holds a declaration of that name wins. The probes under
-`sample-projects/regression/<language>/` test each rule, and each page lists which probe covers which rule.
+`sample-projects/regression/<language>/` test each rule, and each page lists which probe covers which rule. A probe
+also lists as `test` lines the code files each test names, as `--link-tests` links them; `spec-test-links` of each
+language shows a test that names code, mocks it and uses a test helper.
 
 ## What a page covers
 

@@ -547,6 +547,15 @@
             "type": "string"
           },
           "type": "object"
+        },
+        "externalImports": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/ExternalImport"
+            }
+          }
         }
       },
       "type": "object"
@@ -826,7 +835,7 @@
           "$ref": "#/definitions/DomainLens"
         },
         "security": {
-          "type": "object"
+          "$ref": "#/definitions/SecurityLens"
         }
       },
       "type": "object"
@@ -855,6 +864,171 @@
         "lenses"
       ],
       "type": "object"
+    },
+    "SecurityLens": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "vulnerabilitySources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "vulnerabilitiesMeasured": {
+          "type": "boolean"
+        },
+        "versionsLookup": {
+          "$ref": "#/definitions/VersionsLookup"
+        },
+        "packages": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/SecurityPackage"
+          }
+        },
+        "nodes": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/SecurityNode"
+          }
+        }
+      }
+    },
+    "VersionsLookup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "date"
+      ],
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "SecurityPackage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "ecosystem": {
+          "type": "string"
+        },
+        "dependsOn": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "newestVersion": {
+          "type": "string"
+        },
+        "newerVersions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "daysOutdated": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "libyears": {
+          "type": "number",
+          "minimum": 0
+        },
+        "vulnerabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SecurityVulnerability"
+          }
+        },
+        "vulnerabilitiesUnknown": {
+          "type": "boolean"
+        }
+      }
+    },
+    "SecurityVulnerability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "severity"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "critical",
+            "high",
+            "medium",
+            "low",
+            "unknown"
+          ]
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "fixedVersions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "SecurityNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "declares": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "dependsOn": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ExternalImport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ecosystem",
+        "name"
+      ],
+      "properties": {
+        "ecosystem": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
     }
   }
 }

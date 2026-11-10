@@ -4,12 +4,14 @@ import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.Declaration
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.DeclarationAddress
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.DependencyGraph
+import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.TestLinks
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.model.DependencyLeaf
 import de.maibornwolff.codecharta.model.DependencyNamespace
 import de.maibornwolff.codecharta.model.DependencyNode
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.ExternalImport
 import de.maibornwolff.codecharta.model.LeafEdge
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeId
@@ -17,16 +19,25 @@ import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.model.sortedImports
 
 /**
  * Writes both projections of the dependency graph into one project: the files as the tree, the
  * file-level dependencies and the declaration-level ones as the dependency lens, and the per-file link
- * counts as ordinary metrics.
+ * counts as ordinary metrics. [TestLinks], from a run that links tests, add the test files with the `test_file` metric
+ * and the "Tests" clustering.
  */
-class DependencyProjectGenerator(private val projectBuilder: ProjectBuilder = ProjectBuilder()) {
-    fun generate(graph: DependencyGraph, analysedFilePaths: List<List<String>>, pipedProject: Project? = null): Project {
-        val linkCounts = countLinksPerFile(graph, analysedFilePaths)
-        analysedFilePaths.forEach { segments -> insertFileNode(segments, linkCounts.getValue(segments)) }
+class DependencyProjectGenerator(
+    private val projectBuilder: ProjectBuilder = ProjectBuilder(),
+    private val externalImportsByFile: Map<List<String>, Set<ExternalImport>> = emptyMap()
+) {
+    fun generate(
+        graph: DependencyGraph,
+        analysedFilePaths: List<List<String>>,
+        pipedProject: Project? = null,
+        testLinks: TestLinks? = null
+    ): Project {
+        insertFileNodes(graph, analysedFilePaths, testLinks)
         graph.edges.forEach { edge ->
             projectBuilder.insertEdge(
                 Edge(
@@ -50,16 +61,36 @@ class DependencyProjectGenerator(private val projectBuilder: ProjectBuilder = Pr
                         ),
                         NODE_ATTRIBUTE_TYPE
                     )
-                ).addAttributeDescriptions(dependencyAttributeDescriptors())
+                ).withTestLinks(testLinks)
+                .addAttributeDescriptions(dependencyAttributeDescriptors() + testFileDescriptorsOf(testLinks))
                 .withDependencyLens(
                     nodes = toDependencyNodes(graph),
                     namespaces = graph.namespaces.mapValues { (_, namespace) -> DependencyNamespace(namespace.level, namespace.parent) },
                     leaves = toDependencyLeaves(graph),
-                    leafEdges = toLeafEdges(graph)
+                    leafEdges = toLeafEdges(graph),
+                    externalImports = externalImportsByFile.entries.associate { (file, imports) ->
+                        NodeId.fromSegments(file, NodeType.File) to sortedImports(imports)
+                    }
                 ).build()
 
         return if (pipedProject != null) MergeFilter.mergePipedWithCurrentProject(pipedProject, project) else project
     }
+
+    // A run that links tests judged every file it read, so the code files carry a 0; the test files carry no link counts
+    private fun insertFileNodes(graph: DependencyGraph, analysedFilePaths: List<List<String>>, testLinks: TestLinks?) {
+        val linkCounts = countLinksPerFile(graph, analysedFilePaths)
+        val codeFileAttributes = if (testLinks == null) emptyMap() else mapOf(TEST_FILE to NOT_A_TEST)
+        analysedFilePaths.forEach { segments -> insertFileNode(segments, linkCounts.getValue(segments) + codeFileAttributes) }
+        testLinks?.testFiles?.forEach { testFile -> insertFileNode(testFile.segments, mapOf(TEST_FILE to IS_A_TEST)) }
+    }
+
+    private fun ProjectBuilder.withTestLinks(testLinks: TestLinks?): ProjectBuilder {
+        if (testLinks == null) return this
+        return addAttributeTypes(AttributeTypes(mutableMapOf(TEST_FILE to AttributeType.ABSOLUTE), NODE_ATTRIBUTE_TYPE))
+            .withClustersLens(TestsClustering.of(testLinks))
+    }
+
+    private fun testFileDescriptorsOf(testLinks: TestLinks?) = if (testLinks == null) emptyMap() else testFileAttributeDescriptors()
 
     private fun insertFileNode(segments: List<String>, attributes: Map<String, Any>) {
         if (segments.isEmpty()) return
@@ -123,5 +154,7 @@ class DependencyProjectGenerator(private val projectBuilder: ProjectBuilder = Pr
     companion object {
         private const val NODE_ATTRIBUTE_TYPE = "nodes"
         private const val EDGE_ATTRIBUTE_TYPE = "edges"
+        private const val IS_A_TEST = 1
+        private const val NOT_A_TEST = 0
     }
 }

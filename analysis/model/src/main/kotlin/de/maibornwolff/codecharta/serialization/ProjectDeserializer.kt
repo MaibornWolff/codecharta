@@ -60,7 +60,7 @@ object ProjectDeserializer {
         }
         val jsonObject = parsed.asJsonObject
         return when (detectApiVersion(jsonObject)) {
-            ApiVersion.TWO_ONE -> CcJsonV2ToProjectMapper.toProject(CcJsonV2Gson.gson.fromJson(jsonObject, CcJsonV2::class.java))
+            ApiVersion.TWO -> CcJsonV2ToProjectMapper.toProject(CcJsonV2Gson.gson.fromJson(jsonObject, CcJsonV2::class.java))
             ApiVersion.ONE_FIVE -> {
                 if (!allowLegacy) {
                     if (looksLikeLegacyProject(jsonObject)) {

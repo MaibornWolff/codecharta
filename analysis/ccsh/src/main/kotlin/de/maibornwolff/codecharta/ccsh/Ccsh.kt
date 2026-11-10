@@ -10,6 +10,7 @@ import de.maibornwolff.codecharta.analysers.importers.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.analysers.importers.coverage.CoverageImporter
 import de.maibornwolff.codecharta.analysers.importers.csv.CSVImporter
 import de.maibornwolff.codecharta.analysers.importers.dependacharta.DependaChartaImporter
+import de.maibornwolff.codecharta.analysers.importers.sbom.SbomImporter
 import de.maibornwolff.codecharta.analysers.importers.sonar.SonarImporter
 import de.maibornwolff.codecharta.analysers.importers.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.analysers.importers.tokei.TokeiImporter
@@ -63,6 +64,7 @@ import kotlin.system.exitProcess
         CodeMaatImporter::class,
         TokeiImporter::class,
         DependaChartaImporter::class,
+        SbomImporter::class,
         RawTextParser::class,
         UnifiedParser::class,
         DomainLanguageParser::class,

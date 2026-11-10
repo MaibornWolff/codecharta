@@ -6,6 +6,8 @@ import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.DependencyNamespace
 import de.maibornwolff.codecharta.model.DependencyNode
 import de.maibornwolff.codecharta.model.DomainLens
+import de.maibornwolff.codecharta.model.ExternalImport
+import de.maibornwolff.codecharta.model.SecurityLens
 
 class CcJsonV2(val meta: MetaDto, val files: List<FileDto>, val lenses: LensesDto)
 
@@ -28,6 +30,8 @@ class LensesDto(
     val domain: DomainLens? = null,
     // Null rather than empty, so a lens that carries nothing leaves no key on the wire.
     val clusters: ClustersLensDto? = null,
+    // Keyed by node id and purl on the wire exactly as in the model; its empty fields are null, so GSON omits them.
+    val security: SecurityLens? = null,
     val opaqueLenses: Map<String, JsonElement> = emptyMap()
 )
 
@@ -70,7 +74,8 @@ class DependencyLensDto(
     // projection is byte-identical to what earlier writers emitted.
     val namespaces: Map<String, DependencyNamespace>? = null,
     val leaves: Map<String, Map<String, DependencyLeafDto>>? = null,
-    val leafEdges: List<LeafEdgeDto>? = null
+    val leafEdges: List<LeafEdgeDto>? = null,
+    val externalImports: Map<String, List<ExternalImport>>? = null
 )
 
 // The graph flags are nullable rather than defaulted to false so GSON omits them unless they are set:

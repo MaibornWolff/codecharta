@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership
+package de.maibornwolff.codecharta.analysers.parsers.gitlog.authors
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

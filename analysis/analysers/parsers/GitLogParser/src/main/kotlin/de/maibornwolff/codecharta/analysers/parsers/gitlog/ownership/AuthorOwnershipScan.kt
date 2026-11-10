@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership
 
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.authors.AuthorHistory
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.util.GitCommand
 import de.maibornwolff.codecharta.model.ClustersLens
 import de.maibornwolff.codecharta.util.Logger
@@ -8,43 +9,16 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
 /** Measures who made the commits that last changed the lines each file holds today, and gives them pseudonyms by their first commit. */
-class AuthorOwnershipScan(private val repositoryFolder: File, private val withNames: Boolean = false) {
+class AuthorOwnershipScan(
+    private val repositoryFolder: File,
+    private val withNames: Boolean = false,
+    private val history: AuthorHistory = AuthorHistory(repositoryFolder)
+) {
     private val git = GitCommand(repositoryFolder)
 
-    fun lens(): ClustersLens = AuthorOwnershipLens.of(commitsOldestFirst(), blameByPath(), withNames)
+    fun lens(): ClustersLens = AuthorOwnershipLens.of(history.commitsOldestFirst, blameByPath(), withNames)
 
     fun isShallowClone(): Boolean = git.isShallowClone()
-
-    private fun commitsOldestFirst(): List<CommitPeople> {
-        val format = "--format=%H%x00%aN%x00%(trailers:key=Co-authored-by,valueonly,separator=%x01)"
-        val rows = git
-            .outputOrNull("-c", "i18n.logOutputEncoding=UTF-8", "log", "--reverse", "--topo-order", format) { output ->
-                output.bufferedReader(Charsets.UTF_8).useLines { lines -> lines.map { it.split(NUL) }.toList() }
-            }.orEmpty()
-        val nameByCoAuthor = mappedNames(rows.flatMap { coAuthorsIn(it) }.distinct())
-        return rows.map { row ->
-            CommitPeople(row[0], (listOf(row[1]) + coAuthorsIn(row).map { nameByCoAuthor.getValue(it) }).distinct())
-        }
-    }
-
-    private fun coAuthorsIn(logRow: List<String>): List<String> =
-        logRow[2].split(TRAILER_SEPARATOR).map { it.trim() }.filter { it.isNotEmpty() }
-
-    // Git applies the mailmap to a commit's author but not to its trailers, so the co-authors are mapped separately
-    private fun mappedNames(coAuthors: List<String>): Map<String, String> {
-        val withEmail = coAuthors.filter { CONTACT_WITH_EMAIL.matches(it) }
-        val input = File.createTempFile("co-authors", ".txt")
-        try {
-            input.writeText(withEmail.joinToString("\n", postfix = "\n"), Charsets.UTF_8)
-            val mapped = git.outputOrNull("check-mailmap", "--stdin", input = input) { it.bufferedReader(Charsets.UTF_8).readLines() }
-            val contacts = if (mapped?.size == withEmail.size) withEmail.zip(mapped).toMap() else emptyMap()
-            return coAuthors.associateWith { nameOf(contacts[it] ?: it) }
-        } finally {
-            if (!input.delete()) input.deleteOnExit()
-        }
-    }
-
-    private fun nameOf(contact: String): String = contact.substringBefore(EMAIL_START).trim()
 
     private fun blameByPath(): Map<String, FileBlame> {
         val binaryPaths = binaryPaths()
@@ -106,11 +80,7 @@ class AuthorOwnershipScan(private val repositoryFolder: File, private val withNa
         const val SHALLOW_CLONE_WARNING =
             "Warning: this repository is a shallow clone, so its author names are not stable. Fetch the full history to keep them stable."
 
-        private const val NUL = "\u0000"
         private const val TAB = "\t"
-        private const val TRAILER_SEPARATOR = "\u0001"
-        private const val EMAIL_START = "<"
-        private val CONTACT_WITH_EMAIL = Regex(".+<.+>")
         private const val BLOB_TYPE = "blob"
         private const val BINARY_NUMSTAT_PREFIX = "-\t-\t"
         private const val IGNORE_REVISIONS_FILE = ".git-blame-ignore-revs"

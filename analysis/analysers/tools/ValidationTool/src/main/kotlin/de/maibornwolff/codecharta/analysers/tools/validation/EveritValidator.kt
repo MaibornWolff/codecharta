@@ -42,7 +42,7 @@ class EveritValidator(private var schemaPath: String) : Validator {
         val metaApiVersion = json.optJSONObject("meta")?.optString("apiVersion")?.takeIf { it.isNotBlank() }
         val major = metaApiVersion?.substringBefore('.') ?: if (json.has("lenses")) "2" else "1"
         val looksLegacy = json.has("nodes") || json.optJSONObject("data") != null || json.has("apiVersion")
-        if (major != ApiVersion.TWO_ONE.major.toString() && looksLegacy) {
+        if (major != ApiVersion.TWO.major.toString() && looksLegacy) {
             throw LegacyFileException(LegacyFileException.CONVERT_HINT)
         }
     }

@@ -1,0 +1,2 @@
+# Test links: test_cart.c includes cart.h and calls cart_total
+test test_cart.c -> src/cart.h
