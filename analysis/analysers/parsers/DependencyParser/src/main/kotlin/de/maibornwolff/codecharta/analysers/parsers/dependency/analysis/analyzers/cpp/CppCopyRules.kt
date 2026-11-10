@@ -11,11 +11,11 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.ne
  * implementation part, the one file-scoped copy C++ has, is the target only where no class body is.
  */
 internal class CppCopyRules(private val includes: CppIncludes?) : CopyRules {
-    override fun filesFor(allCopies: List<DeclaringCopy>, usingFile: FilePath): List<FilePath> {
-        val copies = allCopies.filterNot { it.isFileScoped }.ifEmpty { allCopies }
-        val closure = includes?.closureOf(usingFile.segments) ?: return nearestCopy.filesFor(copies, usingFile)
-        val copyFiles = copies.mapTo(HashSet()) { it.file.segments }
-        val firstIncluded = closure.firstOrNull { it in copyFiles } ?: return nearestCopy.filesFor(copies, usingFile)
+    override fun filesFor(copies: List<DeclaringCopy>, usingFile: FilePath): List<FilePath> {
+        val candidates = copies.filterNot { it.isFileScoped }.ifEmpty { copies }
+        val closure = includes?.closureOf(usingFile.segments) ?: return nearestCopy.filesFor(candidates, usingFile)
+        val candidateFiles = candidates.mapTo(HashSet()) { it.file.segments }
+        val firstIncluded = closure.firstOrNull { it in candidateFiles } ?: return nearestCopy.filesFor(candidates, usingFile)
         return listOf(FilePath(firstIncluded))
     }
 }
