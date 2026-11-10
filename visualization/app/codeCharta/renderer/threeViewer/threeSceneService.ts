@@ -16,10 +16,17 @@ import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { ThreeSceneStore } from "./stores/threeScene.store"
 import { ThreeRendererService } from "./threeRenderer.service"
 
+/** The file a shown cluster is about, as a test cluster's test, and the files of the cluster it leads to. */
+export interface ClusterSourceLink {
+    sourcePath: string
+    targetPaths: ReadonlySet<string>
+}
+
 type BuildingSelectedEvents = {
     onBuildingSelected: (data: { building: CodeMapBuilding }) => void
     onBuildingDeselected: () => void
     onKeptHighlightFocusChanged: (filePaths: ReadonlySet<string> | null) => void
+    onClusterSourceChanged: (link: ClusterSourceLink | null) => void
 }
 
 @Injectable({ providedIn: "root" })
@@ -247,6 +254,22 @@ export class ThreeSceneService implements OnDestroy {
             this.paintKeptHighlight()
         }
         this.eventEmitter.emit("onKeptHighlightFocusChanged", filePaths)
+    }
+
+    /** While set, the map is about what one file leads to: whoever draws arrows draws them from it to the targets. */
+    setClusterSource(link: ClusterSourceLink | null) {
+        this.eventEmitter.emit("onClusterSourceChanged", link)
+    }
+
+    /** Paints the building at [path] in [color] through every highlight, or ends that with null. */
+    markBuilding(path: string | null, color: string) {
+        if (!this.mapMesh || this.mapMesh.markedPath === path) {
+            return
+        }
+        this.mapMesh.markBuilding(path, color)
+        if (this.highlightedBuildingIds.size > 0 || this.constantHighlight.size > 0) {
+            this.applyHighlights()
+        }
     }
 
     /** Shows the highlight the store keeps, which another view can change while this mesh is not drawn. */

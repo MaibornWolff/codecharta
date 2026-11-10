@@ -128,6 +128,31 @@ describe("CodeMapArrowService", () => {
         })
     })
 
+    describe("cluster source", () => {
+        it("should mark the source and draw an arrow from it to every other shown file, and end both with null", () => {
+            // Arrange
+            withMockedThreeSceneService()
+            threeSceneService.getSelectedBuilding = jest.fn()
+            threeSceneService.markBuilding = jest.fn()
+            codeMapArrowService.addEdgeMapBasedOnNodes([OUTGOING_NODE, INCOMING_NODE])
+            const outgoingEdgeColor = state.getValue().mapState.mapColors.outgoingEdge
+
+            // Act
+            codeMapArrowService.onClusterSourceChanged({
+                sourcePath: OUTGOING_NODE.path,
+                targetPaths: new Set([OUTGOING_NODE.path, INCOMING_NODE.path])
+            })
+            const arrowsWhileShown = codeMapArrowService["arrows"].length
+            codeMapArrowService.onClusterSourceChanged(null)
+
+            // Assert
+            expect(threeSceneService.markBuilding).toHaveBeenNthCalledWith(1, OUTGOING_NODE.path, outgoingEdgeColor)
+            expect(arrowsWhileShown).toBe(1)
+            expect(threeSceneService.markBuilding).toHaveBeenLastCalledWith(null, outgoingEdgeColor)
+            expect(codeMapArrowService["arrows"]).toHaveLength(0)
+        })
+    })
+
     describe("Arrow Behaviour when selecting and hovering a building", () => {
         it("should only highlight small leaf when big leaf is selected", async () => {
             ;(edgesSelector as unknown as jest.Mock).mockReturnValue(VALID_EDGES_DECORATED)

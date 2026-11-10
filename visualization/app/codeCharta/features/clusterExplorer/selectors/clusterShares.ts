@@ -10,6 +10,8 @@ export interface ClusterShareRow {
     /** The part of the map's area its files cover, which a highlight lights; null where the map has no area to compare with. */
     mapShare: number | null
     filePaths: string[]
+    /** The file the cluster is about, as a test cluster's test; null for most clusters. */
+    path: string | null
     attributes: ClusterAttributes
 }
 
@@ -101,6 +103,7 @@ function rowOf(cluster: ClusterData, shownFiles: ShownFiles, measures: RowMeasur
         share: measures.share.total > 0 ? weightedSize / measures.share.total : 0,
         mapShare: measures.mapArea && mapShareOf(filePaths, measures.mapArea),
         filePaths,
+        path: cluster.path ?? null,
         attributes: cluster.attributes ?? {}
     }
 }

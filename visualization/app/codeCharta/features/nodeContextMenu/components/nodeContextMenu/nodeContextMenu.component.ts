@@ -21,6 +21,11 @@ const JUMP_TARGETS: Record<ViewId, { label: string; icon: string; hoverHint: str
         label: "Show in Dependencies",
         icon: "fa-solid fa-diagram-project",
         hoverHint: "Show this node in the dependency graph"
+    },
+    security: {
+        label: "Show in Security",
+        icon: "fa-solid fa-shield-halved",
+        hoverHint: "List the third-party packages this file or folder uses"
     }
 }
 
@@ -74,6 +79,7 @@ export class NodeContextMenuComponent {
     })
     private readonly isMenuNodeInDomainLens = toSignal(this.readStore.isRightClickedNodeInDomainLens$, { requireSync: true })
     private readonly isMenuNodeInDependencyLens = toSignal(this.readStore.isRightClickedNodeInDependencyLens$, { requireSync: true })
+    private readonly hasSecurityData = toSignal(this.readStore.hasSecurityData$, { requireSync: true })
     readonly jumpTargets = computed(() => {
         const node = this.menuNode()
         return node === null
@@ -244,6 +250,8 @@ export class NodeContextMenuComponent {
                 return this.isMenuNodeInDomainLens()
             case "dependencies":
                 return this.isMenuNodeInDependencyLens()
+            case "security":
+                return this.hasSecurityData()
             default:
                 return true
         }

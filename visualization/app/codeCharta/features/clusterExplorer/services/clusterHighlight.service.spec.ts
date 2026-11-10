@@ -9,11 +9,13 @@ describe("ClusterHighlightService", () => {
     let kept$: BehaviorSubject<string[]>
     let service: ClusterHighlightService
     const setKeptHighlightFocus = jest.fn()
+    const setClusterSource = jest.fn()
     const mapMeshChanged$ = new Subject<void>()
     const getMapMesh = jest.fn()
 
     beforeEach(() => {
         setKeptHighlightFocus.mockClear()
+        setClusterSource.mockClear()
         getMapMesh.mockReset()
         kept$ = new BehaviorSubject<string[]>([])
         const nodeInteraction: Partial<NodeInteraction> = {
@@ -22,7 +24,7 @@ describe("ClusterHighlightService", () => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: NodeInteraction, useValue: nodeInteraction },
-                { provide: ThreeSceneService, useValue: { setKeptHighlightFocus, mapMeshChanged$, getMapMesh } },
+                { provide: ThreeSceneService, useValue: { setKeptHighlightFocus, setClusterSource, mapMeshChanged$, getMapMesh } },
                 { provide: SharedViewReadWindow, useValue: { keptHighlightPaths$: kept$ } }
             ]
         })
@@ -112,6 +114,25 @@ describe("ClusterHighlightService", () => {
         expect(focusWhileHovering).toEqual([new Set(["/b"])])
         expect(kept$.value).toEqual(["/a"])
         expect(setKeptHighlightFocus).toHaveBeenLastCalledWith(new Set(["/a"]))
+    })
+
+    it("should lead from a cluster's source to its files while hovered or pinned, and stop after", () => {
+        // Arrange
+        service.togglePin("vault-test", ["/vault.ts"], "/vault.spec.ts")
+        const whilePinned = setClusterSource.mock.lastCall
+
+        // Act
+        service.hover(["/ledger.ts"], "/ledger.spec.ts")
+        const whileHovering = setClusterSource.mock.lastCall
+        service.endHover()
+        const afterHover = setClusterSource.mock.lastCall
+        service.togglePin("vault-test", ["/vault.ts"], "/vault.spec.ts")
+
+        // Assert
+        expect(whilePinned).toEqual([{ sourcePath: "/vault.spec.ts", targetPaths: new Set(["/vault.ts"]) }])
+        expect(whileHovering).toEqual([{ sourcePath: "/ledger.spec.ts", targetPaths: new Set(["/ledger.ts"]) }])
+        expect(afterHover).toEqual(whilePinned)
+        expect(setClusterSource).toHaveBeenLastCalledWith(null)
     })
 
     it("should keep the files lit after the hover ends once a click pinned them", () => {

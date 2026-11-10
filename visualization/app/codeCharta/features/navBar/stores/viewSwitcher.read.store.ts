@@ -3,6 +3,7 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { Store } from "@ngrx/store"
 import { hasDependencyDataSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { hasDomainDataSelector } from "../../../lenses/domain/domainLens.facade"
+import { hasSecuritySelector } from "../../../lenses/security/security.facade"
 
 @Injectable({ providedIn: "root" })
 export class ViewSwitcherReadStore {
@@ -13,4 +14,6 @@ export class ViewSwitcherReadStore {
     readonly isDomainViewAvailable = toSignal(this.store.select(hasDomainDataSelector), { initialValue: false })
 
     readonly isDependencyViewAvailable = toSignal(this.store.select(hasDependencyDataSelector), { initialValue: false })
+
+    readonly isSecurityViewAvailable = toSignal(this.store.select(hasSecuritySelector), { initialValue: false })
 }

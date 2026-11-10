@@ -314,9 +314,30 @@ describe("ClusterExplorerComponent", () => {
         await userEvent.unhover(row)
 
         // Assert
-        expect(highlight.hover).toHaveBeenCalledWith(["/root/a", "/root/b"])
-        expect(highlight.togglePin).toHaveBeenCalledWith("r-author-2", ["/root/a", "/root/b"])
+        expect(highlight.hover).toHaveBeenCalledWith(["/root/a", "/root/b"], null)
+        expect(highlight.togglePin).toHaveBeenCalledWith("r-author-2", ["/root/a", "/root/b"], null)
         expect(highlight.endHover).toHaveBeenCalled()
+    })
+
+    it("should name a test cluster by its file, show the full path on hover and lead from the test to its files", async () => {
+        // Arrange
+        await setup({
+            tests: {
+                title: "Tests",
+                membership: "overlay",
+                clusters: [{ id: "t1", name: "vault.spec.ts", path: "/root/test/vault.spec.ts", members: { "/root/a": 1 } }]
+            }
+        })
+        const row = screen.getByTestId("cluster-explorer-row")
+
+        // Act
+        await userEvent.hover(row)
+
+        // Assert
+        expect(row.textContent).toContain("vault.spec.ts")
+        expect(row.textContent).not.toContain("/root/test")
+        expect(row.getAttribute("title")?.split("\n")[0]).toBe("/root/test/vault.spec.ts")
+        expect(highlight.hover).toHaveBeenCalledWith(["/root/a"], "/root/test/vault.spec.ts")
     })
 
     it("should mark the pinned cluster as pressed", async () => {

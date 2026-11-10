@@ -8,6 +8,7 @@ import {
     MarkedPackage,
     NodeType
 } from "./domain.model"
+import { ExternalImport, SecurityPackage } from "./security.model"
 
 export interface CcJson2 {
     meta: Meta2
@@ -36,6 +37,15 @@ interface Lenses {
     dependency?: DependencyLensData
     domain?: DomainLens
     clusters?: ClustersLensWire
+    security?: SecurityLensWire
+}
+
+interface SecurityLensWire {
+    vulnerabilitySources?: string[]
+    vulnerabilitiesMeasured?: boolean
+    versionsLookup?: { source: string; date: string }
+    packages?: Record<string, SecurityPackage>
+    nodes?: Record<string, { declares?: string[]; dependsOn?: string[] }>
 }
 
 interface ClustersLensWire {
@@ -89,6 +99,8 @@ export interface DependencyLensData {
     namespaces?: Record<string, DependencyLensNamespace>
     leaves?: Record<string, Record<string, DependencyLensLeaf>>
     leafEdges?: DependencyLeafEdge[]
+    /** The third-party packages each file imports, keyed by file node id. */
+    externalImports?: Record<string, ExternalImport[]>
 }
 
 interface DependencyLensNode {

@@ -1,9 +1,9 @@
 ---
 title: "Views"
-description: "Read the same code map three ways in the CodeCharta Web Studio: the Metric view, the Domain word cloud and the Dependencies graph, and switch modes."
+description: "Read the same code map four ways in the CodeCharta Web Studio: the Metric view, the Domain word cloud, the Dependencies graph and the Security view, and switch modes."
 ---
 
-The Web Studio shows a loaded map in up to three views, so you can ask different questions of the same code: how big
+The Web Studio shows a loaded map in up to four views, so you can ask different questions of the same code: how big
 and complex it is, what it is about, and how its parts depend on each other. The tabs in the middle of the top bar
 switch between them:
 
@@ -13,6 +13,8 @@ switch between them:
   [Domain view](/docs/visualization/user-controls/domain-view).
 - **Dependencies**: a graph of the dependencies between files and folders, arranged by level. See
   [Dependency view](/docs/visualization/user-controls/dependency-view).
+- **Security**: the third-party packages with their known vulnerabilities and how far they are behind. See
+  [Security view](/docs/visualization/user-controls/security-view).
 
 A tab appears only when the loaded map has data for it:
 
@@ -21,6 +23,7 @@ A tab appears only when the loaded map has data for it:
 | Metric       | always                                                                                  |
 | Domain       | the [Domain Language parser](/docs/parser/domain-language)                              |
 | Dependencies | the [Dependency parser](/docs/parser/dependency)                                        |
+| Security     | the [SBOM importer](/docs/importer/sbom)                                                |
 
 [`ccsh analyse`](/docs/analysis/analyse) runs both parsers where they apply, so a map made with it usually has all
 three tabs.

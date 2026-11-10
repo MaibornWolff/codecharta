@@ -21,7 +21,13 @@ interface ViewTab {
 const VIEW_TABS: readonly ViewTab[] = [
     { view: "metrics", label: "Metric", title: "Show the 3D metrics map", matchesExactly: true },
     { view: "domain", label: "Domain", title: "Show the domain-language word cloud", matchesExactly: false },
-    { view: "dependencies", label: "Dependencies", title: "Show the dependency graph, arranged by level", matchesExactly: false }
+    { view: "dependencies", label: "Dependencies", title: "Show the dependency graph, arranged by level", matchesExactly: false },
+    {
+        view: "security",
+        label: "Security",
+        title: "Show the third-party packages, their known vulnerabilities and how far they are behind",
+        matchesExactly: false
+    }
 ]
 
 @Component({
@@ -39,7 +45,8 @@ export class ViewSwitcherComponent {
     private readonly isViewAvailable: Record<ViewId, Signal<boolean>> = {
         metrics: signal(true),
         domain: this.readStore.isDomainViewAvailable,
-        dependencies: this.readStore.isDependencyViewAvailable
+        dependencies: this.readStore.isDependencyViewAvailable,
+        security: this.readStore.isSecurityViewAvailable
     }
     readonly availableTabs = computed(() => VIEW_TABS.filter(tab => this.isViewAvailable[tab.view]()))
     readonly activeView = toSignal(inject(ActiveViewStore).activeView$, { requireSync: true })

@@ -48,6 +48,9 @@ the clusters of one clustering; pick another by its title if the map has several
   filtered by name.
 - **Not on the map** gathers the clusters none of whose shown files has a building, with their share where shares add
   up. Click it to list them.
+- A test of the **Tests** clustering, from the [dependency parser's `--link-tests`](/docs/parser/dependency), is named
+  by its file; its tooltip gives the full path. While you hover or pin it, the test itself turns the outgoing-edge
+  colour and an arrow runs from it to each file it names, whether edges are shown or not.
 - Authors appear under invented names, such as **Teal Falcon**. If the map joins two repositories, each row also shows a
   short marker for its repository, because the same name can stand for different people there.
 

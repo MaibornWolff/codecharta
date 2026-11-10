@@ -8,7 +8,8 @@ import { Print3DButtonComponent } from "../print3DButton/print3DButton.component
 const groupLabels: Record<ViewId, string> = {
     metrics: "Metric modes",
     domain: "Domain modes",
-    dependencies: "Dependency modes"
+    dependencies: "Dependency modes",
+    security: "Security modes"
 }
 
 @Component({

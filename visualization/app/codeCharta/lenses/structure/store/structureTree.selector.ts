@@ -35,7 +35,7 @@ const withoutLensDataTheTreeNeverReads = (fileState: FileState): FileState => ({
         ...fileState.file,
         settings: {
             ...fileState.file.settings,
-            fileSettings: { ...fileState.file.settings.fileSettings, domainWords: {}, clusterings: {} }
+            fileSettings: { ...fileState.file.settings.fileSettings, domainWords: {}, clusterings: {}, security: undefined }
         }
     }
 })
