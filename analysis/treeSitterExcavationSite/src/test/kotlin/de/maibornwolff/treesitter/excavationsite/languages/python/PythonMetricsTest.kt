@@ -69,6 +69,25 @@ class PythonMetricsTest {
     }
 
     @Test
+    fun `should count an exception group handler for complexity like an exception handler`() {
+        // Arrange
+        val code = """
+            try:
+                brew_potion()
+            except* ValueError:
+                discard_potion()
+            except* KeyError:
+                restock_shelf()
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.PYTHON)
+
+        // Assert
+        assertThat(result.complexity).isEqualTo(2.0)
+    }
+
+    @Test
     fun `should count line and block comments for comment_lines`() {
         // Arrange
         val code = """

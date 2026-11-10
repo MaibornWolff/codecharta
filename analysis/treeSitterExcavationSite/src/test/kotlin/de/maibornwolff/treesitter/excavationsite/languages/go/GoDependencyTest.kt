@@ -556,6 +556,25 @@ class GoDependencyTest {
         }
 
         @Test
+        fun `should extract a generic function of the package and the one type it is called with`() {
+            // Arrange
+            val code = """
+                package main
+
+                func fill() {
+                    box := NewBox[Parcel]()
+                    box.Close()
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypeNamesOf(code, "fill")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("NewBox", "Parcel")
+        }
+
+        @Test
         fun `should extract a function called in a variable declaration`() {
             // Arrange
             val code = """

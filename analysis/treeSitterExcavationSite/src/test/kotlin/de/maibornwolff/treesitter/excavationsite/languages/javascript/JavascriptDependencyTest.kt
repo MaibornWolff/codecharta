@@ -90,6 +90,18 @@ class JavascriptDependencyTest {
         }
 
         @Test
+        fun `should import the default export under its alias when imported by name`() {
+            // Arrange
+            val code = "import { default as Widget } from './widget'"
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.JAVASCRIPT)
+
+            // Assert
+            assertThat(result.imports.map { it.path to it.bindingName }).containsExactly(listOf(".", "widget", "default") to "Widget")
+        }
+
+        @Test
         fun `should extract multiple named ES6 imports as separate declarations`() {
             // Arrange
             val code = "import { A, B } from './foo'"

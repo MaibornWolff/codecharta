@@ -319,6 +319,20 @@ class BashMetricsTest {
     }
 
     @Test
+    fun `should count the line of a function whose body is an arithmetic command for rloc per function`() {
+        // Arrange
+        val code = """
+            is_outnumbered() (( $1 < $2 / 2 ))
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.BASH)
+
+        // Assert
+        assertThat(result.perFunctionMetrics["max_rloc_per_function"]).isEqualTo(1.0)
+    }
+
+    @Test
     fun `should count LOC correctly for code without trailing newline`() {
         // Arrange - 3 physical lines
         val code = """
