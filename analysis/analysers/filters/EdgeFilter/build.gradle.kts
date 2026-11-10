@@ -7,7 +7,6 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.univocity.parsers)
     implementation(libs.picocli)
-    implementation(libs.boon)
     implementation(libs.kotter)
     implementation(libs.kotter.test)
 

@@ -1,6 +1,6 @@
 ---
 name: Update analysis dependencies
-state: progress
+state: complete
 version: 1
 ---
 
@@ -42,7 +42,7 @@ Bring the analysis dependencies up to date after eight months without updates, t
 
 - [x] Complete Task 1: Low-risk updates and security pins
 - [x] Complete Task 2: tree-sitter core and grammars
-- [ ] Complete Task 3: Remove boon
+- [x] Complete Task 3: Remove boon
 
 ## Notes
 
