@@ -60,7 +60,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y wine-stable zip
+          sudo apt-get install -y zip
 
       - name: Enable analysis execution rights
         working-directory: ./analysis
