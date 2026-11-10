@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership
 
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.authors.AuthorPseudonyms
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.authors.CommitPeople
 import de.maibornwolff.codecharta.model.Cluster
 import de.maibornwolff.codecharta.model.ClusterMember
 import de.maibornwolff.codecharta.model.ClusterMembership
@@ -8,9 +10,6 @@ import de.maibornwolff.codecharta.model.ClustersLens
 import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import java.math.BigInteger
-
-/** A commit's author and co-authors, the author first. */
-internal data class CommitPeople(val hash: String, val people: List<String>)
 
 /** Writes authors by pseudonym, unless real names were asked for; an email or per-author commit data never reaches the map. */
 internal object AuthorOwnershipLens {
@@ -37,12 +36,11 @@ internal object AuthorOwnershipLens {
                 membersByPerson.getOrPut(person) { mutableListOf() }.add(ClusterMember(nodeId, weight))
             }
         }
-        val pseudonyms = AuthorPseudonyms(firstCommitHash)
         // Sorted by id, as the order of first commits would otherwise show through the pseudonyms
-        val clusters = peopleInOrderOfFirstCommit(commitsOldestFirst)
-            .mapIndexedNotNull { position, person ->
+        val clusters = AuthorPseudonyms
+            .byPerson(commitsOldestFirst)
+            .mapNotNull { (person, pseudonym) ->
                 membersByPerson[person]?.let { members ->
-                    val pseudonym = pseudonyms.nameOf(position)
                     clusterOf(firstCommitHash, pseudonym, if (withNames) person else pseudonym, members)
                 }
             }.sortedBy { it.id }
@@ -70,10 +68,6 @@ internal object AuthorOwnershipLens {
             .mapValues { (_, parts) -> (parts * WEIGHT_STEPS_PER_UNIT / partsOfFile).toDouble() / WEIGHT_STEPS_PER_UNIT.toDouble() }
             .filterValues { it > 0.0 }
     }
-
-    // Someone with no surviving line still takes up a position, so the pseudonyms stay put as lines come and go
-    private fun peopleInOrderOfFirstCommit(commitsOldestFirst: List<CommitPeople>): List<String> =
-        commitsOldestFirst.flatMap { it.people }.distinct()
 
     private fun clusterOf(firstCommitHash: String, pseudonym: String, name: String, members: List<ClusterMember>): Cluster = Cluster(
         id = "${firstCommitHash.take(REPOSITORY_MARKER_LENGTH)}-author-${pseudonym.lowercase().replace(' ', '-')}",

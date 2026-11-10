@@ -87,11 +87,13 @@ check_gitlogparser_repo_scan() {
 commit_ownership_fixture_file() {
   local author="$1"
   local content="$2"
+  local message
+  message="$(printf "%b" "${3:-change}")"
   printf "%b" "$content" >"${OWNERSHIP_REPO}/app.kt"
   git -C "${OWNERSHIP_REPO}" add -A
   GIT_AUTHOR_NAME="$author" GIT_AUTHOR_EMAIL="$author@example.org" GIT_AUTHOR_DATE="2024-01-01T12:00:00Z" \
     GIT_COMMITTER_NAME="$author" GIT_COMMITTER_EMAIL="$author@example.org" GIT_COMMITTER_DATE="2024-01-01T12:00:00Z" \
-    git -C "${OWNERSHIP_REPO}" -c commit.gpgsign=false commit -q -m "change"
+    git -C "${OWNERSHIP_REPO}" -c commit.gpgsign=false commit -q -m "$message"
 }
 
 check_gitlogparser_author_ownership() {
@@ -138,7 +140,7 @@ check_gitlogparser_commit_changes() {
   commit_ownership_fixture_file "Golden First" "1\n2\n3\n4\n"
   mkdir "${COMMIT_CHANGES_REPO}/src"
   printf "1\n" >"${COMMIT_CHANGES_REPO}/src/util.kt"
-  commit_ownership_fixture_file "Golden Second" "1\n2\n3\nfour\n"
+  commit_ownership_fixture_file "Golden Second" "1\n2\n3\nfour\n" "change\n\nCo-authored-by: Golden Third <third@example.org>"
 
   "${CCSH}" gitlogparser repo-scan --repo-path "${COMMIT_CHANGES_REPO}" --commit-changes-since=2000-01-01 -o "${ACTUAL_COMMIT_CHANGES_FIRST}" --silent=true -nc
   "${CCSH}" gitlogparser repo-scan --repo-path "${COMMIT_CHANGES_REPO}" --commit-changes-since=2000-01-01 -o "${ACTUAL_COMMIT_CHANGES_SECOND}" --silent=true -nc
@@ -152,10 +154,16 @@ check_gitlogparser_commit_changes() {
   "${CCSH}" modify "${ACTUAL_COMMIT_CHANGES_FIRST}" --move-from=root/src --move-to=root/moved -o "${ACTUAL_COMMIT_CHANGES_MOVED}"
   validate "${ACTUAL_COMMIT_CHANGES_MOVED}"
   for actual in "${ACTUAL_COMMIT_CHANGES_FIRST}" "${ACTUAL_COMMIT_CHANGES_MOVED}"; do
-    if ! grep -qF -- '"changed_files":2,"changed_lines":3' "${actual}"; then
+    if ! grep -qF -- '"author":"Ochre Elk","co_authors":"Lime Wolf","changed_files":2,"changed_lines":3' "${actual}"; then
       exit_with_err "${actual} lost the attributes of a commit"
     fi
   done
+  ACTUAL_COMMIT_CHANGES_NAMES="${TEMP_DIR}/actual_commit_changes_names.cc.json"
+  "${CCSH}" gitlogparser repo-scan --repo-path "${COMMIT_CHANGES_REPO}" --author-ownership --with-author-names --commit-changes-since=2000-01-01 -o "${ACTUAL_COMMIT_CHANGES_NAMES}" --silent=true -nc
+  validate "${ACTUAL_COMMIT_CHANGES_NAMES}"
+  if ! grep -qF -- '"author":"Golden Second","co_authors":"Golden Third","changed_files":2' "${ACTUAL_COMMIT_CHANGES_NAMES}"; then
+    exit_with_err "--with-author-names wrote no real author into the commit changes"
+  fi
 }
 
 check_csvexporter() {

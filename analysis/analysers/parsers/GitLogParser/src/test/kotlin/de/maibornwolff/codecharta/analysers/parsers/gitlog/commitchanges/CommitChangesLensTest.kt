@@ -14,8 +14,11 @@ class CommitChangesLensTest {
     private fun commit(vararg changes: FileChange, subject: String = "Fix login", hash: String = this.hash) =
         LoggedCommit(hash, noon20261031, subject, changes.toList())
 
-    private fun clusteringOf(commits: List<LoggedCommit>, linesToday: Map<String, Int?>): Clustering =
-        CommitChangesLens.of(commits, linesToday).clusterings.getValue(CommitChangesLens.CLUSTERING_KEY)
+    private fun clusteringOf(
+        commits: List<LoggedCommit>,
+        linesToday: Map<String, Int?>,
+        peopleByHash: Map<String, List<String>> = commits.associate { it.hash to listOf("Magenta Rabbit", "Teal Falcon") }
+    ): Clustering = CommitChangesLens.of(commits, linesToday, peopleByHash).clusterings.getValue(CommitChangesLens.CLUSTERING_KEY)
 
     private fun idOf(path: String) = NodeId.fromSegments(path.split("/"))
 
@@ -102,7 +105,7 @@ class CommitChangesLensTest {
         val commits = listOf(commit(FileChange("new.kt", 0, pathBefore = "old.kt")))
 
         // Act
-        val lens = CommitChangesLens.of(commits, mapOf("new.kt" to 10))
+        val lens = CommitChangesLens.of(commits, mapOf("new.kt" to 10), emptyMap())
 
         // Assert
         assertThat(lens.carriesData).isFalse()
@@ -139,22 +142,106 @@ class CommitChangesLensTest {
     }
 
     @Test
-    fun `should describe every attribute it writes`() {
+    fun `should write the author of each commit`() {
         // Arrange
         val commits = listOf(commit(FileChange("a.kt", 1)))
+
+        // Act
+        val clustering = clusteringOf(commits, mapOf("a.kt" to 10), mapOf(hash to listOf("Ochre Elk")))
+
+        // Assert
+        assertThat(clustering.clusters.single().attributes).containsEntry("author", "Ochre Elk")
+    }
+
+    @Test
+    fun `should write the co-authors of a commit in their order, joined by semicolons`() {
+        // Arrange
+        val commits = listOf(commit(FileChange("a.kt", 1)))
+
+        // Act
+        val clustering = clusteringOf(commits, mapOf("a.kt" to 10), mapOf(hash to listOf("Ochre Elk", "Teal Falcon", "Jade Owl")))
+
+        // Assert
+        assertThat(clustering.clusters.single().attributes)
+            .containsEntry("author", "Ochre Elk")
+            .containsEntry("co_authors", "Teal Falcon; Jade Owl")
+    }
+
+    @Test
+    fun `should name the author and each co-author only once`() {
+        // Arrange
+        val commits = listOf(commit(FileChange("a.kt", 1)))
+        val people = listOf("Ochre Elk", "Teal Falcon", "Ochre Elk", "Jade Owl", "Teal Falcon")
+
+        // Act
+        val clustering = clusteringOf(commits, mapOf("a.kt" to 10), mapOf(hash to people))
+
+        // Assert
+        assertThat(clustering.clusters.single().attributes).containsEntry("co_authors", "Teal Falcon; Jade Owl")
+    }
+
+    @Test
+    fun `should leave out the co-authors of a commit that has none`() {
+        // Arrange
+        val commits = listOf(commit(FileChange("a.kt", 1)))
+
+        // Act
+        val clustering = clusteringOf(commits, mapOf("a.kt" to 10), mapOf(hash to listOf("Ochre Elk")))
+
+        // Assert
+        assertThat(clustering.clusters.single().attributes).doesNotContainKey("co_authors").containsEntry("author", "Ochre Elk")
+    }
+
+    @Test
+    fun `should leave out the author of a commit the history does not hold`() {
+        // Arrange
+        val commits = listOf(commit(FileChange("a.kt", 1)))
+
+        // Act
+        val clustering = clusteringOf(commits, mapOf("a.kt" to 10), emptyMap())
+
+        // Assert
+        assertThat(clustering.clusters.single().attributes)
+            .doesNotContainKeys("author", "co_authors")
+            .containsEntry("changed_files", 1)
+    }
+
+    @Test
+    fun `should describe every attribute it writes`() {
+        // Arrange
+        val commits = listOf(commit(FileChange("a.kt", 1), subject = "fix: hotfix for the login"))
 
         // Act
         val clustering = clusteringOf(commits, mapOf("a.kt" to 10))
 
         // Assert
         assertThat(clustering.attributeDescriptors.keys).isEqualTo(clustering.clusters.single().attributes.keys)
-        assertThat(clustering.attributeDescriptors.values.map { it.title }).containsExactly("Date", "Files changed", "Lines changed")
+        assertThat(
+            clustering.attributeDescriptors.values.map { it.title }
+        ).containsExactly("Date", "Author", "Co-authors", "Files changed", "Lines changed", "Commit type", "Hotfix")
+    }
+
+    @Test
+    fun `should write the type the subject starts with and flag a hotfix as the commit metrics count them`() {
+        // Arrange
+        val commits = listOf(
+            commit(FileChange("a.kt", 1), subject = "feat(login): remember the user", hash = "f1"),
+            commit(FileChange("a.kt", 1), subject = "Hotfix the broken login", hash = "f2")
+        )
+
+        // Act
+        val clustering = clusteringOf(commits, mapOf("a.kt" to 10))
+
+        // Assert
+        val (feature, hotfix) = clustering.clusters
+        assertThat(feature.attributes).containsEntry("commit_type", "feat").doesNotContainKey("hotfix")
+        assertThat(hotfix.attributes).containsEntry("hotfix", 1).doesNotContainKey("commit_type")
     }
 
     @Test
     fun `should write nothing when no commit touched a file of today`() {
         // Arrange & Act
-        val lens = CommitChangesLens.of(emptyList(), mapOf("a.kt" to 10))
+        val lens = CommitChangesLens.of(emptyList(), mapOf("a.kt" to 10), emptyMap())
 
         // Assert
         assertThat(lens.clusterings).isEmpty()

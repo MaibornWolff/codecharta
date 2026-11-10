@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInte
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.commit.CommitAnalysisContext
 import de.maibornwolff.codecharta.analysers.analyserinterface.commit.GitWorktreeManager
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.authors.AuthorHistory
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.commitchanges.CommitChangesScan
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.util.GitAdapter
@@ -61,7 +62,10 @@ class RepoScanCommand(private val printsClusterHints: Boolean = true) : Analyser
 
     @CommandLine.Option(
         names = [AuthorOwnershipScan.NAMES_FLAG],
-        description = ["write the real names of the authors into the map instead (personal data, needs --author-ownership)"]
+        description = [
+            "write the real names of the authors into the map instead, also for commit changes " +
+                "(personal data, needs ${AuthorOwnershipScan.FLAG})"
+        ]
     )
     private var withAuthorNames = false
 
@@ -101,11 +105,12 @@ class RepoScanCommand(private val printsClusterHints: Boolean = true) : Analyser
             if (!silent) println("Creating git-ls file...")
             val gitLsFile = createGitLsFile(context.inputDir.toPath())
 
-            val ownershipScan = AuthorOwnershipScan(context.inputDir, withAuthorNames).takeIf { authorOwnership }
+            val authorHistory = AuthorHistory(context.inputDir)
+            val ownershipScan = AuthorOwnershipScan(context.inputDir, withAuthorNames, authorHistory).takeIf { authorOwnership }
             if (!silent && ownershipScan != null) println("Blaming files...")
             val ownership = ownershipScan?.lens() ?: ClustersLens()
 
-            val commitChangesScan = commitChangesSince?.let { CommitChangesScan(context.inputDir, it) }
+            val commitChangesScan = commitChangesSince?.let { CommitChangesScan(context.inputDir, it, withAuthorNames, authorHistory) }
             if (!silent && commitChangesScan != null) println("Reading the changes of each commit...")
             val commitChanges = commitChangesScan?.lens() ?: ClustersLens()
 

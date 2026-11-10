@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.commitchanges
 
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.authors.AuthorPseudonyms
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership.AuthorOwnershipScan
 import de.maibornwolff.codecharta.model.Cluster
 import de.maibornwolff.codecharta.model.NodeId
 import org.assertj.core.api.Assertions.assertThat
@@ -22,36 +24,55 @@ class CommitChangesScanTest {
         git("config", "commit.gpgsign", "false")
     }
 
-    private fun git(vararg arguments: String, committedAt: String = "2026-06-01T12:00:00Z"): String {
-        val process = ProcessBuilder(listOf("git", "-c", "user.name=Ann", "-c", "user.email=a@x.org") + arguments)
+    private fun git(vararg arguments: String, committedAt: String = "2026-06-01T12:00:00Z", author: String = ANN): String {
+        val process = ProcessBuilder(listOf("git", "-c", "user.name=Committer", "-c", "user.email=c@x.org") + arguments)
             .directory(repository)
             .redirectErrorStream(true)
         process.environment()["GIT_COMMITTER_DATE"] = committedAt
         process.environment()["GIT_AUTHOR_DATE"] = committedAt
+        process.environment()["GIT_AUTHOR_NAME"] = author.substringBefore(" <")
+        process.environment()["GIT_AUTHOR_EMAIL"] = author.substringAfter("<").removeSuffix(">")
         val running = process.start()
         val output = running.inputStream.bufferedReader().readText()
         check(running.waitFor() == 0) { output }
         return output.trim()
     }
 
-    private fun commitFile(path: String, content: String, message: String = "change", committedAt: String = "2026-06-01T12:00:00Z") {
+    private fun commitFile(
+        path: String,
+        content: String,
+        message: String = "change",
+        committedAt: String = "2026-06-01T12:00:00Z",
+        author: String = ANN
+    ) {
         File(repository, path).apply {
             parentFile.mkdirs()
             writeText(content)
         }
-        commitAll(message, committedAt)
+        commitAll(message, committedAt, author)
     }
 
-    private fun commitAll(message: String, committedAt: String = "2026-06-01T12:00:00Z") {
+    private fun commitAll(message: String, committedAt: String = "2026-06-01T12:00:00Z", author: String = ANN) {
         git("add", "-A")
-        git("commit", "-q", "-m", message, committedAt = committedAt)
+        git("commit", "-q", "-m", message, committedAt = committedAt, author = author)
     }
 
-    private fun clusters(from: File = repository, sinceDay: LocalDate = since): List<Cluster> = CommitChangesScan(from, sinceDay)
-        .lens()
-        .clusterings[CommitChangesLens.CLUSTERING_KEY]
-        ?.clusters
-        .orEmpty()
+    private fun clusters(from: File = repository, sinceDay: LocalDate = since, withAuthorNames: Boolean = false): List<Cluster> =
+        CommitChangesScan(from, sinceDay, withAuthorNames)
+            .lens()
+            .clusterings[CommitChangesLens.CLUSTERING_KEY]
+            ?.clusters
+            .orEmpty()
+
+    private fun authors(withAuthorNames: Boolean = false): List<Any?> = clusters(withAuthorNames = withAuthorNames).map {
+        it.attributes["author"]
+    }
+
+    private fun coAuthors(withAuthorNames: Boolean = false): List<Any?> = clusters(withAuthorNames = withAuthorNames).map {
+        it.attributes["co_authors"]
+    }
+
+    private fun pseudonym(position: Int) = AuthorPseudonyms(git("rev-list", "--max-parents=0", "HEAD")).nameOf(position)
 
     private fun idOf(vararg segments: String) = NodeId.fromSegments(segments.toList())
 
@@ -74,6 +95,103 @@ class CommitChangesScanTest {
             .containsEntry("date", "2026-06-01")
             .containsEntry("changed_files", 1)
             .containsEntry("changed_lines", 2)
+    }
+
+    @Test
+    fun `should name each author by the pseudonym the author ownership gives them, counting people before the day`() {
+        // Arrange
+        commitFile("z.kt", "1\n", committedAt = "2025-06-01T12:00:00Z", author = ZED)
+        commitFile("a.kt", "1\n2\n3\n4\n")
+        commitFile("a.kt", "1\n2\n3\nfour\n", author = BOB)
+        val ownership = AuthorOwnershipScan(repository)
+            .lens()
+            .clusterings.values
+            .single()
+            .clusters
+        val ownerOfOneQuarter = ownership.single { it.members.single().weight == 0.25 }.name
+        val ownerOfThreeQuarters = ownership.single { it.members.single().weight == 0.75 }.name
+
+        // Act
+        val authors = authors()
+
+        // Assert
+        assertThat(authors).containsExactly(ownerOfOneQuarter, ownerOfThreeQuarters)
+        assertThat(authors).containsExactly(pseudonym(2), pseudonym(1))
+    }
+
+    @Test
+    fun `should name the author of a commit, not its co-author`() {
+        // Arrange
+        commitFile("a.kt", "1\n", message = "change\n\nCo-authored-by: Bob <bob@x.org>")
+
+        // Act
+        val pseudonymous = authors()
+        val named = authors(withAuthorNames = true)
+
+        // Assert
+        assertThat(pseudonymous).containsExactly(pseudonym(0))
+        assertThat(named).containsExactly("Ann")
+    }
+
+    @Test
+    fun `should name each co-author by the pseudonym the author ownership gives them`() {
+        // Arrange
+        commitFile("a.kt", "1\n", message = "change\n\nCo-authored-by: Bob <bob@x.org>")
+        val owners = AuthorOwnershipScan(repository)
+            .lens()
+            .clusterings.values
+            .single()
+            .clusters
+            .map { it.name }
+
+        // Act
+        val coAuthors = coAuthors()
+
+        // Assert
+        assertThat(coAuthors).containsExactly(pseudonym(1))
+        assertThat(owners).containsExactlyInAnyOrder(pseudonym(0), pseudonym(1))
+    }
+
+    @Test
+    fun `should name the co-authors in the order git lists them, without the author and without repeats`() {
+        // Arrange
+        val trailers = listOf(CY, ANN, BOB, CY).joinToString("\n") { "Co-authored-by: $it" }
+        commitFile("a.kt", "1\n", message = "change\n\n$trailers")
+
+        // Act
+        val pseudonymous = coAuthors()
+        val named = coAuthors(withAuthorNames = true)
+
+        // Assert
+        assertThat(pseudonymous).containsExactly("${pseudonym(1)}; ${pseudonym(2)}")
+        assertThat(named).containsExactly("Cy; Bob")
+    }
+
+    @Test
+    fun `should write no co-authors for a commit that has none`() {
+        // Arrange
+        commitFile("a.kt", "1\n")
+
+        // Act
+        val attributes = clusters().single().attributes
+
+        // Assert
+        assertThat(attributes).doesNotContainKey("co_authors").containsKey("author")
+    }
+
+    @Test
+    fun `should name two identities a mailmap joins as one author`() {
+        // Arrange
+        commitFile(".mailmap", "Ann <ann@x.org> Old Ann <old@x.org>\n")
+        commitFile("a.kt", "old\n", author = "Old Ann <old@x.org>")
+
+        // Act
+        val pseudonymous = authors()
+        val named = authors(withAuthorNames = true)
+
+        // Assert
+        assertThat(pseudonymous).containsOnly(pseudonym(0))
+        assertThat(named).containsOnly("Ann")
     }
 
     @Test
@@ -203,5 +321,12 @@ class CommitChangesScanTest {
         assertThat(CommitChangesScan.isDate("2026-01-31")).isTrue()
         assertThat(CommitChangesScan.isDate("2026-02-31")).isFalse()
         assertThat(CommitChangesScan.isDate("6 months ago")).isFalse()
+    }
+
+    companion object {
+        private const val ANN = "Ann <ann@x.org>"
+        private const val BOB = "Bob <bob@x.org>"
+        private const val ZED = "Zed <zed@x.org>"
+        private const val CY = "Cy <cy@x.org>"
     }
 }

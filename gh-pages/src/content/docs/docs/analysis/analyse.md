@@ -39,8 +39,8 @@ back through it.
 | `--without=NAME[,NAME...]` | parsers or histories to leave out, such as `--without=dependencyparser,svn`         |
 | `--local-changes`          | maps only the files that differ from the remote tracking branch                     |
 | `--author-ownership`       | adds each author's share of each file under an invented name, from `git blame`                   |
-| `--with-author-names`      | writes real author names instead of numbers (needs `--author-ownership`)            |
-| `--commit-changes-since YYYY-MM-DD` | adds what each commit since this day changed in each file                  |
+| `--with-author-names`      | writes real author names instead of invented ones, also for commit changes (needs `--author-ownership`) |
+| `--commit-changes-since YYYY-MM-DD` | adds what each commit since this day changed in each file, and who made it |
 | `--commit=REF`             | maps the codebase at a git commit, tag, branch or date                              |
 | `-p, --parallel`           | runs the analysers at the same time                                                 |
 | `-nc, --not-compressed`    | writes the map uncompressed                                                         |
@@ -73,15 +73,17 @@ The names are pseudonymous, not anonymous: anyone with the repository can match 
 still be personal data under GDPR. Treat and share it accordingly.
 
 `--with-author-names`, next to `--author-ownership`, opts out of this: the map then holds real names as git has them, under
-a clustering titled **Author ownership (real names)**, and still no emails. The command warns about it last, even with
+a clustering titled **Author ownership (real names)** and in the commit changes, and still no emails. The command warns about it last, even with
 `--silent`, and the Explorer's Clusters tab shows a warning for such a map.
 
 
 ## Commit changes
 
 `--commit-changes-since YYYY-MM-DD` adds what each commit since that day changed to the map, as described in the
-[Git Log parser](/docs/parser/git-log). Commit subjects enter the map, and anyone with the repository can match a hash to
-its author, so a map may still be personal data under GDPR. The note is the last thing the command prints.
+[Git Log parser](/docs/parser/git-log), with each commit's author and co-authors under the same invented names as in
+the author ownership, or their real names with `--with-author-names`. Invented names are pseudonymous, not anonymous:
+anyone with the repository can match them and the hashes to people, and commit subjects are free text, so a map may
+still be personal data under GDPR. The note is the last thing the command prints.
 ## What is not in the map
 
 The last lines of the output, after the `Map:` line, name every parser and history that is not in the map, and why:
