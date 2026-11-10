@@ -156,7 +156,7 @@ class CMetricsTest {
     fun `should count function definition but not declaration for number of functions`() {
         // Arrange
         val code = """
-            void testDeclaration()
+            void testDeclaration();
 
             void myFunction() {
                 printf("I just got executed!");

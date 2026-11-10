@@ -174,7 +174,7 @@ class CCollectorTest {
     fun `should count function definition but not declaration for number of functions`() {
         // given
         val fileContent = """
-            void testDeclaration()
+            void testDeclaration();
 
             void myFunction() {
                 printf("I just got executed!");

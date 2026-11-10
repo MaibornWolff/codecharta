@@ -24,6 +24,7 @@ internal object UsedTypeExtractor {
     private const val PARAMETER_DECLARATION = "parameter_declaration"
     private const val CALL_EXPRESSION = "call_expression"
     private const val SELECTOR_EXPRESSION = "selector_expression"
+    private const val INDEX_EXPRESSION = "index_expression"
     private const val IDENTIFIER = "identifier"
     private const val FIELD_IDENTIFIER = "field_identifier"
     private const val PACKAGE_IDENTIFIER = "package_identifier"
@@ -37,6 +38,7 @@ internal object UsedTypeExtractor {
     private const val PACKAGE_FIELD = "package"
     private const val NAME_FIELD = "name"
     private const val OPERAND_FIELD = "operand"
+    private const val INDEX_FIELD = "index"
 
     private val FUNCTION_TYPES = setOf(FUNCTION_DECLARATION, METHOD_DECLARATION)
     private val TYPE_SPECS = setOf("type_spec", "type_alias")
@@ -45,9 +47,13 @@ internal object UsedTypeExtractor {
 
     fun extract(declaration: SyntaxNode): Set<UsedType> {
         val relevantNodes = TreeTraversal.findAllDescendantsOfType(declaration, *RELEVANT_TYPES.toTypedArray())
-        val typeReferences = relevantNodes
-            .filter { it.type in TYPE_REFERENCES && !isDeclaredName(it) }
-            .mapNotNull { typeReference(it) }
+        val typeReferences = relevantNodes.mapNotNull { node ->
+            when {
+                node.type in TYPE_REFERENCES && !isDeclaredName(node) -> typeReference(node)
+                node.type == CALL_EXPRESSION -> singleTypeArgumentOf(node)
+                else -> null
+            }
+        }
         val isFunction = declaration.type in FUNCTION_TYPES
         val usedTypes = if (isFunction) namesUsedByFunction(declaration, relevantNodes) + typeReferences else typeReferences
         return usedTypes.toCollection(LinkedHashSet())
@@ -67,6 +73,18 @@ internal object UsedTypeExtractor {
         val qualifiedType = name.parent.orNull()?.takeIf { it.type == QUALIFIED_TYPE } ?: return unlessLocal(name)
         val packageName = qualifiedType.fieldOfType(PACKAGE_FIELD, PACKAGE_IDENTIFIER) ?: return unlessLocal(name)
         return UsedType(name.text, namespacePrefix = listOf(packageName.text))
+    }
+
+    // The grammar cannot tell `New[T]()` from a call of an indexed value and reads both as the latter; the call of a
+    // generic function with one type argument is far more common, so the index counts as that type argument
+    private fun singleTypeArgumentOf(call: SyntaxNode): UsedType? = call
+        .fieldOfType(FUNCTION_FIELD, INDEX_EXPRESSION)
+        ?.fieldOfType(INDEX_FIELD, IDENTIFIER)
+        ?.let { unlessLocal(it) }
+
+    private fun calleeOf(call: SyntaxNode): SyntaxNode? {
+        val function = call.getChildByFieldName(FUNCTION_FIELD).orNull() ?: return null
+        return if (function.type == INDEX_EXPRESSION) function.getChildByFieldName(OPERAND_FIELD).orNull() else function
     }
 
     private fun unlessLocal(name: SyntaxNode): UsedType? = if (LocalNames.isLocal(name, name.text)) null else UsedType(name.text)
@@ -108,7 +126,7 @@ internal object UsedTypeExtractor {
     }
 
     private fun calledMethodNames(calls: List<SyntaxNode>): List<UsedType> = calls
-        .mapNotNull { call -> call.fieldOfType(FUNCTION_FIELD, SELECTOR_EXPRESSION) }
+        .mapNotNull { call -> calleeOf(call)?.takeIf { it.type == SELECTOR_EXPRESSION } }
         .filter { selector -> selector.fieldOfType(OPERAND_FIELD, IDENTIFIER)?.let { unlessLocal(it) } != null }
         .mapNotNull { selector -> selector.fieldOfType(FIELD_FIELD, FIELD_IDENTIFIER) }
         .let { methodNames -> inSourceOrder(methodNames) }
@@ -121,7 +139,7 @@ internal object UsedTypeExtractor {
     }
 
     private fun calledFunctionNames(calls: List<SyntaxNode>): List<UsedType> = calls
-        .mapNotNull { call -> call.fieldOfType(FUNCTION_FIELD, IDENTIFIER) }
+        .mapNotNull { call -> calleeOf(call)?.takeIf { it.type == IDENTIFIER } }
         .filter { it.text.isNotEmpty() }
         .mapNotNull { unlessLocal(it) }
 
