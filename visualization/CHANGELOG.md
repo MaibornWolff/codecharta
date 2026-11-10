@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.11.0] - 2026-11-10
+
 ### Added 🚀
 
 - **Local source files (experimental)**: once switched on in the settings, a file's context menu shows its source, coloured by its language, from the project folder on your computer, up to 5 MB, or opens it in VS Code, without uploading anything, in Chrome, Edge and the desktop app.
