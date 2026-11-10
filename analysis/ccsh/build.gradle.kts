@@ -3,12 +3,12 @@ plugins {
 }
 
 val nativeAccessFlag = "--enable-native-access=ALL-UNNAMED"
-val minimumJavaVersion: Int by rootProject.extra
+val minimumJavaVersion = rootProject.extra["minimumJavaVersion"] as Int
 
 // Below Java 17 the JVM rejects the native access flag of the start scripts before the launcher runs, so the launcher
 // only has to load on Java 11, the oldest release javac compiles for without warning it is obsolete.
 val launcherJavaVersion = 11
-val launcher: SourceSet by sourceSets.creating
+val launcher: SourceSet = sourceSets.create("launcher")
 
 // The JVM decodes file names with the charset of LC_CTYPE, a value it does not let -Dsun.jnu.encoding override, and
 // cannot open a file whose name that charset cannot decode. macOS JVMs always decode file names as UTF-8.

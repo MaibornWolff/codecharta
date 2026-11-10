@@ -9,6 +9,12 @@ buildscript {
         maven(url = "https://plugins.gradle.org/m2/")
         maven(url = "https://jitpack.io")
     }
+    dependencies {
+        classpath(platform(libs.jackson.bom))
+        constraints {
+            classpath(libs.guava)
+        }
+    }
 }
 
 plugins {
@@ -20,7 +26,8 @@ plugins {
 }
 
 // The tree-sitter binding uses the foreign function and memory API, which is final from Java 22 on.
-val minimumJavaVersion by extra(22)
+val minimumJavaVersion = 22
+extra.set("minimumJavaVersion", minimumJavaVersion)
 val buildJavaVersion = 25
 
 allprojects {
@@ -74,7 +81,7 @@ subprojects {
         dependsOn(tasks.named("test"))
     }
 
-    // ktlint-gradle 14.0.1 writes intermediates/ktLint/reporters.bin but never registers it as an output
+    // ktlint-gradle 14.0.1 to 14.2.0 writes intermediates/ktLint/reporters.bin but never registers it as an output
     // of loadKtlintReporters, so `clean` deletes the file while the task stays UP-TO-DATE and every later
     // ktlint task fails on the missing input. Declaring it makes `clean` invalidate the producer again.
     tasks.matching { it.name == "loadKtlintReporters" }.configureEach {
