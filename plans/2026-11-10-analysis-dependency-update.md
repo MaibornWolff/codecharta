@@ -44,6 +44,12 @@ Bring the analysis dependencies up to date after eight months without updates, t
 - [x] Complete Task 2: tree-sitter core and grammars
 - [x] Complete Task 3: Remove boon
 
+## Review Feedback Addressed
+
+1. **ImportExtractor, named default import**: `import { default as X }` kept `default` in the import path instead of
+   `DEFAULT_EXPORT`, so it drew no edge (an old gap, not from the grammar update); now normalized like re-exports, with
+   probes `spec-import-default-named` for TypeScript and JavaScript
+
 ## Notes
 
 - Each task is its own commit on fix/analysis-dependency-update (branched from fix/npm-audit-angular-22-2), after

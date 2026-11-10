@@ -1,0 +1,3 @@
+# typescript.md, JavaScript binding: import { default as D } binds D to the default export, as import D does
+file page.js -> button.js
+leaf page.js#render -> button.js#Button

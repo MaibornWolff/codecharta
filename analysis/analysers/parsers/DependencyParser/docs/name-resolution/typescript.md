@@ -209,6 +209,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | Specifiers 2.5: a library | `spec-library-import` | ok |
 | Specifiers: no project file | `spec-unresolved-specifier` | ok |
 | Binding: `import { A as B }` | `spec-import-alias` | ok |
+| Binding: `import { default as D }` | `spec-import-default-named` | ok |
 | Binding: `import { A as B }` beside an import of another `A` | `spec-import-alias-namesake` | ok |
 | Binding: `import type` | `spec-import-type` | ok |
 | Binding: `import * as ns` | `spec-namespace-import` | ok |
@@ -244,6 +245,7 @@ does not follow the rule yet; the `known-gaps.md` of each folder says how it dev
 | JavaScript, decision 2: a named default export | `javascript/spec-js-default-named` | ok |
 | JavaScript, decision 8: `export *` without default and unexported names | `javascript/spec-reexport-star` | ok |
 | JavaScript, binding: a default import of a CommonJS module | `javascript/spec-esm-import-commonjs` | ok |
+| JavaScript, binding: `import { default as D }` | `javascript/spec-import-default-named` | ok |
 | JavaScript, 3: a script file is global | `javascript/spec-script-global` | ok |
 | JavaScript, decision 3: a `require` not bound | `javascript/spec-require-side-effect` | ok |
 | Vue: the component is named after its file | `vue/spec-component-file-name` | ok |

@@ -84,7 +84,7 @@ internal object ImportExtractor {
                         bindingName = identifiers[0]
                     )
                     2 -> ImportDeclaration(
-                        path = basePath + identifiers[0],
+                        path = basePath + normalizeDefaultKeyword(identifiers[0]),
                         isWildcard = false,
                         kind = ImportKind.MEMBER,
                         bindingName = identifiers[1]

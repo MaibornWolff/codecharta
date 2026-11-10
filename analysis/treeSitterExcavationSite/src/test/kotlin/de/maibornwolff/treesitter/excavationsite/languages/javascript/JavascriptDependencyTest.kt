@@ -98,7 +98,8 @@ class JavascriptDependencyTest {
             val result = TreeSitterDependencies.analyze(code, Language.JAVASCRIPT)
 
             // Assert
-            assertThat(result.imports.map { it.path to it.bindingName }).containsExactly(listOf(".", "widget", "default") to "Widget")
+            val importedPaths = result.imports.map { it.path to it.bindingName }
+            assertThat(importedPaths).containsExactly(listOf(".", "widget", "DEFAULT_EXPORT") to "Widget")
         }
 
         @Test

@@ -54,6 +54,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **SQL joins in parentheses**: the dependency parser links a query to every table of a join written in parentheses,
   not only to the first and the last.
 - **Crafted JSON files**: ccsh no longer stalls on a JSON file that holds an extremely long number.
+- **Default imports by name**: the dependency parser links `import { default as X }` in JavaScript and TypeScript to the
+  default export, as it does `import X`.
 - **Exception groups in Python**: `unifiedparser` counts an `except*` handler toward complexity, as it does an `except`.
 - **One-line Bash functions**: `unifiedparser` counts the code line of a function whose body is an arithmetic command,
   such as `f() (( $1 > 0 ))`, in the lines of code per function.
