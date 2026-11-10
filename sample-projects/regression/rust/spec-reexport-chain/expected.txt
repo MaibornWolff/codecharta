@@ -5,3 +5,4 @@ file tests/arena.rs -> src/lib.rs
 leaf src/lib.rs#Creature -> src/model/mod.rs#Creature
 leaf src/model/mod.rs#Creature -> src/model/creature.rs#Creature
 leaf tests/arena.rs#spawn -> src/lib.rs#Creature
+test tests/arena.rs -> src/lib.rs

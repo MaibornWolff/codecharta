@@ -14,7 +14,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Hover highlight in the dependency view**: the highlight of the box under the pointer can be switched off in the edge settings.
 - **Clusters in the explorer**: a map with clusters, such as author ownership, gets a Clusters tab listing each cluster's share of what the map's area shows, such as its real lines of code, and how much of the map its files cover, or for a commit just the part of the map it touched, whose files alone stay in colour and keep labels on hover, overriding any other highlight, and stay that way on a click, gathering the clusters with no building on the map into one group that opens on a click, and the inspector lists the clusters of the selected file.
 - **Real names warning**: the Clusters tab warns while it lists real author names.
+- **Tests in the Clusters tab**: a test from the dependency parser's links shows by its file name, and while you hover or
+  pin it the test turns the outgoing-edge colour with arrows to each file it names.
 - **Longer cluster lists**: the Clusters tab shows what a map says about each cluster, such as a commit's date and size, sorts by it, filters long lists by name and stays fast with thousands of clusters.
+- **Security view**: a map with an SBOM import gets a Security tab listing its third-party packages with their known
+  vulnerabilities and how far each is behind its newest version, the files that use them and, from a file's context
+  menu, only the packages it uses; lockfiles and the code files that import packages get package, vulnerability and lag
+  metrics on the map.
 
 ### Fixed 🐞
 

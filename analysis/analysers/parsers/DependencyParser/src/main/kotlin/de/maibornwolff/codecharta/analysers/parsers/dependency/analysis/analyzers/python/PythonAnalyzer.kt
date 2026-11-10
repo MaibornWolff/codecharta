@@ -30,7 +30,8 @@ class PythonAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         val result = TreeSitterDependencies.analyze(fileInfo.content, Language.PYTHON)
         val candidates = ModuleCandidates(modules, modulePath.dropLast(1))
         val reexports = if (modulePath.last() == PythonModules.PACKAGE_FILE) reexportsOf(result.imports, candidates) else emptyList()
-        return FileReport(reexports + result.declarations.map { toNode(it, candidates) })
+        val externalImports = PypiImports(modules, modulePath.dropLast(1)).of(result.imports)
+        return FileReport(reexports + result.declarations.map { toNode(it, candidates) }, externalImports)
     }
 
     // A package file that imports a name makes it importable from the package itself

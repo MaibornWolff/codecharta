@@ -388,4 +388,37 @@ class DependencyLensTest {
         )
         assertThat(wrapped.leafEdges).isEqualTo(lens.leafEdges)
     }
+
+    @Test
+    fun `should union the packages two inputs say one file imports`() {
+        // Arrange
+        val first = DependencyLens(externalImports = mapOf("file-id" to listOf(ExternalImport("npm", "lodash"))))
+        val second = DependencyLens(
+            externalImports = mapOf(
+                "file-id" to listOf(ExternalImport("npm", "express"), ExternalImport("npm", "lodash"))
+            )
+        )
+
+        // Act
+        val merged = first.merge(second)
+
+        // Assert
+        assertThat(merged.externalImports["file-id"]).containsExactly(ExternalImport("npm", "express"), ExternalImport("npm", "lodash"))
+    }
+
+    @Test
+    fun `should move the imports of a file along with it when the tree is restructured`() {
+        // Arrange
+        val before = Node("root", NodeType.Folder, children = setOf(Node("app.ts", NodeType.File)))
+        val after =
+            Node("root", NodeType.Folder, children = setOf(Node("src", NodeType.Folder, children = setOf(Node("app.ts", NodeType.File)))))
+        val oldId = NodeId.fromSegments(listOf("app.ts"), NodeType.File)
+        val lens = DependencyLens(externalImports = mapOf(oldId to listOf(ExternalImport("npm", "lodash"))))
+
+        // Act
+        val rekeyed = lens.rekeyed(before, after) { segments -> if (segments.isEmpty()) segments else listOf("src") + segments }
+
+        // Assert
+        assertThat(rekeyed.externalImports.keys).containsExactly(NodeId.fromSegments(listOf("src", "app.ts"), NodeType.File))
+    }
 }

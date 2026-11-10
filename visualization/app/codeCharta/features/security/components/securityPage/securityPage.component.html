@@ -1,0 +1,145 @@
+<div class="mx-auto flex max-w-screen-2xl flex-col gap-4 px-4 pb-16 pt-4">
+    <header class="flex flex-col gap-1">
+        <span class="text-xs font-semibold uppercase tracking-widest opacity-60">Security</span>
+        <h1 class="m-0 text-2xl font-semibold">Third-party packages</h1>
+        @if (summary(); as shownSummary) {
+            <div class="stats stats-vertical border border-base-300 sm:stats-horizontal" data-testid="security-summary">
+                <div class="stat py-2">
+                    <div class="stat-title">Packages</div>
+                    <div class="stat-value text-2xl">{{ shownSummary.packages }}</div>
+                </div>
+                <div class="stat py-2">
+                    <div class="stat-title">Vulnerable</div>
+                    <div class="stat-value text-2xl">{{ formatOptional(shownSummary.vulnerablePackages) }}</div>
+                    <div class="stat-desc">{{ shownSummary.sources.length > 0 ? "from " + shownSummary.sources.join(", ") : "not measured" }}</div>
+                </div>
+                <div class="stat py-2">
+                    <div class="stat-title">Outdated</div>
+                    <div class="stat-value text-2xl">{{ formatOptional(shownSummary.outdatedPackages) }}</div>
+                    <div class="stat-desc">{{ shownSummary.lookupDate ? "versions looked up on " + shownSummary.lookupDate : "not measured" }}</div>
+                </div>
+                <div class="stat py-2">
+                    <div class="stat-title">Mean days outdated</div>
+                    <div class="stat-value text-2xl">{{ formatOptional(shownSummary.meanDaysOutdated) }}</div>
+                </div>
+            </div>
+        }
+    </header>
+
+    <div class="flex flex-wrap items-center gap-3">
+        <input
+            type="search"
+            class="input input-sm w-64"
+            placeholder="Filter packages"
+            aria-label="Filter packages"
+            data-testid="security-filter"
+            [value]="text()"
+            (input)="text.set($any($event.target).value)"
+        />
+        <label class="flex items-center gap-2 text-sm">
+            <input type="checkbox" class="checkbox checkbox-sm" data-testid="security-only-problems" [checked]="onlyProblems()" (change)="onlyProblems.set($any($event.target).checked)" />
+            Only vulnerable or outdated
+        </label>
+        @if (scopePath(); as scope) {
+            <span class="badge badge-outline gap-1" data-testid="security-scope">
+                Used by {{ shownPath(scope) }}
+                <button type="button" class="btn btn-ghost btn-xs" aria-label="Show every package" (click)="scopePath.set(null)">✕</button>
+            </span>
+        }
+        <span class="text-sm opacity-70">{{ matchingRows().length }} of {{ summary()?.packages ?? 0 }}</span>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="table table-sm" data-testid="security-packages">
+            <thead>
+                <tr>
+                    <th>Package</th>
+                    <th>Version</th>
+                    <th>Newest</th>
+                    <th class="text-right">Newer</th>
+                    <th class="text-right">Days outdated</th>
+                    <th class="text-right">Libyears</th>
+                    <th>Vulnerabilities</th>
+                    <th class="text-right">Files</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (row of shownRows(); track row.key) {
+                    <tr class="hover cursor-pointer" [attr.aria-expanded]="expandedKey() === row.key" data-testid="security-package-row" (click)="toggle(row)">
+                        <td>
+                            <span class="font-medium">{{ row.name }}</span>
+                            <span class="ml-1 text-xs opacity-60">{{ row.ecosystem }}</span>
+                            @if (row.isDirect) {
+                                <span class="badge badge-outline badge-xs ml-1">direct</span>
+                            }
+                        </td>
+                        <td class="tabular-nums">{{ row.version }}</td>
+                        <td class="tabular-nums">{{ row.newestVersion ?? "—" }}</td>
+                        <td class="text-right tabular-nums">{{ formatOptional(row.newerVersions) }}</td>
+                        <td class="text-right tabular-nums">{{ formatOptional(row.daysOutdated) }}</td>
+                        <td class="text-right tabular-nums">{{ formatOptional(row.libyears) }}</td>
+                        <td>
+                            @if (row.isUnchecked) {
+                                <span class="text-xs opacity-60">not checked</span>
+                            } @else {
+                                @for (vulnerability of row.vulnerabilities; track vulnerability.id) {
+                                    <span class="badge badge-sm mr-1" [class]="severityBadgeClass(vulnerability.severity)">{{ vulnerability.severity }}</span>
+                                } @empty {
+                                    <span class="text-xs opacity-60">none known</span>
+                                }
+                            }
+                        </td>
+                        <td class="text-right tabular-nums">{{ row.lockfiles.length + row.importingFiles.length }}</td>
+                    </tr>
+                    @if (expandedKey() === row.key) {
+                        <tr data-testid="security-package-details">
+                            <td colspan="8" class="bg-base-200">
+                                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                    <div>
+                                        <h3 class="m-0 mb-1 text-sm font-semibold">Vulnerabilities</h3>
+                                        <ul class="m-0 list-none p-0 text-sm">
+                                            @for (vulnerability of row.vulnerabilities; track vulnerability.id) {
+                                                <li>
+                                                    <b>{{ vulnerability.id }}</b> · {{ vulnerability.severity }}
+                                                    @if (vulnerability.score !== undefined) {
+                                                        ({{ vulnerability.score }})
+                                                    }
+                                                    @if (vulnerability.fixedVersions?.length) {
+                                                        · fixed in {{ vulnerability.fixedVersions.join(", ") }}
+                                                    }
+                                                </li>
+                                            } @empty {
+                                                <li class="opacity-60">{{ row.isUnchecked ? "Not checked" : "None known" }}</li>
+                                            }
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h3 class="m-0 mb-1 text-sm font-semibold">Declared in and used by</h3>
+                                        <ul class="m-0 list-none p-0 text-sm" data-testid="security-package-files">
+                                            @for (path of row.lockfiles; track path) {
+                                                <li>
+                                                    <button type="button" class="link" (click)="showFileInMap(path)">{{ shownPath(path) }}</button>
+                                                    <span class="text-xs opacity-60">lockfile</span>
+                                                </li>
+                                            }
+                                            @for (path of row.importingFiles; track path) {
+                                                <li><button type="button" class="link" (click)="showFileInMap(path)">{{ shownPath(path) }}</button></li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                } @empty {
+                    <tr>
+                        <td colspan="8" class="opacity-70">No package matches.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (hiddenRowCount() > 0) {
+        <button type="button" class="btn btn-sm self-start" data-testid="security-show-more" (click)="showMore()">Show {{ hiddenRowCount() }} more</button>
+    }
+</div>

@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.model.SecurityLens
 import de.maibornwolff.codecharta.model.carriesData
 import de.maibornwolff.codecharta.model.nodeIdsOf
 
@@ -28,6 +29,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
                     dependency = mergedDependencyLens,
                     domain = mergedDomainLens,
                     clusters = clustersResolvedAgainst(mergedNodes),
+                    security = mergedSecurityLens,
                     opaqueLenses = mergedOpaqueLenses
                 )
             )
@@ -61,6 +63,10 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
 
     private val mergedDomainLens: DomainLens? by lazy {
         projects.mapNotNull { it.lenses.domain }.reduceOrNull { merged, lens -> merged.merge(lens) }
+    }
+
+    private val mergedSecurityLens: SecurityLens? by lazy {
+        projects.mapNotNull { it.lenses.security }.reduceOrNull { merged, lens -> merged.merge(lens) }
     }
 
     private val mergedClustersLens: ClustersLens by lazy {

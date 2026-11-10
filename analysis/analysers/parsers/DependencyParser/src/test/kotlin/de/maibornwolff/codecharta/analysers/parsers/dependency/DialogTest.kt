@@ -79,6 +79,7 @@ class DialogTest {
                 terminal.answeringNo(), // suppress command line output
                 terminal.answeringYes(), // exclude .gitignore entries
                 terminal.answeringNo(), // include test files
+                terminal.answeringNo(), // link test files
                 terminal.answeringNo(), // omit graph analysis
                 terminal.typing(""), // no max file size
                 terminal.typing("") // no file timeout
@@ -88,10 +89,40 @@ class DialogTest {
 
         // Assert
         assertThat(parserArguments).noneMatch { it.startsWith("--include-tests") }
+        assertThat(parserArguments).noneMatch { it.startsWith("--link-tests") }
         assertThat(parserArguments).noneMatch { it.startsWith("--omit-graph-analysis") }
         assertThat(parserArguments).noneMatch { it.startsWith("--max-file-size") }
         assertThat(parserArguments).noneMatch { it.startsWith("--file-timeout") }
         assertThat(parserArguments).noneMatch { it.startsWith("--bypass-gitignore") }
+    }
+
+    @Test
+    fun `should link tests when they are not included in the dependencies`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val inputFileName = sourceFile(tempDir)
+        mockkObject(Dialog.Companion)
+        var parserArguments: List<String> = emptyList()
+
+        // Act
+        testSession { terminal ->
+            every { Dialog.testCallback() } returnsMany listOf(
+                terminal.typing(inputFileName),
+                terminal.typing(""), // no output file, so the compress question is skipped
+                terminal.answeringNo(), // suppress command line output
+                terminal.answeringYes(), // exclude .gitignore entries
+                terminal.answeringNo(), // include test files
+                terminal.answeringYes(), // link test files
+                terminal.answeringNo(), // omit graph analysis
+                terminal.typing(""), // no max file size
+                terminal.typing("") // no file timeout
+            )
+            parserArguments = collectAnalyserArgs(this)
+        }
+
+        // Assert
+        assertThat(parserArguments).contains("--link-tests").doesNotContain("--include-tests")
     }
 
     private fun sourceFile(tempDir: Path): String {

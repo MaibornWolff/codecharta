@@ -6,6 +6,7 @@ import { fireEvent, render, screen, within } from "@testing-library/angular"
 import { of } from "rxjs"
 import { pathsWithDependencyLevelsSelector } from "../../../../lenses/dependency/dependencyLens.facade"
 import { hasDomainDataSelector, pathsWithDomainWordsSelector } from "../../../../lenses/domain/domainLens.facade"
+import { hasSecuritySelector } from "../../../../lenses/security/security.facade"
 import { provideMockState } from "../../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
 import { flattenPredicateSelector } from "../../../../renderer/renderModel/renderModel.facade"
@@ -93,6 +94,7 @@ describe("nodeContextMenu component", () => {
         isRadialLayout?: boolean
         keptHighlightPaths?: string[]
         isLocalSourceSupported?: boolean
+        hasSecurityData?: boolean
     }
 
     async function renderMenu({
@@ -107,7 +109,8 @@ describe("nodeContextMenu component", () => {
         isRadialLayout = false,
         keptHighlightPaths = [],
         activeView = "metrics",
-        isLocalSourceSupported = false
+        isLocalSourceSupported = false,
+        hasSecurityData = false
     }: RenderMenuOptions = {}) {
         localSourceMock.isAvailable.set(isLocalSourceSupported)
         const rightClickedNodeData = node
@@ -130,7 +133,8 @@ describe("nodeContextMenu component", () => {
                         { selector: isDeltaStateSelector, value: isDeltaState },
                         { selector: pathsWithDependencyLevelsSelector, value: pathsWithDependencyLevels },
                         { selector: isRadialLayoutSelector, value: isRadialLayout },
-                        { selector: keptHighlightPathsSelector, value: keptHighlightPaths }
+                        { selector: keptHighlightPathsSelector, value: keptHighlightPaths },
+                        { selector: hasSecuritySelector, value: hasSecurityData }
                     ]
                 }),
                 { provide: ExplorerRevealService, useValue: explorerRevealServiceMock },
@@ -322,6 +326,14 @@ describe("nodeContextMenu component", () => {
         // Assert
         const offeredJumps = screen.getAllByText(/^\s*Show in (Metrics|Domain|Dependencies)\s*$/).map(item => item.textContent.trim())
         expect(offeredJumps).toEqual(["Show in Metrics", "Show in Domain"])
+    })
+
+    it("should offer the jump to the security view only for a map with a security lens", async () => {
+        // Arrange & Act
+        await renderMenu({ hasSecurityData: true })
+
+        // Assert
+        expect(screen.getByText("Show in Security")).toBeTruthy()
     })
 
     it("should offer Exclude alone, below a divider, where the view has no map to shape", async () => {

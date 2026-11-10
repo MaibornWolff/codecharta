@@ -1,5 +1,6 @@
 import { Vector3 } from "three"
 import Rectangle from "./rectangle"
+import { SecurityData } from "./security.model"
 
 export type Scaling = {
     x: number
@@ -24,6 +25,8 @@ export interface ClusterData {
     name: string
     /** Weight by file path, re-keyed from node id when the file loads, like the other lenses' per-node data. */
     members: Record<string, number>
+    /** The file the cluster is about, when its id is that file's node id, as a test cluster's test. */
+    path?: string
     attributes?: ClusterAttributes
 }
 
@@ -51,6 +54,8 @@ export interface CCFile {
             dependencyLevels: DependencyLevelData
             dependencyDeclarations: DependencyDeclarationData
             clusterings: ClusteringsData
+            /** Absent when the map carries no security lens. */
+            security?: SecurityData
         }
     }
     fileMeta: FileMeta

@@ -43,7 +43,7 @@ The names are pseudonymous, not anonymous: anyone with the repository can match 
 still be personal data under GDPR. Treat and share it accordingly.
 
 `--with-author-names`, next to `--author-ownership`, opts out of this: the map then holds real names as git has them, under
-a clustering titled **Author ownership (real names)**, and still no emails. The command warns about it last, even with
+a clustering titled **Author ownership (real names)** and in the commit changes, and still no emails. The command warns about it last, even with
 `--silent`, and the Explorer's Clusters tab shows a warning for such a map.
 
 
@@ -58,11 +58,17 @@ git 2.37 or newer.
   empty file counts as wholly changed.
 - Merge commits are left out, as their commits are listed themselves. Changes follow a renamed file to its path today,
   and a pure rename changes nothing. A commit with no file left today is not listed.
-- Each commit also carries its date and how many files and lines it changed in all, including files gone today.
+- Each commit also carries its date, its author, its co-authors and how many files and lines it changed in all,
+  including files gone today. The author is the one git records, and the co-authors are everyone else its
+  `Co-authored-by` trailers name, in their order, each once and joined by `; `, as in `Teal Falcon; Jade Owl`, both after
+  applying `.mailmap`. A commit without co-authors carries none. Everyone appears under the same invented name the
+  author ownership gives them, whether or not the map has author ownership. With `--with-author-names`, next to
+  `--author-ownership`, they appear under their real names.
 
-Commit subjects enter the map, and anyone with the repository can match a hash to its author, so a map may still be
-personal data under GDPR. The command says so last. On a shallow clone the oldest commit counts every file as changed,
-and the command warns about it.
+The invented names are pseudonymous, not anonymous: anyone with the repository can match them and the hashes to people,
+and commit subjects are free text, so a map may still be personal data under GDPR. The command says so last. On a
+shallow clone the oldest commit counts every file as changed and the invented names are not stable, and the command
+warns about it.
 ## Usage and Parameters
 
 As this parser can generate metrics based on a given git-log file or given a git repository (where the git-log is then generated on the fly), some parameters are only available in the log-scan mode or the repo-scan mode.
@@ -73,8 +79,8 @@ As this parser can generate metrics based on a given git-log file or given a git
 | `repo-scan`                         | use repo-scan mode - generates cc.json from an automatically generated git-log file |
 | `--add-author`                      | add an array of authors to every file                                               |
 | `--author-ownership`                | add each author's share of each file under an invented name, from `git blame` (repo-scan only)   |
-| `--with-author-names`               | write real author names instead of numbers (needs `--author-ownership`)             |
-| `--commit-changes-since YYYY-MM-DD` | add what each commit since this day changed in each file (repo-scan only)           |
+| `--with-author-names`               | write real author names instead of invented ones, also for commit changes (needs `--author-ownership`) |
+| `--commit-changes-since YYYY-MM-DD` | add what each commit since this day changed in each file, and who made it (repo-scan only) |
 | `--git-log=FILE`                    | git-log file to parse (only available for log-scan mode!)                           |
 | `-h, --help`                        | displays help and exits                                                             |
 | `-nc, --not-compressed`             | save uncompressed output File                                                       |

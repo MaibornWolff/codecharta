@@ -114,6 +114,10 @@ export default defineConfig({
 								'docs/visualization/user-controls/dependency-bar',
 							],
 						},
+						{
+							label: 'Security view',
+							items: ['docs/visualization/user-controls/security-view'],
+						},
 						'docs/visualization/user-controls/compare',
 						'docs/visualization/user-controls/explorer',
 						'docs/visualization/user-controls/inspector',
@@ -154,6 +158,7 @@ export default defineConfig({
 							items: [
 								{ label: 'Sonar', slug: 'docs/importer/sonar' },
 								{ label: 'Coverage', slug: 'docs/importer/coverage' },
+								{ label: 'SBOM', slug: 'docs/importer/sbom' },
 								{ label: 'Tokei', slug: 'docs/importer/tokei' },
 								{ label: 'Code Maat', slug: 'docs/importer/code-maat' },
 								{ label: 'SourceMonitor', slug: 'docs/importer/sourcemonitor' },

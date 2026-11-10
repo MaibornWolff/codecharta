@@ -20,13 +20,24 @@ import {
     DependencyLevelData,
     DomainLensData,
     Edge,
-    KeyValuePair
+    ExternalImport,
+    KeyValuePair,
+    SecurityData
 } from "../../../../../../model/codeCharta.model"
+import {
+    SECURITY_ATTRIBUTE_DESCRIPTORS,
+    SECURITY_ATTRIBUTE_TYPES,
+    securityFiguresByPath
+} from "../../../../../../util/security/securityFigures"
 
 export function mapCcJson2ToCCFile(file: CcJson2WithCarryover, nameDataPair: NameDataPair): CCFile {
     const attributesByNodeId = file.lenses.metrics?.attributes ?? {}
     const idToPath: Record<string, string> = {}
     const map = mapFileNode(file.files[0], "", attributesByNodeId, idToPath)
+    const security = mapSecurity(file, idToPath)
+    if (security) {
+        addFiguresToNodes(map, "", securityFiguresByPath(security))
+    }
 
     return {
         fileMeta: {
@@ -40,12 +51,13 @@ export function mapCcJson2ToCCFile(file: CcJson2WithCarryover, nameDataPair: Nam
         settings: {
             fileSettings: {
                 edges: mapEdges(file, idToPath),
-                attributeTypes: getAttributeTypes(file),
-                attributeDescriptors: getAttributeDescriptors(file),
+                attributeTypes: getAttributeTypes(file, security),
+                attributeDescriptors: getAttributeDescriptors(file, security),
                 domainWords: mapDomainWords(file, idToPath),
                 dependencyLevels: mapDependencyLevels(file, idToPath),
                 dependencyDeclarations: mapDependencyDeclarations(file, idToPath),
                 clusterings: mapClusterings(file, idToPath),
+                ...(security && { security }),
                 // 2.0 files carry neither; both are populated only when a 1.x file is normalized.
                 blacklist: file.blacklist ?? [],
                 markedPackages: file.markedPackages ?? []
@@ -120,6 +132,7 @@ function mapClusterings(file: CcJson2, idToPath: Record<string, string>): Cluste
             id: cluster.id,
             name: cluster.name,
             members: mapClusterMembers(cluster.members, idToPath),
+            ...(idToPath[cluster.id] === undefined ? {} : { path: idToPath[cluster.id] }),
             ...shownAttributesOf(cluster.attributes)
         }))
         clusterings[key] = {
@@ -248,17 +261,64 @@ function mapDomainWords(file: CcJson2, idToPath: Record<string, string>): Domain
     return domainWords
 }
 
-function getAttributeTypes(file: CcJson2): AttributeTypes {
+function getAttributeTypes(file: CcJson2, security: SecurityData | undefined): AttributeTypes {
     return {
-        nodes: file.lenses.metrics?.attributeTypes ?? {},
+        nodes: { ...(security && SECURITY_ATTRIBUTE_TYPES), ...file.lenses.metrics?.attributeTypes },
         edges: file.lenses.dependency?.attributeTypes ?? {}
     }
 }
 
-function getAttributeDescriptors(file: CcJson2): AttributeDescriptors {
+function getAttributeDescriptors(file: CcJson2, security: SecurityData | undefined): AttributeDescriptors {
     return {
+        ...(security && SECURITY_ATTRIBUTE_DESCRIPTORS),
         ...pickDescriptors(file.lenses.metrics?.attributeDescriptors),
         ...pickDescriptors(file.lenses.dependency?.attributeDescriptors)
+    }
+}
+
+/** Absent when the file carries no security lens: imports alone name no package to show. */
+function mapSecurity(file: CcJson2, idToPath: Record<string, string>): SecurityData | undefined {
+    const lens = file.lenses.security
+    if (!lens?.packages) {
+        return undefined
+    }
+    return {
+        vulnerabilitiesMeasured: lens.vulnerabilitiesMeasured ?? false,
+        vulnerabilitySources: lens.vulnerabilitySources ?? [],
+        ...(lens.versionsLookup && { versionsLookup: lens.versionsLookup }),
+        packages: lens.packages,
+        lockfiles: byPath(lens.nodes ?? {}, idToPath, ({ declares = [], dependsOn = [] }) => ({ declares, dependsOn })),
+        externalImports: byPath<ExternalImport[], ExternalImport[]>(
+            file.lenses.dependency?.externalImports ?? {},
+            idToPath,
+            imports => imports
+        )
+    }
+}
+
+function byPath<Wire, Mapped>(
+    byNodeId: Record<string, Wire>,
+    idToPath: Record<string, string>,
+    map: (entry: Wire) => Mapped
+): Record<string, Mapped> {
+    const mapped: Record<string, Mapped> = {}
+    for (const [nodeId, entry] of Object.entries(byNodeId)) {
+        const path = idToPath[nodeId]
+        if (path !== undefined) {
+            mapped[path] = map(entry)
+        }
+    }
+    return mapped
+}
+
+function addFiguresToNodes(node: CodeMapNode, parentPath: string, figuresByPath: Record<string, KeyValuePair>) {
+    const path = parentPath === "" ? `/${node.name}` : `${parentPath}/${node.name}`
+    const figures = figuresByPath[path]
+    if (figures) {
+        node.attributes = { ...figures, ...node.attributes }
+    }
+    for (const child of node.children ?? []) {
+        addFiguresToNodes(child, path, figuresByPath)
     }
 }
 

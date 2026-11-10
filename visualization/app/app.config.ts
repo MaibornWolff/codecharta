@@ -25,7 +25,7 @@ import { MetricsViewComponent } from "app/codeCharta/views/metricsView/metricsVi
 
 export const routes: Routes = [
     { path: routePaths.metrics, component: MetricsViewComponent, canActivate: [showSpinnerBeforeBuildingView] },
-    // Lazy: the domain and dependency views are all that pull in echarts, which no metric-view user needs.
+    // Lazy: the domain, dependency and security views are all that pull in echarts, which no metric-view user needs.
     {
         path: routePaths.domain,
         canActivate: [showSpinnerBeforeBuildingView],
@@ -35,6 +35,11 @@ export const routes: Routes = [
         path: routePaths.dependencies,
         canActivate: [showSpinnerBeforeBuildingView],
         loadComponent: () => import("app/codeCharta/views/dependencyView/dependencyView.component").then(m => m.DependencyViewComponent)
+    },
+    {
+        path: routePaths.security,
+        canActivate: [showSpinnerBeforeBuildingView],
+        loadComponent: () => import("app/codeCharta/views/securityView/securityView.component").then(m => m.SecurityViewComponent)
     }
 ]
 

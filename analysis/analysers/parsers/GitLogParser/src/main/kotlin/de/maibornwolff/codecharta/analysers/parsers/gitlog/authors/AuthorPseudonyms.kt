@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership
+package de.maibornwolff.codecharta.analysers.parsers.gitlog.authors
 
 import java.util.Random
 
@@ -26,6 +26,17 @@ internal class AuthorPseudonyms(firstCommitHash: String) {
     private fun String.capitalised() = replaceFirstChar { it.uppercase() }
 
     companion object {
+        /** The pseudonym of everyone in [commitsOldestFirst], by their position in the order of first commit. */
+        fun byPerson(commitsOldestFirst: List<CommitPeople>): Map<String, String> {
+            val firstCommitHash = commitsOldestFirst.firstOrNull()?.hash ?: return emptyMap()
+            val pseudonyms = AuthorPseudonyms(firstCommitHash)
+            return commitsOldestFirst
+                .flatMap { it.people }
+                .distinct()
+                .withIndex()
+                .associate { (position, person) -> person to pseudonyms.nameOf(position) }
+        }
+
         val COLOURS = listOf(
             "amber", "apricot", "aqua", "azure", "bronze", "burgundy", "cerise", "cerulean", "claret", "cobalt", "copper", "coral",
             "crimson", "cyan", "denim", "emerald", "fern", "flax", "fuchsia", "garnet", "gold", "heather", "indigo", "iris", "jade",

@@ -98,7 +98,7 @@ class ExtractionPipeline(
         val analysisRoot = project.analysisRoot
         try {
             val fileInfo = toFileInfo(sourceFile, project) ?: return null
-            return withOptionalTimeout(dispatcher) { createAnalyzer(fileInfo).analyze() }
+            return withOptionalTimeout(dispatcher) { createAnalyzer(fileInfo).analyze().copy(physicalPath = fileInfo.physicalPath) }
         } catch (timeout: TimeoutCancellationException) {
             // The parse itself is a blocking native call, so cancelling only abandons the coroutine waiting
             // on it: the parse thread runs to completion in the background and this file is skipped.

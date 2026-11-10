@@ -50,13 +50,20 @@ class Dialog {
                     inputValidator = CommitChangesScan::isDate,
                     onInputReady = testCallback()
                 ).trim()
+            val sbomFile = session.promptInput(
+                message = "Add the third-party packages of a CycloneDX SBOM? Its path:",
+                hint = "bom.cdx.json (leave empty for none)",
+                allowEmptyInput = true,
+                onInputReady = testCallback()
+            )
             return listOfNotNull(
                 projectFolder,
                 outputFile.ifBlank { null }?.let { "--output-file=$it" },
                 exclude.ifBlank { null }?.let { "--exclude=$it" },
                 AuthorOwnershipScan.FLAG.takeIf { authorOwnership },
                 AuthorOwnershipScan.NAMES_FLAG.takeIf { withAuthorNames },
-                commitChangesSince.ifEmpty { null }?.let { "${CommitChangesScan.FLAG}=$it" }
+                commitChangesSince.ifEmpty { null }?.let { "${CommitChangesScan.FLAG}=$it" },
+                sbomFile.ifBlank { null }?.let { "--sbom=$it" }
             )
         }
 

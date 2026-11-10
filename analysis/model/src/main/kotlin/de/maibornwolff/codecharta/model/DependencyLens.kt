@@ -11,9 +11,11 @@ data class DependencyLens(
     val nodes: Map<String, DependencyNode> = emptyMap(),
     val namespaces: Map<String, DependencyNamespace> = emptyMap(),
     val leaves: Map<String, Map<String, DependencyLeaf>> = emptyMap(),
-    val leafEdges: List<LeafEdge> = emptyList()
+    val leafEdges: List<LeafEdge> = emptyList(),
+    val externalImports: Map<String, List<ExternalImport>> = emptyMap()
 ) : Lens {
-    val carriesNodeData: Boolean get() = nodes.isNotEmpty() || leaves.isNotEmpty() || leafEdges.isNotEmpty()
+    val carriesNodeData: Boolean
+        get() = nodes.isNotEmpty() || leaves.isNotEmpty() || leafEdges.isNotEmpty() || externalImports.isNotEmpty()
 
     fun merge(other: DependencyLens): DependencyLens = DependencyLens(
         edges = mergeEdges(edges + other.edges),
@@ -22,7 +24,8 @@ data class DependencyLens(
         nodes = mergeNodes(other.nodes),
         namespaces = mergeNamespaces(other.namespaces),
         leaves = mergeLeaves(other.leaves),
-        leafEdges = mergeLeafEdges(leafEdges + other.leafEdges)
+        leafEdges = mergeLeafEdges(leafEdges + other.leafEdges),
+        externalImports = mergeByKey(externalImports, other.externalImports) { _, existing, incoming -> sortedImports(existing + incoming) }
     )
 
     // The first edge wins on a conflicting attribute, as in the attribute-type and descriptor merges
@@ -72,12 +75,14 @@ data class DependencyLens(
         val newIdByOldId = nodeIdRemapping(treeBeforeRestructuring, treeAfterRestructuring, remapSegments)
         val rekeyedNodes = nodes.rekeyedBy(newIdByOldId)
         val rekeyedLeafEdges = leafEdges.mapNotNull { it.rekeyedBy(newIdByOldId) }
-        if (leaves.isEmpty()) return copy(nodes = rekeyedNodes, leafEdges = rekeyedLeafEdges)
+        val rekeyedImports = externalImports.rekeyedBy(newIdByOldId)
+        if (leaves.isEmpty()) return copy(nodes = rekeyedNodes, leafEdges = rekeyedLeafEdges, externalImports = rekeyedImports)
 
         val rekeyedLeaves = leaves.rekeyedBy(newIdByOldId)
         val inhabitedNamespaces = inhabitedNamespaces(rekeyedLeaves)
         return copy(
             nodes = rekeyedNodes,
+            externalImports = rekeyedImports,
             namespaces = namespaces.filterKeys { it in inhabitedNamespaces },
             leaves = rekeyedLeaves,
             leafEdges = rekeyedLeafEdges.filter { it.joinsOnto(rekeyedLeaves) }
@@ -107,6 +112,12 @@ data class DependencyLens(
         private const val NAMESPACE_SEPARATOR = "."
     }
 }
+
+/** A third-party package a file imports, by the name its ecosystem (a purl type such as `npm`) knows it under. */
+data class ExternalImport(val ecosystem: String, val name: String)
+
+fun sortedImports(imports: Collection<ExternalImport>): List<ExternalImport> =
+    imports.distinct().sortedWith(compareBy({ it.ecosystem }, { it.name }))
 
 // An object rather than a bare level, so per-node facts can be added later without a breaking change
 data class DependencyNode(val level: Int) {

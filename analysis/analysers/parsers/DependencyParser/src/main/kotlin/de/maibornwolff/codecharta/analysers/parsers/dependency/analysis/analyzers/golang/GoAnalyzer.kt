@@ -35,7 +35,7 @@ class GoAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
                 usedTypes = declaration.usedTypes.mapNotNull { imports.nameOf(it) }.map { untrimmedType(it) }.toSet()
             )
         }
-        return FileReport(nodes)
+        return FileReport(nodes, GoModuleImports { folderOf(it) != null }.of(result.imports))
     }
 
     // A name next to a missing token can start with a line break, which Type.simple would trim away

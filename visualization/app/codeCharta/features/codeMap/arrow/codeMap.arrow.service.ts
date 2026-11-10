@@ -2,7 +2,12 @@ import { Injectable, OnDestroy } from "@angular/core"
 import { filter, tap } from "rxjs"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
 import { EdgeVisibility, Node } from "../../../model/codeCharta.model"
-import { CodeMapBuilding, ThreeMapVisibilityStore, ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
+import {
+    ClusterSourceLink,
+    CodeMapBuilding,
+    ThreeMapVisibilityStore,
+    ThreeSceneService
+} from "../../../renderer/threeViewer/threeViewer.facade"
 import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { debounce } from "../../../util/debounce"
@@ -13,6 +18,7 @@ export class CodeMapArrowService implements OnDestroy {
     private map = new Map<string, Node>()
     private readonly VERTICES_PER_LINE = 5
     private arrows: Object3D[] = new Array<Object3D>()
+    private clusterSource: ClusterSourceLink | null = null
     private readonly HIGHLIGHT_BUILDING_DELAY = 1
     private readonly debounceCalculation = debounce(
         (hoveredBuilding: CodeMapBuilding) => this.resetEdgesOfBuildings(hoveredBuilding),
@@ -40,6 +46,23 @@ export class CodeMapArrowService implements OnDestroy {
     ) {
         this.threeSceneService.subscribe("onBuildingSelected", this.onBuildingSelected)
         this.threeSceneService.subscribe("onBuildingDeselected", this.onBuildingDeselected)
+        this.threeSceneService.subscribe("onClusterSourceChanged", this.onClusterSourceChanged)
+    }
+
+    // A cluster's arrows show whatever the edge settings say, as they come with the cluster and not with the edges
+    onClusterSourceChanged = (link: ClusterSourceLink | null) => {
+        if (link === null && this.clusterSource === null) {
+            return
+        }
+        this.clusterSource = link
+        this.markClusterSource()
+        this.clearArrows()
+        if (this.codeMapStore.getMapState().isEdgeMetricVisible) {
+            this.showEdgesOfBuildings()
+        } else {
+            this.addClusterSourceArrows()
+        }
+        this.scale()
     }
 
     ngOnDestroy(): void {
@@ -68,10 +91,22 @@ export class CodeMapArrowService implements OnDestroy {
         this.scale()
     }
 
+    /** Draws the shown cluster's source again on a map built anew, which knows neither its mark nor its arrows. */
+    showClusterSource() {
+        this.markClusterSource()
+        this.addClusterSourceArrows()
+        this.scale()
+    }
+
+    private markClusterSource() {
+        this.threeSceneService.markBuilding(this.clusterSource?.sourcePath ?? null, this.codeMapStore.getMapState().mapColors.outgoingEdge)
+    }
+
     onBuildingDeselected = () => {
         this.debounceCalculation.cancel()
         this.clearArrows()
         this.addEdgePreview()
+        this.addClusterSourceArrows()
     }
 
     onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
@@ -163,6 +198,22 @@ export class CodeMapArrowService implements OnDestroy {
             this.buildPairingEdges(buildings)
         } else {
             this.addEdgePreview()
+        }
+        this.addClusterSourceArrows()
+    }
+
+    private addClusterSourceArrows() {
+        const source = this.clusterSource && this.map.get(this.clusterSource.sourcePath)
+        if (!source) {
+            return
+        }
+        const { edgeHeight, mapColors } = this.codeMapStore.getMapState()
+        const color = ColorConverter.getNumber(mapColors.outgoingEdge)
+        for (const path of this.clusterSource.targetPaths) {
+            const target = this.map.get(path)
+            if (target && path !== source.path) {
+                this.setCurveColor(this.createCurve(source, target, 100 * edgeHeight), color)
+            }
         }
     }
 

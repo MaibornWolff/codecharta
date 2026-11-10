@@ -28,11 +28,17 @@ class LargeMerge {
                 .rekeyed(project.rootNode, movedNodes.single(), movedIntoFolder(prefix))
             val rePathedDomain = project.lenses.domain?.rekeyed(project.rootNode, movedNodes.single(), movedIntoFolder(prefix))
             val rePathedClusters = project.lenses.clusters.rekeyed(project.rootNode, movedNodes.single(), movedIntoFolder(prefix))
+            val rePathedSecurity = project.lenses.security?.rekeyed(project.rootNode, movedNodes.single(), movedIntoFolder(prefix))
             return Project(
                 projectName = project.projectName,
                 nodes = movedNodes,
                 apiVersion = project.apiVersion,
-                lenses = project.lenses.copy(dependency = rePathedDependency, domain = rePathedDomain, clusters = rePathedClusters),
+                lenses = project.lenses.copy(
+                    dependency = rePathedDependency,
+                    domain = rePathedDomain,
+                    clusters = rePathedClusters,
+                    security = rePathedSecurity
+                ),
                 blacklist = addFolderToBlackListPaths(project.blacklist, prefix),
                 commitHash = project.commitHash
             )

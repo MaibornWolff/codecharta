@@ -31,6 +31,8 @@ Data leaves your machine only when you choose to send it, for example when you:
 - share a `.cc.json` file with colleagues or commit it to version control
 - host maps on your own server for your team
 - send a link that loads a map from a URL: the link carries the file location and the settings, not the map itself
+- run the [SBOM importer](/docs/importer/sbom) with `--osv` or `--deps-dev`: it sends the names and versions of your
+  third-party packages, not your code, to OSV.dev or deps.dev
 
 ## Check it yourself
 

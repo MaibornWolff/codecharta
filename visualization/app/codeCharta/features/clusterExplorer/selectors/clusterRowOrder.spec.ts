@@ -2,7 +2,7 @@ import { BY_SHARE, detailLineOf, matchingRowsInOrder, sortOptionsOf } from "./cl
 import { ClusterShareRow } from "./clusterShares"
 
 function row(name: string, attributes: ClusterShareRow["attributes"] = {}, mapShare: number | null = null): ClusterShareRow {
-    return { id: name, name, repositoryMarker: null, share: 0, mapShare, filePaths: [], attributes }
+    return { id: name, name, repositoryMarker: null, share: 0, mapShare, filePaths: [], path: null, attributes }
 }
 
 const namesOf = (rows: ClusterShareRow[]) => rows.map(({ name }) => name)

@@ -9,6 +9,7 @@ dependencies {
     implementation(project(":analysers:parsers:DomainLanguageParser"))
     implementation(project(":analysers:parsers:GitLogParser"))
     implementation(project(":analysers:parsers:SVNLogParser"))
+    implementation(project(":analysers:importers:SbomImporter"))
     implementation(project(":treeSitterExcavationSite"))
 
     implementation(libs.picocli)

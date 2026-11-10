@@ -151,7 +151,8 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
         val domain = project.lenses.domain
         val dependency = project.lenses.dependency
         val clusters = project.lenses.clusters
-        if (domain == null && !dependency.carriesNodeData && !clusters.carriesData) return project
+        val security = project.lenses.security
+        if (domain == null && !dependency.carriesNodeData && !clusters.carriesData && security == null) return project
         return Project(
             projectName = project.projectName,
             nodes = listOf(project.rootNode),
@@ -160,7 +161,8 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
                 project.lenses.copy(
                     dependency = dependency.rekeyed(treeBeforeRestructuring, project.rootNode, remapping),
                     domain = domain?.rekeyed(treeBeforeRestructuring, project.rootNode, remapping),
-                    clusters = clusters.rekeyed(treeBeforeRestructuring, project.rootNode, remapping)
+                    clusters = clusters.rekeyed(treeBeforeRestructuring, project.rootNode, remapping),
+                    security = security?.rekeyed(treeBeforeRestructuring, project.rootNode, remapping)
                 ),
             blacklist = project.blacklist,
             commitHash = project.commitHash
@@ -169,7 +171,7 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
 
     private fun isRestructuringAction(): Boolean = setRoot != null || remove.isNotEmpty() || moveFrom != null
 
-    // The typed `domain`, `dependency` and `clusters` lenses are re-keyed onto the new paths, so they survive a
+    // The typed `domain`, `dependency`, `clusters` and `security` lenses are re-keyed onto the new paths, so they survive a
     // restructure. An opaque lens
     // has an unknown shape whose node ids cannot be rewritten safely, so those still refuse rather than emit
     // a lens referencing nodes the output no longer has — the guard `--large` merging also applies.

@@ -10,10 +10,16 @@ class HotfixCommits : Metric {
     override fun metricName(): String = "hotfix_commits"
 
     override fun registerCommit(commit: Commit) {
-        if (commit.message.contains("hotfix", ignoreCase = true)) {
+        if (isHotfix(commit.message)) {
             count++
         }
     }
 
     override fun value(): Number = count
+
+    companion object {
+        private const val HOTFIX = "hotfix"
+
+        fun isHotfix(message: String): Boolean = message.contains(HOTFIX, ignoreCase = true)
+    }
 }

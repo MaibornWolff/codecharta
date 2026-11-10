@@ -549,6 +549,42 @@ class EveritValidatorTest {
         Assertions.assertThat(validation.exceptionOrNull()).isInstanceOf(ValidationException::class.java)
     }
 
+    @Test
+    fun `should accept a security lens with packages, vulnerabilities and lockfiles`() {
+        // Arrange
+        val securityLens =
+            withSecurityLens(
+                """"vulnerabilitiesMeasured":true,"versionsLookup":{"source":"deps.dev","date":"2026-11-09"},""" +
+                    """"packages":{"pkg:npm/qs@6.5.2":{"name":"qs","version":"6.5.2","daysOutdated":3,""" +
+                    """"vulnerabilities":[{"id":"CVE-2022-24999","severity":"high","score":7.5}]}},""" +
+                    """"nodes":{"app-id":{"declares":["pkg:npm/qs@6.5.2"]}}"""
+            )
+
+        // Act
+        val validation = runCatching { validator.validate(ByteArrayInputStream(securityLens.toByteArray())) }
+
+        // Assert
+        Assertions.assertThat(validation.isSuccess).isTrue()
+    }
+
+    @Test
+    fun `should reject a vulnerability whose severity is not one of the known buckets`() {
+        // Arrange
+        val unknownSeverity =
+            withSecurityLens(""""packages":{"pkg:npm/qs@6.5.2":{"name":"qs","vulnerabilities":[{"id":"CVE-1","severity":"moderate"}]}}""")
+
+        // Act
+        val validation = runCatching { validator.validate(ByteArrayInputStream(unknownSeverity.toByteArray())) }
+
+        // Assert
+        Assertions.assertThat(validation.exceptionOrNull()).isInstanceOf(ValidationException::class.java)
+    }
+
+    private fun withSecurityLens(content: String): String = """{"meta":{"projectName":"p","apiVersion":"2.2","checksum":"x"},""" +
+        """"files":[{"id":"root-id","name":"root","type":"Folder","children":[""" +
+        """{"id":"app-id","name":"package-lock.json","type":"File"}]}],""" +
+        """"lenses":{"security":{$content}}}"""
+
     private fun withDependencyLens(tables: String): String = """{"meta":{"projectName":"p","apiVersion":"2.1","checksum":"x"},""" +
         """"files":[{"id":"root-id","name":"root","type":"Folder","children":[""" +
         """{"id":"app-id","name":"App.kt","type":"File"}]}],""" +

@@ -21,6 +21,9 @@ class TestFileDetectorTest {
             "UserTest.kt", "ServiceTest.kts", "UserTests.java", "UserTest.cs", "UserTest.php", "UserTest.KT",
             "user.test.ts", "service.test.tsx", "handler.spec.js", "component.spec.jsx",
             "module.test.cjs", "util.test.mjs", "types.test.cts", "config.test.mts", "user.test.TS",
+            "checkout.e2e.ts", "store.mock.ts", "report.mocks.ts",
+            "parser_test.cc", "parser_tests.cpp", "parser_unittest.cc", "ParserTest.cpp", "ParserTests.cxx", "test_parser.c",
+            "parser_test.h",
             "test_user.py", "service_test.py", "test_user.pyw",
             "main_test.go",
             "user_spec.rb"
@@ -40,7 +43,7 @@ class TestFileDetectorTest {
             "User.kt", "Service.kts", "UserTestHelper.kt", "UserTestHelper.java",
             "user.ts", "service.tsx", "handler.js", "component.jsx",
             "user.py", "user_test_helper.py",
-            "main.go", "user.rb", "Main.cpp", "README"
+            "main.go", "user.rb", "Main.cpp", "README", "contest.cpp", "testing.c", "mockup.ts"
         ]
     )
     fun `should not mistake a production file for a test`(fileName: String) {
@@ -52,7 +55,7 @@ class TestFileDetectorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["test", "tests", "__tests__", "spec", "specs", "src/test/kotlin", "SRC/Tests"])
+    @ValueSource(strings = ["test", "tests", "__tests__", "__mocks__", "spec", "specs", "e2e", "src/test/kotlin", "SRC/Tests"])
     fun `should recognize a file inside a test directory at any depth`(directory: String) {
         // Act
         val isTest = detector().isTestFile(fileAt("$directory/User.kt"))

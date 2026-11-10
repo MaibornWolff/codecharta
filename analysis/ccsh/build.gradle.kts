@@ -55,6 +55,7 @@ dependencies {
             ":dialogProvider",
             ":analysers:importers:SourceMonitorImporter",
             ":analysers:importers:DependaChartaImporter",
+            ":analysers:importers:SbomImporter",
             ":analysers:parsers:DomainLanguageParser",
             ":analysers:parsers:DependencyParser"
         )

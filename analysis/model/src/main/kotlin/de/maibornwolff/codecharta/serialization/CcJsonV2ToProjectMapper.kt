@@ -66,10 +66,14 @@ object CcJsonV2ToProjectMapper {
                         nodes = resolveDependencyNodes(dto, idToEndpoint.keys),
                         namespaces = dto.lenses.dependency.namespaces.orEmpty(),
                         leaves = leaves,
-                        leafEdges = resolveLeafEdges(dto, fileNodeIds, leaves)
+                        leafEdges = resolveLeafEdges(dto, fileNodeIds, leaves),
+                        externalImports = dto.lenses.dependency.externalImports
+                            .orEmpty()
+                            .filterKeys { it in fileNodeIds }
                     ),
                 domain = dto.lenses.domain,
                 clusters = resolveClusters(dto, idToEndpoint.keys),
+                security = dto.lenses.security,
                 opaqueLenses = dto.lenses.opaqueLenses
             )
 

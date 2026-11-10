@@ -20,6 +20,7 @@ class Dialog {
 
             val useGitignore = useGitignoreQuestion(session)
             val includeTests = includeTestsQuestion(session)
+            val linkTests = !includeTests && linkTestsQuestion(session)
             val omitGraphAnalysis = omitGraphAnalysisQuestion(session)
             val maxFileSizeKb = maxFileSizeQuestion(session)
             val fileTimeoutSeconds = fileTimeoutQuestion(session)
@@ -31,6 +32,7 @@ class Dialog {
                 "--verbose=${!verbose}",
                 if (useGitignore) null else "--bypass-gitignore",
                 if (includeTests) "--include-tests" else null,
+                if (linkTests) "--link-tests" else null,
                 if (omitGraphAnalysis) "--omit-graph-analysis" else null,
                 if (maxFileSizeKb.isNotEmpty()) "--max-file-size=$maxFileSizeKb" else null,
                 if (fileTimeoutSeconds.isNotEmpty()) "--file-timeout=$fileTimeoutSeconds" else null
@@ -66,6 +68,11 @@ class Dialog {
 
         private fun includeTestsQuestion(session: Session): Boolean = session.promptConfirm(
             message = "Do you want to include test files in the analysis?",
+            onInputReady = testCallback()
+        )
+
+        private fun linkTestsQuestion(session: Session): Boolean = session.promptConfirm(
+            message = "Do you want to link each test file to the code it names (\"Tests\" clustering)?",
             onInputReady = testCallback()
         )
 

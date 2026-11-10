@@ -50,6 +50,7 @@ Each command has its own `-h`, such as `ccsh unifiedparser -h`.
 |           | `csvimport`            | [any metric from a CSV file](/docs/importer/csv)                                 |
 |           | `sourcemonitorimport`  | [metrics from SourceMonitor](/docs/importer/sourcemonitor)                       |
 |           | `codemaatimport`       | [temporal coupling from Code Maat](/docs/importer/code-maat)                     |
+|           | `sbomimport`           | [packages and vulnerabilities from a CycloneDX SBOM](/docs/importer/sbom)        |
 |           | `dependachartaimport` (deprecated) | [DependaCharta `.dc.json` files](/docs/importer/dependacharta)       |
 | Filters   | `merge`                | [combines several maps into one](/docs/filter/merge-filter)                      |
 |           | `edgefilter`           | [adds edge attributes to the files they connect](/docs/filter/edge-filter)       |

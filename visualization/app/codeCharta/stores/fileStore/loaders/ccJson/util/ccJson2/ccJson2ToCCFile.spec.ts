@@ -1,6 +1,7 @@
 import { TEST_FILE_CONTENT_CC_JSON_2 } from "../../../../../../mocks/dataMocks"
 import { CcJson2 } from "../../../../../../model/ccjson2.model"
 import { ExportCCFile, NameDataPair } from "../../../../../../model/codeCharta.api.model"
+import sampleWithSecurity from "../../../../../../resources/sample_with_security.cc.json"
 import sample1CcJson2 from "../../../../../../resources/sample1_converted_to_2_0.cc.json"
 import sample1Legacy from "../../../../../../resources/sample1_legacy_1_2.cc.json"
 import { clone } from "../../../../../../util/clone"
@@ -129,6 +130,28 @@ describe("mapCcJson2ToCCFile", () => {
         })
         expect(warn).toHaveBeenCalledWith(expect.stringContaining("unknown"))
         warn.mockRestore()
+    })
+
+    it("should give a cluster whose id is a node id the path of that node", () => {
+        // Arrange
+        ;(file.lenses as Record<string, unknown>).clusters = {
+            clusterings: {
+                tests: {
+                    title: "Tests",
+                    membership: "overlay",
+                    analyzers: ["dependencyParser"],
+                    clusters: [{ id: "/root/big.ts", name: "big.ts", members: [{ nodeId: "/root" }] }]
+                }
+            }
+        }
+
+        // Act
+        const result = mapCcJson2ToCCFile(file, nameDataPair(file))
+
+        // Assert
+        expect(result.settings.fileSettings.clusterings.tests.clusters).toEqual([
+            { id: "/root/big.ts", name: "big.ts", path: "/root/big.ts", members: { "/root": 1 } }
+        ])
     })
 
     it("should keep the text and number attributes of a cluster, titled by the clustering's descriptors", () => {
@@ -358,5 +381,48 @@ describe("mapCcJson2ToCCFile", () => {
         expect(sortChildrenByName(from2_0.map)).toEqual(sortChildrenByName(from1_5.map))
         expect(from2_0.settings.fileSettings.edges).toEqual(from1_5.settings.fileSettings.edges)
         expect(from2_0.settings.fileSettings.attributeTypes).toEqual(from1_5.settings.fileSettings.attributeTypes)
+    })
+
+    describe("security lens", () => {
+        const withSecurity = () => clone(sampleWithSecurity) as unknown as CcJson2
+
+        it("should key the lockfiles and the importing files by path", () => {
+            // Arrange
+            const content = withSecurity()
+
+            // Act
+            const security = mapCcJson2ToCCFile(content, nameDataPair(content)).settings.fileSettings.security
+
+            // Assert
+            expect(Object.keys(security.lockfiles)).toEqual(["/root/package-lock.json"])
+            expect(Object.keys(security.externalImports).sort()).toEqual(["/root/src/app.ts", "/root/src/server/routes.ts"])
+            expect(security.vulnerabilitiesMeasured).toBe(true)
+            expect(security.versionsLookup).toEqual({ source: "deps.dev", date: "2026-11-09" })
+        })
+
+        it("should give the lockfile and the importing files the package figures as metrics, described like any other", () => {
+            // Arrange
+            const content = withSecurity()
+
+            // Act
+            const ccFile = mapCcJson2ToCCFile(content, nameDataPair(content))
+
+            // Assert
+            const lockfile = ccFile.map.children.find(child => child.name === "package-lock.json")
+            const app = ccFile.map.children.find(child => child.name === "src").children.find(child => child.name === "app.ts")
+            expect(lockfile.attributes).toMatchObject({ rloc: 400, packages: 4, vulnerable_packages: 1, worst_severity: 3 })
+            expect(app.attributes).toMatchObject({ packages: 3, vulnerable_packages: 1, outdated_packages: 2 })
+            expect(ccFile.settings.fileSettings.attributeDescriptors.vulnerable_packages.title).toBe("Vulnerable packages")
+            expect(ccFile.settings.fileSettings.attributeTypes.nodes.worst_severity).toBe("relative")
+        })
+
+        it("should carry no security data for a map without the lens", () => {
+            // Act
+            const ccFile = mapCcJson2ToCCFile(file, nameDataPair(file))
+
+            // Assert
+            expect(ccFile.settings.fileSettings.security).toBeUndefined()
+            expect(ccFile.settings.fileSettings.attributeDescriptors).not.toHaveProperty("packages")
+        })
     })
 })

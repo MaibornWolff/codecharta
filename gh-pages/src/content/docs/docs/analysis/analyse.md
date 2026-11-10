@@ -21,7 +21,8 @@ Open the map in the [Web Studio](https://codecharta.com/visualization/app/index.
 
 - The [Raw Text Parser](/docs/parser/raw-text), [Unified Parser](/docs/parser/unified),
   [Dependency Parser](/docs/parser/dependency) and [Domain Language Parser](/docs/parser/domain-language), each when
-  it applies to the folder.
+  it applies to the folder. The Dependency Parser links the tests to the code they name (`--link-tests`), which the
+  Clusters tab shows as tests.
 - The [Git Log Parser](/docs/parser/git-log) (`repo-scan`) when the folder is the root of a git repository.
 - The [SVN Log Parser](/docs/parser/svn-log) when the folder is the root of an svn working copy. `ccsh analyse` runs
   `svn log --verbose --non-interactive` itself, so `svn` has to be on the `PATH`.
@@ -39,9 +40,11 @@ back through it.
 | `--without=NAME[,NAME...]` | parsers or histories to leave out, such as `--without=dependencyparser,svn`         |
 | `--local-changes`          | maps only the files that differ from the remote tracking branch                     |
 | `--author-ownership`       | adds each author's share of each file under an invented name, from `git blame`                   |
-| `--with-author-names`      | writes real author names instead of numbers (needs `--author-ownership`)            |
-| `--commit-changes-since YYYY-MM-DD` | adds what each commit since this day changed in each file                  |
+| `--with-author-names`      | writes real author names instead of invented ones, also for commit changes (needs `--author-ownership`) |
+| `--commit-changes-since YYYY-MM-DD` | adds what each commit since this day changed in each file, and who made it |
 | `--commit=REF`             | maps the codebase at a git commit, tag, branch or date                              |
+| `--sbom=<file>`            | adds the third-party packages of a CycloneDX SBOM, see [SBOM import](#sbom-import)  |
+| `--osv`, `--deps-dev`      | with `--sbom`: ask OSV.dev for vulnerabilities, deps.dev for newer versions          |
 | `-p, --parallel`           | runs the analysers at the same time                                                 |
 | `-nc, --not-compressed`    | writes the map uncompressed                                                         |
 | `-q, --quiet`              | keeps the output of the analysers off the console                                   |
@@ -73,15 +76,30 @@ The names are pseudonymous, not anonymous: anyone with the repository can match 
 still be personal data under GDPR. Treat and share it accordingly.
 
 `--with-author-names`, next to `--author-ownership`, opts out of this: the map then holds real names as git has them, under
-a clustering titled **Author ownership (real names)**, and still no emails. The command warns about it last, even with
+a clustering titled **Author ownership (real names)** and in the commit changes, and still no emails. The command warns about it last, even with
 `--silent`, and the Explorer's Clusters tab shows a warning for such a map.
 
 
 ## Commit changes
 
 `--commit-changes-since YYYY-MM-DD` adds what each commit since that day changed to the map, as described in the
-[Git Log parser](/docs/parser/git-log). Commit subjects enter the map, and anyone with the repository can match a hash to
-its author, so a map may still be personal data under GDPR. The note is the last thing the command prints.
+[Git Log parser](/docs/parser/git-log), with each commit's author and co-authors under the same invented names as in
+the author ownership, or their real names with `--with-author-names`. Invented names are pseudonymous, not anonymous:
+anyone with the repository can match them and the hashes to people, and commit subjects are free text, so a map may
+still be personal data under GDPR. The note is the last thing the command prints.
+## SBOM import
+
+`--sbom=<file>` adds the packages of a CycloneDX SBOM to the map, as `ccsh sbomimport` does: the lockfiles carry the
+packages they declare, and the dependency parser names the packages each code file imports, so the Web Studio shows
+them on the code that uses them. The SBOM is read before the analysis starts, so a file that is no CycloneDX JSON
+stops the command right away. What the import could not measure follows the `Map:` line under `From the SBOM:`.
+`--osv` and `--deps-dev` switch on the [online lookups](/docs/importer/sbom#online-lookups).
+
+```bash
+trivy fs --offline-scan --scanners vuln --format cyclonedx --output bom.cdx.json .
+ccsh analyse . --sbom=bom.cdx.json --deps-dev
+```
+
 ## What is not in the map
 
 The last lines of the output, after the `Map:` line, name every parser and history that is not in the map, and why:

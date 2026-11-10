@@ -1,7 +1,12 @@
 package de.maibornwolff.codecharta.analysers.tools.analyse
 
+import de.maibornwolff.codecharta.analysers.importers.sbom.SbomLookups
+import de.maibornwolff.codecharta.analysers.importers.sbom.cyclonedx.Bom
 import java.io.File
 import java.time.LocalDate
+
+/** An SBOM to import into the map, read before the analysis starts so a broken one stops it right away. */
+data class SbomSource(val bom: Bom, val lookups: SbomLookups = SbomLookups())
 
 data class AnalyseRequest(
     val projectFolder: File,
@@ -15,5 +20,6 @@ data class AnalyseRequest(
     val localChanges: Boolean = false,
     val authorOwnership: Boolean = false,
     val withAuthorNames: Boolean = false,
-    val commitChangesSince: LocalDate? = null
+    val commitChangesSince: LocalDate? = null,
+    val sbom: SbomSource? = null
 )

@@ -2,7 +2,7 @@ import { clusterListEntriesOf, OFF_MAP_GROUP_ID } from "./clusterListEntries"
 import { ClusterShareRow } from "./clusterShares"
 
 function row(name: string, share: number): ClusterShareRow {
-    return { id: name, name, repositoryMarker: null, share, mapShare: null, filePaths: [], attributes: {} }
+    return { id: name, name, repositoryMarker: null, share, mapShare: null, filePaths: [], path: null, attributes: {} }
 }
 
 const ROWS = [row("on big", 0.5), row("off big", 0.2), row("on small", 0.1), row("off small", 0.05)]

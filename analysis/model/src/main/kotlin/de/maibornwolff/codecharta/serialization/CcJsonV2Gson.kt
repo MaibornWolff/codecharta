@@ -13,6 +13,7 @@ import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypeDeserializer
 import de.maibornwolff.codecharta.model.AttributeTypeSerializer
 import de.maibornwolff.codecharta.model.DomainLens
+import de.maibornwolff.codecharta.model.SecurityLens
 import de.maibornwolff.codecharta.serialization.dto.ClustersLensDto
 import de.maibornwolff.codecharta.serialization.dto.DependencyLensDto
 import de.maibornwolff.codecharta.serialization.dto.LensesDto
@@ -35,10 +36,11 @@ object CcJsonV2Gson {
     const val DEPENDENCY_KEY = "dependency"
     const val DOMAIN_KEY = "domain"
     const val CLUSTERS_KEY = "clusters"
+    const val SECURITY_KEY = "security"
 
     private const val NODES_KEY = "nodes"
 
-    private val TYPED_LENS_KEYS = setOf(METRICS_KEY, DEPENDENCY_KEY, DOMAIN_KEY, CLUSTERS_KEY)
+    private val TYPED_LENS_KEYS = setOf(METRICS_KEY, DEPENDENCY_KEY, DOMAIN_KEY, CLUSTERS_KEY, SECURITY_KEY)
 
     // Streams the lenses straight to the output: building them as a JSON tree first held a second copy of a large domain
     // lens in memory and took as long again
@@ -49,6 +51,7 @@ object CcJsonV2Gson {
             writeMember(out, DEPENDENCY_KEY, src.dependency)
             src.domain?.let { writeDomain(out, it) }
             src.clusters?.let { writeMember(out, CLUSTERS_KEY, it) }
+            src.security?.let { writeMember(out, SECURITY_KEY, it) }
             src.opaqueLenses.forEach { (lensName, lensValue) -> writeMember(out, lensName, lensValue) }
             out.endObject()
         }
@@ -80,12 +83,13 @@ object CcJsonV2Gson {
                     ?: DependencyLensDto()
             val domain = jsonObject.get(DOMAIN_KEY)?.let { context.deserialize<DomainLens>(it, DomainLens::class.java) }
             val clusters = jsonObject.get(CLUSTERS_KEY)?.let { context.deserialize<ClustersLensDto>(it, ClustersLensDto::class.java) }
+            val security = jsonObject.get(SECURITY_KEY)?.let { context.deserialize<SecurityLens>(it, SecurityLens::class.java) }
             val opaqueLenses =
                 jsonObject
                     .entrySet()
                     .filter { it.key !in TYPED_LENS_KEYS }
                     .associate { it.key to it.value }
-            return LensesDto(metrics, dependency, domain, clusters, opaqueLenses)
+            return LensesDto(metrics, dependency, domain, clusters, security, opaqueLenses)
         }
     }
 }

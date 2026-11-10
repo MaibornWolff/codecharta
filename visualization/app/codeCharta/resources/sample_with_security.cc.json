@@ -1,0 +1,176 @@
+{
+    "meta": {
+        "projectName": "Sample Project with Packages",
+        "apiVersion": "2.2",
+        "checksum": "5ec0f1e4a1b2c3d4e5f60718293a4b5c"
+    },
+    "files": [
+        {
+            "id": "164ddff4bb1345e1",
+            "name": "root",
+            "type": "Folder",
+            "children": [
+                {
+                    "id": "b7a82eefea945762",
+                    "name": "package-lock.json",
+                    "type": "File"
+                },
+                {
+                    "id": "fabeab231626f275",
+                    "name": "src",
+                    "type": "Folder",
+                    "children": [
+                        {
+                            "id": "eb16fa3276ded908",
+                            "name": "app.ts",
+                            "type": "File"
+                        },
+                        {
+                            "id": "c89321a0ab8606ef",
+                            "name": "util.ts",
+                            "type": "File"
+                        },
+                        {
+                            "id": "8777d01b656b9eec",
+                            "name": "server",
+                            "type": "Folder",
+                            "children": [
+                                {
+                                    "id": "3c3c9e259bbbe77f",
+                                    "name": "routes.ts",
+                                    "type": "File"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "lenses": {
+        "metrics": {
+            "attributes": {
+                "b7a82eefea945762": {
+                    "rloc": 400
+                },
+                "eb16fa3276ded908": {
+                    "rloc": 120,
+                    "complexity": 8
+                },
+                "c89321a0ab8606ef": {
+                    "rloc": 40,
+                    "complexity": 2
+                },
+                "3c3c9e259bbbe77f": {
+                    "rloc": 80,
+                    "complexity": 5
+                }
+            },
+            "attributeDescriptors": {},
+            "attributeTypes": {
+                "rloc": "absolute",
+                "complexity": "absolute"
+            }
+        },
+        "dependency": {
+            "edges": [],
+            "attributeTypes": {},
+            "attributeDescriptors": {},
+            "externalImports": {
+                "eb16fa3276ded908": [
+                    {
+                        "ecosystem": "npm",
+                        "name": "express"
+                    },
+                    {
+                        "ecosystem": "npm",
+                        "name": "lodash"
+                    }
+                ],
+                "3c3c9e259bbbe77f": [
+                    {
+                        "ecosystem": "npm",
+                        "name": "express"
+                    }
+                ]
+            }
+        },
+        "security": {
+            "vulnerabilitySources": [
+                "trivy 0.76.1"
+            ],
+            "vulnerabilitiesMeasured": true,
+            "versionsLookup": {
+                "source": "deps.dev",
+                "date": "2026-11-09"
+            },
+            "packages": {
+                "pkg:npm/express@4.17.1": {
+                    "name": "express",
+                    "version": "4.17.1",
+                    "ecosystem": "npm",
+                    "dependsOn": [
+                        "pkg:npm/qs@6.5.2"
+                    ],
+                    "newestVersion": "5.1.0",
+                    "newerVersions": 9,
+                    "daysOutdated": 900,
+                    "libyears": 3.2
+                },
+                "pkg:npm/left-pad@1.3.0": {
+                    "name": "left-pad",
+                    "version": "1.3.0",
+                    "ecosystem": "npm",
+                    "newestVersion": "1.3.0",
+                    "newerVersions": 0,
+                    "daysOutdated": 0,
+                    "libyears": 0.0
+                },
+                "pkg:npm/lodash@4.17.21": {
+                    "name": "lodash",
+                    "version": "4.17.21",
+                    "ecosystem": "npm",
+                    "newestVersion": "4.17.21",
+                    "newerVersions": 0,
+                    "daysOutdated": 0,
+                    "libyears": 0.0
+                },
+                "pkg:npm/qs@6.5.2": {
+                    "name": "qs",
+                    "version": "6.5.2",
+                    "ecosystem": "npm",
+                    "newestVersion": "6.13.0",
+                    "newerVersions": 12,
+                    "daysOutdated": 1400,
+                    "libyears": 4.5,
+                    "vulnerabilities": [
+                        {
+                            "id": "CVE-2022-24999",
+                            "severity": "high",
+                            "score": 7.5,
+                            "fixedVersions": [
+                                "6.5.3"
+                            ],
+                            "source": "ghsa"
+                        }
+                    ]
+                }
+            },
+            "nodes": {
+                "b7a82eefea945762": {
+                    "declares": [
+                        "pkg:npm/express@4.17.1",
+                        "pkg:npm/left-pad@1.3.0",
+                        "pkg:npm/lodash@4.17.21",
+                        "pkg:npm/qs@6.5.2"
+                    ],
+                    "dependsOn": [
+                        "pkg:npm/express@4.17.1",
+                        "pkg:npm/left-pad@1.3.0",
+                        "pkg:npm/lodash@4.17.21"
+                    ]
+                }
+            }
+        }
+    }
+}

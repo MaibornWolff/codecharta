@@ -333,6 +333,27 @@ class AnalyseToolTest {
     }
 
     @Test
+    fun `should link the tests to the code they name with the default parsers`() {
+        // Arrange
+        writeSource("src/main/kotlin/App.kt", "package app\n\nclass App\n")
+        writeSource("src/test/kotlin/AppTest.kt", "package app\n\nclass AppTest {\n    fun starts() {\n        App()\n    }\n}\n")
+        val tool = AnalyseTool(PrintStream(output), workingFolder, SvnLogWriter(listOf(MISSING_COMMAND)))
+
+        // Act
+        CommandLine(tool).execute("--quiet", projectFolder.path, "--output-file=${mapFile.path}")
+
+        // Assert
+        val map = readMap(mapFile)
+        assertThat(filesOf(map).getValue("src/test/kotlin/AppTest.kt")).containsEntry("test_file", 1L)
+        assertThat(filesOf(map).getValue("src/main/kotlin/App.kt")).containsEntry("test_file", 0L)
+        assertThat(
+            map.lenses.clusters.clusterings["tests"]
+                ?.clusters
+                ?.map { it.name }
+        ).containsExactly("AppTest.kt")
+    }
+
+    @Test
     fun `should say at the end why the git history is missing also when the analysers print their output`() {
         // Arrange
         writeSource("module/src/App.kt", APP_SOURCE)
@@ -527,6 +548,54 @@ class AnalyseToolTest {
         )
     }
 
+    @Test
+    fun `should add the packages of an SBOM on the lockfile that declares them and print what it did not measure last`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        writeSource("package-lock.json", "{}")
+        val sbom = File(workspace, "bom.cdx.json").apply { writeText(TRIVY_SBOM) }
+
+        // Act
+        val exitCode = analyse(projectFolder.path, "--output-file=${mapFile.path}", "--sbom=${sbom.path}")
+
+        // Assert
+        val security = readMap(mapFile).lenses.security!!
+        assertThat(exitCode).isZero()
+        assertThat(security.packages!!.keys).containsExactly("pkg:npm/qs@6.5.2")
+        assertThat(security.nodes!!.keys).containsExactly(NodeId.fromSegments(listOf("package-lock.json"), NodeType.File))
+        assertThat(filesOf(readMap(mapFile)).keys).contains("src/App.kt", "package-lock.json")
+        assertThat(output.toString()).contains("From the SBOM:")
+        assertThat(output.toString().trim().lines().last()).contains("--deps-dev")
+    }
+
+    @Test
+    fun `should refuse the online lookups without an SBOM`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+
+        // Act
+        val exitCode = analyse(projectFolder.path, "--output-file=${mapFile.path}", "--osv")
+
+        // Assert
+        assertThat(exitCode).isNotZero()
+        assertThat(output.toString()).contains("--osv and --deps-dev need --sbom")
+    }
+
+    @Test
+    fun `should stop before analysing when the SBOM cannot be read`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        val notAnSbom = File(workspace, "bom.json").apply { writeText("""{"spdxVersion":"SPDX-2.3"}""") }
+
+        // Act
+        val exitCode = analyse(projectFolder.path, "--output-file=${mapFile.path}", "--sbom=${notAnSbom.path}")
+
+        // Assert
+        assertThat(exitCode).isNotZero()
+        assertThat(output.toString()).contains("Cannot read the SBOM")
+        assertThat(mapFile).doesNotExist()
+    }
+
     private val mapFile get() = File(workspace, "out/map.cc.json.gz")
 
     private fun analyse(
@@ -586,6 +655,14 @@ class AnalyseToolTest {
     }
 
     private companion object {
+        private val TRIVY_SBOM =
+            """{"bomFormat":"CycloneDX","specVersion":"1.6",""" +
+                """"metadata":{"tools":{"components":[{"name":"trivy","version":"0.76.1"}]},""" +
+                """"component":{"bom-ref":"root","name":"shop"}},""" +
+                """"components":[{"bom-ref":"lock","type":"application","name":"package-lock.json"},""" +
+                """{"bom-ref":"qs","type":"library","name":"qs","version":"6.5.2","purl":"pkg:npm/qs@6.5.2"}],""" +
+                """"dependencies":[{"ref":"lock","dependsOn":["qs"]}],"vulnerabilities":[]}"""
+
         const val MISSING_COMMAND = "codecharta-no-such-svn"
         const val APP_SOURCE = "package app\n\nfun main() {\n    if (true) println(1)\n}\n"
         val SVN_LOG =

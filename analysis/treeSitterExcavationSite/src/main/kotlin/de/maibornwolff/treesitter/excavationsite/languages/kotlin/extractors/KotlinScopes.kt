@@ -9,7 +9,7 @@ internal object KotlinScopes {
     // Statements directly in a script file are its top level, not a block
     val LOCAL_TYPES = LocalTypeScopes(
         typeParameterOwners = setOf("class_declaration", "function_declaration", "property_declaration"),
-        isBlock = { it.type == "statements" && it.parent.type != "source_file" },
+        isBlock = { it.type == "statements" && it.parent.type != "source_file" && !MisparsedClasses.isBody(it) },
         localClass = "class_declaration",
         nameOf = { declaration -> declaration.children().firstOrNull { it.type == "type_identifier" }?.text }
     )
@@ -32,10 +32,12 @@ internal object KotlinScopes {
 
     /** Whether a node belongs to the declaration and not to a nested class of it; a local class belongs to its block. */
     fun belongsTo(node: SyntaxNode, declaration: SyntaxNode): Boolean =
-        classOf(node) == if (declaration.type in TYPE_DECLARATIONS) declaration else classOf(declaration)
+        classOf(node) == if (isTypeDeclaration(declaration)) declaration else classOf(declaration)
 
     private fun classOf(node: SyntaxNode): SyntaxNode? = node.ancestors().firstOrNull {
-        it.type in TYPE_DECLARATIONS &&
+        isTypeDeclaration(it) &&
             !LOCAL_TYPES.isLocalClass(it)
     }
+
+    private fun isTypeDeclaration(node: SyntaxNode): Boolean = node.type in TYPE_DECLARATIONS || MisparsedClasses.isMisparsedClass(node)
 }

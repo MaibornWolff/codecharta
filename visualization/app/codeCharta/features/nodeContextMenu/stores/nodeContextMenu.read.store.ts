@@ -3,6 +3,7 @@ import { Store } from "@ngrx/store"
 import { distinctUntilChanged, map, Observable, of, switchMap } from "rxjs"
 import { pathsWithDependencyLevelsSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { hasDomainDataSelector, pathsWithDomainWordsSelector } from "../../../lenses/domain/domainLens.facade"
+import { hasSecuritySelector } from "../../../lenses/security/security.facade"
 import { CcState } from "../../../model/codeCharta.model"
 import { flattenPredicateSelector, rightClickedCodeMapNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
@@ -22,6 +23,7 @@ export class NodeContextMenuReadStore {
     readonly currentMarkColor$ = this.store.select(currentMarkColorSelector)
     readonly isFlattened$ = this.store.select(flattenPredicateSelector)
     readonly keptHighlightPaths$ = this.store.select(keptHighlightPathsSelector)
+    readonly hasSecurityData$ = this.store.select(hasSecuritySelector)
 
     // The lens paths are only looked up while the menu is open: the domain word index behind them is
     // expensive, and the menu is mounted in views whose users may never open the menu at all.

@@ -1,30 +1,11 @@
-import {
-    BufferAttribute,
-    BufferGeometry,
-    Camera,
-    InstancedBufferAttribute,
-    InstancedMesh,
-    Matrix4,
-    Mesh,
-    Ray,
-    ShaderMaterial,
-    UniformsLib,
-    UniformsUtils,
-    Vector3
-} from "three"
+import { Camera, InstancedBufferAttribute, InstancedMesh, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
 import { CcState, Node, Scaling } from "../../../model/codeCharta.model"
+import { ColorConverter } from "../../../util/color/colorConverter"
 import { treeMapSize } from "../algorithm/treeMapLayout/treeMapHelper"
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
-import {
-    indicesPerNode,
-    templateIndices,
-    templateIsHeight,
-    templateNormals,
-    templatePositions,
-    verticesPerBox
-} from "./geometryGenerationHelper"
 import { GeometryGenerator } from "./geometryGenerator"
+import { exportMeshOf } from "./meshExport"
 import { CodeMapShaderStrings } from "./shaders/loaders/codeMapShaderStrings"
 
 export interface MousePos {
@@ -33,23 +14,6 @@ export interface MousePos {
 }
 
 type DirtyRange = { min: number; max: number }
-
-interface InstancedAttributes {
-    deltaAttr: InstancedBufferAttribute
-    isLeafAttr: InstancedBufferAttribute
-    templateUvs: BufferAttribute
-}
-
-interface ExportBuffers {
-    positions: Float32Array
-    normalsOut: Float32Array
-    colors: Float32Array
-    uvsOut: Float32Array
-    isHeightOut: Float32Array
-    deltasOut: Float32Array
-    deltaColorsOut: Float32Array
-    indices: Uint32Array
-}
 
 export class CodeMapMesh {
     static readonly NUM_OF_COLOR_VECTOR_FIELDS = 3
@@ -74,6 +38,7 @@ export class CodeMapMesh {
     private _prevSelectedId: number | null = null
     private _prevIsPresentationMode: boolean | null = null
     private greysOutsideHighlight = false
+    private mark: { path: string; color: string } | null = null
 
     constructor(nodes: Node[], state: CcState, isDeltaState: boolean) {
         this.initMaterial()
@@ -104,6 +69,34 @@ export class CodeMapMesh {
         this.updateVertices()
     }
 
+    /** Paints one building in a colour of its own that the highlight leaves alone, as the test of a shown test cluster. */
+    markBuilding(path: string | null, color: string) {
+        const previous = this.markedBuilding()
+        this.mark = path === null ? null : { path, color }
+        if (previous && previous !== this.markedBuilding()) {
+            this.setInstanceColor(previous.id, previous.getColorVector(), previous.getDeltaColorVector())
+            this.forgetHighlightCache()
+        }
+        this.paintMark()
+        this.updateVertices()
+    }
+
+    get markedPath(): string | null {
+        return this.mark?.path ?? null
+    }
+
+    private markedBuilding(): CodeMapBuilding | undefined {
+        return this.mark === null ? undefined : this.getBuildingByPath(this.mark.path)
+    }
+
+    private paintMark() {
+        const building = this.markedBuilding()
+        if (building) {
+            const color = ColorConverter.getVector3(this.mark.color)
+            this.setInstanceColor(building.id, color, color)
+        }
+    }
+
     clearSelection(selected: CodeMapBuilding) {
         selected.resetColor()
         this.setInstanceColor(selected.id, selected.getDefaultColorVector(), selected.getDefaultDeltaColorVector())
@@ -129,6 +122,7 @@ export class CodeMapMesh {
         this.nodes = nodes
         this.forgetHighlightCache()
         this.initDeltaColorsOnMesh(state)
+        this.paintMark()
     }
 
     private forgetHighlightCache() {
@@ -146,6 +140,7 @@ export class CodeMapMesh {
             this.setInstanceColor(building.id, building.getColorVector(), building.getDeltaColorVector())
         }
         this.forgetHighlightCache()
+        this.paintMark()
         this.updateVertices()
     }
 
@@ -239,7 +234,7 @@ export class CodeMapMesh {
         this._prevSelectedId = null
         this._prevIsPresentationMode = null
         for (const currentBuilding of this.mapGeomDesc.buildings) {
-            if (this.isBuildingSelected(selected, currentBuilding)) {
+            if (this.keepsOwnColor(selected, currentBuilding)) {
                 continue
             }
             this.setInstanceColor(currentBuilding.id, currentBuilding.getDefaultColorVector(), currentBuilding.getDefaultDeltaColorVector())
@@ -248,21 +243,7 @@ export class CodeMapMesh {
     }
 
     toExportMesh(): Mesh {
-        const instanceCount = this.threeMesh.count
-        const attrs = this.extractInstancedAttributes()
-        const buffers = this.allocateExportBuffers(instanceCount)
-
-        const matrix = new Matrix4()
-        const vertex = new Vector3()
-        const normal = new Vector3()
-
-        for (let i = 0; i < instanceCount; i++) {
-            this.threeMesh.getMatrixAt(i, matrix)
-            this.transformVertices(i, matrix, vertex, normal, attrs, buffers)
-            this.fillIndexBuffer(i, buffers.indices)
-        }
-
-        return this.assembleExportGeometry(buffers)
+        return exportMeshOf(this.threeMesh, this.mapGeomDesc.buildings)
     }
 
     private adjustSurroundingBuildingColors(primaryBuilding: CodeMapBuilding, building: CodeMapBuilding) {
@@ -304,8 +285,9 @@ export class CodeMapMesh {
         }
     }
 
-    private isBuildingSelected(selected: CodeMapBuilding, building: CodeMapBuilding) {
-        return selected && building.equals(selected)
+    /** The selected and the marked building keep their own colour through every highlight. */
+    private keepsOwnColor(selected: CodeMapBuilding, building: CodeMapBuilding) {
+        return (selected && building.equals(selected)) || building.node.path === this.mark?.path
     }
 
     private updateDimmedBuildings(
@@ -319,7 +301,7 @@ export class CodeMapMesh {
                 continue
             }
             const building = this.mapGeomDesc.buildings[id]
-            if (!building || this.isBuildingSelected(selected, building)) {
+            if (!building || this.keepsOwnColor(selected, building)) {
                 continue
             }
             this.paintOutsideHighlight(building)
@@ -332,7 +314,7 @@ export class CodeMapMesh {
                 continue
             }
             const building = this.mapGeomDesc.buildings[id]
-            if (!building || this.isBuildingSelected(selected, building)) {
+            if (!building || this.keepsOwnColor(selected, building)) {
                 continue
             }
             this.setInstanceColor(building.id, building.getHighlightedColorVector(), building.getHighlightedDeltaColorVector())
@@ -348,7 +330,7 @@ export class CodeMapMesh {
         state: CcState
     ) {
         for (const building of this.mapGeomDesc.buildings) {
-            if (this.isBuildingSelected(selected, building)) {
+            if (this.keepsOwnColor(selected, building)) {
                 continue
             }
             if (highlightedBuildingIds.has(building.id) || constantHighlight.has(building.id)) {
@@ -442,121 +424,5 @@ export class CodeMapMesh {
         ray.direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(ray.origin).normalize()
 
         return ray
-    }
-
-    private extractInstancedAttributes(): InstancedAttributes {
-        const deltaAttr = this.threeMesh.geometry.getAttribute("delta")
-        if (!deltaAttr) {
-            throw new Error("CodeMapMesh: missing required geometry attribute 'delta'")
-        }
-
-        const isLeafAttr = this.threeMesh.geometry.getAttribute("isLeaf")
-        if (!isLeafAttr) {
-            throw new Error("CodeMapMesh: missing required geometry attribute 'isLeaf'")
-        }
-
-        const templateUvs = this.threeMesh.geometry.getAttribute("uv")
-        if (!templateUvs) {
-            throw new Error("CodeMapMesh: missing required geometry attribute 'uv'")
-        }
-
-        return {
-            deltaAttr: deltaAttr as InstancedBufferAttribute,
-            isLeafAttr: isLeafAttr as InstancedBufferAttribute,
-            templateUvs: templateUvs as BufferAttribute
-        }
-    }
-
-    private allocateExportBuffers(instanceCount: number): ExportBuffers {
-        const totalVertices = instanceCount * verticesPerBox
-        const totalIndices = instanceCount * indicesPerNode
-
-        return {
-            positions: new Float32Array(totalVertices * 3),
-            normalsOut: new Float32Array(totalVertices * 3),
-            colors: new Float32Array(totalVertices * 3),
-            uvsOut: new Float32Array(totalVertices * 2),
-            isHeightOut: new Float32Array(totalVertices),
-            deltasOut: new Float32Array(totalVertices),
-            deltaColorsOut: new Float32Array(totalVertices * 3),
-            indices: new Uint32Array(totalIndices)
-        }
-    }
-
-    private transformVertices(
-        i: number,
-        matrix: Matrix4,
-        vertex: Vector3,
-        normal: Vector3,
-        attrs: InstancedAttributes,
-        buffers: ExportBuffers
-    ) {
-        const vertexOffset = i * verticesPerBox
-        const posOffset = vertexOffset * 3
-        const uvOffset = vertexOffset * 2
-
-        const building = this.mapGeomDesc.buildings[i]
-        const defaultColor = building.getDefaultColorVector()
-        const defaultDeltaColor = building.getDefaultDeltaColorVector()
-        const instanceR = defaultColor.x
-        const instanceG = defaultColor.y
-        const instanceB = defaultColor.z
-        const deltaR = defaultDeltaColor.x
-        const deltaG = defaultDeltaColor.y
-        const deltaB = defaultDeltaColor.z
-        const deltaVal = attrs.deltaAttr.getX(i)
-        const isLeaf = attrs.isLeafAttr.getX(i)
-
-        for (let v = 0; v < verticesPerBox; v++) {
-            vertex.set(templatePositions[v * 3], templatePositions[v * 3 + 1], templatePositions[v * 3 + 2])
-            vertex.applyMatrix4(matrix)
-            buffers.positions[posOffset + v * 3] = vertex.x
-            buffers.positions[posOffset + v * 3 + 1] = vertex.y
-            buffers.positions[posOffset + v * 3 + 2] = vertex.z
-
-            normal.set(templateNormals[v * 3], templateNormals[v * 3 + 1], templateNormals[v * 3 + 2])
-            normal.transformDirection(matrix)
-            buffers.normalsOut[posOffset + v * 3] = normal.x
-            buffers.normalsOut[posOffset + v * 3 + 1] = normal.y
-            buffers.normalsOut[posOffset + v * 3 + 2] = normal.z
-
-            buffers.colors[posOffset + v * 3] = instanceR
-            buffers.colors[posOffset + v * 3 + 1] = instanceG
-            buffers.colors[posOffset + v * 3 + 2] = instanceB
-
-            buffers.deltaColorsOut[posOffset + v * 3] = deltaR
-            buffers.deltaColorsOut[posOffset + v * 3 + 1] = deltaG
-            buffers.deltaColorsOut[posOffset + v * 3 + 2] = deltaB
-
-            buffers.uvsOut[uvOffset + v * 2] = attrs.templateUvs.getX(v)
-            buffers.uvsOut[uvOffset + v * 2 + 1] = attrs.templateUvs.getY(v)
-
-            buffers.isHeightOut[vertexOffset + v] = templateIsHeight[v] * isLeaf
-            buffers.deltasOut[vertexOffset + v] = deltaVal
-        }
-    }
-
-    private fillIndexBuffer(i: number, indices: Uint32Array) {
-        const vertexOffset = i * verticesPerBox
-        const indexOffset = i * indicesPerNode
-        for (let j = 0; j < indicesPerNode; j++) {
-            indices[indexOffset + j] = templateIndices[j] + vertexOffset
-        }
-    }
-
-    private assembleExportGeometry(buffers: ExportBuffers): Mesh {
-        const geometry = new BufferGeometry()
-        geometry.setAttribute("position", new BufferAttribute(buffers.positions, 3))
-        geometry.setAttribute("normal", new BufferAttribute(buffers.normalsOut, 3))
-        geometry.setAttribute("color", new BufferAttribute(buffers.colors, 3))
-        geometry.setAttribute("deltaColor", new BufferAttribute(buffers.deltaColorsOut, 3))
-        geometry.setAttribute("uv", new BufferAttribute(buffers.uvsOut, 2))
-        geometry.setAttribute("isHeight", new BufferAttribute(buffers.isHeightOut, 1))
-        geometry.setAttribute("delta", new BufferAttribute(buffers.deltasOut, 1))
-        geometry.setIndex(new BufferAttribute(buffers.indices, 1))
-        geometry.addGroup(0, Number.POSITIVE_INFINITY, 0)
-
-        const mat = this.threeMesh.material
-        return new Mesh(geometry, Array.isArray(mat) ? mat : [mat])
     }
 }

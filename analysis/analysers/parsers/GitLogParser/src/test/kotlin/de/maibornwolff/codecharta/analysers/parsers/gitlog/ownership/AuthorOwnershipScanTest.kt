@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership
 
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.authors.AuthorPseudonyms
 import de.maibornwolff.codecharta.model.ClusterMember
 import de.maibornwolff.codecharta.model.NodeId
 import org.assertj.core.api.Assertions.assertThat

@@ -15,7 +15,8 @@ include(
     "analysers:importers:SonarImporter",
     "analysers:importers:SourceMonitorImporter",
     "analysers:importers:TokeiImporter",
-    "analysers:importers:DependaChartaImporter"
+    "analysers:importers:DependaChartaImporter",
+    "analysers:importers:SbomImporter"
 )
 include(
     "analysers:parsers:RawTextParser",

@@ -1,0 +1,14 @@
+# Test links: CartTest names Cart, mocks Price (a mock counts as a link) and calls the helper TestData, a test too
+file src/main/kotlin/shop/Cart.kt -> src/main/kotlin/shop/Price.kt
+file src/test/kotlin/shop/CartTest.kt -> src/main/kotlin/shop/Cart.kt
+file src/test/kotlin/shop/CartTest.kt -> src/main/kotlin/shop/Price.kt
+file src/test/kotlin/shop/CartTest.kt -> src/test/kotlin/shop/TestData.kt
+file src/test/kotlin/shop/TestData.kt -> src/main/kotlin/shop/Cart.kt
+leaf src/main/kotlin/shop/Cart.kt#Cart -> src/main/kotlin/shop/Price.kt#Price
+leaf src/test/kotlin/shop/CartTest.kt#CartTest -> src/main/kotlin/shop/Cart.kt#Cart
+leaf src/test/kotlin/shop/CartTest.kt#CartTest -> src/main/kotlin/shop/Price.kt#Price
+leaf src/test/kotlin/shop/CartTest.kt#CartTest -> src/test/kotlin/shop/TestData.kt#TestData
+leaf src/test/kotlin/shop/TestData.kt#TestData -> src/main/kotlin/shop/Cart.kt#Cart
+test src/test/kotlin/shop/CartTest.kt -> src/main/kotlin/shop/Cart.kt
+test src/test/kotlin/shop/CartTest.kt -> src/main/kotlin/shop/Price.kt
+test src/test/kotlin/shop/TestData.kt -> src/main/kotlin/shop/Cart.kt

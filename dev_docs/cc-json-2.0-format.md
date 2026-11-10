@@ -1,7 +1,7 @@
 # cc.json 2.0 — `{ meta, files, lenses }`
 
 > Status: **implemented on both the analysis (`ccsh`) and the visualization side.** `ccsh` emits 2.x
-> only (currently 2.1); every `ccsh` command reads 2.x, and the legacy 1.x format is read solely by `ccsh convert`
+> only (currently 2.2); every `ccsh` command reads 2.x, and the legacy 1.x format is read solely by `ccsh convert`
 > (which upgrades it). The visualization reads 2.0 natively and still opens legacy 1.x files by
 > normalizing them to 2.0 on load. See
 > [ADR 12](adr/2026-06-25-ADR_12_separate_file_structure_from_analysis_lenses.md).
@@ -22,7 +22,7 @@ backend and a frontend built separately, or a coverage report rooted by package)
 
 ```json
 {
-  "meta": { "projectName": "p", "apiVersion": "2.1", "checksum": "<md5 of files+lenses>", "commitHash": "a1b2c3d" },
+  "meta": { "projectName": "p", "apiVersion": "2.2", "checksum": "<md5 of files+lenses>", "commitHash": "a1b2c3d" },
   "files": [
     { "id": "<sha256(Folder/)[:16]>", "name": "root", "type": "Folder", "children": [
       { "id": "<sha256(Folder/src)[:16]>", "name": "src", "type": "Folder", "children": [
@@ -35,7 +35,7 @@ backend and a frontend built separately, or a coverage report rooted by package)
     "dependency": { "edges": [ { "fromId": "<id>", "toId": "<id>", "attributes": { "dependencies": 3 }, "isCyclic": true, "isPointingUpwards": true } ], "nodes": { "<id>": { "level": 2 } }, "namespaces": { "com": { "level": 0 }, "com.example": { "parent": "com", "level": 0 } }, "leaves": { "<id>": { "Creature": { "kind": "class", "language": "java", "namespace": "com.example", "level": 2 } } }, "leafEdges": [ { "fromId": "<id>", "fromLeaf": "Creature", "toId": "<id>", "toLeaf": "HitPoints", "attributes": { "dependencies": 1 }, "usage": ["inheritance"], "isCyclic": true, "isPointingUpwards": true } ], "attributeTypes": {}, "attributeDescriptors": {} },
     "clusters":   { "clusterings": { "author-ownership": { "title": "Author ownership", "membership": "weighted", "weightBasis": "rloc", "analyzers": ["gitlogparser"], "clusters": [ { "id": "author-a", "name": "Author A", "members": [ { "nodeId": "<id>", "weight": 0.62 } ] } ] } } },
     "domain":     { "nodes": { "<id>": { "words": [ { "text": "invoice", "frequency": 12, "tfidf": 0.42 } ] } } },
-    "security":   {}
+    "security":   { "vulnerabilitiesMeasured": true, "versionsLookup": { "source": "deps.dev", "date": "2026-11-09" }, "packages": { "pkg:npm/qs@6.5.2": { "name": "qs", "version": "6.5.2", "ecosystem": "npm", "newestVersion": "6.13.0", "newerVersions": 12, "daysOutdated": 1400, "libyears": 4.5, "vulnerabilities": [ { "id": "CVE-2022-24999", "severity": "high", "score": 7.5, "fixedVersions": ["6.5.3"] } ] } }, "nodes": { "<id>": { "declares": ["pkg:npm/qs@6.5.2"] } } }
   }
 }
 ```
@@ -46,7 +46,8 @@ backend and a frontend built separately, or a coverage report rooted by package)
   `/root/hello.ts`. The JSON root node has `"name": "root"`, with project files and folders in its
   `children`; the project display name belongs in `meta.projectName`.
 - **`lenses`** are additive overlays joined to `files` by `id`. `metrics`, `dependency`, `domain` and
-  `clusters` are concrete; `clusters` is optional, produced by `gitlogparser` for author ownership and commit changes, and shown by
+  `clusters` are concrete; `clusters` is optional, produced by `gitlogparser` for author ownership and commit changes and by
+  `dependencyparser` for tests, and shown by
   the metrics view — see [the `clusters` lens](cc-json-2.0-clusters-lens.md) for its full
   definition and merge semantics; `dependency` carries the graph in both projections — `edges` between node ids
   plus an optional `nodes` map giving each file and folder the `level` it sits on, and the logical layer
@@ -54,7 +55,8 @@ backend and a frontend built separately, or a coverage report rooted by package)
   [the dependency graph](#the-dependency-graph-in-the-dependency-lens)); `domain` carries a `nodes` map from node id to that node's entry, each
   entry holding a `words` bank (each word carrying `text`, `frequency` and an optional `tfidf`) — the
   envelope keeps room for lens-wide data beside `nodes` and per-node data beside `words`, and an unused
-  lens slot stays `{}`; `security` is reserved. **Unknown top-level lenses
+  lens slot stays `{}`; `security` lists the third-party packages the project ships (see
+  [the `security` lens](#the-security-lens)). **Unknown top-level lenses
   are preserved verbatim** on round-trip, so a newer tool's lens survives an older tool.
 - **`metrics.attributes`** maps file or folder node IDs, not paths, to metric values.
   `metrics.attributeTypes` describes aggregation: `absolute` values such as line counts are additive,
@@ -174,6 +176,29 @@ so both trees are levelized separately. Where a language's packages and folders 
 or where two source roots share a package, the logical view merges what the physical view keeps apart.
 Both are correct for their own tree.
 
+## The `security` lens
+
+Written by `ccsh sbomimporter` from a CycloneDX SBOM. `packages` is keyed by purl (`name@version` for a
+component without one) and holds every package once, whatever lockfile resolves it; `dependsOn` lists the
+packages it pulls in. `nodes` is keyed by the node id of a lockfile: `declares` lists every package that
+lockfile resolves, `dependsOn` the direct ones among them. Only `nodes` references the file tree, so it is
+re-keyed when a filter re-paths the tree; a merge unions packages by purl and lockfiles by id.
+
+The code that uses a package is in the `dependency` lens: `externalImports` maps a file node id to the packages that
+file imports, by `ecosystem` (the purl type) and `name` (for Go the whole import path). The visualization matches them
+to the packages of the lockfile nearest to the file and follows `dependsOn` from there.
+
+Every field is optional and **an absent field means not measured**, never zero:
+
+- `vulnerabilitiesMeasured` is true when every package was checked for known vulnerabilities — by a known
+  scanner that wrote the SBOM, or by an OSV.dev lookup. A package the check missed carries
+  `vulnerabilitiesUnknown`. `vulnerabilities` is omitted when none are known; `severity` is bucketed from
+  the highest CVSS v3 score with NVD's thresholds (≥ 9 critical, ≥ 7 high, ≥ 4 medium, > 0 low).
+- The version fields come from a version lookup named in `versionsLookup`, whose `date` is the day it ran:
+  `newerVersions` counts the stable versions above `version`, `daysOutdated` the days from the release of
+  the first of them to that date (0 when up to date), `libyears` the release distance from `version` to
+  `newestVersion`. A package the lookup did not find carries none of them.
+
 ## Identity: the `id` and the canonical path
 
 A node's `id` is the first **16 lowercase hex chars** of `sha-256(type.name + canonicalPath)`, computed by the
@@ -228,7 +253,7 @@ combine consistently regardless of which tool produced them.
 
 ## Converting and reading
 
-- `ccsh` emits 2.x only (currently 2.1) — there is no 1.5 writer.
+- `ccsh` emits 2.x only (currently 2.2) — there is no 1.5 writer.
 - Every command reads 2.x only. Feeding a legacy 1.x file to `merge`/`modify`/`edgefilter`/`inspect`/an
   importer reports that the file is legacy and points at `ccsh convert`. Only `ccsh convert` reads 1.x.
 - `ccsh convert <file> [-o out]` upgrades a 1.x (or older 2.x) file to the current 2.x — the one on-ramp for legacy files.
@@ -253,8 +278,8 @@ combine consistently regardless of which tool produced them.
 
 Practical rule for contributors: to extend 2.x, add an **optional** field (or a whole new lens — the
 `lenses` object already preserves unknown lenses verbatim) and bump the minor; never touch the meaning
-of an existing field. `ccsh` writes `2.1`: the dependency lens's edge flags, `nodes` and logical tables
-are its additions over `2.0`. When you add a field, update all three schema copies (this file's schema, the
+of an existing field. `ccsh` writes `2.2`: the dependency lens's edge flags, `nodes` and logical tables
+are the additions of `2.1`, the `security` lens is the addition of `2.2`. When you add a field, update all three schema copies (this file's schema, the
 viz-vendored `ccJson2Schema.json`, and the `ccsh check` `cc.json`) so `EveritValidatorTest` and the
 viz drift guard stay green.
 

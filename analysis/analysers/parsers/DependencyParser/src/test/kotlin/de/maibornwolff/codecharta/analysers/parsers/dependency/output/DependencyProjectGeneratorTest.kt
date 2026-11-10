@@ -10,6 +10,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.Leveli
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.DependencyLeaf
 import de.maibornwolff.codecharta.model.DependencyNamespace
+import de.maibornwolff.codecharta.model.ExternalImport
 import de.maibornwolff.codecharta.model.LeafEdge
 import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
@@ -57,6 +58,19 @@ class DependencyProjectGeneratorTest {
 
     private val sourceFileId = NodeId.fromSegments(sourceFile, NodeType.File)
     private val targetFileId = NodeId.fromSegments(targetFile, NodeType.File)
+
+    @Test
+    fun `should key the packages each file imports by the file's node id, sorted`() {
+        // Arrange
+        val imports = mapOf(sourceFile to setOf(ExternalImport("npm", "lodash"), ExternalImport("npm", "@angular/core")))
+
+        // Act
+        val project = DependencyProjectGenerator(externalImportsByFile = imports).generate(graph, analysedFiles)
+
+        // Assert
+        assertThat(project.lenses.dependency.externalImports)
+            .containsExactly(entry(sourceFileId, listOf(ExternalImport("npm", "@angular/core"), ExternalImport("npm", "lodash"))))
+    }
 
     private fun generate(graph: DependencyGraph = this.graph): Project = DependencyProjectGenerator().generate(graph, analysedFiles)
 

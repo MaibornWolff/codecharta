@@ -1,0 +1,9 @@
+# Test links: cart.test.js names Cart, mocks ./price by a module string (no name, so no link) and uses the helper
+# __mocks__/price.js, a test too
+file src/cart.js -> src/price.js
+file src/cart.test.js -> src/__mocks__/price.js
+file src/cart.test.js -> src/cart.js
+leaf src/cart.js#Cart -> src/price.js#Price
+leaf src/cart.test.js#cart_test_script -> src/__mocks__/price.js#Price
+leaf src/cart.test.js#cart_test_script -> src/cart.js#Cart
+test src/cart.test.js -> src/cart.js

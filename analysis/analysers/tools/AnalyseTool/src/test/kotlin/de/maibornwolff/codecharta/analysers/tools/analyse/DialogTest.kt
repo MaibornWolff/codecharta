@@ -105,7 +105,8 @@ class DialogTest {
                     typeText(terminal, ""),
                     typeText(terminal, ""),
                     { terminal.press(Keys.ENTER) },
-                    typeText(terminal, "2026-01-31")
+                    typeText(terminal, "2026-01-31"),
+                    typeText(terminal, "")
                 )
             arguments = collectAnalyserArgs(this)
         }
@@ -137,6 +138,30 @@ class DialogTest {
 
         // Assert
         assertThat(arguments).containsExactly(projectFolder.path, "--author-ownership", "--with-author-names")
+    }
+
+    @Test
+    fun `should add the SBOM whose path was typed`() {
+        // Arrange
+        mockkObject(Dialog.Companion)
+        var arguments: List<String> = emptyList()
+
+        // Act
+        testSession { terminal ->
+            every { Dialog.Companion.testCallback() } returnsMany
+                listOf(
+                    typeText(terminal, projectFolder.path),
+                    typeText(terminal, ""),
+                    typeText(terminal, ""),
+                    { terminal.press(Keys.ENTER) },
+                    typeText(terminal, ""),
+                    typeText(terminal, "bom.cdx.json")
+                )
+            arguments = collectAnalyserArgs(this)
+        }
+
+        // Assert
+        assertThat(arguments).containsExactly(projectFolder.path, "--sbom=bom.cdx.json")
     }
 
     private fun typeText(terminal: InMemoryTerminal, text: String): suspend RunScope.() -> Unit = {

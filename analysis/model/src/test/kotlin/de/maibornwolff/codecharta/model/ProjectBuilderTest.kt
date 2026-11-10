@@ -367,7 +367,7 @@ class ProjectBuilderTest {
             LensSet(
                 metrics = MetricsLens(attributeTypes = mapOf("rloc" to AttributeType.ABSOLUTE)),
                 domain = domainLens,
-                opaqueLenses = mapOf("security" to securityLens)
+                opaqueLenses = mapOf("vendorFindings" to securityLens)
             )
 
         // when
@@ -377,7 +377,7 @@ class ProjectBuilderTest {
                 .build()
 
         // then
-        assertThat(project.lenses.opaqueLenses).containsEntry("security", securityLens)
+        assertThat(project.lenses.opaqueLenses).containsEntry("vendorFindings", securityLens)
         assertThat(project.lenses.domain).isEqualTo(domainLens)
         assertThat(project.lenses.metrics.attributeTypes).containsEntry("rloc", AttributeType.ABSOLUTE)
         assertThat(project.commitHash).isEqualTo("deadbee")

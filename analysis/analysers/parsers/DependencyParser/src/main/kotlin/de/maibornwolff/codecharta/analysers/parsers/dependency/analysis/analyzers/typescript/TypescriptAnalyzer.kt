@@ -13,6 +13,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Fi
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
+import de.maibornwolff.codecharta.model.ExternalImport
 import de.maibornwolff.treesitter.excavationsite.api.AngularDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
@@ -44,13 +45,16 @@ open class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInf
     }
 
     override fun analyze(): FileReport {
-        val declaredNodes = qualifiedNames.resolvedIn(DefaultExports.withoutOwnNames(moduleImports.rewrite(declaredNodes())))
-        val baseReport = FileReport(OwnNames.writtenInFull(declaredNodes, physicalFilePath))
-        return moduleImports.starExports?.let { FileReport(it.expandedIn(baseReport.nodes, physicalFilePath)) } ?: baseReport
+        val declaredReport = declaredReport()
+        val declaredNodes = qualifiedNames.resolvedIn(DefaultExports.withoutOwnNames(moduleImports.rewrite(declaredReport.nodes)))
+        val nodes = OwnNames.writtenInFull(declaredNodes, physicalFilePath)
+        return declaredReport.copy(nodes = moduleImports.starExports?.expandedIn(nodes, physicalFilePath) ?: nodes)
     }
 
     /** The node of each declaration of the file, before the uses of its imports and its qualified names are written in full. */
-    protected open fun declaredNodes(): List<Node> = super.analyze().nodes
+    protected open fun declaredReport(): FileReport = super.analyze()
+
+    override fun externalImportsOf(imports: List<ImportDeclaration>): Set<ExternalImport> = NpmImports.of(imports, fileInfo)
 
     override fun selectImports(declaration: Declaration, imports: List<ImportDeclaration>): List<ImportDeclaration> {
         if (declaration.type != DeclarationType.REEXPORT) return imports
