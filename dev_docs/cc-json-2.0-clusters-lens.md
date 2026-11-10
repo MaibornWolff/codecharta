@@ -146,8 +146,9 @@ removed nodes; a cluster left without members goes too, unless a surviving clust
   first commits, so its names are not stable, and the producer warns about it.
 - **No hashing**: a plain hash of a name can be recomputed from a list of employees, a keyed one needs a key kept safe,
   and a hash picking from a word list collides.
-- **Real names stay out of the file by default**: no name, email or per-author commit data, and no cluster `attributes`.
-  `--with-author-names` opts out for names alone: the cluster `name` is then the person's name, under the clustering
+- **Real names stay out of the file by default**: no name or email, and no cluster `attributes`; commit changes name
+  people only by these pseudonyms. `--with-author-names` opts out for names alone, here and in commit changes: the
+  cluster `name` is then the person's name, under the clustering
   `author-ownership-with-names` titled "Author ownership (real names)", so a merge never mixes it with pseudonymous clusters.
   The CLI warns last, even with `--silent`, and the Clusters tab warns whenever a loaded map holds that clustering.
   The pseudonyms are not anonymous: anyone with the repository can match them to people by comparing `git blame`,
@@ -166,11 +167,14 @@ removed nodes; a cluster left without members goes too, unless a surviving clust
   "analyzers": ["gitlogparser"],
   "clusters": [
     { "id": "<full commit hash>", "name": "a1b2c3d Fix login",
-      "attributes": { "date": "2026-10-31", "changed_files": 2, "changed_lines": 14 },
+      "attributes": { "date": "2026-10-31", "author": "Teal Falcon", "co_authors": "Jade Owl; Amber Lynx",
+                      "changed_files": 2, "changed_lines": 14, "commit_type": "fix", "hotfix": 1 },
       "members": [ { "nodeId": "<file node id>", "weight": 0.25 } ] }
   ],
-  "attributeDescriptors": { "date": { "title": "Date" }, "changed_files": { "title": "Files changed" }, "changed_lines": { "title": "Lines changed" } },
-  "attributeTypes": { "changed_files": "absolute", "changed_lines": "absolute" }
+  "attributeDescriptors": { "date": { "title": "Date" }, "author": { "title": "Author" }, "co_authors": { "title": "Co-authors" },
+                            "changed_files": { "title": "Files changed" }, "changed_lines": { "title": "Lines changed" },
+                            "commit_type": { "title": "Commit type" }, "hotfix": { "title": "Hotfix" } },
+  "attributeTypes": { "changed_files": "absolute", "changed_lines": "absolute", "hotfix": "absolute" }
 } } }
 ```
 
@@ -184,7 +188,14 @@ removed nodes; a cluster left without members goes too, unless a surviving clust
 - **Files** follow renames to their path today (`git log -M`), walking from the newest commit; a commit with no member
   left is not written, and merge commits never are.
 - **The attributes** describe the whole commit, including files gone today, so they survive filters unchanged.
-- **Personal data**: subjects are free text and a hash leads to its author, so the map may still be personal data.
+  - `author` is the one git records, `co_authors` everyone else its `Co-authored-by` trailers name, in their order,
+    each once and joined by `; `, both after applying `.mailmap`; a commit without co-authors omits the key. Both use the
+    pseudonyms of author ownership, whether or not the map holds it, or real names with `--with-author-names`.
+  - `commit_type` is the type the subject starts with (`feat`, `fix`, `docs`, `style`, `refactor`, `test`), omitted
+    for any other subject; `hotfix` is 1 when the subject names a hotfix and omitted otherwise. Both count as the
+    `*_commits` and `hotfix_commits` metrics do.
+- **Personal data**: subjects are free text, and the pseudonyms and hashes lead to people, so the map may still be
+  personal data. A shallow clone's pseudonyms are not stable, and the producer warns about it.
 
 Further producers could be a cluster filter running community detection over co-change data, an
 issue importer or a coverage importer, the last two as `overlay`.

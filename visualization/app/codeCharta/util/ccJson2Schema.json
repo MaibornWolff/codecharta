@@ -296,7 +296,10 @@
         "id": { "type": "string" },
         "name": { "type": "string" },
         "parentId": { "type": ["string", "null"] },
-        "attributes": { "type": "object" },
+        "attributes": {
+          "description": "Values are numbers or strings, keyed like the clustering's `attributeDescriptors`; `attributeTypes` describes the numbers only. Commit changes write `date`, `author`, `co_authors`, `changed_files`, `changed_lines`, `commit_type` and `hotfix`.",
+          "type": "object"
+        },
         "members": {
           "type": "array",
           "items": { "$ref": "#/definitions/ClusterMember" }
