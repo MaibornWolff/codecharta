@@ -7,6 +7,18 @@ import java.time.OffsetDateTime
 
 class HotfixCommitsTest {
     @Test
+    fun `should tell a hotfix by the word anywhere in the message, in any case`() {
+        // Arrange
+        val messages = listOf("HOTFIX: login", "apply hotfix", "fix login")
+
+        // Act
+        val results = messages.map { HotfixCommits.isHotfix(it) }
+
+        // Assert
+        assertThat(results).containsExactly(true, true, false)
+    }
+
+    @Test
     fun should_have_initial_value_zero() {
         // Arrange
         val metric = HotfixCommits()

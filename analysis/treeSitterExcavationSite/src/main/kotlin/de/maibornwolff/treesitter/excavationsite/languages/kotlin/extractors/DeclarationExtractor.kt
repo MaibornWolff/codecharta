@@ -15,6 +15,7 @@ internal object DeclarationExtractor {
     private const val CLASS_DECLARATION = "class_declaration"
     private const val OBJECT_DECLARATION = "object_declaration"
     private const val TYPE_IDENTIFIER = "type_identifier"
+    private const val INFIX_EXPRESSION = "infix_expression"
 
     // Kotlin uses keyword children to distinguish class types
     private const val ENUM_KEYWORD = "enum"
@@ -39,7 +40,8 @@ internal object DeclarationExtractor {
 
     private fun typeDeclarations(rootNode: SyntaxNode, importedNames: Set<String>): List<Declaration> {
         val allDeclarations = TreeTraversal
-            .findAllDescendantsOfType(rootNode, *DECLARATION_TYPES.toTypedArray())
+            .findAllDescendantsOfType(rootNode, *DECLARATION_TYPES.toTypedArray(), INFIX_EXPRESSION)
+            .filter { it.type != INFIX_EXPRESSION || MisparsedClasses.isMisparsedClass(it) }
             .filterNot { KotlinScopes.LOCAL_TYPES.isLocalClass(it) }
         val namesByStartByte = allDeclarations.associate { node ->
             node.startByte to extractName(node)
@@ -50,7 +52,9 @@ internal object DeclarationExtractor {
                 if (name.isNullOrBlank()) return@mapNotNull null
                 val type = declarationType(declarationNode)
                 val parentPath = findParentPath(declarationNode, namesByStartByte)
-                val usedTypes = UsedTypeExtractor.extract(declarationNode, importedNames) + hostOfInnerClass(declarationNode, parentPath)
+                val usedTypes = UsedTypeExtractor.extract(declarationNode, importedNames) +
+                    misparsedAnnotationTypes(declarationNode, importedNames) +
+                    hostOfInnerClass(declarationNode, parentPath)
                 Declaration(
                     name = name,
                     type = type,
@@ -59,6 +63,11 @@ internal object DeclarationExtractor {
                     isFileScoped = KotlinScopes.isFileScoped(declarationNode)
                 )
             }.toList()
+    }
+
+    private fun misparsedAnnotationTypes(declaration: SyntaxNode, importedNames: Set<String>): Set<UsedType> {
+        if (!MisparsedClasses.isMisparsedClass(declaration)) return emptySet()
+        return MisparsedClasses.annotationsOf(declaration).flatMap { UsedTypeExtractor.extract(it, importedNames) }.toSet()
     }
 
     // An inner class holds the instance of the class around it, whether it names that class or not
@@ -74,7 +83,13 @@ internal object DeclarationExtractor {
         ?.any { modifier -> modifier.type == CLASS_MODIFIER && modifier.children().any { it.type == keyword } }
         ?: false
 
-    private fun extractName(node: SyntaxNode): String = node
+    private fun extractName(node: SyntaxNode): String = if (MisparsedClasses.isMisparsedClass(node)) {
+        MisparsedClasses.nameOf(node)
+    } else {
+        typeIdentifierOf(node)
+    }
+
+    private fun typeIdentifierOf(node: SyntaxNode): String = node
         .children()
         .firstOrNull { it.type == TYPE_IDENTIFIER }
         ?.text
@@ -85,7 +100,7 @@ internal object DeclarationExtractor {
         val parents = mutableListOf<String>()
         var current = node.parent
         while (!current.isNull) {
-            if (current.type in DECLARATION_TYPES) {
+            if (current.type in DECLARATION_TYPES || MisparsedClasses.isMisparsedClass(current)) {
                 val parentName = namesByStartByte[current.startByte] ?: extractName(current)
                 if (parentName.isNotBlank()) {
                     parents.add(0, parentName)
@@ -97,6 +112,7 @@ internal object DeclarationExtractor {
     }
 
     private fun declarationType(node: SyntaxNode): DeclarationType {
+        if (MisparsedClasses.isMisparsedClass(node)) return MisparsedClasses.typeOf(node)
         if (node.type == OBJECT_DECLARATION) return DeclarationType.CLASS
 
         // class_declaration: check for enum/interface keywords as direct children

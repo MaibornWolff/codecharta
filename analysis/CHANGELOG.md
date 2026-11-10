@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **Who made each commit**: commit changes also hold each commit's type, hotfix flag, author and co-authors, under the
+  same invented names as in author ownership, or the real names with `--with-author-names`.
+
+### Fixed 🐞
+
+- **Kotlin classes after annotations with arguments**: `dependencyparser` reads a class written after several
+  annotations, one of them with arguments such as `@Timeout(120)`, as the class it is instead of losing it.
+
 ## [2.4.0] - 2026-11-10
 
 ### Added 🚀

@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.ownership
 
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.authors.AuthorPseudonyms
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.authors.CommitPeople
 import de.maibornwolff.codecharta.model.ClusterMember
 import de.maibornwolff.codecharta.model.ClusterMembership
 import de.maibornwolff.codecharta.model.NodeId

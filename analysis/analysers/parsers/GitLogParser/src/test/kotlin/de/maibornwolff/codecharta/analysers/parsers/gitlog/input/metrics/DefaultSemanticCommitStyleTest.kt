@@ -80,4 +80,16 @@ class DefaultSemanticCommitStyleTest {
         // Assert
         assertThat(matches).isEqualTo(expectedMatch)
     }
+
+    @Test
+    fun `should give the first type a message starts with and none for another message`() {
+        // Arrange
+        val messages = listOf("fix(login): retry", "Refactor the parser", "Update readme")
+
+        // Act
+        val types = messages.map { DefaultSemanticCommitStyle.typeOf(it)?.name }
+
+        // Assert
+        assertThat(types).containsExactly("fix", "refactor", null)
+    }
 }

@@ -77,7 +77,10 @@ class AnalyseTool(
 
     @CommandLine.Option(
         names = [AuthorOwnershipScan.NAMES_FLAG],
-        description = ["writes the real names of the authors into the map instead (personal data, needs --author-ownership)"]
+        description = [
+            "writes the real names of the authors into the map instead, also for commit changes " +
+                "(personal data, needs --author-ownership)"
+        ]
     )
     private var withAuthorNames = false
 
