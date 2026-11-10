@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.4.0] - 2026-11-10
+
 ### Added 🚀
 
 - **Author ownership**: `--author-ownership` on `ccsh analyse` and `gitlogparser repo-scan` adds each person's share of
