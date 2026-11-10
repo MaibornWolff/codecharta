@@ -5,7 +5,6 @@ dependencies {
 
     implementation(libs.univocity.parsers)
     implementation(libs.picocli)
-    implementation(libs.boon)
     implementation(libs.slf4j.simple)
     implementation(libs.kotter)
     implementation(libs.kotter.test)
