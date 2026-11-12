@@ -1,0 +1,56 @@
+{
+  "projectName": "Sample with small extensions",
+  "apiVersion": "1.2",
+  "nodes": [
+    {
+      "name": "root",
+      "type": "Folder",
+      "attributes": {},
+      "children": [
+        {
+          "name": "app.ts",
+          "type": "File",
+          "attributes": {
+            "rloc": 900,
+            "mcc": 1
+          }
+        },
+        {
+          "name": "index.html",
+          "type": "File",
+          "attributes": {
+            "rloc": 60,
+            "mcc": 1
+          }
+        },
+        {
+          "name": "deploy.yml",
+          "type": "File",
+          "attributes": {
+            "rloc": 20,
+            "mcc": 1
+          }
+        },
+        {
+          "name": "build.sh",
+          "type": "File",
+          "attributes": {
+            "rloc": 15,
+            "mcc": 1
+          }
+        },
+        {
+          "name": "schema.xml",
+          "type": "File",
+          "attributes": {
+            "rloc": 5,
+            "mcc": 1
+          }
+        }
+      ]
+    }
+  ],
+  "edges": [],
+  "attributeTypes": {},
+  "blacklist": []
+}

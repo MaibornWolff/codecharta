@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Tests in the Clusters tab**: a test from the dependency parser's links shows by its file name, and while you hover or
   pin it the test turns the outgoing-edge colour with arrows to each file it names.
 - **Longer cluster lists**: the Clusters tab shows what a map says about each cluster, such as a commit's date and size, sorts by it, filters long lists by name and stays fast with thousands of clusters.
+- **Others in the distribution bar**: hovering "other" lists the file extensions it holds, each highlighting its buildings and offering its own flatten and exclude on a right click.
 
 ### Fixed 🐞
 

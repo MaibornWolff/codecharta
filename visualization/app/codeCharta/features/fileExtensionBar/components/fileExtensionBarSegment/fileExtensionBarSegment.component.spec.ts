@@ -359,6 +359,112 @@ describe("FileExtensionBarSegment", () => {
         })
     })
 
+    describe("Others list", () => {
+        const otherItem: MetricDistribution = { fileExtension: "other", relativeMetricValue: 4, absoluteMetricValue: 40, color: "#676867" }
+        const others: MetricDistribution[] = [
+            { fileExtension: "yml", relativeMetricValue: 2.5, absoluteMetricValue: 25, color: "#111111" },
+            { fileExtension: "sh", relativeMetricValue: 1.5, absoluteMetricValue: 15, color: "#222222" }
+        ]
+
+        function othersList() {
+            return document.querySelector('[data-test-id="othersList"]')
+        }
+
+        function hoverSegment() {
+            fixture.nativeElement.dispatchEvent(new MouseEvent("mouseenter"))
+            fixture.detectChanges()
+        }
+
+        function leaveSegment() {
+            fixture.nativeElement.dispatchEvent(new MouseEvent("mouseleave"))
+            fixture.detectChanges()
+        }
+
+        beforeEach(() => {
+            fixture.componentRef.setInput("item", otherItem)
+            fixture.componentRef.setInput("others", others)
+            fixture.detectChanges()
+        })
+
+        it("should list the extensions of others while the segment is hovered", () => {
+            // Arrange & Act
+            hoverSegment()
+
+            // Assert
+            expect(othersList().textContent).toContain("yml 2.50%")
+            expect(othersList().textContent).toContain("sh 1.50%")
+        })
+
+        it("should hide the list when the pointer leaves the segment", () => {
+            // Arrange
+            hoverSegment()
+
+            // Act
+            leaveSegment()
+
+            // Assert
+            expect(othersList()).toBeNull()
+        })
+
+        it("should not open a list for a segment other than others", () => {
+            // Arrange
+            fixture.componentRef.setInput("item", mockItem)
+
+            // Act
+            hoverSegment()
+
+            // Assert
+            expect(othersList()).toBeNull()
+        })
+
+        it("should hide the list while the menu of the others segment is open", () => {
+            // Arrange
+            hoverSegment()
+
+            // Act
+            openContextMenu()
+
+            // Assert
+            expect(othersList()).toBeNull()
+            expect(screen.queryByText("Exclude")).toBeTruthy()
+        })
+
+        it("should keep the list open while the menu of one of its rows is open", () => {
+            // Arrange
+            hoverSegment()
+            const firstRow = othersList().querySelector('[data-test-id="otherExtension"]')
+
+            // Act
+            firstRow.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true }))
+            fixture.detectChanges()
+            leaveSegment()
+
+            // Assert
+            expect(othersList()).toBeTruthy()
+            expect(screen.queryByText("Exclude")).toBeTruthy()
+        })
+
+        it("should flatten only the right-clicked extension of others", () => {
+            // Arrange
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+            hoverSegment()
+            const secondRow = othersList().querySelectorAll('[data-test-id="otherExtension"]')[1]
+            secondRow.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true }))
+            fixture.detectChanges()
+
+            // Act
+            screen.getByText("Flatten").click()
+            fixture.detectChanges()
+
+            // Assert
+            expect(dispatchSpy).toHaveBeenCalledWith({
+                action: { effect: "flatten" },
+                extensions: [addPrefixWildcard("sh")],
+                type: "ExtensionRuleAction"
+            })
+        })
+    })
+
     function openContextMenu() {
         const barSegment = fixture.debugElement.query(By.css('[class="cc-bar-section"]'))
         const rightClickEvent = new MouseEvent("contextmenu", {

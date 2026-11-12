@@ -1,0 +1,22 @@
+<div class="fixed z-[90] max-h-[60vh] w-48 overflow-y-auto rounded-box border border-base-300 bg-base-100 py-1 text-base-content shadow-lg"
+     data-test-id="othersList"
+     [style.right.px]="anchor().right"
+     [style.bottom.px]="anchor().bottom">
+    @for (item of others(); track item.fileExtension) {
+        <div class="flex cursor-pointer items-center gap-2 px-3 py-1 text-left text-xs hover:bg-base-200"
+             data-test-id="otherExtension"
+             (mouseenter)="highlight(item.fileExtension)"
+             (mouseleave)="clearHighlight()"
+             (contextmenu)="openMenu($event, item.fileExtension)">
+            <span class="size-2.5 shrink-0 rounded-sm" [style.background-color]="item.color"></span>
+            <span class="truncate">{{ formatTitle(item) }}</span>
+        </div>
+    }
+</div>
+
+@if (openRowMenu(); as rowMenu) {
+    <cc-file-extension-context-menu [fileExtension]="rowMenu.fileExtension"
+                                    [position]="rowMenu.position"
+                                    (closed)="closeMenu()">
+    </cc-file-extension-context-menu>
+}

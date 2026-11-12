@@ -17,3 +17,11 @@
                                     (closed)="closeContextMenu()">
     </cc-file-extension-context-menu>
 }
+
+@if (isOthersListVisible()) {
+    <cc-file-extension-others-list [others]="others()"
+                                   [showAbsoluteValues]="showAbsoluteValues()"
+                                   [anchor]="othersListAnchor()"
+                                   (menuOpenChange)="setOthersListMenuOpen($event)">
+    </cc-file-extension-others-list>
+}
