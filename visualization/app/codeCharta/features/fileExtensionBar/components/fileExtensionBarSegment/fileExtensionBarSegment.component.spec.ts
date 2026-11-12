@@ -125,8 +125,9 @@ describe("FileExtensionBarSegment", () => {
             type: "ExtensionRuleAction"
         })
         updateStoreWithFlattenedNodes(store, { path: "*.ts" })
+        openContextMenu()
 
-        expect(fixture.componentInstance.isFlattened()).toBeTruthy()
+        expect(screen.queryByText("Show")).toBeTruthy()
     })
 
     describe("Visual Representation", () => {
