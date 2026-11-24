@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **What's in "other"**: hovering the "other" part of the distribution bar lists the file extensions it groups, each of which highlights its buildings on hover and can be flattened or excluded on its own with a right-click.
+
 ## [2.11.0] - 2026-11-10
 
 ### Added 🚀

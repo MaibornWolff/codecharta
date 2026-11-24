@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-import { provideMockStore } from "@ngrx/store/testing"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { provideMockState } from "../../../../mocks/state.mocks"
@@ -119,6 +119,41 @@ describe("FileExtensionBarComponent", () => {
         it("should highlight buildings on hover", async () => {
             await userEvent.hover(fileExtensionToHighlight)
             expect(threeSceneService.highlightBuildingsByExtension).toHaveBeenCalledWith(new Set([fileExtensionToTest]))
+        })
+    })
+
+    describe("Extensions grouped into 'other'", () => {
+        it("should list them when the 'other' segment is hovered", async () => {
+            // Arrange
+            const store = TestBed.inject(MockStore)
+            store.overrideSelector(hoveredNodeMetricDistributionSelector, {
+                visible: [
+                    { fileExtension: "ts", absoluteMetricValue: 96, relativeMetricValue: 96, color: "hsl(111, 40%, 50%)" },
+                    { fileExtension: "other", absoluteMetricValue: 4, relativeMetricValue: 4, color: "#676867" }
+                ],
+                others: [{ fileExtension: "yml", absoluteMetricValue: 4, relativeMetricValue: 4, color: "hsl(12, 40%, 50%)" }],
+                none: []
+            })
+            store.refreshState()
+            fixture.detectChanges()
+
+            // Act
+            await userEvent.hover(screen.getByText("other 4.00%"))
+
+            // Assert
+            expect(screen.getByText("All others")).toBeTruthy()
+            expect(screen.getByText("yml")).toBeTruthy()
+        })
+
+        it("should not open a list on a segment that is not 'other'", async () => {
+            // Arrange
+            const segment = screen.getByText(relativeValue)
+
+            // Act
+            await userEvent.hover(segment)
+
+            // Assert
+            expect(screen.queryByText("All others")).toBeNull()
         })
     })
 })

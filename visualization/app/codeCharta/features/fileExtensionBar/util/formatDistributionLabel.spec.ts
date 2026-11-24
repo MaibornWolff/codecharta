@@ -1,5 +1,5 @@
 import { MetricDistribution } from "../../../util/fileExtension/fileExtensionCalculator"
-import { formatDistributionLabel } from "./formatDistributionLabel"
+import { formatDistributionLabel, formatDistributionValue } from "./formatDistributionLabel"
 
 describe("formatDistributionLabel", () => {
     const item: MetricDistribution = { fileExtension: "ts", absoluteMetricValue: 1120, relativeMetricValue: 12.345, color: "#fff" }
@@ -35,5 +35,18 @@ describe("formatDistributionLabel", () => {
 
         // Assert
         expect(label).toBe("No data available")
+    })
+})
+
+describe("formatDistributionValue", () => {
+    it("should format only the value, without the extension", () => {
+        // Arrange
+        const item: MetricDistribution = { fileExtension: "ts", absoluteMetricValue: 3, relativeMetricValue: 1.5, color: "#fff" }
+
+        // Act
+        const value = formatDistributionValue(item, false)
+
+        // Assert
+        expect(value).toBe("1.50%")
     })
 })

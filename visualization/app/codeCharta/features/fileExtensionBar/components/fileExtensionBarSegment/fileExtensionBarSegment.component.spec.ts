@@ -359,6 +359,85 @@ describe("FileExtensionBarSegment", () => {
         })
     })
 
+    describe("Popover of the extensions grouped into 'other'", () => {
+        const otherItem: MetricDistribution = { fileExtension: "other", relativeMetricValue: 4, absoluteMetricValue: 4, color: "#676867" }
+        const groupedItems: MetricDistribution[] = [
+            { fileExtension: "yml", relativeMetricValue: 4, absoluteMetricValue: 4, color: "#111111" }
+        ]
+
+        function popover(): HTMLElement | null {
+            return fixture.nativeElement.querySelector("cc-other-extensions-popover")
+        }
+
+        function pointer(eventName: "mouseenter" | "mouseleave") {
+            fixture.nativeElement.dispatchEvent(new MouseEvent(eventName))
+            fixture.detectChanges()
+        }
+
+        beforeEach(() => {
+            fixture.componentRef.setInput("item", otherItem)
+            fixture.componentRef.setInput("groupedItems", groupedItems)
+            fixture.detectChanges()
+        })
+
+        it("should open while the pointer is on the segment", () => {
+            // Arrange
+            expect(popover()).toBeNull()
+
+            // Act
+            pointer("mouseenter")
+
+            // Assert
+            expect(popover()).not.toBeNull()
+        })
+
+        it("should close when the pointer leaves the segment", () => {
+            // Arrange
+            pointer("mouseenter")
+
+            // Act
+            pointer("mouseleave")
+
+            // Assert
+            expect(popover()).toBeNull()
+        })
+
+        it("should stay open after the pointer leaves while one of its row menus is open", () => {
+            // Arrange
+            pointer("mouseenter")
+            component.isPopoverMenuOpen.set(true)
+
+            // Act
+            pointer("mouseleave")
+
+            // Assert
+            expect(popover()).not.toBeNull()
+        })
+
+        it("should give way to the segment's own context menu", () => {
+            // Arrange
+            pointer("mouseenter")
+
+            // Act
+            openContextMenu()
+
+            // Assert
+            expect(popover()).toBeNull()
+            expect(screen.queryByText("Exclude")).toBeTruthy()
+        })
+
+        it("should not open on segments that group nothing", () => {
+            // Arrange
+            fixture.componentRef.setInput("groupedItems", [])
+
+            // Act
+            pointer("mouseenter")
+
+            // Assert
+            expect(popover()).toBeNull()
+        })
+    })
+
     function openContextMenu() {
         const barSegment = fixture.debugElement.query(By.css('[class="cc-bar-section"]'))
         const rightClickEvent = new MouseEvent("contextmenu", {

@@ -17,3 +17,12 @@
                             (closed)="closeContextMenu()">
     </cc-file-extension-menu>
 }
+
+@if (isPopoverShown() && popoverAnchor(); as anchor) {
+    <cc-other-extensions-popover [total]="item()"
+                                 [items]="groupedItems()"
+                                 [showAbsoluteValues]="showAbsoluteValues()"
+                                 [anchor]="anchor"
+                                 (menuOpenChange)="isPopoverMenuOpen.set($event)">
+    </cc-other-extensions-popover>
+}
