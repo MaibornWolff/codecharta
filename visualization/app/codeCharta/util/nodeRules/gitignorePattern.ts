@@ -26,24 +26,28 @@ export function transformPath(toTransform: string) {
     return toTransform.slice(removeNumberOfCharactersFromStart)
 }
 
+/**
+ * A rule is a comma-separated list of patterns. A `!` in front of the whole rule subtracts all of
+ * them from every path; a `!` in front of a single pattern subtracts it from what the others match.
+ */
 export function parseNodeRule(rulePath: string): NodeRulePatterns {
     const rule = rulePath.trimStart()
-    if (rule.startsWith(RULE_NEGATION)) {
-        return { includes: null, excludes: toGitignorePatterns(rule.slice(RULE_NEGATION.length)) }
-    }
-    return { includes: toGitignorePatterns(rule), excludes: [] }
+    const isNegated = rule.startsWith(RULE_NEGATION)
+    const patterns = splitPatterns(isNegated ? rule.slice(RULE_NEGATION.length) : rule)
+    const subtracted = patterns.filter(pattern => isNegated || pattern.startsWith(RULE_NEGATION)).map(withoutNegation)
+    const added = isNegated ? null : patterns.filter(pattern => !pattern.startsWith(RULE_NEGATION))
+    return { includes: added && toGitignorePatterns(added), excludes: toGitignorePatterns(subtracted) }
 }
 
-function toGitignorePatterns(patternList: string): string[] {
-    const patterns: string[] = []
-    for (const pattern of patternList.split(PATTERN_SEPARATOR)) {
-        const gitignorePattern = toGitignorePattern(pattern.trimStart())
-        if (gitignorePattern.length > 0) {
-            patterns.push(transformPath(gitignorePattern))
-        }
-    }
-    return patterns
-}
+const splitPatterns = (patternList: string) =>
+    patternList
+        .split(PATTERN_SEPARATOR)
+        .map(pattern => pattern.trimStart())
+        .filter(pattern => pattern.length > 0)
+
+const withoutNegation = (pattern: string) => (pattern.startsWith(RULE_NEGATION) ? pattern.slice(RULE_NEGATION.length) : pattern)
+
+const toGitignorePatterns = (patterns: string[]) => patterns.map(pattern => transformPath(toGitignorePattern(pattern)))
 
 function toGitignorePattern(pattern: string) {
     if (isAnchoredAtRoot(pattern) || pattern.startsWith("*") || pattern.endsWith("*")) {
@@ -52,7 +56,7 @@ function toGitignorePattern(pattern: string) {
     return isQuoted(pattern) ? pattern.slice(1, -1) : `*${pattern}*`
 }
 
-const isAnchoredAtRoot = (pattern: string) => pattern.startsWith("/") || pattern.startsWith("./")
+export const isAnchoredAtRoot = (pattern: string) => pattern.startsWith("/") || pattern.startsWith("./")
 
 const isQuoted = (pattern: string) => pattern.startsWith('"') && pattern.endsWith('"')
 

@@ -4,7 +4,6 @@ import { Store } from "@ngrx/store"
 import { filter, map, share, tap } from "rxjs"
 import { CcState, RuleEffect } from "../../../../model/codeCharta.model"
 import { addExcludedNodes, addFlattenedNodes } from "../../../../stores/sharedView/sharedView.write.facade"
-import { parseNodeRules } from "../../../../util/nodeRules/parseNodeRules"
 
 const ACTION_IDENTIFIER = "ExtensionRuleAction"
 
@@ -31,7 +30,7 @@ export class ExtensionRuleEffect {
         ofType<ExtensionRuleAction>(ACTION_IDENTIFIER),
         map(extensionRuleAction => ({
             effect: extensionRuleAction.action.effect,
-            rules: parseNodeRules(extensionRuleAction.extensions.join(","))
+            rules: extensionRuleAction.extensions.map(path => ({ path }))
         })),
         share()
     )
