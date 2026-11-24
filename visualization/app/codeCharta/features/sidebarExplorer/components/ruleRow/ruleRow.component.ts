@@ -14,7 +14,6 @@ export class RuleRowComponent {
 
     readonly label = computed(() => this.rule().label)
     readonly lines = computed(() => this.rule().lines)
-    readonly tooltip = computed(() => this.lines().join("\n"))
     readonly kind = computed(() => this.rule().kind)
     readonly affectedCount = computed(() => this.rule().affectedCount)
 
