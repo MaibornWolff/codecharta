@@ -1,0 +1,25 @@
+@if (isFlattened()) {
+    <button type="button"
+            data-test-id="showBuilding"
+            class="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-medium hover:bg-base-200"
+            (click)="show()">
+        <i class="w-4 text-center fa-solid fa-eye"></i>
+        <span class="truncate">Show</span>
+    </button>
+} @else {
+    <button type="button"
+            data-test-id="flattenBuilding"
+            class="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-medium hover:bg-base-200"
+            (click)="flatten()">
+        <i class="w-4 text-center fa-solid fa-arrows-down-to-line"></i>
+        <span class="truncate">Flatten</span>
+    </button>
+}
+
+<button type="button"
+        data-test-id="excludeBuilding"
+        class="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-medium hover:bg-base-200"
+        (click)="exclude()">
+    <i class="w-4 text-center fa-solid fa-ban"></i>
+    <span class="truncate">Exclude</span>
+</button>
