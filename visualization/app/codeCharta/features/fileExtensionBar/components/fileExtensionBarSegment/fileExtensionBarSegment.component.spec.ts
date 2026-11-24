@@ -402,16 +402,59 @@ describe("FileExtensionBarSegment", () => {
             expect(popover()).toBeNull()
         })
 
+        function rightClickPopoverRow() {
+            const ymlRow: HTMLElement = popover().querySelector('[data-test-id="otherExtensionRow"]')
+            ymlRow.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true, clientX: 50, clientY: 500 }))
+            fixture.detectChanges()
+        }
+
+        function menu(): HTMLElement | null {
+            return fixture.nativeElement.querySelector("cc-file-extension-menu")
+        }
+
+        it("should open a row's menu outside of the popover so the popover cannot clip it", () => {
+            // Arrange
+            pointer("mouseenter")
+
+            // Act
+            rightClickPopoverRow()
+
+            // Assert
+            expect(menu()).not.toBeNull()
+            expect(popover().contains(menu())).toBe(false)
+        })
+
         it("should stay open after the pointer leaves while one of its row menus is open", () => {
             // Arrange
             pointer("mouseenter")
-            component.isPopoverMenuOpen.set(true)
+            rightClickPopoverRow()
 
             // Act
             pointer("mouseleave")
 
             // Assert
             expect(popover()).not.toBeNull()
+        })
+
+        it("should flatten only the right-clicked extension and close once the pointer is gone", () => {
+            // Arrange
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+            pointer("mouseenter")
+            rightClickPopoverRow()
+            pointer("mouseleave")
+
+            // Act
+            menu().querySelector<HTMLElement>('[data-test-id="flattenBuilding"]').click()
+            fixture.detectChanges()
+
+            // Assert
+            expect(dispatchSpy).toHaveBeenCalledWith({
+                action: { effect: "flatten" },
+                extensions: [addPrefixWildcard("yml")],
+                type: "ExtensionRuleAction"
+            })
+            expect(menu()).toBeNull()
+            expect(popover()).toBeNull()
         })
 
         it("should give way to the segment's own context menu", () => {

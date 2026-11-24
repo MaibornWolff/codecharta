@@ -11,18 +11,18 @@
       </div>
 </span>
 
-@if (menuPosition(); as position) {
-    <cc-file-extension-menu [fileExtension]="fileExtension()"
-                            [position]="position"
-                            (closed)="closeContextMenu()">
-    </cc-file-extension-menu>
-}
-
 @if (isPopoverShown() && popoverAnchor(); as anchor) {
     <cc-other-extensions-popover [total]="item()"
                                  [items]="groupedItems()"
                                  [showAbsoluteValues]="showAbsoluteValues()"
                                  [anchor]="anchor"
-                                 (menuOpenChange)="isPopoverMenuOpen.set($event)">
+                                 (menuRequested)="openPopoverMenu($event)">
     </cc-other-extensions-popover>
+}
+
+@if (openMenu(); as menu) {
+    <cc-file-extension-menu [fileExtension]="menu.fileExtension"
+                            [position]="menu.position"
+                            (closed)="closeContextMenu()">
+    </cc-file-extension-menu>
 }

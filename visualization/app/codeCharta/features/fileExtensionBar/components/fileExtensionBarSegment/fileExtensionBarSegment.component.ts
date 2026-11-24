@@ -2,8 +2,12 @@ import { ChangeDetectionStrategy, Component, computed, ElementRef, HostBinding, 
 import { MetricDistribution, NO_EXTENSION } from "../../../../util/fileExtension/fileExtensionCalculator"
 import { HighlightBuildingsByFileExtensionService } from "../../services/highlightBuildingsByFileExtension.service"
 import { formatDistributionLabel } from "../../util/formatDistributionLabel"
-import { FileExtensionMenuComponent, MenuPosition, menuPositionAt } from "../fileExtensionMenu/fileExtensionMenu.component"
+import { ExtensionMenuRequest, FileExtensionMenuComponent, menuPositionAt } from "../fileExtensionMenu/fileExtensionMenu.component"
 import { OtherExtensionsPopoverComponent, PopoverAnchor } from "../otherExtensionsPopover/otherExtensionsPopover.component"
+
+interface OpenMenu extends ExtensionMenuRequest {
+    isFromPopover: boolean
+}
 
 @Component({
     selector: "cc-file-extension-bar-segment",
@@ -24,13 +28,16 @@ export class FileExtensionBarSegmentComponent {
     groupedItems = input<MetricDistribution[]>([])
     toggleShowAbsoluteValues = output<void>()
 
-    readonly menuPosition = signal<MenuPosition | null>(null)
+    readonly openMenu = signal<OpenMenu | null>(null)
     readonly isPointerInside = signal(false)
-    readonly isPopoverMenuOpen = signal(false)
     readonly popoverAnchor = signal<PopoverAnchor | null>(null)
-    readonly isPopoverShown = computed(
-        () => this.groupedItems().length > 0 && this.menuPosition() === null && (this.isPointerInside() || this.isPopoverMenuOpen())
-    )
+    readonly isPopoverShown = computed(() => {
+        if (this.groupedItems().length === 0) {
+            return false
+        }
+        const menu = this.openMenu()
+        return menu ? menu.isFromPopover : this.isPointerInside()
+    })
 
     readonly fileExtension = computed<string>(() => this.item().fileExtension)
     readonly hasFileExtension = computed(() => this.fileExtension() !== NO_EXTENSION)
@@ -43,11 +50,15 @@ export class FileExtensionBarSegmentComponent {
         if (!this.hasFileExtension()) {
             return
         }
-        this.menuPosition.set(menuPositionAt(event))
+        this.openMenu.set({ fileExtension: this.fileExtension(), position: menuPositionAt(event), isFromPopover: false })
+    }
+
+    openPopoverMenu(request: ExtensionMenuRequest) {
+        this.openMenu.set({ ...request, isFromPopover: true })
     }
 
     closeContextMenu() {
-        this.menuPosition.set(null)
+        this.openMenu.set(null)
     }
 
     onPointerEnter() {
