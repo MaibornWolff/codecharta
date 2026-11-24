@@ -55,6 +55,17 @@ describe("explorerRules.selectors", () => {
             expect(pathRules(result).find(rule => rule.item.path === "/root/src/alpha.kt").kind).toBe("MANUAL")
         })
 
+        it("should give every pattern of a rule a line of its own", () => {
+            // Arrange
+            const nodeRules: NodeRule[] = [{ path: "/root/src, *alpha*, !*spec*" }]
+
+            // Act
+            const result = flattenRulesWithCountSelector.projector(nodeRules, allLeaves, [])
+
+            // Assert
+            expect(result[0].lines).toEqual(["/root/src", "*alpha*", "!*spec*"])
+        })
+
         it("should mark every row with the effect of the list it came from", () => {
             // Arrange — the list a rule sits in now says what it does, so there is nothing to filter
             const flattenedNodes: NodeRule[] = [{ path: "*alpha*" }, { path: "*node_modules*" }]

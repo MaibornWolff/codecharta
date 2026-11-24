@@ -9,6 +9,7 @@ import {
     isPlainInclusion,
     parseNodeRule,
     TransformedPathMatcher,
+    toRuleLines,
     transformPath
 } from "../../../util/nodeRules/gitignorePattern"
 import { RuleWithCount } from "../../sidebarExplorer/facade"
@@ -37,6 +38,7 @@ const buildRulesWithCount = (nodeRules: NodeRule[], allLeaves: CodeMapNode[], ef
             ({ item, affectedCount }): RuleWithCount => ({
                 id: `${effect}/${item.path}`,
                 label: item.path,
+                lines: toRuleLines(item.path),
                 item,
                 effect,
                 affectedCount,

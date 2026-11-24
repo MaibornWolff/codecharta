@@ -3,13 +3,14 @@ import { Observable } from "rxjs"
 import { MetricRule, NodeRule, RuleEffect } from "../../model/codeCharta.model"
 
 /**
- * One row of a rules popover. `label` is what the row shows and `id` identifies it for tracking;
- * the variant carries whatever the port needs to remove it, so a row never has to be resolved
+ * One row of a rules popover. `lines` is what the row shows, `label` the same text on one line,
+ * and `id` identifies it for tracking; the variant carries whatever the port needs to remove it, so a row never has to be resolved
  * back to its source.
  */
 interface RuleRow {
     id: string
     label: string
+    lines: readonly string[]
     affectedCount: number
 }
 

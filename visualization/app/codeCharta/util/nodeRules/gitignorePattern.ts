@@ -4,7 +4,7 @@ export type IgnoreEngine = ReturnType<typeof ignore>
 
 /** What a stored rule matches: the paths its include patterns match, minus those its exclude patterns match. */
 export interface NodeRulePatterns {
-    /** Null when the whole rule is negated (`!`-prefix): it then includes every path. */
+    /** Null when every line of the rule has a `!`: it then includes every path. */
     readonly includes: string[] | null
     readonly excludes: string[]
 }
@@ -27,16 +27,23 @@ export function transformPath(toTransform: string) {
 }
 
 /**
- * A rule is a comma-separated list of patterns. A `!` in front of the whole rule subtracts all of
- * them from every path; a `!` in front of a single pattern subtracts it from what the others match.
+ * A rule is a comma-separated list of patterns, one line each: a path matches when any line without
+ * a `!` matches it and no line with a `!` does. A `!` in front of the whole rule marks every line.
  */
-export function parseNodeRule(rulePath: string): NodeRulePatterns {
+export function toRuleLines(rulePath: string): string[] {
     const rule = rulePath.trimStart()
-    const isNegated = rule.startsWith(RULE_NEGATION)
-    const patterns = splitPatterns(isNegated ? rule.slice(RULE_NEGATION.length) : rule)
-    const subtracted = patterns.filter(pattern => isNegated || pattern.startsWith(RULE_NEGATION)).map(withoutNegation)
-    const added = isNegated ? null : patterns.filter(pattern => !pattern.startsWith(RULE_NEGATION))
-    return { includes: added && toGitignorePatterns(added), excludes: toGitignorePatterns(subtracted) }
+    if (!rule.startsWith(RULE_NEGATION)) {
+        return splitPatterns(rule)
+    }
+    return splitPatterns(rule.slice(RULE_NEGATION.length)).map(pattern => RULE_NEGATION + withoutNegation(pattern))
+}
+
+export function parseNodeRule(rulePath: string): NodeRulePatterns {
+    const lines = toRuleLines(rulePath)
+    const added = lines.filter(line => !line.startsWith(RULE_NEGATION))
+    const subtracted = lines.filter(line => line.startsWith(RULE_NEGATION)).map(withoutNegation)
+    const includesEveryPath = added.length === 0 && subtracted.length > 0
+    return { includes: includesEveryPath ? null : toGitignorePatterns(added), excludes: toGitignorePatterns(subtracted) }
 }
 
 const splitPatterns = (patternList: string) =>

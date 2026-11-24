@@ -62,7 +62,15 @@ describe("MapExplorerRules", () => {
         TestBed.inject(Store).dispatch(addFlattenedNodes({ items: [item] }))
 
         // Act
-        rules.removeRule({ id: `flatten/${item.path}`, label: item.path, affectedCount: 1, kind: "RULE", item, effect: "flatten" })
+        rules.removeRule({
+            id: `flatten/${item.path}`,
+            label: item.path,
+            lines: [item.path],
+            affectedCount: 1,
+            kind: "RULE",
+            item,
+            effect: "flatten"
+        })
 
         // Assert
         expect(await rulesOfEffect("flatten")).toEqual([])
@@ -74,7 +82,7 @@ describe("MapExplorerRules", () => {
         TestBed.inject(Store).dispatch(addMetricRule({ rule }))
 
         // Act
-        rules.removeRule({ id: rule.id, label: "mcc > 10", affectedCount: 1, kind: "METRIC", metricRule: rule })
+        rules.removeRule({ id: rule.id, label: "mcc > 10", lines: ["mcc > 10"], affectedCount: 1, kind: "METRIC", metricRule: rule })
 
         // Assert
         expect(await firstValueFrom(TestBed.inject<Store<CcState>>(Store).select(metricRulesSelector))).toEqual([])
