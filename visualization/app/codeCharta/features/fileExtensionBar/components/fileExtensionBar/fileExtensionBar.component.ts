@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { OTHER_EXTENSION } from "../../../../util/fileExtension/fileExtensionCalculator"
+import { MetricDistribution, OTHER_EXTENSION } from "../../../../util/fileExtension/fileExtensionCalculator"
 import { HEIGHT_CSS_VARIABLE, PublishesHeightDirective } from "../../../shared/facade"
 import { MetricDistributionStore } from "../../stores/metricDistribution.store"
 import { extensionsGroupedIntoOther } from "../../util/extensionsGroupedIntoOther"
 import { DistributionMetricComponent } from "../distributionMetric/distributionMetric.component"
 import { FileExtensionBarSegmentComponent } from "../fileExtensionBarSegment/fileExtensionBarSegment.component"
+
+const NOTHING_GROUPED: MetricDistribution[] = []
 
 @Component({
     selector: "cc-file-extension-bar",
@@ -24,8 +26,14 @@ export class FileExtensionBarComponent {
 
     readonly showAbsoluteValues = signal(false)
     readonly metricDistribution = toSignal(this.metricDistributionStore.hoveredNodeMetricDistribution$, { requireSync: true })
-    readonly groupedIntoOther = computed(() => extensionsGroupedIntoOther(this.metricDistribution()))
-    readonly otherExtension = OTHER_EXTENSION
+    readonly segments = computed(() => {
+        const distribution = this.metricDistribution()
+        const groupedIntoOther = extensionsGroupedIntoOther(distribution)
+        return distribution.visible.map(item => ({
+            item,
+            groupedItems: item.fileExtension === OTHER_EXTENSION ? groupedIntoOther : NOTHING_GROUPED
+        }))
+    })
 
     toggleShowAbsoluteValues() {
         this.showAbsoluteValues.update(value => !value)
