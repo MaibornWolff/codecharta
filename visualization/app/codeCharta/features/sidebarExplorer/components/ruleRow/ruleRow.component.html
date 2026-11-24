@@ -9,9 +9,9 @@
 >
     {{ kind() }}
 </span>
-<span class="flex-1 min-w-0 flex flex-col text-xs font-mono" [title]="tooltip()">
+<span class="flex-1 min-w-0 flex flex-col text-xs font-mono">
     @for (line of lines(); track $index) {
-        <span class="truncate">{{ line }}</span>
+        <span class="break-all">{{ line }}</span>
     }
 </span>
 <span class="text-xs font-semibold bg-neutral text-neutral-content rounded px-1.5 py-0.5 shrink-0 min-w-[1.5rem] text-center">
