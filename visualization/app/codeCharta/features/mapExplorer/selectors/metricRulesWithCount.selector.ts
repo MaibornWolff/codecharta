@@ -12,13 +12,17 @@ const countFilesMatching = (rule: MetricRule, metricValues: MetricValues): numbe
 const buildMetricRulesWithCount = (rules: MetricRule[], metricValues: MetricValues, type: RuleEffect): RuleWithCount[] =>
     rules
         .filter(rule => rule.type === type)
-        .map(rule => ({
-            id: rule.id,
-            label: describeMetricRule(rule),
-            affectedCount: countFilesMatching(rule, metricValues),
-            kind: "METRIC" as const,
-            metricRule: rule
-        }))
+        .map(rule => {
+            const label = describeMetricRule(rule)
+            return {
+                id: rule.id,
+                label,
+                lines: [label],
+                affectedCount: countFilesMatching(rule, metricValues),
+                kind: "METRIC" as const,
+                metricRule: rule
+            }
+        })
 
 export const flattenMetricRulesWithCountSelector = createSelector(metricRulesSelector, metricValuesSelector, (rules, metricValues) =>
     buildMetricRulesWithCount(rules, metricValues, "flatten")

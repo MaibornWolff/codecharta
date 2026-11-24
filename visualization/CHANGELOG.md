@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
-- **Explorer search**: the search finds files by any part of their path and by several words at once, takes quotes for exact names and names with spaces and a `!` for what to leave out, and flattening or excluding a search hits exactly what it found.
+- **Explorer search**: the search finds files by any part of their path and by several words at once, takes quotes for exact names and names with spaces and a `!` for what to leave out, and flattening or excluding a search hits exactly what it found, with each part of the rule on a line of its own in the rules list.
 
 ### Fixed 🐞
 

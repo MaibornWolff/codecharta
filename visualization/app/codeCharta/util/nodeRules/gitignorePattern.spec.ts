@@ -1,4 +1,4 @@
-import { createRuleMatcher, parseNodeRule } from "./gitignorePattern"
+import { createRuleMatcher, parseNodeRule, toRuleLines } from "./gitignorePattern"
 
 describe("gitignorePattern", () => {
     describe("parseNodeRule", () => {
@@ -35,6 +35,24 @@ describe("gitignorePattern", () => {
             // Act & Assert
             expect(matches("root/beta.ts")).toBe(true)
             expect(matches("root/alpha.ts")).toBe(false)
+        })
+    })
+
+    describe("toRuleLines", () => {
+        it("should put each pattern of a rule on a line of its own, as it was stored", () => {
+            // Act
+            const lines = toRuleLines("/root/src/app, *UserService*, !*spec*")
+
+            // Assert
+            expect(lines).toEqual(["/root/src/app", "*UserService*", "!*spec*"])
+        })
+
+        it("should mark every pattern of a negated rule as left out", () => {
+            // Act
+            const lines = toRuleLines("!*spec*, *test*")
+
+            // Assert
+            expect(lines).toEqual(["!*spec*", "!*test*"])
         })
     })
 })

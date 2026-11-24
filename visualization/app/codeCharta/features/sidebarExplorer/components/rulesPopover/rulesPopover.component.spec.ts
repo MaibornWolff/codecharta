@@ -12,18 +12,28 @@ const FLATTEN_RULES: RuleWithCount[] = [
     {
         id: "flatten/**/*.spec.ts",
         label: "**/*.spec.ts",
+        lines: ["**/*.spec.ts"],
         affectedCount: 4,
         kind: "RULE",
         item: { path: "**/*.spec.ts" },
         effect: "flatten"
     },
-    { id: "flatten/apps/foo", label: "apps/foo", affectedCount: 1, kind: "MANUAL", item: { path: "apps/foo" }, effect: "flatten" }
+    {
+        id: "flatten/apps/foo",
+        label: "apps/foo",
+        lines: ["apps/foo"],
+        affectedCount: 1,
+        kind: "MANUAL",
+        item: { path: "apps/foo" },
+        effect: "flatten"
+    }
 ]
 
 const EXCLUDE_RULES: RuleWithCount[] = [
     {
         id: "exclude/node_modules",
         label: "node_modules",
+        lines: ["node_modules"],
         affectedCount: 5,
         kind: "MANUAL",
         item: { path: "node_modules" },

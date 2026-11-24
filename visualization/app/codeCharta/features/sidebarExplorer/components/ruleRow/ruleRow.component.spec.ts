@@ -8,6 +8,7 @@ import { RuleRowComponent } from "./ruleRow.component"
 const patternRule: RuleWithCount = {
     id: "flatten/**/*.spec.ts",
     label: "**/*.spec.ts",
+    lines: ["**/*.spec.ts"],
     affectedCount: 6,
     kind: "RULE",
     item: { path: "**/*.spec.ts" },
@@ -16,6 +17,7 @@ const patternRule: RuleWithCount = {
 const manualRule: RuleWithCount = {
     id: "flatten/apps/foo",
     label: "apps/foo",
+    lines: ["apps/foo"],
     affectedCount: 2,
     kind: "MANUAL",
     item: { path: "apps/foo" },
@@ -43,6 +45,24 @@ describe("RuleRowComponent", () => {
         expect(screen.getByText("**/*.spec.ts")).not.toBe(null)
         expect(screen.getByText("RULE")).not.toBe(null)
         expect(screen.getByText("6")).not.toBe(null)
+    })
+
+    it("should render each line of a rule on its own", async () => {
+        // Arrange
+        const ruleWithSeveralPatterns: RuleWithCount = {
+            ...patternRule,
+            label: "/root/src/app, *UserService*",
+            lines: ["/root/src/app", "*UserService*"]
+        }
+
+        // Act
+        await render(RuleRowComponent, {
+            inputs: { rule: ruleWithSeveralPatterns }
+        })
+
+        // Assert
+        expect(screen.getByText("/root/src/app")).not.toBe(null)
+        expect(screen.getByText("*UserService*")).not.toBe(null)
     })
 
     it("should render MANUAL badge for concrete paths", async () => {
