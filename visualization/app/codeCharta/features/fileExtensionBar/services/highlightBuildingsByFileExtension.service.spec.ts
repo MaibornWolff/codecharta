@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { provideMockStore } from "@ngrx/store/testing"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { NodeInteraction } from "../../../stores/sharedView/sharedView.write.facade"
 import { CategorizedMetricDistribution, NO_EXTENSION, OTHER_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
@@ -100,7 +100,9 @@ describe("HighlightBuildingsByFileExtensionService", () => {
 
     it(`Highlighting ${OTHER_EXTENSION} will highlight all the buildings grouped in ${OTHER_EXTENSION}`, () => {
         fixture.highlightExtension(OTHER_EXTENSION)
-        expect(threeSceneServiceWithMockedMethods.highlightBuildingsByExtension).toHaveBeenCalledWith(new Set(["xml", "json"]))
+        expect(threeSceneServiceWithMockedMethods.highlightBuildingsByExtension).toHaveBeenCalledWith(
+            new Set(["xml", "json", NO_EXTENSION])
+        )
     })
 
     it(`Highlighting ${NO_EXTENSION} will highlight all the buildings grouped in ${NO_EXTENSION}`, () => {
@@ -126,7 +128,23 @@ describe("HighlightBuildingsByFileExtensionService", () => {
         fixture.highlightExtension(OTHER_EXTENSION)
 
         // Assert
-        expect(nodeInteraction.hoverFileExtensions).toHaveBeenCalledWith(["xml", "json"])
+        expect(nodeInteraction.hoverFileExtensions).toHaveBeenCalledWith(["xml", "json", NO_EXTENSION])
+    })
+
+    it(`should leave out files without an extension when they have a segment of their own instead of being in ${OTHER_EXTENSION}`, () => {
+        // Arrange
+        const store = TestBed.inject(MockStore)
+        store.overrideSelector(metricDistributionSelector, {
+            ...mockedDistribution,
+            visible: [...mockedDistribution.visible, ...mockedDistribution.none]
+        })
+        store.refreshState()
+
+        // Act
+        fixture.highlightExtension(OTHER_EXTENSION)
+
+        // Assert
+        expect(threeSceneServiceWithMockedMethods.highlightBuildingsByExtension).toHaveBeenCalledWith(new Set(["xml", "json"]))
     })
 
     it("should share that no extension is hovered any more", () => {

@@ -4,6 +4,7 @@ import { ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.fac
 import { NodeInteraction } from "../../../stores/sharedView/sharedView.write.facade"
 import { NO_EXTENSION, OTHER_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
 import { MetricDistributionStore } from "../stores/metricDistribution.store"
+import { extensionsGroupedIntoOther } from "../util/extensionsGroupedIntoOther"
 
 @Injectable({
     providedIn: "root"
@@ -25,7 +26,7 @@ export class HighlightBuildingsByFileExtensionService {
             )
             .subscribe(it => {
                 this.fileExtensionsOfOthers.clear()
-                for (const other of it.others) {
+                for (const other of extensionsGroupedIntoOther(it)) {
                     this.fileExtensionsOfOthers.add(other.fileExtension)
                 }
 
