@@ -1,13 +1,49 @@
 import { createExcludeMatcher } from "./excludeMatcher"
 
 describe("excludeMatcher", () => {
-    it("should wrap a plain path so any node containing it matches, like NodeDecorator", () => {
+    it("should exclude a node by its full path", () => {
         // Arrange
         const matcher = createExcludeMatcher([{ path: "/root/src/file.ts" }])
 
         // Act & Assert
         expect(matcher.isExcludedLeaf("/root/src/file.ts")).toBe(true)
         expect(matcher.isExcludedLeaf("/root/src/other.ts")).toBe(false)
+    })
+
+    it("should not exclude a sibling folder whose name starts with the name of the excluded folder", () => {
+        // Arrange
+        const matcher = createExcludeMatcher([{ path: "/root/src/app" }])
+
+        // Act & Assert
+        expect(matcher.isExcludedLeaf("/root/src/app/file.ts")).toBe(true)
+        expect(matcher.isExcludedSubtree("/root/src/application")).toBe(false)
+        expect(matcher.isExcludedLeaf("/root/src/application/file.ts")).toBe(false)
+    })
+
+    it("should not exclude a file whose extension starts with the excluded extension inside a folder", () => {
+        // Arrange
+        const matcher = createExcludeMatcher([{ path: "/root/src/**/*.ts" }])
+
+        // Act & Assert
+        expect(matcher.isExcludedLeaf("/root/src/app/file.ts")).toBe(true)
+        expect(matcher.isExcludedLeaf("/root/src/app/view.tsx")).toBe(false)
+    })
+
+    it("should keep every path of a rule exact, not only its first one", () => {
+        // Arrange
+        const matcher = createExcludeMatcher([{ path: "/root/src/app, /root/test/app" }])
+
+        // Act & Assert
+        expect(matcher.isExcludedLeaf("/root/test/app/file.ts")).toBe(true)
+        expect(matcher.isExcludedLeaf("/root/test/application/file.ts")).toBe(false)
+    })
+
+    it("should still match any node containing a bare rule", () => {
+        // Arrange
+        const matcher = createExcludeMatcher([{ path: "app" }])
+
+        // Act & Assert
+        expect(matcher.isExcludedLeaf("/root/src/application/file.ts")).toBe(true)
     })
 
     it("should split comma-separated rule paths into individual patterns", () => {

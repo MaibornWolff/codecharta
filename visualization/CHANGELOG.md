@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **What's in "other"**: hovering the "other" part of the distribution bar lists the file extensions it groups, each of which highlights its buildings on hover and can be flattened or excluded on its own with a right-click.
 
+### Fixed 🐞
+
+- **Excluding a folder**: excluding or flattening a folder, or a file type inside a folder, no longer also hits folders and file types whose names merely start the same way.
+
 ## [2.11.0] - 2026-11-10
 
 ### Added 🚀
