@@ -38,7 +38,7 @@ describe("ExplorerSearchBarComponent", () => {
     it("should hand a typed pattern to the search port of the current view", async () => {
         // Arrange
         await render(ExplorerSearchBarComponent)
-        const searchField = screen.getByPlaceholderText("*.js, **/app/*")
+        const searchField = screen.getByPlaceholderText("src/app *.ts !spec")
 
         // Act
         await userEvent.type(searchField, "needle")
@@ -53,7 +53,7 @@ describe("ExplorerSearchBarComponent", () => {
         expect(screen.queryByTestId("search-bar-clear-button")).toBe(null)
 
         // Act
-        await userEvent.type(screen.getByPlaceholderText("*.js, **/app/*"), "needle")
+        await userEvent.type(screen.getByPlaceholderText("src/app *.ts !spec"), "needle")
 
         // Assert
         await screen.findByTestId("search-bar-clear-button")
@@ -62,7 +62,7 @@ describe("ExplorerSearchBarComponent", () => {
     it("should reset the pattern through the search port when clearing", async () => {
         // Arrange
         await render(ExplorerSearchBarComponent)
-        await userEvent.type(screen.getByPlaceholderText("*.js, **/app/*"), "needle")
+        await userEvent.type(screen.getByPlaceholderText("src/app *.ts !spec"), "needle")
 
         // Act
         await userEvent.click(await screen.findByTestId("search-bar-clear-button"))
@@ -74,7 +74,7 @@ describe("ExplorerSearchBarComponent", () => {
     it("should not let a pending keystroke restore the pattern after clearing", async () => {
         // Arrange — clear is clicked while a freshly typed pattern is still waiting out the debounce
         await render(ExplorerSearchBarComponent)
-        const searchField = screen.getByPlaceholderText("*.js, **/app/*")
+        const searchField = screen.getByPlaceholderText("src/app *.ts !spec")
         await userEvent.type(searchField, "abc")
         await screen.findByTestId("search-bar-clear-button")
         jest.mocked(search.setPattern).mockClear()

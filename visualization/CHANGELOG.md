@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **What's in "other"**: hovering the "other" part of the distribution bar lists the file extensions it groups, each of which highlights its buildings on hover and can be flattened or excluded on its own with a right-click.
 
+### Changed
+
+- **Explorer search**: the search finds files by any part of their path and by several words at once, takes quotes for exact names and names with spaces and a `!` for what to leave out, and flattening or excluding a search hits exactly what it found.
+
 ### Fixed 🐞
 
 - **Excluding a folder**: excluding or flattening a folder, or a file type inside a folder, no longer also hits folders and file types whose names merely start the same way.

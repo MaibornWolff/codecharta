@@ -1,12 +1,8 @@
 import { NodeRule } from "../../model/codeCharta.model"
-import { unifyWildCard } from "./unifyWildCard"
+import { compileSearchQuery } from "./searchQuery"
 
-/** Whether a search pattern is already held, rule for rule, by the given list. */
+/** Whether the rule a search pattern stands for is already in the given list. */
 export const isPatternInRules = (nodeRules: NodeRule[], searchPattern: string) => {
-    const paths: string[] = searchPattern.trim().split(",")
-    if (searchPattern.trim().startsWith("!")) {
-        paths[0] = paths[0].slice(1)
-        return paths.some(path => nodeRules.some(rule => `!${unifyWildCard(path)}` === rule.path))
-    }
-    return paths.some(path => nodeRules.some(rule => unifyWildCard(path) === rule.path))
+    const rulePath = compileSearchQuery(searchPattern)
+    return nodeRules.some(rule => rule.path === rulePath)
 }

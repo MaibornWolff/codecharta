@@ -1,21 +1,21 @@
 import { TEST_FILE_WITH_PATHS } from "../../mocks/dataMocks"
-import { getNodesByGitignorePath } from "./getNodesByGitignorePath"
+import { getNodesBySearchQuery } from "./getNodesBySearchQuery"
 
-describe("getNodesByGitignorePath", () => {
+describe("getNodesBySearchQuery", () => {
     it("should retrieve no nodes for an empty search", () => {
-        const searchedNodes = getNodesByGitignorePath(TEST_FILE_WITH_PATHS.map, "")
+        const searchedNodes = getNodesBySearchQuery(TEST_FILE_WITH_PATHS.map, "")
 
         expect(searchedNodes.length).toBe(0)
     })
 
     it("should retrieve no nodes if searched within nothing", () => {
-        const searchedNodes = getNodesByGitignorePath(undefined, "")
+        const searchedNodes = getNodesBySearchQuery(undefined, "")
 
         expect(searchedNodes.length).toBe(0)
     })
 
     it("should find nodes based on a wildcard search", () => {
-        const searchedNodes = getNodesByGitignorePath(TEST_FILE_WITH_PATHS.map, "*small*")
+        const searchedNodes = getNodesBySearchQuery(TEST_FILE_WITH_PATHS.map, "*small*")
 
         expect(searchedNodes.length).toBe(2)
         expect(searchedNodes[0].path).toBe("/root/Parent Leaf/small leaf")
@@ -23,7 +23,7 @@ describe("getNodesByGitignorePath", () => {
     })
 
     it("should find nodes based on string search", () => {
-        const searchedNodes = getNodesByGitignorePath(TEST_FILE_WITH_PATHS.map, "small")
+        const searchedNodes = getNodesBySearchQuery(TEST_FILE_WITH_PATHS.map, "small")
 
         expect(searchedNodes.length).toBe(2)
         expect(searchedNodes[0].path).toBe("/root/Parent Leaf/small leaf")
@@ -31,19 +31,19 @@ describe("getNodesByGitignorePath", () => {
     })
 
     it("should find no nodes based on prefix search with non existing prefix", () => {
-        const searchedNodes = getNodesByGitignorePath(TEST_FILE_WITH_PATHS.map, "oot/*")
+        const searchedNodes = getNodesBySearchQuery(TEST_FILE_WITH_PATHS.map, "oot/*")
 
         expect(searchedNodes.length).toBe(0)
     })
 
     it("should find all nodes based on prefix search with prefix of root node", () => {
-        const searchedNodes = getNodesByGitignorePath(TEST_FILE_WITH_PATHS.map, "root*")
+        const searchedNodes = getNodesBySearchQuery(TEST_FILE_WITH_PATHS.map, "root*")
 
         expect(searchedNodes.length).toBe(6)
     })
 
     it("should find nodes based on exact match", () => {
-        const searchedNodes = getNodesByGitignorePath(TEST_FILE_WITH_PATHS.map, '"/root/Parent Leaf"')
+        const searchedNodes = getNodesBySearchQuery(TEST_FILE_WITH_PATHS.map, '"/root/Parent Leaf"')
 
         expect(searchedNodes.length).toBe(4)
         expect(searchedNodes[0].path).toBe("/root/Parent Leaf")
@@ -53,26 +53,26 @@ describe("getNodesByGitignorePath", () => {
     })
 
     it("should not ignore a leading whitespace with exact match", () => {
-        const searchedNodes = getNodesByGitignorePath(TEST_FILE_WITH_PATHS.map, '" /root/Parent Leaf"')
+        const searchedNodes = getNodesBySearchQuery(TEST_FILE_WITH_PATHS.map, '" /root/Parent Leaf"')
 
         expect(searchedNodes.length).toBe(0)
     })
 
     it("should find nodes based on inverted search", () => {
-        const searchedNodes = getNodesByGitignorePath(TEST_FILE_WITH_PATHS.map, "!leaf")
+        const searchedNodes = getNodesBySearchQuery(TEST_FILE_WITH_PATHS.map, "!leaf")
 
         expect(searchedNodes.length).toBe(1)
         expect(searchedNodes[0].path).toBe("/root")
     })
 
-    it("should find nodes based on multiple inverted search", () => {
-        const searchedNodes = getNodesByGitignorePath(TEST_FILE_WITH_PATHS.map, " \tsmall, \tbig")
+    it("should find the nodes several terms match, and the nodes none of several negated terms match", () => {
+        const searchedNodes = getNodesBySearchQuery(TEST_FILE_WITH_PATHS.map, " \tsmall, \tbig")
         expect(searchedNodes.length).toBe(3)
         expect(searchedNodes[0].path).toBe("/root/big leaf")
         expect(searchedNodes[1].path).toBe("/root/Parent Leaf/small leaf")
         expect(searchedNodes[2].path).toBe("/root/Parent Leaf/other small leaf")
 
-        const invertedSearchedNodes = getNodesByGitignorePath(TEST_FILE_WITH_PATHS.map, "! \tsmall, \tbig")
+        const invertedSearchedNodes = getNodesBySearchQuery(TEST_FILE_WITH_PATHS.map, "!small \t!big")
 
         expect(invertedSearchedNodes.length).toBe(3)
         expect(invertedSearchedNodes[0].path).toBe("/root")

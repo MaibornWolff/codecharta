@@ -7,7 +7,7 @@ const CLUSTERS_EXPLORER_MODE: ExplorerMode = {
     id: "clusters",
     label: "Clusters",
     icon: "fa-solid fa-users",
-    searchPlaceholder: "*.js, **/app/*",
+    searchPlaceholder: "src/app *.ts !spec",
     searchAriaLabel: "Search files and folders",
     hidesListTools: true
 }

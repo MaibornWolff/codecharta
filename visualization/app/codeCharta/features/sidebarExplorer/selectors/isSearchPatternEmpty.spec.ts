@@ -13,6 +13,10 @@ describe("isSearchPatternEmpty", () => {
         expect(isSearchPatternEmpty(",")).toBe(true)
     })
 
+    it("should return true for a pattern of nothing but separators and negations", () => {
+        expect(isSearchPatternEmpty(" , ! ")).toBe(true)
+    })
+
     it("should return false for non empty strings", () => {
         expect(isSearchPatternEmpty("foo")).toBe(false)
     })

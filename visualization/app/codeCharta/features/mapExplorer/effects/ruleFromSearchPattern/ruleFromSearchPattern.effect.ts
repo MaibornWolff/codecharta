@@ -9,7 +9,7 @@ import {
     addFlattenedNodes,
     setSearchPattern
 } from "../../../../stores/sharedView/sharedView.write.facade"
-import { parseNodeRules } from "../../../../util/nodeRules/parseNodeRules"
+import { compileSearchQuery } from "../../../../util/nodeRules/searchQuery"
 import { ExcludeGuard } from "../../../shared/facade"
 
 type RuleFromSearchPatternAction = {
@@ -35,7 +35,7 @@ export class RuleFromSearchPatternEffect {
         withLatestFrom(this.store.select(searchPatternSelector)),
         map(([ruleFromSearchPatternAction, searchPattern]) => ({
             effect: ruleFromSearchPatternAction.action.effect,
-            rules: parseNodeRules(searchPattern)
+            rules: [{ path: compileSearchQuery(searchPattern) }]
         })),
         share()
     )

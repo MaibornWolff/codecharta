@@ -12,6 +12,6 @@ export const FILES_EXPLORER_MODE: ExplorerMode = {
     id: "files",
     label: "Files",
     icon: "fa-solid fa-folder-tree",
-    searchPlaceholder: "*.js, **/app/*",
+    searchPlaceholder: "src/app *.ts !spec",
     searchAriaLabel: "Search files and folders"
 }
