@@ -27,7 +27,7 @@ export function transformPath(toTransform: string) {
 }
 
 export function parseNodeRule(rulePath: string): NodeRulePatterns {
-    const rule = transformPath(rulePath.trimStart())
+    const rule = rulePath.trimStart()
     if (rule.startsWith(RULE_NEGATION)) {
         return { includes: null, excludes: toGitignorePatterns(rule.slice(RULE_NEGATION.length)) }
     }
@@ -46,11 +46,13 @@ function toGitignorePatterns(patternList: string): string[] {
 }
 
 function toGitignorePattern(pattern: string) {
-    if (pattern.startsWith("*") || pattern.endsWith("*")) {
+    if (isAnchoredAtRoot(pattern) || pattern.startsWith("*") || pattern.endsWith("*")) {
         return pattern
     }
     return isQuoted(pattern) ? pattern.slice(1, -1) : `*${pattern}*`
 }
+
+const isAnchoredAtRoot = (pattern: string) => pattern.startsWith("/") || pattern.startsWith("./")
 
 const isQuoted = (pattern: string) => pattern.startsWith('"') && pattern.endsWith('"')
 
