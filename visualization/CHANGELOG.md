@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - **Excluding a folder**: excluding or flattening a folder, or a file type inside a folder, no longer also hits folders and file types whose names merely start the same way.
+- **Searching several words**: the word search of the domain view finds the words matching any of several terms separated by spaces or commas, as its example suggests.
 
 ## [2.11.0] - 2026-11-10
 
