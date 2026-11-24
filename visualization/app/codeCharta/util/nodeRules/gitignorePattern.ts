@@ -2,6 +2,18 @@ import ignore from "ignore"
 
 export type IgnoreEngine = ReturnType<typeof ignore>
 
+/** What a stored rule matches: the paths its include patterns match, minus those its exclude patterns match. */
+export interface NodeRulePatterns {
+    /** Null when the whole rule is negated (`!`-prefix): it then includes every path. */
+    readonly includes: string[] | null
+    readonly excludes: string[]
+}
+
+export type TransformedPathMatcher = (transformedPath: string) => boolean
+
+const RULE_NEGATION = "!"
+const PATTERN_SEPARATOR = ","
+
 export function transformPath(toTransform: string) {
     let removeNumberOfCharactersFromStart = 2
 
@@ -14,65 +26,59 @@ export function transformPath(toTransform: string) {
     return toTransform.slice(removeNumberOfCharactersFromStart)
 }
 
-export function returnIgnore(gitignorePath: string) {
-    gitignorePath = transformPath(gitignorePath.trimStart())
-
-    let condition = true
-    if (gitignorePath.startsWith("!")) {
-        gitignorePath = gitignorePath.slice(1)
-        condition = false
+export function parseNodeRule(rulePath: string): NodeRulePatterns {
+    const rule = transformPath(rulePath.trimStart())
+    if (rule.startsWith(RULE_NEGATION)) {
+        return { includes: null, excludes: toGitignorePatterns(rule.slice(RULE_NEGATION.length)) }
     }
-    const ignoredNodePaths = ignore()
-
-    for (let path of gitignorePath.split(",")) {
-        path = path.trimStart()
-        if (!path.startsWith("*") && !path.endsWith("*")) {
-            path = path.startsWith('"') && path.endsWith('"') ? path.slice(1, -1) : `*${path}*`
-        }
-        if (path.length === 0) {
-            continue
-        }
-        ignoredNodePaths.add(transformPath(path))
-    }
-    return { ignoredNodePaths, condition }
+    return { includes: toGitignorePatterns(rule), excludes: [] }
 }
 
-// Adds the patterns of a positive (non-negated) rule to an existing ignore engine.
-// Returns false if the rule is negated (`!`-prefix) so the caller knows it cannot be
-// merged into the combined engine and must keep a per-rule engine instead.
-// Mirrors the pattern-transformation logic of `returnIgnore`.
-export function addRulePatternsToEngine(engine: IgnoreEngine, rulePath: string): boolean {
-    const path = transformPath(rulePath.trimStart())
-    if (path.startsWith("!")) {
-        return false
-    }
-    for (let p of path.split(",")) {
-        p = p.trimStart()
-        if (!p.startsWith("*") && !p.endsWith("*")) {
-            p = p.startsWith('"') && p.endsWith('"') ? p.slice(1, -1) : `*${p}*`
+function toGitignorePatterns(patternList: string): string[] {
+    const patterns: string[] = []
+    for (const pattern of patternList.split(PATTERN_SEPARATOR)) {
+        const gitignorePattern = toGitignorePattern(pattern.trimStart())
+        if (gitignorePattern.length > 0) {
+            patterns.push(transformPath(gitignorePattern))
         }
-        if (p.length === 0) {
-            continue
-        }
-        engine.add(transformPath(p))
     }
-    return true
+    return patterns
 }
+
+function toGitignorePattern(pattern: string) {
+    if (pattern.startsWith("*") || pattern.endsWith("*")) {
+        return pattern
+    }
+    return isQuoted(pattern) ? pattern.slice(1, -1) : `*${pattern}*`
+}
+
+const isQuoted = (pattern: string) => pattern.startsWith('"') && pattern.endsWith('"')
+
+export function createRuleMatcher({ includes, excludes }: NodeRulePatterns): TransformedPathMatcher {
+    const includeEngine = includes === null ? null : ignore().add(includes)
+    const excludeEngine = excludes.length === 0 ? null : ignore().add(excludes)
+    return transformedPath => (includeEngine === null || includeEngine.ignores(transformedPath)) && !excludeEngine?.ignores(transformedPath)
+}
+
+/** Whether a rule only adds paths, so it can share one engine with other such rules. */
+export const isPlainInclusion = ({ includes, excludes }: NodeRulePatterns) => includes !== null && excludes.length === 0
 
 /**
- * The matching engine one list of rules builds: positive rules merge into one engine, while negated
- * (`!`) rules need one engine each because they affect every path that does *not* match.
+ * The matching engine one list of rules builds: plain inclusions merge into one engine, while rules
+ * that subtract paths need a matcher each because they affect paths their patterns do not name.
  */
 export function buildRuleEngines(rules: { path: string }[]) {
     const combined = ignore()
     let hasPositiveRule = false
-    const negatedEngines: IgnoreEngine[] = []
+    const subtractingMatchers: TransformedPathMatcher[] = []
 
     for (const rule of rules) {
-        if (addRulePatternsToEngine(combined, rule.path)) {
+        const patterns = parseNodeRule(rule.path)
+        if (isPlainInclusion(patterns)) {
+            combined.add(patterns.includes)
             hasPositiveRule = true
         } else {
-            negatedEngines.push(returnIgnore(rule.path).ignoredNodePaths)
+            subtractingMatchers.push(createRuleMatcher(patterns))
         }
     }
 
@@ -81,8 +87,8 @@ export function buildRuleEngines(rules: { path: string }[]) {
         if (hasPositiveRule && combined.ignores(transformedPath)) {
             return true
         }
-        for (const engine of negatedEngines) {
-            if (!engine.ignores(transformedPath)) {
+        for (const matches of subtractingMatchers) {
+            if (matches(transformedPath)) {
                 return true
             }
         }

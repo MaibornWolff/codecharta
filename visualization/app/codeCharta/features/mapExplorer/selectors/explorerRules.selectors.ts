@@ -3,15 +3,22 @@ import ignore from "ignore"
 import { CodeMapNode, NodeRule, RuleEffect } from "../../../model/codeCharta.model"
 import { codeMapNodesSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { excludedNodesSelector, flattenedNodesSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { addRulePatternsToEngine, returnIgnore, transformPath } from "../../../util/nodeRules/gitignorePattern"
+import {
+    createRuleMatcher,
+    IgnoreEngine,
+    isPlainInclusion,
+    parseNodeRule,
+    TransformedPathMatcher,
+    transformPath
+} from "../../../util/nodeRules/gitignorePattern"
 import { RuleWithCount } from "../../sidebarExplorer/facade"
 import { isPatternRule } from "./isPattern"
 import { excludeMetricRulesWithCountSelector, flattenMetricRulesWithCountSelector } from "./metricRulesWithCount.selector"
 
 type RuleEvaluation = {
     item: NodeRule
-    ignoredNodePaths: ReturnType<typeof ignore>
-    condition: boolean
+    matches: TransformedPathMatcher
+    isPlainInclusion: boolean
     affectedCount: number
 }
 
@@ -21,9 +28,9 @@ const buildRulesWithCount = (nodeRules: NodeRule[], allLeaves: CodeMapNode[], ef
     }
 
     const transformedLeafPaths = allLeaves.map(node => transformPath(node.path))
-    const { rules, combinedPositivePrefilter } = buildRuleEnginesMatchingNodeDecorator(nodeRules)
+    const { rules, plainInclusionPrefilter } = buildRuleEvaluations(nodeRules)
 
-    countAffectedLeaves(rules, combinedPositivePrefilter, transformedLeafPaths)
+    countAffectedLeaves(rules, plainInclusionPrefilter, transformedLeafPaths)
 
     return rules
         .map(
@@ -39,37 +46,34 @@ const buildRulesWithCount = (nodeRules: NodeRule[], allLeaves: CodeMapNode[], ef
         .sort((a, b) => a.label.localeCompare(b.label))
 }
 
-function buildRuleEnginesMatchingNodeDecorator(items: NodeRule[]) {
-    const combinedPositivePrefilter = ignore()
+function buildRuleEvaluations(items: NodeRule[]) {
+    const plainInclusionPrefilter = ignore()
     const rules = items.map((item): RuleEvaluation => {
-        const { ignoredNodePaths, condition } = returnIgnore(item.path)
-        if (condition) {
-            addRulePatternsToEngine(combinedPositivePrefilter, item.path)
+        const patterns = parseNodeRule(item.path)
+        const isPlainInclusionRule = isPlainInclusion(patterns)
+        if (isPlainInclusionRule) {
+            plainInclusionPrefilter.add(patterns.includes)
         }
-        return { item, ignoredNodePaths, condition, affectedCount: 0 }
+        return { item, matches: createRuleMatcher(patterns), isPlainInclusion: isPlainInclusionRule, affectedCount: 0 }
     })
-    return { rules, combinedPositivePrefilter }
+    return { rules, plainInclusionPrefilter }
 }
 
-function countAffectedLeaves(
-    rules: RuleEvaluation[],
-    combinedPositivePrefilter: ReturnType<typeof ignore>,
-    transformedLeafPaths: string[]
-) {
-    const positiveRules = rules.filter(rule => rule.condition)
-    const negatedRules = rules.filter(rule => !rule.condition)
+function countAffectedLeaves(rules: RuleEvaluation[], plainInclusionPrefilter: IgnoreEngine, transformedLeafPaths: string[]) {
+    const plainInclusionRules = rules.filter(rule => rule.isPlainInclusion)
+    const subtractingRules = rules.filter(rule => !rule.isPlainInclusion)
 
     for (const path of transformedLeafPaths) {
-        if (positiveRules.length > 0 && combinedPositivePrefilter.ignores(path)) {
-            incrementRulesMatching(positiveRules, path, true)
+        if (plainInclusionRules.length > 0 && plainInclusionPrefilter.ignores(path)) {
+            incrementRulesMatching(plainInclusionRules, path)
         }
-        incrementRulesMatching(negatedRules, path, false)
+        incrementRulesMatching(subtractingRules, path)
     }
 }
 
-function incrementRulesMatching(rules: RuleEvaluation[], path: string, shouldMatch: boolean) {
+function incrementRulesMatching(rules: RuleEvaluation[], path: string) {
     for (const rule of rules) {
-        if (rule.ignoredNodePaths.ignores(path) === shouldMatch) {
+        if (rule.matches(path)) {
             rule.affectedCount++
         }
     }
