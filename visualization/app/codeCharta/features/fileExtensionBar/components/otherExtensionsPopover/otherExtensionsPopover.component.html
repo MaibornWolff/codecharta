@@ -1,0 +1,29 @@
+<div class="flex cursor-pointer items-center gap-2 border-b border-base-300 px-3 py-1.5 font-semibold hover:bg-base-200"
+     data-test-id="allOthersRow"
+     (mouseover)="highlight(otherExtension)"
+     (mouseleave)="clearHighlight()"
+     (contextmenu)="openMenuFor(otherExtension, $event)">
+    <span class="size-2.5 shrink-0 rounded-sm" [style.background-color]="total().color"></span>
+    <span class="grow truncate">All others</span>
+    <span class="tabular-nums">{{ formatValue(total()) }}</span>
+</div>
+
+@for (item of items(); track item.fileExtension) {
+    <div class="flex items-center gap-2 px-3 py-1 hover:bg-base-200"
+         data-test-id="otherExtensionRow"
+         [class.cursor-pointer]="hasActions(item.fileExtension)"
+         (mouseover)="highlight(item.fileExtension)"
+         (mouseleave)="clearHighlight()"
+         (contextmenu)="openMenuFor(item.fileExtension, $event)">
+        <span class="size-2.5 shrink-0 rounded-sm" [style.background-color]="item.color"></span>
+        <span class="grow truncate">{{ item.fileExtension }}</span>
+        <span class="tabular-nums">{{ formatValue(item) }}</span>
+    </div>
+}
+
+@if (openMenu(); as menu) {
+    <cc-file-extension-menu [fileExtension]="menu.fileExtension"
+                            [position]="menu.position"
+                            (closed)="closeMenu()">
+    </cc-file-extension-menu>
+}

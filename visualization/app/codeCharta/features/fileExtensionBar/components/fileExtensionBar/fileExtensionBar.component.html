@@ -4,6 +4,7 @@
         @for (item of metricDistribution().visible; track item.fileExtension) {
             <cc-file-extension-bar-segment [item]="item"
                                            [showAbsoluteValues]="showAbsoluteValues()"
+                                           [groupedItems]="item.fileExtension === otherExtension ? groupedIntoOther() : []"
                                            (toggleShowAbsoluteValues)="toggleShowAbsoluteValues()">
             </cc-file-extension-bar-segment>
         }
