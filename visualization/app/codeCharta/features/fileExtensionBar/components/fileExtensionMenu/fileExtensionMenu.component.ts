@@ -11,6 +11,11 @@ export interface MenuPosition {
     bottom: number
 }
 
+export interface ExtensionMenuRequest {
+    fileExtension: string
+    position: MenuPosition
+}
+
 export function menuPositionAt(event: MouseEvent): MenuPosition {
     const left = Math.max(VIEWPORT_MARGIN_PX, Math.min(event.clientX, window.innerWidth - MENU_WIDTH_PX - VIEWPORT_MARGIN_PX))
     const bottom = Math.max(VIEWPORT_MARGIN_PX, window.innerHeight - event.clientY)

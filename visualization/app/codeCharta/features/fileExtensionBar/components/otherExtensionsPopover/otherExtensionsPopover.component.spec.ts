@@ -1,15 +1,13 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-import { of } from "rxjs"
 import { MetricDistribution, NO_EXTENSION, OTHER_EXTENSION } from "../../../../util/fileExtension/fileExtensionCalculator"
-import { ExtensionRulesService } from "../../services/extensionRules.service"
 import { HighlightBuildingsByFileExtensionService } from "../../services/highlightBuildingsByFileExtension.service"
+import { ExtensionMenuRequest } from "../fileExtensionMenu/fileExtensionMenu.component"
 import { OtherExtensionsPopoverComponent } from "./otherExtensionsPopover.component"
 
 describe("OtherExtensionsPopoverComponent", () => {
     let fixture: ComponentFixture<OtherExtensionsPopoverComponent>
-    let extensionRulesService: { flatten: jest.Mock; exclude: jest.Mock; show: jest.Mock; getIsFlattenedByFileExtension: jest.Mock }
     let highlightService: { highlightExtension: jest.Mock; clearHighlightingOnFileExtensions: jest.Mock }
-    let menuOpenChanges: boolean[]
+    let menuRequests: ExtensionMenuRequest[]
 
     const total: MetricDistribution = {
         fileExtension: OTHER_EXTENSION,
@@ -23,27 +21,18 @@ describe("OtherExtensionsPopoverComponent", () => {
     ]
 
     beforeEach(() => {
-        extensionRulesService = {
-            flatten: jest.fn(),
-            exclude: jest.fn(),
-            show: jest.fn(),
-            getIsFlattenedByFileExtension: jest.fn(() => of(false))
-        }
         highlightService = { highlightExtension: jest.fn(), clearHighlightingOnFileExtensions: jest.fn() }
         TestBed.configureTestingModule({
             imports: [OtherExtensionsPopoverComponent],
-            providers: [
-                { provide: ExtensionRulesService, useValue: extensionRulesService },
-                { provide: HighlightBuildingsByFileExtensionService, useValue: highlightService }
-            ]
+            providers: [{ provide: HighlightBuildingsByFileExtensionService, useValue: highlightService }]
         })
         fixture = TestBed.createComponent(OtherExtensionsPopoverComponent)
         fixture.componentRef.setInput("total", total)
         fixture.componentRef.setInput("items", items)
         fixture.componentRef.setInput("showAbsoluteValues", false)
         fixture.componentRef.setInput("anchor", { right: 8, bottom: 49 })
-        menuOpenChanges = []
-        fixture.componentInstance.menuOpenChange.subscribe(isOpen => menuOpenChanges.push(isOpen))
+        menuRequests = []
+        fixture.componentInstance.menuRequested.subscribe(request => menuRequests.push(request))
         document.body.appendChild(fixture.nativeElement)
         fixture.detectChanges()
     })
@@ -63,11 +52,6 @@ describe("OtherExtensionsPopoverComponent", () => {
 
     function rightClick(element: HTMLElement) {
         element.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true, clientX: 50, clientY: 500 }))
-        fixture.detectChanges()
-    }
-
-    function clickMenuButton(dataTestId: string) {
-        fixture.nativeElement.querySelector(`[data-test-id="${dataTestId}"]`).click()
         fixture.detectChanges()
     }
 
@@ -135,43 +119,26 @@ describe("OtherExtensionsPopoverComponent", () => {
         expect(highlightService.highlightExtension).toHaveBeenCalledWith(OTHER_EXTENSION)
     })
 
-    it.each([
-        ["flattenBuilding", "flatten"],
-        ["excludeBuilding", "exclude"]
-    ] as const)("should %s only the right-clicked extension", (dataTestId, action) => {
+    it("should ask for the menu of the right-clicked extension where the pointer is", () => {
         // Arrange
-        rightClick(rows()[0])
+        const ymlRow = rows()[0]
 
         // Act
-        clickMenuButton(dataTestId)
+        rightClick(ymlRow)
 
         // Assert
-        expect(extensionRulesService[action]).toHaveBeenCalledWith("yml")
-        expect(fixture.nativeElement.querySelector("cc-file-extension-menu")).toBeNull()
-        expect(menuOpenChanges).toEqual([true, false])
+        expect(menuRequests).toEqual([{ fileExtension: "yml", position: { left: 50, bottom: window.innerHeight - 500 } }])
     })
 
-    it("should offer 'Show' for a right-clicked extension that is flattened", () => {
+    it("should ask for the menu of all grouped extensions from the 'All others' row", () => {
         // Arrange
-        extensionRulesService.getIsFlattenedByFileExtension.mockReturnValue(of(true))
-        rightClick(rows()[0])
+        const row = allOthersRow()
 
         // Act
-        clickMenuButton("showBuilding")
+        rightClick(row)
 
         // Assert
-        expect(extensionRulesService.show).toHaveBeenCalledWith("yml")
-    })
-
-    it("should apply the action to all grouped extensions from the 'All others' row", () => {
-        // Arrange
-        rightClick(allOthersRow())
-
-        // Act
-        clickMenuButton("excludeBuilding")
-
-        // Assert
-        expect(extensionRulesService.exclude).toHaveBeenCalledWith(OTHER_EXTENSION)
+        expect(menuRequests.map(request => request.fileExtension)).toEqual([OTHER_EXTENSION])
     })
 
     it("should offer no actions for files without an extension", () => {
@@ -182,7 +149,6 @@ describe("OtherExtensionsPopoverComponent", () => {
         rightClick(noneRow)
 
         // Assert
-        expect(fixture.nativeElement.querySelector("cc-file-extension-menu")).toBeNull()
-        expect(menuOpenChanges).toEqual([])
+        expect(menuRequests).toEqual([])
     })
 })

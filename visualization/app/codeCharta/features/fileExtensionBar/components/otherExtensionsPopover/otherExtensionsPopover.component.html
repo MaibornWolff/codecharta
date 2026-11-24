@@ -20,10 +20,3 @@
         <span class="tabular-nums">{{ formatValue(item) }}</span>
     </div>
 }
-
-@if (openMenu(); as menu) {
-    <cc-file-extension-menu [fileExtension]="menu.fileExtension"
-                            [position]="menu.position"
-                            (closed)="closeMenu()">
-    </cc-file-extension-menu>
-}
