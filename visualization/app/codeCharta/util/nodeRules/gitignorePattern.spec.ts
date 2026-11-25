@@ -18,6 +18,12 @@ describe("gitignorePattern", () => {
             expect(patterns).toEqual({ includes: ["alpha.ts"], excludes: [] })
         })
 
+        it("should keep a path from the root anchored at the root", () => {
+            // Act & Assert
+            expect(parseNodeRule("/root/src").includes).toEqual(["/root/src"])
+            expect(parseNodeRule("./root/src").includes).toEqual(["/root/src"])
+        })
+
         it("should turn a negated rule into one that includes everything except its patterns", () => {
             // Act
             const patterns = parseNodeRule("!alpha, *.ts")

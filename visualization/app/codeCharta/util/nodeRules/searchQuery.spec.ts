@@ -22,6 +22,7 @@ const ROOT = node("/root", [
         node("/root/src/mysrc", [node("/root/src/mysrc/app", [node("/root/src/mysrc/app/Other.ts")])]),
         node("/root/src/My File.ts")
     ]),
+    node("/root/pages", [node("/root/pages/i.tsx"), node("/root/pages/[id].tsx")]),
     node("/root/test", [node("/root/test/app", [node("/root/test/app/user", [node("/root/test/app/user/UserFixture.ts")])])]),
     node("/root/README.md")
 ])
@@ -33,6 +34,8 @@ const LEAF_PATHS = [
     "/root/src/application/Main.ts",
     "/root/src/mysrc/app/Other.ts",
     "/root/src/My File.ts",
+    "/root/pages/i.tsx",
+    "/root/pages/[id].tsx",
     "/root/test/app/user/UserFixture.ts",
     "/root/README.md"
 ]
@@ -99,7 +102,7 @@ describe("searchQuery", () => {
             const leaves = searchedLeaves("!src !README")
 
             // Assert
-            expect(leaves).toEqual(["/root/test/app/user/UserFixture.ts"])
+            expect(leaves).toEqual(["/root/pages/i.tsx", "/root/pages/[id].tsx", "/root/test/app/user/UserFixture.ts"])
         })
 
         it("should keep the spaces of a quoted name", () => {
@@ -134,6 +137,21 @@ describe("searchQuery", () => {
             expect(leaves).toContain("/root/src/app/order/OrderService.ts")
         })
 
+        it("should match a single name after a leading slash only at the root", () => {
+            // Act & Assert
+            expect(searchedPaths("/src")).toEqual([])
+            expect(searchedPaths("/root/README.md")).toEqual(["/root/README.md"])
+            expect(searchedPaths("./root/README.md")).toEqual(["/root/README.md"])
+        })
+
+        it("should match glob characters in a quoted name literally", () => {
+            // Act
+            const leaves = searchedLeaves('"[id].tsx"')
+
+            // Assert
+            expect(leaves).toEqual(["/root/pages/[id].tsx"])
+        })
+
         it("should use a glob as typed, at any depth", () => {
             // Act & Assert
             expect(searchedLeaves("*.spec.ts")).toEqual(["/root/src/app/user/UserService.spec.ts"])
@@ -158,6 +176,7 @@ describe("searchQuery", () => {
             ['"src/app"', "**/src/app"],
             ['"My File.ts"', "**/My File.ts"],
             ['"My File', "**/My File"],
+            ['"[id].tsx"', "**/\\[id\\].tsx"],
             ["/root/src/app", "/root/src/app"],
             ['"/root/My Folder"', "/root/My Folder"],
             ["*.ts", "*.ts"],
@@ -187,6 +206,8 @@ describe("searchQuery", () => {
             '"src/app"',
             '"My File.ts"',
             "/root/src/app",
+            "/src",
+            '"[id].tsx"',
             "*.spec.ts",
             "app/*/User*.ts"
         ]

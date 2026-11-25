@@ -41,7 +41,7 @@ function compileTerm(term: string) {
     }
     if (term.startsWith(QUOTE)) {
         const name = term.slice(QUOTE.length, term.length > 1 && term.endsWith(QUOTE) ? -QUOTE.length : undefined)
-        return name.length === 0 ? "" : toExactPattern(name)
+        return name.length === 0 ? "" : toExactPattern(escapeGlob(name))
     }
     if (isAnchoredAtRoot(term) || isGlob(term)) {
         return toExactPattern(term)
@@ -56,3 +56,5 @@ function toExactPattern(name: string) {
 }
 
 const isGlob = (pattern: string) => /[*?[]/.test(pattern)
+
+const escapeGlob = (name: string) => name.replace(/[*?[\]\\]/g, "\\$&")
