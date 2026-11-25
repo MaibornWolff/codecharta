@@ -18,8 +18,11 @@ import {
     unmarkPackage
 } from "../../../stores/sharedView/sharedView.write.facade"
 import { dispatchRuleChange } from "../../../util/dispatchAfterPaint"
+import { ruleForNodePath } from "../../../util/nodeRules/gitignorePattern"
 
 type RuleableNode = Pick<CodeMapNode, "path" | "type">
+
+const ruleItemsFor = (node: RuleableNode) => [{ path: ruleForNodePath(node.path), nodeType: node.type }]
 
 @Injectable({
     providedIn: "root"
@@ -44,19 +47,15 @@ export class NodeContextMenuWriteStore {
     }
 
     flattenNode(node: RuleableNode) {
-        dispatchRuleChange(this.store, "flatten", addFlattenedNodes({ items: [{ path: node.path, nodeType: node.type }] }))
+        dispatchRuleChange(this.store, "flatten", addFlattenedNodes({ items: ruleItemsFor(node) }))
     }
 
     unflattenNode(node: RuleableNode) {
-        dispatchRuleChange(this.store, "flatten", removeFlattenedNodes({ items: [{ path: node.path, nodeType: node.type }] }))
+        dispatchRuleChange(this.store, "flatten", removeFlattenedNodes({ items: ruleItemsFor(node) }))
     }
 
     excludeNode(node: RuleableNode) {
-        dispatchRuleChange(
-            this.store,
-            "exclude",
-            addExcludedNodesIfNotResultsInEmptyMap({ items: [{ path: node.path, nodeType: node.type }] })
-        )
+        dispatchRuleChange(this.store, "exclude", addExcludedNodesIfNotResultsInEmptyMap({ items: ruleItemsFor(node) }))
     }
 
     keepHighlight(node: CodeMapNode) {

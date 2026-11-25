@@ -44,6 +44,8 @@ name merely starts with it (`src/app` must not take `src/application`).
 - [x] Complete Task 3: Rule evaluation keeps exact paths exact
 - [x] Complete Task 4: Guarantee search == rule
 - [x] CHANGELOG entries (Changed: search syntax; Fixed: excluding a folder excludes similarly named folders)
+- [x] Context-menu flatten/exclude stores the node path with glob characters escaped (`[id].tsx`)
+- [x] SonarCloud: `String.raw` in the glob escape
 
 ## Notes
 
