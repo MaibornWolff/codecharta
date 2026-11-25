@@ -71,6 +71,9 @@ export const isAnchoredAtRoot = (pattern: string) => pattern.startsWith("/") || 
 
 export const escapeGlob = (name: string) => name.replace(/[*?[\]\\]/g, String.raw`\$&`)
 
+/** The rule that hits exactly one node, even when its name holds characters a glob would read. */
+export const ruleForNodePath = (nodePath: string) => escapeGlob(nodePath)
+
 const isQuoted = (pattern: string) => pattern.startsWith('"') && pattern.endsWith('"')
 
 export function createRuleMatcher({ includes, excludes }: NodeRulePatterns): TransformedPathMatcher {

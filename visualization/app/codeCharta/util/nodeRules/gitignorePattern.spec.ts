@@ -1,4 +1,4 @@
-import { createRuleMatcher, parseNodeRule, toRuleLines } from "./gitignorePattern"
+import { createRuleMatcher, parseNodeRule, ruleForNodePath, toRuleLines, transformPath } from "./gitignorePattern"
 
 describe("gitignorePattern", () => {
     describe("parseNodeRule", () => {
@@ -41,6 +41,22 @@ describe("gitignorePattern", () => {
             // Act & Assert
             expect(matches("root/beta.ts")).toBe(true)
             expect(matches("root/alpha.ts")).toBe(false)
+        })
+    })
+
+    describe("ruleForNodePath", () => {
+        it("should match exactly the node whose path has glob characters in it", () => {
+            // Arrange
+            const matches = createRuleMatcher(parseNodeRule(ruleForNodePath("/root/app/[id].tsx")))
+
+            // Act & Assert
+            expect(matches(transformPath("/root/app/[id].tsx"))).toBe(true)
+            expect(matches(transformPath("/root/app/i.tsx"))).toBe(false)
+        })
+
+        it("should keep a plain node path as it is", () => {
+            // Act & Assert
+            expect(ruleForNodePath("/root/src/app")).toBe("/root/src/app")
         })
     })
 

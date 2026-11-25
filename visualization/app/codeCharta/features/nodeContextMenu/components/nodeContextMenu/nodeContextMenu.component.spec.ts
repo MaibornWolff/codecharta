@@ -498,6 +498,19 @@ describe("nodeContextMenu component", () => {
         )
     })
 
+    it("should flatten exactly the node whose name holds glob characters", async () => {
+        // Arrange
+        const { dispatchSpy } = await renderMenu({ node: { ...fileNode, name: "[id].tsx", path: "/root/src/[id].tsx" } })
+
+        // Act
+        fireEvent.click(screen.getByText("Flatten & decolor"))
+
+        // Assert
+        expect(dispatchSpy).toHaveBeenCalledWith(
+            addFlattenedNodes({ items: [{ path: String.raw`/root/src/\[id\].tsx`, nodeType: NodeType.FILE }] })
+        )
+    })
+
     it("should offer to show a flattened node again", async () => {
         // Arrange & Act — flatness is answered by the map, not by a flag on the node
         await renderMenu({ node: { ...fileNode }, isFlattened: () => true })
