@@ -69,6 +69,8 @@ function toGitignorePattern(pattern: string) {
 
 export const isAnchoredAtRoot = (pattern: string) => pattern.startsWith("/") || pattern.startsWith(RELATIVE_ROOT)
 
+export const escapeGlob = (name: string) => name.replace(/[*?[\]\\]/g, String.raw`\$&`)
+
 const isQuoted = (pattern: string) => pattern.startsWith('"') && pattern.endsWith('"')
 
 export function createRuleMatcher({ includes, excludes }: NodeRulePatterns): TransformedPathMatcher {

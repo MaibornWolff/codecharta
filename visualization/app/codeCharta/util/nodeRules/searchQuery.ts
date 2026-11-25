@@ -1,4 +1,4 @@
-import { isAnchoredAtRoot } from "./gitignorePattern"
+import { escapeGlob, isAnchoredAtRoot } from "./gitignorePattern"
 
 const TERM = /!?"[^"]*"?|[^\s,]+/g
 const NEGATION = "!"
@@ -56,5 +56,3 @@ function toExactPattern(name: string) {
 }
 
 const isGlob = (pattern: string) => /[*?[]/.test(pattern)
-
-const escapeGlob = (name: string) => name.replace(/[*?[\]\\]/g, "\\$&")
