@@ -3,6 +3,6 @@ export { HiddenWordsPopoverComponent } from "./components/hiddenWordsPopover/hid
 export { DomainWordOccurrencesReadStore } from "./stores/domainWordOccurrences.read.store"
 export { HiddenWordsReadStore } from "./stores/hiddenWords.read.store"
 export { HiddenWordsWriteStore } from "./stores/hiddenWords.write.store"
-export { matchingWords } from "./util/matchingWords"
+export { hasSearchTerms, matchingWords } from "./util/matchingWords"
 export type { WordSorting } from "./util/sortWords"
 export { WordSortingOption } from "./util/sortWords"

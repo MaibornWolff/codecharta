@@ -52,6 +52,14 @@ describe("wordsToMark", () => {
         expect(marked).toEqual([])
     })
 
+    it("should mark nothing for a query of nothing but separators, which every word matches", () => {
+        // Act
+        const marked = wordsToMark(null, PROJECT_WORDS, " , ", true)
+
+        // Assert
+        expect(marked).toEqual([])
+    })
+
     it("should ignore the word search while the explorer browses files", () => {
         // Arrange — the search box filters paths there, so its word query is invisible.
         const query = "pa"
