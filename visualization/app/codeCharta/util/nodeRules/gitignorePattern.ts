@@ -13,6 +13,7 @@ export type TransformedPathMatcher = (transformedPath: string) => boolean
 
 const RULE_NEGATION = "!"
 const PATTERN_SEPARATOR = ","
+const RELATIVE_ROOT = "./"
 
 export function transformPath(toTransform: string) {
     let removeNumberOfCharactersFromStart = 2
@@ -54,7 +55,10 @@ const splitPatterns = (patternList: string) =>
 
 const withoutNegation = (pattern: string) => (pattern.startsWith(RULE_NEGATION) ? pattern.slice(RULE_NEGATION.length) : pattern)
 
-const toGitignorePatterns = (patterns: string[]) => patterns.map(pattern => transformPath(toGitignorePattern(pattern)))
+const toGitignorePatterns = (patterns: string[]) => patterns.map(pattern => withRootAnchor(toGitignorePattern(pattern)))
+
+/** gitignore anchors a pattern at the root with a leading `/`, and knows no `./`. */
+const withRootAnchor = (pattern: string) => (pattern.startsWith(RELATIVE_ROOT) ? pattern.slice(RELATIVE_ROOT.length - 1) : pattern)
 
 function toGitignorePattern(pattern: string) {
     if (isAnchoredAtRoot(pattern) || pattern.startsWith("*") || pattern.endsWith("*")) {
@@ -63,7 +67,7 @@ function toGitignorePattern(pattern: string) {
     return isQuoted(pattern) ? pattern.slice(1, -1) : `*${pattern}*`
 }
 
-export const isAnchoredAtRoot = (pattern: string) => pattern.startsWith("/") || pattern.startsWith("./")
+export const isAnchoredAtRoot = (pattern: string) => pattern.startsWith("/") || pattern.startsWith(RELATIVE_ROOT)
 
 const isQuoted = (pattern: string) => pattern.startsWith('"') && pattern.endsWith('"')
 
