@@ -2,11 +2,16 @@ import { DomainWord } from "../../../model/codeCharta.model"
 
 const TERM_SEPARATORS = /[\s,]+/
 
-export function matchingWords(words: DomainWord[], query: string): DomainWord[] {
-    const terms = query
+const searchTerms = (query: string) =>
+    query
         .toLowerCase()
         .split(TERM_SEPARATORS)
         .filter(term => term.length > 0)
+
+export const hasSearchTerms = (query: string) => searchTerms(query).length > 0
+
+export function matchingWords(words: DomainWord[], query: string): DomainWord[] {
+    const terms = searchTerms(query)
     if (terms.length === 0) {
         return words
     }
