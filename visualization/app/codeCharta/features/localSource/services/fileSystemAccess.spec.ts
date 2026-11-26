@@ -1,4 +1,11 @@
-import { canOpenFoldersHere, FolderAccessBlockedError, findFile, hasReadPermission, pickFolder } from "./fileSystemAccess"
+import {
+    canOpenFoldersHere,
+    FolderAccessBlockedError,
+    findFile,
+    hasReadPermission,
+    PERMISSION_QUERY_TIMEOUT_MS,
+    pickFolder
+} from "./fileSystemAccess"
 import { fakeDirectory } from "./fileSystemAccess.mocks"
 
 describe("fileSystemAccess", () => {
@@ -110,6 +117,10 @@ describe("fileSystemAccess", () => {
     })
 
     describe("hasReadPermission", () => {
+        afterEach(() => {
+            jest.useRealTimers()
+        })
+
         it("should not ask again when reading is already granted", async () => {
             // Arrange
             const directory = fakeDirectory("myproject", {}, "granted")
@@ -143,6 +154,22 @@ describe("fileSystemAccess", () => {
 
             // Assert
             expect(isReadable).toBe(false)
+        })
+
+        it("should not be readable without asking when the browser never answers whether reading is granted", async () => {
+            // Arrange
+            jest.useFakeTimers()
+            const directory = fakeDirectory("myproject", {})
+            jest.mocked(directory.queryPermission).mockReturnValue(new Promise(() => {}))
+
+            // Act
+            const answer = hasReadPermission(directory)
+            await jest.advanceTimersByTimeAsync(PERMISSION_QUERY_TIMEOUT_MS)
+            const isReadable = await answer
+
+            // Assert
+            expect(isReadable).toBe(false)
+            expect(directory.requestPermission).not.toHaveBeenCalled()
         })
     })
 
