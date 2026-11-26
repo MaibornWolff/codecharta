@@ -12,6 +12,9 @@ type DirectoryPicker = (options: { id: string; mode: "read" }) => Promise<LocalD
 const PICKER_ID = "codecharta-local-source"
 /** What a browser throws when a policy or the page's embedding forbids the picker, as opposed to a cancel. */
 const BLOCKING_ERROR_NAMES = new Set(["SecurityError", "NotAllowedError"])
+/** After a reload, Chrome can leave the query of a saved folder unanswered for good. The query shows no prompt and
+ * answers at once otherwise, so a folder still waiting after this long is asked for again, with a fresh pick. */
+export const PERMISSION_QUERY_TIMEOUT_MS = 1000
 
 export class FolderAccessBlockedError extends Error {}
 
@@ -47,10 +50,22 @@ export async function pickFolder(): Promise<LocalDirectoryHandle | null> {
 }
 
 export async function hasReadPermission(directory: LocalDirectoryHandle): Promise<boolean> {
-    if ((await directory.queryPermission(READ_ONLY)) === "granted") {
+    const permission = await answerOrNull(directory.queryPermission(READ_ONLY), PERMISSION_QUERY_TIMEOUT_MS)
+    if (permission === null) {
+        return false
+    }
+    if (permission === "granted") {
         return true
     }
     return (await directory.requestPermission(READ_ONLY)) === "granted"
+}
+
+function answerOrNull<T>(question: Promise<T>, timeoutMs: number): Promise<T | null> {
+    let timer: ReturnType<typeof setTimeout>
+    const timeout = new Promise<null>(resolve => {
+        timer = setTimeout(() => resolve(null), timeoutMs)
+    })
+    return Promise.race([question, timeout]).finally(() => clearTimeout(timer))
 }
 
 export async function findFile(directory: FileSystemDirectoryHandle, relativePath: string): Promise<File | null> {

@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Excluding a folder or file**: excluding or flattening a folder, a file, or a file type inside a folder hits exactly that, also for names with brackets such as `[id].tsx`, and no longer folders and file types whose names merely start the same way.
 - **Searching several words**: the word search of the domain view finds the words matching any of several terms separated by spaces or commas, as its example suggests.
+- **Show Source after a reload**: when the browser no longer answers for a map's saved local folder, Show Source asks you to select the folder again instead of doing nothing.
 
 ## [2.11.0] - 2026-11-10
 
